@@ -107,13 +107,14 @@ export function CardFooter({ className, children, ...props }: CardFooterProps) {
   );
 }
 
-interface ImageCardProps extends CardProps {
+interface ImageCardProps extends Omit<CardProps, 'children'> {
   src: string;
   alt: string;
   title?: string;
   description?: string;
   imageClassName?: string;
   aspectRatio?: "square" | "video" | "portrait";
+  children?: React.ReactNode;
 }
 
 const aspectRatios = {
@@ -162,7 +163,7 @@ export function ImageCard({
   );
 }
 
-interface StatCardProps extends CardProps {
+interface StatCardProps extends Omit<CardProps, 'children'> {
   title: string;
   value: string | number;
   description?: string;
@@ -172,6 +173,7 @@ interface StatCardProps extends CardProps {
     direction: "up" | "down" | "neutral";
   };
   icon?: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 export function StatCard({
@@ -180,6 +182,7 @@ export function StatCard({
   description,
   trend,
   icon,
+  children,
   className,
   ...props
 }: StatCardProps) {
@@ -224,12 +227,13 @@ export function StatCard({
   );
 }
 
-interface ActionCardProps extends CardProps {
+interface ActionCardProps extends Omit<CardProps, 'children'> {
   title: string;
   description?: string;
   icon?: React.ReactNode;
   action?: React.ReactNode;
   badge?: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 export function ActionCard({

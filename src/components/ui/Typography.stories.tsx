@@ -177,11 +177,11 @@ export const MonoTextVariants: MonoTextStory = {
 export const MonoTextAsTime: MonoTextStory = {
   render: () => (
     <div className="space-y-2">
-      <MonoText as="time" dateTime="2024-03-15T14:30:00">
+      <MonoText as="time">
         March 15, 2024 at 2:30 PM
       </MonoText>
       <br />
-      <MonoText as="time" variant="muted" dateTime="2024-03-10">
+      <MonoText as="time" variant="muted">
         5 days ago
       </MonoText>
     </div>
@@ -196,7 +196,7 @@ export const MonoTextUseCases: MonoTextStory = {
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <span className="text-sm">Published:</span>
-            <MonoText as="time" dateTime="2024-03-15">Mar 15, 2024</MonoText>
+            <MonoText as="time">Mar 15, 2024</MonoText>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-sm">Reading time:</span>

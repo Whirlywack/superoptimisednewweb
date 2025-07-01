@@ -1,7 +1,7 @@
 import React from "react";
 import { cn, accessibility } from "@/lib/utils";
 
-interface TextFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface TextFieldProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
   label?: string;
   error?: string;
   helperText?: string;
@@ -113,7 +113,7 @@ export function TextField({
   );
 }
 
-interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
   label?: string;
   error?: string;
   size?: "sm" | "md" | "lg";
@@ -191,7 +191,7 @@ export function Checkbox({
   );
 }
 
-interface RadioProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface RadioProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
   label?: string;
   size?: "sm" | "md" | "lg";
 }

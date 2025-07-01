@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { ChoiceButton, OptionGroup, LargeButtonChoice } from './ChoiceButton';
 import { Code, Smartphone, Monitor, Coffee, Zap } from 'lucide-react';
+import React from 'react';
 
 const meta: Meta<typeof ChoiceButton> = {
   title: 'UI/ChoiceButton',
@@ -88,129 +89,179 @@ export const Disabled: Story = {
 
 // OptionGroup Stories
 export const OptionGroupStory: Story = {
-  render: () => (
-    <OptionGroup
-      value="react"
-      onChange={(value) => console.log('Selected:', value)}
-      options={[
-        { value: 'react', label: 'React', description: 'A JavaScript library for building user interfaces' },
-        { value: 'vue', label: 'Vue.js', description: 'The Progressive JavaScript Framework' },
-        { value: 'angular', label: 'Angular', description: 'Platform for building mobile and desktop web applications' },
-        { value: 'svelte', label: 'Svelte', description: 'Cybernetically enhanced web apps' },
-      ]}
-    />
-  ),
+  render: () => {
+    const [selected, setSelected] = React.useState('react');
+    
+    return (
+      <OptionGroup layout="vertical" spacing="normal">
+        <ChoiceButton
+          label="React"
+          description="A JavaScript library for building user interfaces"
+          selected={selected === 'react'}
+          onClick={() => setSelected('react')}
+        />
+        <ChoiceButton
+          label="Vue.js"
+          description="The Progressive JavaScript Framework"
+          selected={selected === 'vue'}
+          onClick={() => setSelected('vue')}
+        />
+        <ChoiceButton
+          label="Angular"
+          description="Platform for building mobile and desktop web applications"
+          selected={selected === 'angular'}
+          onClick={() => setSelected('angular')}
+        />
+        <ChoiceButton
+          label="Svelte"
+          description="Cybernetically enhanced web apps"
+          selected={selected === 'svelte'}
+          onClick={() => setSelected('svelte')}
+        />
+      </OptionGroup>
+    );
+  },
 };
 
 export const MultiSelectGroup: Story = {
-  render: () => (
-    <OptionGroup
-      value={['typescript', 'python']}
-      onChange={(value) => console.log('Selected:', value)}
-      multiSelect={true}
-      maxSelections={3}
-      options={[
-        { value: 'javascript', label: 'JavaScript', description: 'Dynamic web programming' },
-        { value: 'typescript', label: 'TypeScript', description: 'Typed superset of JavaScript' },
-        { value: 'python', label: 'Python', description: 'General-purpose programming language' },
-        { value: 'rust', label: 'Rust', description: 'Systems programming language' },
-        { value: 'go', label: 'Go', description: 'Open source programming language by Google' },
-      ]}
-    />
-  ),
+  render: () => {
+    const [selected, setSelected] = React.useState(['typescript', 'python']);
+    
+    const handleToggle = (value: string) => {
+      setSelected(prev => 
+        prev.includes(value) 
+          ? prev.filter(v => v !== value)
+          : [...prev, value]
+      );
+    };
+    
+    return (
+      <OptionGroup layout="vertical" spacing="normal">
+        <ChoiceButton
+          label="JavaScript"
+          description="Dynamic web programming"
+          selected={selected.includes('javascript')}
+          onClick={() => handleToggle('javascript')}
+        />
+        <ChoiceButton
+          label="TypeScript"
+          description="Typed superset of JavaScript"
+          selected={selected.includes('typescript')}
+          onClick={() => handleToggle('typescript')}
+        />
+        <ChoiceButton
+          label="Python"
+          description="General-purpose programming language"
+          selected={selected.includes('python')}
+          onClick={() => handleToggle('python')}
+        />
+        <ChoiceButton
+          label="Rust"
+          description="Systems programming language"
+          selected={selected.includes('rust')}
+          onClick={() => handleToggle('rust')}
+        />
+        <ChoiceButton
+          label="Go"
+          description="Open source programming language by Google"
+          selected={selected.includes('go')}
+          onClick={() => handleToggle('go')}
+        />
+      </OptionGroup>
+    );
+  },
 };
 
 export const WithIcons: Story = {
-  render: () => (
-    <OptionGroup
-      value="mobile"
-      onChange={(value) => console.log('Selected:', value)}
-      options={[
-        { 
-          value: 'mobile', 
-          label: 'Mobile Development', 
-          description: 'iOS and Android applications',
-          icon: <Smartphone className="w-5 h-5" />
-        },
-        { 
-          value: 'web', 
-          label: 'Web Development', 
-          description: 'Frontend and backend web applications',
-          icon: <Monitor className="w-5 h-5" />
-        },
-        { 
-          value: 'api', 
-          label: 'API Development', 
-          description: 'RESTful and GraphQL APIs',
-          icon: <Zap className="w-5 h-5" />
-        },
-      ]}
-    />
-  ),
+  render: () => {
+    const [selected, setSelected] = React.useState('mobile');
+    
+    return (
+      <OptionGroup layout="vertical" spacing="normal">
+        <ChoiceButton
+          label="Mobile Development"
+          description="iOS and Android applications"
+          icon={<Smartphone className="w-5 h-5" />}
+          selected={selected === 'mobile'}
+          onClick={() => setSelected('mobile')}
+        />
+        <ChoiceButton
+          label="Web Development"
+          description="Frontend and backend web applications"
+          icon={<Monitor className="w-5 h-5" />}
+          selected={selected === 'web'}
+          onClick={() => setSelected('web')}
+        />
+        <ChoiceButton
+          label="API Development"
+          description="RESTful and GraphQL APIs"
+          icon={<Zap className="w-5 h-5" />}
+          selected={selected === 'api'}
+          onClick={() => setSelected('api')}
+        />
+      </OptionGroup>
+    );
+  },
 };
 
 // LargeButtonChoice Stories
 export const LargeButtonChoiceStory: Story = {
-  render: () => (
-    <div className="space-y-4">
-      <LargeButtonChoice
-        title="Coffee or Tea?"
-        subtitle="What's your preferred morning beverage?"
-        value="coffee"
-        onChange={(value) => console.log('Selected:', value)}
-        options={[
-          { 
-            value: 'coffee', 
-            label: 'Coffee', 
-            description: 'Rich, bold, and energizing',
-            icon: <Coffee className="w-8 h-8" />
-          },
-          { 
-            value: 'tea', 
-            label: 'Tea', 
-            description: 'Calming, diverse, and refreshing',
-            icon: '🍵'
-          },
-        ]}
-      />
-    </div>
-  ),
+  render: () => {
+    const [selected, setSelected] = React.useState('coffee');
+    
+    return (
+      <div className="space-y-4">
+        <LargeButtonChoice
+          title="Coffee"
+          subtitle="Rich, bold, and energizing"
+          emoji="☕"
+          selected={selected === 'coffee'}
+          onClick={() => setSelected('coffee')}
+        />
+        <LargeButtonChoice
+          title="Tea"
+          subtitle="Calming, diverse, and refreshing"
+          emoji="🍵"
+          selected={selected === 'tea'}
+          onClick={() => setSelected('tea')}
+        />
+      </div>
+    );
+  },
 };
 
 export const LargeButtonChoiceGrid: Story = {
-  render: () => (
-    <LargeButtonChoice
-      title="Development Focus"
-      subtitle="What type of development interests you most?"
-      value={undefined}
-      onChange={(value) => console.log('Selected:', value)}
-      layout="grid"
-      options={[
-        { 
-          value: 'frontend', 
-          label: 'Frontend', 
-          description: 'User interfaces and experiences',
-          icon: <Monitor className="w-8 h-8" />
-        },
-        { 
-          value: 'backend', 
-          label: 'Backend', 
-          description: 'Server-side logic and APIs',
-          icon: <Zap className="w-8 h-8" />
-        },
-        { 
-          value: 'mobile', 
-          label: 'Mobile', 
-          description: 'iOS and Android apps',
-          icon: <Smartphone className="w-8 h-8" />
-        },
-        { 
-          value: 'fullstack', 
-          label: 'Full Stack', 
-          description: 'End-to-end development',
-          icon: <Code className="w-8 h-8" />
-        },
-      ]}
-    />
-  ),
+  render: () => {
+    const [selected, setSelected] = React.useState<string>();
+    
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <LargeButtonChoice
+          title="Frontend"
+          subtitle="User interfaces and experiences"
+          selected={selected === 'frontend'}
+          onClick={() => setSelected('frontend')}
+          badge="Popular"
+        />
+        <LargeButtonChoice
+          title="Backend"
+          subtitle="Server-side logic and APIs"
+          selected={selected === 'backend'}
+          onClick={() => setSelected('backend')}
+        />
+        <LargeButtonChoice
+          title="Mobile"
+          subtitle="iOS and Android apps"
+          selected={selected === 'mobile'}
+          onClick={() => setSelected('mobile')}
+        />
+        <LargeButtonChoice
+          title="Full Stack"
+          subtitle="End-to-end development"
+          selected={selected === 'fullstack'}
+          onClick={() => setSelected('fullstack')}
+        />
+      </div>
+    );
+  },
 };

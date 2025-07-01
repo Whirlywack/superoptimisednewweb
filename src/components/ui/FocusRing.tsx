@@ -70,7 +70,7 @@ export function FocusRing({
 
 interface FocusableProps extends React.HTMLAttributes<HTMLElement> {
   children: React.ReactNode;
-  as?: keyof JSX.IntrinsicElements;
+  as?: React.ElementType;
   variant?: "default" | "primary" | "success" | "warning" | "danger";
   size?: "sm" | "md" | "lg";
   shape?: "rounded" | "square" | "circle";

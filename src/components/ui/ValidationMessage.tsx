@@ -91,7 +91,7 @@ export function ValidationMessage({
   const [isVisible, setIsVisible] = React.useState(true);
   const typeConfig = messageTypes[type];
   const sizeConfig = messageSizes[size];
-  const Icon = icon || typeConfig.icon;
+  const IconComponent = icon ? () => <>{icon}</> : typeConfig.icon;
 
   const handleDismiss = () => {
     setIsVisible(false);
@@ -115,7 +115,7 @@ export function ValidationMessage({
     return (
       <div className={containerClasses} role="alert" {...props}>
         {showIcon && (
-          <Icon className={cn(sizeConfig.icon, typeConfig.iconColor, "flex-shrink-0 mt-0.5")} />
+          <IconComponent className={cn(sizeConfig.icon, typeConfig.iconColor, "flex-shrink-0 mt-0.5")} />
         )}
         <span className={cn("flex-1", typeConfig.colors.inline)}>
           {message}
@@ -127,7 +127,7 @@ export function ValidationMessage({
   return (
     <div className={containerClasses} role="alert" {...props}>
       {showIcon && (
-        <Icon className={cn(sizeConfig.icon, typeConfig.iconColor, "flex-shrink-0 mt-0.5")} />
+        <IconComponent className={cn(sizeConfig.icon, typeConfig.iconColor, "flex-shrink-0 mt-0.5")} />
       )}
       
       <div className="flex-1 min-w-0">

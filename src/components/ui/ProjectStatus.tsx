@@ -228,7 +228,7 @@ export function ProjectPhase({
                   </p>
                 )}
                 
-                {phase.completedAt && isCompleted && (
+                {'completedAt' in phase && phase.completedAt && isCompleted && (
                   <p className="text-xs text-muted-foreground mt-1">
                     Completed {phase.completedAt}
                   </p>

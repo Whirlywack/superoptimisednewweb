@@ -310,10 +310,10 @@ export const StepsWithErrors: Story = {
 export const ClickableMultiStep: Story = {
   render: () => {
     const [steps, setSteps] = useState([
-      { id: 'basic', label: 'Basic Info', completed: true },
-      { id: 'skills', label: 'Skills', current: true },
-      { id: 'experience', label: 'Experience', completed: false },
-      { id: 'review', label: 'Review', completed: false },
+      { id: 'basic', label: 'Basic Info', completed: true, current: false },
+      { id: 'skills', label: 'Skills', completed: false, current: true },
+      { id: 'experience', label: 'Experience', completed: false, current: false },
+      { id: 'review', label: 'Review', completed: false, current: false },
     ]);
 
     const handleStepClick = (stepId: string) => {

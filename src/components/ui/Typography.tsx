@@ -182,7 +182,7 @@ export function CodeBlock({
   );
 }
 
-interface MonoTextProps extends React.HTMLAttributes<HTMLSpanElement> {
+interface MonoTextProps extends React.HTMLAttributes<HTMLElement> {
   children: React.ReactNode;
   className?: string;
   variant?: "default" | "muted" | "small";

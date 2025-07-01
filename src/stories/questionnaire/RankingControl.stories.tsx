@@ -129,10 +129,14 @@ export const RankingListStory: Story = {
       },
     ]);
 
+    const handleChange = (newItems: any[]) => {
+      setItems(newItems);
+    };
+
     return (
       <RankingList
         items={items}
-        onChange={setItems}
+        onChange={handleChange}
         maxItems={5}
       />
     );
@@ -171,7 +175,7 @@ export const CompactRanking: Story = {
     return (
       <RankingList
         items={items}
-        onChange={setItems}
+        onChange={(newItems: any[]) => setItems(newItems)}
         variant="compact"
         showInstructions={false}
       />
@@ -211,7 +215,7 @@ export const RemovableItems: Story = {
     return (
       <RankingList
         items={items}
-        onChange={setItems}
+        onChange={(newItems: any[]) => setItems(newItems)}
         variant="detailed"
       />
     );
@@ -247,7 +251,7 @@ export const DragDisabled: Story = {
     return (
       <RankingList
         items={items}
-        onChange={setItems}
+        onChange={(newItems: any[]) => setItems(newItems)}
         dragEnabled={false}
       />
     );
@@ -373,7 +377,7 @@ export const DeveloperSkillsRanking: Story = {
         </div>
         <RankingList
           items={items}
-          onChange={setItems}
+          onChange={(newItems: any[]) => setItems(newItems)}
           variant="detailed"
           maxItems={6}
         />

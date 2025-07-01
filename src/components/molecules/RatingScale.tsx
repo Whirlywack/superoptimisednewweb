@@ -201,7 +201,7 @@ export function RatingScale({
         <div className="flex justify-center">
           <SkipControl
             variant="subtle"
-            onSkip={onSkip}
+            onClick={onSkip}
             disabled={disabled}
           >
             Skip this rating

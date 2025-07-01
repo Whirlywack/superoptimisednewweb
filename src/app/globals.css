@@ -182,7 +182,13 @@ body {
   
   /* Focus styles for accessibility */
   *:focus-visible {
-    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
+    @apply outline-none ring-2 ring-offset-2;
+    ring-color: rgb(var(--color-primary));
+    ring-offset-color: rgb(var(--color-off-white));
+  }
+  
+  .dark *:focus-visible {
+    ring-offset-color: rgb(var(--color-off-black));
   }
 }
 

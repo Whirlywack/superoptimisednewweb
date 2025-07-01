@@ -118,7 +118,7 @@ export function RatingInput({
   );
 }
 
-interface RatingScaleProps extends React.HTMLAttributes<HTMLDivElement> {
+interface RatingScaleProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
   min?: number;
   max?: number;
   value?: number;
@@ -214,7 +214,7 @@ export function RatingScale({
   );
 }
 
-interface LikertScaleProps extends React.HTMLAttributes<HTMLDivElement> {
+interface LikertScaleProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
   options: Array<{
     value: string;
     label: string;

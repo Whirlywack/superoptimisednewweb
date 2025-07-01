@@ -197,7 +197,7 @@ export function QuestionHeader({
   );
 }
 
-interface QuestionGroupProps extends React.HTMLAttributes<HTMLDivElement> {
+interface QuestionGroupProps extends React.FieldsetHTMLAttributes<HTMLFieldSetElement> {
   label: string;
   description?: string;
   required?: boolean;

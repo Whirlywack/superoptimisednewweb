@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { Modal, ModalContent, ModalFooter, ConfirmDialog, AlertDialog } from "./Modal";
 import { Button } from "@/components/ui/button";
 import { TextFieldGroup } from "./FormGroup";
+import { cn } from "@/lib/utils";
 import React from "react";
 
 const meta: Meta = {
@@ -40,7 +41,7 @@ export default meta;
 type ModalStory = StoryObj<typeof Modal>;
 
 // Interactive Modal Demo Component
-function ModalDemo({ size = "md", title, description, closable = true }) {
+function ModalDemo({ size = "md", title, description, closable = true }: { size?: "sm" | "md" | "lg" | "xl" | "full"; title?: string; description?: string; closable?: boolean }) {
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (

@@ -30,8 +30,8 @@ export function FormGroup({
       {label && (
         <label className={cn(
           "block text-sm font-medium",
-          hasError ? "text-destructive" : "text-foreground",
-          required && "after:content-['*'] after:ml-0.5 after:text-destructive"
+          hasError ? "text-warm-gray" : "text-off-black dark:text-off-white",
+          required && "after:content-['*'] after:ml-0.5 after:text-warm-gray"
         )}>
           {label}
         </label>
@@ -42,13 +42,13 @@ export function FormGroup({
       </div>
       
       {hasError && (
-        <p className="text-sm text-destructive" role="alert">
+        <p className="text-sm text-warm-gray" role="alert">
           {error}
         </p>
       )}
       
       {hasHelper && (
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-warm-gray">
           {helperText}
         </p>
       )}

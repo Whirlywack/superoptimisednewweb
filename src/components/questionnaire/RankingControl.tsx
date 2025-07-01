@@ -149,7 +149,7 @@ interface RankableItemProps {
   variant?: "default" | "compact" | "detailed";
 }
 
-interface RankingListProps extends React.HTMLAttributes<HTMLDivElement> {
+interface RankingListProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
   items: RankableItemProps[];
   onChange: (newItems: RankableItemProps[]) => void;
   maxItems?: number;
@@ -286,7 +286,7 @@ export function RankingList({
   );
 }
 
-interface SimpleDragDropProps extends React.HTMLAttributes<HTMLDivElement> {
+interface SimpleDragDropProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
   items: Array<{ id: string; content: React.ReactNode }>;
   onChange: (itemIds: string[]) => void;
   placeholder?: string;

@@ -189,7 +189,7 @@ export function TechStackSelector({
             {selectedOptions.map(option => (
               <Tag
                 key={option.id}
-                variant="primary"
+variant="default"
                 size="sm"
                 removable={!disabled}
                 onRemove={() => handleRemoveTag(option.id)}
@@ -240,7 +240,7 @@ export function TechStackSelector({
                       <Checkbox
                         checked={isSelected}
                         onChange={() => handleToggle(option.id)}
-                        disabled={isDisabled}
+                        disabled={!!isDisabled}
                         size={layout === 'compact' ? 'sm' : 'md'}
                         className="mt-0.5"
                       />
@@ -261,7 +261,7 @@ export function TechStackSelector({
                             {option.label}
                           </span>
                           {option.popular && (
-                            <Tag variant="secondary" size="xs">
+                            <Tag variant="secondary" size="sm">
                               Popular
                             </Tag>
                           )}
@@ -348,7 +348,7 @@ export function TechStackSelector({
         <div className="flex justify-center">
           <SkipControl
             variant="subtle"
-            onSkip={onSkip}
+            onClick={onSkip}
             disabled={disabled}
           >
             Skip this question
