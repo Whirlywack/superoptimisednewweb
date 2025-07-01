@@ -170,26 +170,31 @@ _All stories below are written to utilise this exact stack._
 - [x] `TapToRank` (mobile-friendly ranking)
 - [x] `OneHandedInput` (thumb-reachable controls)
 
-## 🧩 **Additional Molecules Needed**
+## 🧩 **Additional Molecules** ✅ COMPLETE
 
-- [ ] `PostMeta` (date + project + reading time grouped)
-- [ ] `EngagementMetrics` (emoji + count combinations)
-- [ ] `NewsletterSignup` (email input + subscribe button)
-- [ ] `FilterButtonGroup` (clean button-based filters)
-- [ ] `Breadcrumb` (navigation context)
-- [ ] `PaginationControls` (prev/next with page info)
-- [ ] `CommunityQuote` (blockquote with attribution)
-- [ ] `ProjectProgress` (progress bar + status + meta)
-- [ ] `PostPreview` (title + excerpt + tags)
-- [ ] `SearchInput` (input with search styling)
+- [x] `PostMeta` (date + project + reading time grouped)
+- [x] `EngagementMetrics` (Heart, MessageCircle icons + count combinations)
+- [x] `NewsletterSignup` (email input + subscribe button)
+- [x] `FilterButtonGroup` (clean button-based filters)
+- [x] `Breadcrumb` (navigation context with ChevronRight separators)
+- [x] `PaginationControls` (prev/next with arrow icons + page info)
+- [x] `CommunityQuote` (blockquote with attribution)
+- [x] `ProjectProgress` (progress bar + status + meta)
+- [x] `PostPreview` (title + excerpt + tags)
+- [ ] `SearchInput` (input with Search icon)
+- [ ] `SocialShare` (share buttons with platform icons)
+- [ ] `StatsDisplay` (metrics display)
+- [ ] `NotificationBanner` (dismissible alerts with close button)
+- [ ] `AuthorCard` (profile card)
+- [ ] `TableOfContents` (document navigation)
 
 ### Organisms
 
-- [ ] Navigation Bar (desktop/mobile)
-- [ ] Footer with socials links
-- [ ] Auth Form (email/password + magic link)
-- [ ] Article List (responsive grid)
-- [ ] Markdown Renderer (code blocks, headings)
+- [ ] `Navigation` (desktop/mobile with hamburger menu)
+- [ ] `Footer` (socials with platform icons)
+- [ ] `AuthForm` (email/password + magic link with visibility toggles)
+- [ ] `ArticleList` (responsive grid with view toggles)
+- [ ] `MarkdownRenderer` (code blocks, headings with copy functionality)
 
 ## 🏗️ **Additional Organisms Needed**
 
@@ -202,11 +207,16 @@ _All stories below are written to utilise this exact stack._
 - [ ] `JourneyTimeline` (chronological post listing)
 - [ ] `MissionStatement` (philosophy content block)
 - [ ] `StatsBar` (post count, last updated, projects)
+- [ ] `FeatureGrid` (feature highlights)
+- [ ] `TestimonialCarousel` (rotating testimonials with navigation)
+- [ ] `ContactSection` (contact form)
+- [ ] `FAQAccordion` (expandable Q&A with expand/collapse)
+- [ ] `ResourceLibrary` (searchable resources with download functionality)
 
 ### Templates
 
-- [ ] DocSite layout (sidebar nav + content)
-- [ ] Marketing layout (hero + feature sections)
+- [ ] `DocSiteLayout` (sidebar nav + content)
+- [ ] `MarketingLayout` (hero + feature sections)
 
 ## 📄 **Additional Templates Needed**
 
@@ -217,6 +227,9 @@ _All stories below are written to utilise this exact stack._
 - [ ] `AboutMission` (story + philosophy + contact)
 - [ ] `MagicLinkForm` (questionnaire flow)
 - [ ] `ErrorPage` (404, expired link)
+- [ ] `SearchResults` (filtered content)
+- [ ] `UserDashboard` (profile + activity)
+- [ ] `ContactForm` (inquiry form)
 
 ## 📱 **Mobile-First Considerations**
 
@@ -286,7 +299,7 @@ _All stories below are written to utilise this exact stack._
 ### Story: Resend Email Service
 
 - [ ] Create `lib/email.ts` helper using Resend API key
-- [ ] Send welcome email after registration via Inngest background job
+- [ ] Send welcome email after registration via background job
 
 ---
 
@@ -358,7 +371,7 @@ _All stories below are written to utilise this exact stack._
 - [ ] Fix contrast / ARIA warnings
 - [ ] Keyboard-navigate full app in staging
 
-### Story: Performance Optimisation
+### Story: Performance Optimization
 
 - [ ] Setup next/image for all images
 - [ ] Enable React 18 `use client` streaming where beneficial
