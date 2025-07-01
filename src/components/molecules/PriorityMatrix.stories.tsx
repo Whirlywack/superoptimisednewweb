@@ -1,16 +1,26 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 import { PriorityMatrix, MatrixItem, MatrixSelection } from './PriorityMatrix';
+import { 
+  Rocket, 
+  Bug, 
+  Wrench, 
+  BookOpen, 
+  TestTube, 
+  Lock, 
+  Zap, 
+  Palette 
+} from 'lucide-react';
 
-// Mock icons for stories (in real app, use actual icons)
-const FeatureIcon = () => <span>🚀</span>;
-const BugIcon = () => <span>🐛</span>;
-const RefactorIcon = () => <span>🔧</span>;
-const DocumentationIcon = () => <span>📚</span>;
-const TestingIcon = () => <span>🧪</span>;
-const SecurityIcon = () => <span>🔒</span>;
-const PerformanceIcon = () => <span>⚡</span>;
-const UIIcon = () => <span>🎨</span>;
+// Icon components using Lucide React
+const FeatureIcon = () => <Rocket className="w-4 h-4" />;
+const BugIcon = () => <Bug className="w-4 h-4" />;
+const RefactorIcon = () => <Wrench className="w-4 h-4" />;
+const DocumentationIcon = () => <BookOpen className="w-4 h-4" />;
+const TestingIcon = () => <TestTube className="w-4 h-4" />;
+const SecurityIcon = () => <Lock className="w-4 h-4" />;
+const PerformanceIcon = () => <Zap className="w-4 h-4" />;
+const UIIcon = () => <Palette className="w-4 h-4" />;
 
 const mockProjectItems: MatrixItem[] = [
   {

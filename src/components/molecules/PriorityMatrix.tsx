@@ -58,10 +58,10 @@ const defaultEffortLabel = { low: 'Low Effort', high: 'High Effort' };
 const defaultImpactLabel = { low: 'Low Impact', high: 'High Impact' };
 
 const quadrantInfo = {
-  'low-high': { label: 'Quick Wins', color: 'bg-green-50 border-green-200 text-green-800' },
-  'high-high': { label: 'Major Projects', color: 'bg-blue-50 border-blue-200 text-blue-800' },
-  'low-low': { label: 'Fill-ins', color: 'bg-yellow-50 border-yellow-200 text-yellow-800' },
-  'high-low': { label: 'Thankless Tasks', color: 'bg-red-50 border-red-200 text-red-800' },
+  'low-high': { label: 'Quick Wins', color: 'bg-off-white dark:bg-off-black border-primary text-off-black dark:text-off-white' },
+  'high-high': { label: 'Major Projects', color: 'bg-light-gray border-warm-gray text-off-black dark:text-off-white' },
+  'low-low': { label: 'Fill-ins', color: 'bg-off-white dark:bg-off-black border-light-gray text-warm-gray' },
+  'high-low': { label: 'Thankless Tasks', color: 'bg-warm-gray/10 border-warm-gray text-warm-gray' },
 };
 
 export function PriorityMatrix({
@@ -178,7 +178,7 @@ export function PriorityMatrix({
               <div
                 key={item.id}
                 className={cn(
-                  "bg-white rounded-md p-2 shadow-sm border border-gray-200",
+                  "bg-off-white dark:bg-off-black rounded-md p-2 shadow-sm border border-light-gray",
                   "flex items-center justify-between gap-2",
                   "transition-all duration-200 hover:shadow-md",
                   draggedItem === item.id && "opacity-50"
@@ -202,8 +202,8 @@ export function PriorityMatrix({
                   <button
                     type="button"
                     onClick={() => handleRemoveItem(item.id)}
-                    className="flex-shrink-0 w-5 h-5 rounded-full bg-gray-100 hover:bg-gray-200 
-                             flex items-center justify-center text-xs text-gray-600 hover:text-gray-800
+                    className="flex-shrink-0 w-5 h-5 rounded-full bg-light-gray hover:bg-warm-gray/20 
+                             flex items-center justify-center text-xs text-warm-gray hover:text-off-black
                              transition-colors duration-200"
                     aria-label={`Remove ${item.label} from matrix`}
                   >
@@ -217,7 +217,7 @@ export function PriorityMatrix({
 
         {/* Drop zone hint */}
         {quadrantItems.length === 0 && !disabled && (
-          <div className="absolute inset-0 flex items-center justify-center text-xs text-gray-500 pointer-events-none">
+          <div className="absolute inset-0 flex items-center justify-center text-xs text-warm-gray pointer-events-none">
             Drop items here
           </div>
         )}
@@ -258,7 +258,7 @@ export function PriorityMatrix({
               <div
                 key={item.id}
                 className={cn(
-                  "bg-white rounded-md p-2 border border-gray-200 shadow-sm",
+                  "bg-off-white dark:bg-off-black rounded-md p-2 border border-light-gray shadow-sm",
                   "flex items-center gap-2 cursor-move",
                   "transition-all duration-200 hover:shadow-md hover:scale-105",
                   draggedItem === item.id && "opacity-50 scale-95",
@@ -328,7 +328,7 @@ export function PriorityMatrix({
       {/* Instructions */}
       {!disabled && hasUnplacedItems && (
         <div className="text-sm text-warm-gray bg-light-gray p-3 rounded-lg">
-          💡 <strong>Tip:</strong> Drag and drop items from above into the appropriate quadrant based on their effort requirement and expected impact.
+          <strong>Tip:</strong> Drag and drop items from above into the appropriate quadrant based on their effort requirement and expected impact.
         </div>
       )}
 
@@ -337,7 +337,7 @@ export function PriorityMatrix({
         <div className="text-sm text-warm-gray">
           Progress: {value.length} of {items.filter(item => !item.disabled).length} items placed
           {allItemsPlaced && (
-            <span className="text-primary font-medium ml-2">✓ Complete</span>
+            <span className="text-primary font-medium ml-2">Complete</span>
           )}
         </div>
       )}
