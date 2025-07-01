@@ -181,11 +181,11 @@ _All stories below are written to utilise this exact stack._
 - [x] `CommunityQuote` (blockquote with attribution)
 - [x] `ProjectProgress` (progress bar + status + meta)
 - [x] `PostPreview` (title + excerpt + tags)
-- [ ] `SearchInput` (input with Search icon)
-- [ ] `SocialShare` (share buttons with platform icons)
-- [ ] `StatsDisplay` (metrics display)
-- [ ] `NotificationBanner` (dismissible alerts with close button)
-- [ ] `AuthorCard` (profile card)
+- [x] `SearchInput` (input with Search icon)
+- [x] `SocialShare` (share buttons with platform icons)
+- [x] `StatsDisplay` (metrics display)
+- [x] `NotificationBanner` (dismissible alerts with close button)
+- [x] `AuthorCard` (profile card)
 - [ ] `TableOfContents` (document navigation)
 
 ### Organisms
