@@ -195,11 +195,10 @@ _All stories below are written to utilise this exact stack._
 - [x] `AuthForm` (email/password + magic link with visibility toggles)
 - [x] `ArticleList` (responsive grid with view toggles)
 - [x] `MarkdownRenderer` (code blocks, headings with copy functionality)
+- [x] `PageHeader` (dramatic title + description)
+- [x] `HeroSection` (current building focus)
 
 ## 🏗️ **Additional Organisms Needed**
-
-- [ ] `PageHeader` (dramatic title + description)
-- [ ] `HeroSection` (current building focus)
 - [ ] `PostCard` (complete journey post card)
 - [ ] `CommunityVoices` (grid of community quotes)
 - [ ] `ProjectShowcase` (project card with tech stack)
