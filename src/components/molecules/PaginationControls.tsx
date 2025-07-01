@@ -1,6 +1,6 @@
 import React from "react";
 import { cn } from "@/lib/utils";
-import { Button, IconButton } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { MonoText } from "@/components/ui/Typography";
 import { LucideIcon } from "@/components/ui/Icon";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -66,14 +66,16 @@ export function PaginationControls({
         className={cn("flex items-center justify-between gap-4", className)}
         {...props}
       >
-        <IconButton
-          icon={<LucideIcon icon={ChevronLeft} size="sm" />}
+        <Button
           onClick={() => handlePageClick(currentPage - 1)}
           disabled={currentPage <= 1}
           variant="outline"
           size={buttonSize}
           aria-label="Previous page"
-        />
+          className="w-10"
+        >
+          <LucideIcon icon={ChevronLeft} size="sm" />
+        </Button>
 
         <div className="flex items-center gap-2">
           <MonoText variant="muted" className="text-sm">
@@ -81,14 +83,16 @@ export function PaginationControls({
           </MonoText>
         </div>
 
-        <IconButton
-          icon={<LucideIcon icon={ChevronRight} size="sm" />}
+        <Button
           onClick={() => handlePageClick(currentPage + 1)}
           disabled={currentPage >= totalPages}
           variant="outline"
           size={buttonSize}
           aria-label="Next page"
-        />
+          className="w-10"
+        >
+          <LucideIcon icon={ChevronRight} size="sm" />
+        </Button>
       </div>
     );
   }
@@ -100,14 +104,16 @@ export function PaginationControls({
     >
       <div className="flex items-center gap-1">
         {/* Previous button */}
-        <IconButton
-          icon={<LucideIcon icon={ChevronLeft} size="sm" />}
+        <Button
           onClick={() => handlePageClick(currentPage - 1)}
           disabled={currentPage <= 1}
           variant="outline"
           size={buttonSize}
           aria-label="Previous page"
-        />
+          className="w-10"
+        >
+          <LucideIcon icon={ChevronLeft} size="sm" />
+        </Button>
 
         {/* First page */}
         {showFirstLast && showLeftEllipsis && (
@@ -157,14 +163,16 @@ export function PaginationControls({
         )}
 
         {/* Next button */}
-        <IconButton
-          icon={<LucideIcon icon={ChevronRight} size="sm" />}
+        <Button
           onClick={() => handlePageClick(currentPage + 1)}
           disabled={currentPage >= totalPages}
           variant="outline"
           size={buttonSize}
           aria-label="Next page"
-        />
+          className="w-10"
+        >
+          <LucideIcon icon={ChevronRight} size="sm" />
+        </Button>
       </div>
 
       {/* Page info */}
