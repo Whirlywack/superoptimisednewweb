@@ -1,18 +1,36 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 import { FeatureVoting, VotingOption, FeatureVote } from './FeatureVoting';
+import { 
+  Rocket, 
+  Shield, 
+  Zap, 
+  BarChart3, 
+  Cloud, 
+  Smartphone, 
+  Lock, 
+  Link, 
+  Bot, 
+  Users,
+  Bug,
+  Wrench,
+  BookOpen,
+  Palette,
+  WifiOff,
+  Search
+} from 'lucide-react';
 
-// Mock icons for stories
-const RocketIcon = () => <span>🚀</span>;
-const ShieldIcon = () => <span>🛡️</span>;
-const SpeedIcon = () => <span>⚡</span>;
-const ChartIcon = () => <span>📊</span>;
-const CloudIcon = () => <span>☁️</span>;
-const MobileIcon = () => <span>📱</span>;
-const SecurityIcon = () => <span>🔒</span>;
-const IntegrationIcon = () => <span>🔗</span>;
-const AIIcon = () => <span>🤖</span>;
-const TeamIcon = () => <span>👥</span>;
+// Icon components using Lucide React
+const RocketIcon = () => <Rocket className="w-4 h-4" />;
+const ShieldIcon = () => <Shield className="w-4 h-4" />;
+const SpeedIcon = () => <Zap className="w-4 h-4" />;
+const ChartIcon = () => <BarChart3 className="w-4 h-4" />;
+const CloudIcon = () => <Cloud className="w-4 h-4" />;
+const MobileIcon = () => <Smartphone className="w-4 h-4" />;
+const SecurityIcon = () => <Lock className="w-4 h-4" />;
+const IntegrationIcon = () => <Link className="w-4 h-4" />;
+const AIIcon = () => <Bot className="w-4 h-4" />;
+const TeamIcon = () => <Users className="w-4 h-4" />;
 
 const mockFeatureOptions: VotingOption[] = [
   {
@@ -59,7 +77,7 @@ const mockPriorityOptions: VotingOption[] = [
     label: 'Fix Critical Bugs',
     description: 'Address system-breaking issues',
     minPoints: 5, // Must allocate at least 5 points
-    icon: <span>🐛</span>,
+    icon: <Bug className="w-4 h-4" />,
   },
   {
     id: 'new-features',
@@ -72,14 +90,14 @@ const mockPriorityOptions: VotingOption[] = [
     id: 'tech-debt',
     label: 'Technical Debt',
     description: 'Refactor and improve code quality',
-    icon: <span>🔧</span>,
+    icon: <Wrench className="w-4 h-4" />,
   },
   {
     id: 'documentation',
     label: 'Documentation',
     description: 'Improve developer and user docs',
     maxPoints: 20,
-    icon: <span>📚</span>,
+    icon: <BookOpen className="w-4 h-4" />,
   },
 ];
 
@@ -272,7 +290,7 @@ export const TeamBudgeting: Story = {
         id: 'ui-redesign',
         label: 'UI/UX Redesign',
         description: 'Modern, accessible interface update',
-        icon: <span>🎨</span>,
+        icon: <Palette className="w-4 h-4" />,
       },
       {
         id: 'cloud-migration',
@@ -378,7 +396,7 @@ export const ManyOptions: Story = {
         id: 'offline-mode',
         label: 'Offline Mode',
         description: 'Work without internet connection',
-        icon: <span>📴</span>,
+        icon: <WifiOff className="w-4 h-4" />,
       },
       {
         id: 'api-webhooks',
@@ -390,13 +408,13 @@ export const ManyOptions: Story = {
         id: 'custom-branding',
         label: 'Custom Branding',
         description: 'White-label options',
-        icon: <span>🎨</span>,
+        icon: <Palette className="w-4 h-4" />,
       },
       {
         id: 'advanced-search',
         label: 'Advanced Search',
         description: 'Powerful search and filtering',
-        icon: <span>🔍</span>,
+        icon: <Search className="w-4 h-4" />,
       },
     ],
     totalPoints: 200,
