@@ -191,10 +191,10 @@ _All stories below are written to utilise this exact stack._
 ### Organisms
 
 - [x] `Navigation` (desktop/mobile with hamburger menu)
-- [ ] `Footer` (socials with platform icons)
-- [ ] `AuthForm` (email/password + magic link with visibility toggles)
-- [ ] `ArticleList` (responsive grid with view toggles)
-- [ ] `MarkdownRenderer` (code blocks, headings with copy functionality)
+- [x] `Footer` (socials with platform icons)
+- [x] `AuthForm` (email/password + magic link with visibility toggles)
+- [x] `ArticleList` (responsive grid with view toggles)
+- [x] `MarkdownRenderer` (code blocks, headings with copy functionality)
 
 ## 🏗️ **Additional Organisms Needed**
 
