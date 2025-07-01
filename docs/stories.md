@@ -154,21 +154,21 @@ _All stories below are written to utilise this exact stack._
 - [x] `DifficultyRating` (technical complexity assessment)
 - [x] `TechDebtTolerance` (trade-off acceptance scale)
 
-## 🏗️ **Questionnaire Organisms** ✅ MOSTLY COMPLETE
+## 🏗️ **Questionnaire Organisms** ✅ COMPLETE
 
 - [x] `QuestionCard` (single question container with progress)
 - [x] `QuestionFlow` (handles question sequence and validation)
 - [x] `ProgressHeader` (shows completion status)
-- [ ] `ConditionalLogic` (shows/hides questions based on answers)
+- [x] `ConditionalLogic` (shows/hides questions based on answers)
 - [x] `ResponseSummary` (review answers before submission)
-- [ ] `ThankYouScreen` (completion with next steps)
+- [x] `ThankYouScreen` (completion with next steps)
 
-## 📱 **Mobile-First Components**
+## 📱 **Mobile-First Components** ✅ COMPLETE
 
-- [ ] `LargeButtonChoice` (44px+ touch targets)
-- [ ] `SwipeRating` (swipe-based rating input)
-- [ ] `TapToRank` (mobile-friendly ranking)
-- [ ] `OneHandedInput` (thumb-reachable controls)
+- [x] `LargeButtonChoice` (44px+ touch targets)
+- [x] `SwipeRating` (swipe-based rating input)
+- [x] `TapToRank` (mobile-friendly ranking)
+- [x] `OneHandedInput` (thumb-reachable controls)
 
 ## 🧩 **Additional Molecules Needed**
 
