@@ -148,19 +148,19 @@ _All stories below are written to utilise this exact stack._
 
 - [x] `PriorityMatrix` (effort vs impact 2x2 grid)
 - [x] `FeatureVoting` (allocate limited points across options)
-- [ ] `CodeApproachComparison` (side-by-side code snippets)
-- [ ] `ArchitectureChoice` (visual diagram selection)
-- [ ] `TimestampEstimate` (development time estimation)
-- [ ] `DifficultyRating` (technical complexity assessment)
-- [ ] `TechDebtTolerance` (trade-off acceptance scale)
+- [x] `CodeApproachComparison` (side-by-side code snippets)
+- [x] `ArchitectureChoice` (visual diagram selection)
+- [x] `TimestampEstimate` (development time estimation)
+- [x] `DifficultyRating` (technical complexity assessment)
+- [x] `TechDebtTolerance` (trade-off acceptance scale)
 
-## 🏗️ **Questionnaire Organisms**
+## 🏗️ **Questionnaire Organisms** ✅ MOSTLY COMPLETE
 
-- [ ] `QuestionCard` (single question container with progress)
-- [ ] `QuestionFlow` (handles question sequence and validation)
-- [ ] `ProgressHeader` (shows completion status)
+- [x] `QuestionCard` (single question container with progress)
+- [x] `QuestionFlow` (handles question sequence and validation)
+- [x] `ProgressHeader` (shows completion status)
 - [ ] `ConditionalLogic` (shows/hides questions based on answers)
-- [ ] `ResponseSummary` (review answers before submission)
+- [x] `ResponseSummary` (review answers before submission)
 - [ ] `ThankYouScreen` (completion with next steps)
 
 ## 📱 **Mobile-First Components**
