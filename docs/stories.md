@@ -225,10 +225,10 @@ _All stories below are written to utilise this exact stack._
 - [x] `IndividualPost` (article with community responses)
 - [x] `AboutMission` (story + philosophy + contact)
 - [x] `MagicLinkForm` (questionnaire flow)
-- [ ] `ErrorPage` (404, expired link)
-- [ ] `SearchResults` (filtered content)
-- [ ] `UserDashboard` (profile + activity)
-- [ ] `ContactForm` (inquiry form)
+- [x] `ErrorPage` (404, expired link)
+- [x] `SearchResults` (filtered content)
+- [x] `UserDashboard` (profile + activity)
+- [x] `ContactForm` (inquiry form)
 
 ## 📱 **Mobile-First Considerations**
 
