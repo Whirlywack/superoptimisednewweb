@@ -144,7 +144,8 @@ export function Checkbox({
         className={cn(
           // Base styles
           "rounded border-2 border-light-gray dark:border-warm-gray/30",
-          "text-primary bg-off-white dark:bg-off-black",
+          "bg-off-white dark:bg-off-black",
+          "checked:bg-primary checked:border-primary",
           "focus:ring-2 focus:ring-primary/20 focus:ring-offset-0",
           "transition-all duration-200",
           // Accessibility
@@ -219,7 +220,8 @@ export function Radio({
         className={cn(
           // Base styles
           "border-2 border-light-gray dark:border-warm-gray/30",
-          "text-primary bg-off-white dark:bg-off-black",
+          "bg-off-white dark:bg-off-black",
+          "checked:bg-primary checked:border-primary",
           "focus:ring-2 focus:ring-primary/20 focus:ring-offset-0",
           "transition-all duration-200",
           // Accessibility
