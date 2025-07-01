@@ -87,7 +87,7 @@ const sampleArticles = [
     date: "2024-01-15",
     readingTime: "8 min read",
     featured: true,
-    status: "published",
+    status: "published" as const,
   },
   {
     id: "2",
@@ -98,7 +98,7 @@ const sampleArticles = [
     tags: ["TypeScript", "Patterns", "Best Practices"],
     date: "2024-01-10",
     readingTime: "12 min read",
-    status: "published",
+    status: "published" as const,
   },
   {
     id: "3",
@@ -109,7 +109,7 @@ const sampleArticles = [
     tags: ["React", "Performance", "Optimization"],
     date: "2024-01-05",
     readingTime: "15 min read",
-    status: "published",
+    status: "published" as const,
   },
   {
     id: "4",
@@ -120,7 +120,7 @@ const sampleArticles = [
     tags: ["CSS", "Layout", "Grid", "Flexbox"],
     date: "2024-01-01",
     readingTime: "6 min read",
-    status: "published",
+    status: "published" as const,
   },
   {
     id: "5",
@@ -131,7 +131,7 @@ const sampleArticles = [
     tags: ["Accessibility", "Web Components", "ARIA"],
     date: "2023-12-28",
     readingTime: "10 min read",
-    status: "published",
+    status: "published" as const,
   },
   {
     id: "6",
@@ -142,7 +142,7 @@ const sampleArticles = [
     tags: ["React", "State Management", "Zustand"],
     date: "2023-12-20",
     readingTime: "7 min read",
-    status: "published",
+    status: "published" as const,
   },
   {
     id: "7",
@@ -153,7 +153,7 @@ const sampleArticles = [
     tags: ["CSS", "Modern CSS", "Features"],
     date: "2023-12-15",
     readingTime: "9 min read",
-    status: "updated",
+    status: "updated" as const,
   },
   {
     id: "8",
@@ -164,7 +164,7 @@ const sampleArticles = [
     tags: ["Testing", "Jest", "React Testing Library"],
     date: "2023-12-10",
     readingTime: "11 min read",
-    status: "draft",
+    status: "draft" as const,
   },
 ];
 
@@ -345,7 +345,7 @@ export const DocumentationIndex: Story = {
         tags: ["Basics", "Setup"],
         date: "2024-01-15",
         readingTime: "5 min read",
-        status: "published",
+        status: "published" as const,
       },
       {
         id: "2", 
@@ -355,7 +355,7 @@ export const DocumentationIndex: Story = {
         tags: ["API", "Reference"],
         date: "2024-01-10",
         readingTime: "15 min read",
-        status: "published",
+        status: "published" as const,
       },
       {
         id: "3",
@@ -365,7 +365,7 @@ export const DocumentationIndex: Story = {
         tags: ["Advanced", "Configuration"],
         date: "2024-01-05",
         readingTime: "8 min read",
-        status: "updated",
+        status: "updated" as const,
       },
     ],
     variant: "list",
