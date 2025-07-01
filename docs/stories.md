@@ -186,11 +186,11 @@ _All stories below are written to utilise this exact stack._
 - [x] `StatsDisplay` (metrics display)
 - [x] `NotificationBanner` (dismissible alerts with close button)
 - [x] `AuthorCard` (profile card)
-- [ ] `TableOfContents` (document navigation)
+- [x] `TableOfContents` (document navigation)
 
 ### Organisms
 
-- [ ] `Navigation` (desktop/mobile with hamburger menu)
+- [x] `Navigation` (desktop/mobile with hamburger menu)
 - [ ] `Footer` (socials with platform icons)
 - [ ] `AuthForm` (email/password + magic link with visibility toggles)
 - [ ] `ArticleList` (responsive grid with view toggles)
