@@ -1,17 +1,26 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 import { TechStackSelector, TechStackOption } from './TechStackSelector';
+import { 
+  Atom, 
+  Code, 
+  Server, 
+  Database, 
+  Cloud, 
+  Settings,
+  Coffee
+} from 'lucide-react';
 
-// Mock icons for stories (in real app, use actual icons)
-const ReactIcon = () => <span>⚛️</span>;
-const VueIcon = () => <span>💚</span>;
-const AngularIcon = () => <span>🅰️</span>;
-const NodeIcon = () => <span>🟢</span>;
-const PythonIcon = () => <span>🐍</span>;
-const JavaIcon = () => <span>☕</span>;
-const DatabaseIcon = () => <span>🗄️</span>;
-const CloudIcon = () => <span>☁️</span>;
-const DevOpsIcon = () => <span>🔧</span>;
+// Icon components using Lucide React
+const ReactIcon = () => <Atom className="w-4 h-4" />;
+const VueIcon = () => <Code className="w-4 h-4" />;
+const AngularIcon = () => <Code className="w-4 h-4" />;
+const NodeIcon = () => <Server className="w-4 h-4" />;
+const PythonIcon = () => <Code className="w-4 h-4" />;
+const JavaIcon = () => <Coffee className="w-4 h-4" />;
+const DatabaseIcon = () => <Database className="w-4 h-4" />;
+const CloudIcon = () => <Cloud className="w-4 h-4" />;
+const DevOpsIcon = () => <Settings className="w-4 h-4" />;
 
 const mockTechOptions: TechStackOption[] = [
   // Frontend

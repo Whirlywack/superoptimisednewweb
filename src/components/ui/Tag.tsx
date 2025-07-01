@@ -16,8 +16,8 @@ const tagVariants = {
     "border-primary/20",
   ],
   secondary: [
-    "bg-muted text-muted-foreground",
-    "border-border",
+    "bg-light-gray text-warm-gray",
+    "border-light-gray",
   ],
   success: [
     "bg-light-gray text-primary",
@@ -90,9 +90,9 @@ interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 }
 
 const badgeVariants = {
-  default: "bg-primary text-primary-foreground",
-  secondary: "bg-secondary text-secondary-foreground",
-  outline: "border border-input bg-background text-foreground",
+  default: "bg-primary text-off-white",
+  secondary: "bg-light-gray text-warm-gray",
+  outline: "border border-light-gray bg-off-white dark:bg-off-black text-off-black dark:text-off-white",
   success: "bg-primary text-off-white",
   warning: "bg-warm-gray text-off-white",
   danger: "bg-warm-gray text-off-white",
