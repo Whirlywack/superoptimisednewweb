@@ -199,27 +199,27 @@ _All stories below are written to utilise this exact stack._
 - [x] `HeroSection` (current building focus)
 
 ## 🏗️ **Additional Organisms Needed**
-- [ ] `PostCard` (complete journey post card)
-- [ ] `CommunityVoices` (grid of community quotes)
-- [ ] `ProjectShowcase` (project card with tech stack)
-- [ ] `CurrentFocus` (building progress section)
-- [ ] `JourneyTimeline` (chronological post listing)
-- [ ] `MissionStatement` (philosophy content block)
-- [ ] `StatsBar` (post count, last updated, projects)
-- [ ] `FeatureGrid` (feature highlights)
-- [ ] `TestimonialCarousel` (rotating testimonials with navigation)
-- [ ] `ContactSection` (contact form)
-- [ ] `FAQAccordion` (expandable Q&A with expand/collapse)
-- [ ] `ResourceLibrary` (searchable resources with download functionality)
+- [x] `PostCard` (complete journey post card)
+- [x] `CommunityVoices` (grid of community quotes)
+- [x] `ProjectShowcase` (project card with tech stack)
+- [x] `CurrentFocus` (building progress section)
+- [x] `JourneyTimeline` (chronological post listing)
+- [x] `MissionStatement` (philosophy content block)
+- [x] `StatsBar` (post count, last updated, projects)
+- [x] `FeatureGrid` (feature highlights)
+- [x] `TestimonialCarousel` (rotating testimonials with navigation)
+- [x] `ContactSection` (contact form)
+- [x] `FAQAccordion` (expandable Q&A with expand/collapse)
+- [x] `ResourceLibrary` (searchable resources with download functionality)
 
 ### Templates
 
-- [ ] `DocSiteLayout` (sidebar nav + content)
-- [ ] `MarketingLayout` (hero + feature sections)
+- [x] `DocSiteLayout` (sidebar nav + content)
+- [x] `MarketingLayout` (hero + feature sections)
 
 ## 📄 **Additional Templates Needed**
 
-- [ ] `Homepage` (hero + community + mission + latest)
+- [x] `Homepage` (hero + community + mission + latest)
 - [ ] `JourneyTimeline` (header + timeline + pagination)
 - [ ] `ProjectPortfolio` (project grid + filters)
 - [ ] `IndividualPost` (article with community responses)
