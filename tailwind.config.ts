@@ -38,6 +38,7 @@ export default {
           900: "#0f172a",
           foreground: "#fafafa",
         },
+        accent: "#64748b",
       },
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],
