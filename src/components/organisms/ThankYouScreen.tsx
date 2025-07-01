@@ -122,15 +122,15 @@ export function ThankYouScreen({
     switch (variant) {
       case 'celebration':
         return {
-          container: 'bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-blue-900/20 dark:via-purple-900/20 dark:to-pink-900/20',
-          icon: 'text-purple-600',
-          accent: 'border-purple-200 dark:border-purple-800',
+          container: 'bg-gradient-to-br from-light-gray to-off-white dark:from-gray-800 dark:to-gray-900',
+          icon: 'text-primary',
+          accent: 'border-primary/20',
         };
       case 'community':
         return {
-          container: 'bg-gradient-to-br from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20',
-          icon: 'text-green-600',
-          accent: 'border-green-200 dark:border-green-800',
+          container: 'bg-gradient-to-br from-light-gray to-off-white dark:from-gray-800 dark:to-gray-900',
+          icon: 'text-primary',
+          accent: 'border-primary/20',
         };
       case 'minimalist':
         return {
@@ -244,7 +244,7 @@ export function ThankYouScreen({
                 )}
                 
                 <div className="text-center">
-                  <div className="text-2xl font-semibold text-green-600">
+                  <div className="text-2xl font-semibold text-primary">
                     <Icon size={24} className="mx-auto">
                       <CheckCircle />
                     </Icon>
@@ -253,7 +253,7 @@ export function ThankYouScreen({
                 </div>
                 
                 <div className="text-center">
-                  <div className="text-2xl font-semibold text-blue-600">
+                  <div className="text-2xl font-semibold text-primary">
                     <Icon size={24} className="mx-auto">
                       <Gift />
                     </Icon>
@@ -280,8 +280,8 @@ export function ThankYouScreen({
                     <CardContent className="p-6 space-y-4">
                       <div className="flex items-start gap-4">
                         {step.icon && (
-                          <div className={cn("flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center", step.completed && "bg-green-100 dark:bg-green-900/20")}>
-                            <Icon size={20} className={step.completed ? "text-green-600" : "text-primary"}>
+                          <div className={cn("flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center", step.completed && "bg-primary/20 dark:bg-primary/20")}>
+                            <Icon size={20} className={step.completed ? "text-primary" : "text-primary"}>
                               {step.completed ? <CheckCircle /> : step.icon}
                             </Icon>
                           </div>

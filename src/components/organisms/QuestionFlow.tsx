@@ -446,7 +446,7 @@ export function QuestionFlow({
             Thank you for completing all {state.visibleQuestions.length} questions.
           </div>
           {state.flaggedQuestions.size > 0 && (
-            <div className="text-sm text-yellow-600">
+            <div className="text-sm text-warm-gray">
               {state.flaggedQuestions.size} question{state.flaggedQuestions.size !== 1 ? 's' : ''} flagged for review
             </div>
           )}

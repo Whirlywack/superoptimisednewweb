@@ -272,7 +272,7 @@ export const FixedBottom: Story = {
   render: () => (
     <div className="h-96 relative overflow-hidden">
       <div className="p-4 space-y-4">
-        <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+        <div className="p-4 bg-light-gray dark:bg-gray-800 rounded-lg">
           <p>This simulates page content. The input is fixed at the bottom.</p>
         </div>
         {[...Array(5)].map((_, i) => (
@@ -496,10 +496,10 @@ export const VoiceInputDemo: Story = {
     return (
       <div className="space-y-4">
         {isListening && (
-          <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg text-center">
+          <div className="p-4 bg-light-gray dark:bg-gray-800 border border-light-gray dark:border-gray-700 rounded-lg text-center">
             <div className="flex items-center justify-center gap-2">
-              <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-              <span className="text-sm text-blue-800 dark:text-blue-300">Listening...</span>
+              <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+              <span className="text-sm text-primary dark:text-primary">Listening...</span>
             </div>
           </div>
         )}

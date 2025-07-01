@@ -317,7 +317,7 @@ export function TapToRank({
                         {item.label}
                       </span>
                       {item.badge && (
-                        <span className="px-2 py-1 text-xs bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 rounded-full">
+                        <span className="px-2 py-1 text-xs bg-primary/10 text-primary dark:bg-primary/10 dark:text-primary rounded-full">
                           {item.badge}
                         </span>
                       )}
@@ -368,7 +368,7 @@ export function TapToRank({
                       handleItemTap(item.id);
                     }}
                     disabled={disabled}
-                    className="flex-shrink-0 p-1 text-red-500 hover:text-red-700 transition-colors"
+                    className="flex-shrink-0 p-1 text-warm-gray hover:text-primary transition-colors"
                   >
                     <Icon size={16}>
                       <X />
@@ -438,8 +438,8 @@ export function TapToRank({
       
       {/* Validation Message */}
       {!hasEnoughItems && minRanked > 0 && (
-        <div className="text-center p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-          <p className="text-sm text-yellow-800 dark:text-yellow-300">
+        <div className="text-center p-3 bg-light-gray dark:bg-gray-800 border border-light-gray dark:border-gray-700 rounded-lg">
+          <p className="text-sm text-warm-gray dark:text-warm-gray">
             Please {mode === 'tap-to-select' ? 'select' : 'rank'} at least {minRanked} item{minRanked !== 1 ? 's' : ''}.
           </p>
         </div>

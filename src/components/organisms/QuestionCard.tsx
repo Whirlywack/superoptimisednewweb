@@ -156,7 +156,7 @@ export function QuestionCard({
               className={cn(
                 "p-2 rounded-lg transition-colors",
                 "hover:bg-light-gray focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
-                isFlagged ? "text-yellow-600 bg-yellow-50" : "text-warm-gray",
+                isFlagged ? "text-primary bg-primary/10" : "text-warm-gray",
                 disabled && "opacity-50 cursor-not-allowed"
               )}
               aria-label={isFlagged ? "Remove flag" : "Flag for review"}
@@ -188,7 +188,7 @@ export function QuestionCard({
               {question.question}
             </h2>
             {question.required && (
-              <span className="flex-shrink-0 text-red-500 text-lg" aria-label="Required">
+              <span className="flex-shrink-0 text-warm-gray text-lg" aria-label="Required">
                 *
               </span>
             )}

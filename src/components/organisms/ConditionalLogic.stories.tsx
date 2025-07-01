@@ -131,7 +131,7 @@ function SampleForm({
             </ConditionalField>
             
             <ConditionalSection sectionId="advanced-questions" results={results}>
-              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg space-y-4">
+              <div className="p-4 bg-light-gray dark:bg-gray-800 rounded-lg space-y-4">
                 <h3 className="font-semibold text-off-black dark:text-off-white">
                   Advanced Questions
                 </h3>
@@ -369,7 +369,7 @@ export const QuestionnaireExample: Story = {
           conditions.greaterThan('experience', 5)
         ),
         action: 'require',
-        className: 'border-red-300 dark:border-red-700',
+        className: 'border-primary/50 dark:border-primary/50',
       },
     ];
     
@@ -443,7 +443,7 @@ export const QuestionnaireExample: Story = {
               </ConditionalField>
               
               <ConditionalField fieldId="advanced-react" results={results}>
-                <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                <div className="p-4 bg-light-gray dark:bg-gray-800 rounded-lg">
                   <Label>Advanced React Topics (select all you're familiar with)</Label>
                   <div className="mt-2 space-y-2">
                     {['Hooks', 'Context API', 'Server Components', 'Suspense', 'Concurrent Features'].map(topic => (
@@ -484,7 +484,7 @@ export const QuestionnaireExample: Story = {
                   <Label htmlFor="portfolio" className="flex items-center gap-2">
                     Portfolio URL
                     {results.requirements['require-portfolio'] && (
-                      <span className="text-red-600 text-sm">*Required</span>
+                      <span className="text-warm-gray text-sm">*Required</span>
                     )}
                   </Label>
                   <Input

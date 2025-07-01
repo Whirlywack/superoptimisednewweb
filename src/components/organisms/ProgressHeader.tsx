@@ -111,10 +111,10 @@ export function ProgressHeader({
 
   const getQuestionIcon = (question: QuestionProgress) => {
     if (question.hasError) {
-      return <X className="w-4 h-4 text-red-500" />;
+      return <X className="w-4 h-4 text-warm-gray" />;
     }
     if (question.isCompleted) {
-      return <CheckCircle className="w-4 h-4 text-green-500" />;
+      return <CheckCircle className="w-4 h-4 text-primary" />;
     }
     if (question.isCurrent) {
       return <Circle className="w-4 h-4 text-primary fill-current" />;
@@ -193,10 +193,10 @@ export function ProgressHeader({
                     <div className="flex items-center space-x-4 text-xs text-warm-gray">
                       <span>✓ {completedQuestions} completed</span>
                       {flaggedQuestions > 0 && (
-                        <span className="text-yellow-600">🚩 {flaggedQuestions} flagged</span>
+                        <span className="text-warm-gray">{flaggedQuestions} flagged</span>
                       )}
                       {questionsWithErrors > 0 && (
-                        <span className="text-red-600">⚠️ {questionsWithErrors} errors</span>
+                        <span className="text-warm-gray">{questionsWithErrors} errors</span>
                       )}
                     </div>
                   )}
@@ -226,7 +226,7 @@ export function ProgressHeader({
             {showSaveStatus && (
               <div className="flex items-center space-x-2">
                 {autoSaveEnabled ? (
-                  <div className="flex items-center space-x-1 text-xs text-green-600">
+                  <div className="flex items-center space-x-1 text-xs text-primary">
                     <Save className="w-3 h-3" />
                     <span className="hidden sm:inline">
                       {lastSaved ? formatTimeAgo(lastSaved) : 'Auto-save'}
@@ -265,7 +265,7 @@ export function ProgressHeader({
                   variant="ghost"
                   size="sm"
                   onClick={onExit}
-                  className="flex items-center space-x-1 text-warm-gray hover:text-red-600"
+                  className="flex items-center space-x-1 text-warm-gray hover:text-primary"
                 >
                   <X className="w-4 h-4" />
                   <span className="hidden sm:inline">Exit</span>
@@ -294,8 +294,8 @@ export function ProgressHeader({
                       "flex items-center space-x-3 p-3 rounded-lg text-left transition-colors",
                       "border border-light-gray dark:border-warm-gray/30",
                       question.isCurrent && "border-primary bg-primary/5",
-                      question.hasError && "border-red-300 bg-red-50 dark:bg-red-900/20",
-                      question.isCompleted && "border-green-300 bg-green-50 dark:bg-green-900/20",
+                      question.hasError && "border-light-gray bg-light-gray dark:bg-gray-700",
+                      question.isCompleted && "border-primary bg-primary/10 dark:bg-primary/10",
                       onQuestionClick && "hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
                       !onQuestionClick && "cursor-default"
                     )}
@@ -311,7 +311,7 @@ export function ProgressHeader({
                           Q{index + 1}
                         </span>
                         {question.isFlagged && (
-                          <Flag className="w-3 h-3 text-yellow-500" />
+                          <Flag className="w-3 h-3 text-warm-gray" />
                         )}
                         {question.isOptional && (
                           <span className="text-xs text-warm-gray">(optional)</span>

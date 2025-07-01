@@ -214,9 +214,9 @@ export function SwipeRating({
       return React.cloneElement(customIcons[index] as React.ReactElement, {
         size: iconSize,
         className: cn('transition-colors duration-200', {
-          'text-yellow-400': filled && iconType === 'star',
-          'text-red-500': filled && iconType === 'heart',
-          'text-blue-500': filled && iconType === 'thumbs',
+          'text-primary': filled && iconType === 'star',
+          'text-primary': filled && iconType === 'heart',
+          'text-primary': filled && iconType === 'thumbs',
           'text-warm-gray': !filled,
         }),
       });
@@ -225,9 +225,9 @@ export function SwipeRating({
     const iconProps = {
       size: iconSize,
       className: cn('transition-colors duration-200', {
-        'text-yellow-400': filled && iconType === 'star',
-        'text-red-500': filled && iconType === 'heart', 
-        'text-blue-500': filled && iconType === 'thumbs',
+        'text-primary': filled && iconType === 'star',
+        'text-primary': filled && iconType === 'heart', 
+        'text-primary': filled && iconType === 'thumbs',
         'text-warm-gray': !filled,
       }),
     };

@@ -191,21 +191,21 @@ export function ResponseSummary({
 
   const getResponseIcon = (response: ResponseData) => {
     if (response.hasError) {
-      return <AlertTriangle className="w-4 h-4 text-red-500" />;
+      return <AlertTriangle className="w-4 h-4 text-warm-gray" />;
     }
     if (response.isSkipped) {
       return <Clock className="w-4 h-4 text-warm-gray" />;
     }
     if (response.isCompleted) {
-      return <CheckCircle className="w-4 h-4 text-green-500" />;
+      return <CheckCircle className="w-4 h-4 text-primary" />;
     }
     return <div className="w-4 h-4 rounded-full border-2 border-warm-gray" />;
   };
 
   const getConfidenceColor = (confidence: number) => {
-    if (confidence >= 80) return 'text-green-600 bg-green-50';
-    if (confidence >= 60) return 'text-yellow-600 bg-yellow-50';
-    return 'text-red-600 bg-red-50';
+    if (confidence >= 80) return 'text-primary bg-primary/10';
+    if (confidence >= 60) return 'text-warm-gray bg-light-gray';
+    return 'text-warm-gray bg-light-gray';
   };
 
   // Group responses by category or status
@@ -261,28 +261,28 @@ export function ResponseSummary({
         
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div className="text-center space-y-1">
-            <div className="text-2xl font-bold text-green-600">
+            <div className="text-2xl font-bold text-primary">
               {stats.completedQuestions}
             </div>
             <div className="text-sm text-warm-gray">Completed</div>
           </div>
           
           <div className="text-center space-y-1">
-            <div className="text-2xl font-bold text-yellow-600">
+            <div className="text-2xl font-bold text-warm-gray">
               {stats.skippedQuestions}
             </div>
             <div className="text-sm text-warm-gray">Skipped</div>
           </div>
           
           <div className="text-center space-y-1">
-            <div className="text-2xl font-bold text-red-600">
+            <div className="text-2xl font-bold text-warm-gray">
               {stats.questionsWithErrors}
             </div>
             <div className="text-sm text-warm-gray">Errors</div>
           </div>
           
           <div className="text-center space-y-1">
-            <div className="text-2xl font-bold text-blue-600">
+            <div className="text-2xl font-bold text-primary">
               {stats.flaggedQuestions}
             </div>
             <div className="text-sm text-warm-gray">Flagged</div>
@@ -429,7 +429,7 @@ export function ResponseSummary({
                       key={response.questionId}
                       className={cn(
                         "p-4 border-b border-light-gray dark:border-warm-gray/30 last:border-b-0",
-                        response.hasError && "bg-red-50 dark:bg-red-900/20"
+                        response.hasError && "bg-light-gray dark:bg-gray-700"
                       )}
                     >
                       <div className="flex items-start justify-between space-x-4">
@@ -448,7 +448,7 @@ export function ResponseSummary({
                                   {response.questionText}
                                 </h4>
                                 {response.isRequired && (
-                                  <span className="text-red-500 text-sm">*</span>
+                                  <span className="text-warm-gray text-sm">*</span>
                                 )}
                               </div>
                               
@@ -457,7 +457,7 @@ export function ResponseSummary({
                                 <span className="font-medium">Answer: </span>
                                 <span className={cn(
                                   response.isSkipped && "italic",
-                                  response.hasError && "text-red-600"
+                                  response.hasError && "text-warm-gray"
                                 )}>
                                   {formatAnswer(response)}
                                 </span>
@@ -465,7 +465,7 @@ export function ResponseSummary({
 
                               {/* Error Message */}
                               {response.hasError && response.errorMessage && showErrors && (
-                                <div className="text-sm text-red-600 mb-2">
+                                <div className="text-sm text-warm-gray mb-2">
                                   <AlertTriangle className="w-3 h-3 inline mr-1" />
                                   {response.errorMessage}
                                 </div>
@@ -503,7 +503,7 @@ export function ResponseSummary({
                                 onClick={() => onFlag?.(response.questionId, !response.isFlagged)}
                                 className={cn(
                                   "p-1 rounded hover:bg-light-gray",
-                                  response.isFlagged ? "text-yellow-600" : "text-warm-gray"
+                                  response.isFlagged ? "text-primary" : "text-warm-gray"
                                 )}
                                 aria-label={response.isFlagged ? "Remove flag" : "Flag for review"}
                               >

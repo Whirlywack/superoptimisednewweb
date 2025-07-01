@@ -126,7 +126,7 @@ export const Default: Story = {
 export const Celebration: Story = {
   args: {
     ...Default.args,
-    title: '🎉 Congratulations!',
+    title: 'Congratulations!',
     subtitle: 'You\'ve completed the Developer Skills Assessment',
     variant: 'celebration',
     nextSteps: [

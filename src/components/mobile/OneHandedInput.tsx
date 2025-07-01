@@ -302,11 +302,11 @@ export function OneHandedInput({
   const getValidationStyles = () => {
     switch (validationState) {
       case 'success':
-        return 'border-green-500 focus:ring-green-500';
+        return 'border-primary focus:ring-primary';
       case 'warning':
-        return 'border-yellow-500 focus:ring-yellow-500';
+        return 'border-warm-gray focus:ring-warm-gray';
       case 'error':
-        return 'border-red-500 focus:ring-red-500';
+        return 'border-warm-gray focus:ring-warm-gray';
       default:
         return 'border-light-gray dark:border-gray-700 focus:ring-primary focus:border-primary';
     }
@@ -356,9 +356,9 @@ export function OneHandedInput({
           <div className={cn(
             "px-4 py-2 text-sm mb-3 rounded-lg",
             {
-              'bg-green-50 text-green-800 dark:bg-green-900/20 dark:text-green-400': validationState === 'success',
-              'bg-yellow-50 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400': validationState === 'warning',
-              'bg-red-50 text-red-800 dark:bg-red-900/20 dark:text-red-400': validationState === 'error',
+              'bg-primary/10 text-primary dark:bg-primary/10 dark:text-primary': validationState === 'success',
+              'bg-light-gray text-warm-gray dark:bg-gray-800 dark:text-warm-gray': validationState === 'warning',
+              'bg-light-gray text-warm-gray dark:bg-gray-800 dark:text-warm-gray': validationState === 'error',
             }
           )}>
             {validationMessage}
@@ -389,8 +389,8 @@ export function OneHandedInput({
                         'bg-primary text-white': action.active,
                         'text-warm-gray hover:text-primary hover:bg-primary/10': !action.active && !action.disabled,
                         'opacity-50 cursor-not-allowed': action.disabled || disabled,
-                        'bg-red-500 text-white': action.variant === 'danger' && action.active,
-                        'bg-green-500 text-white': action.variant === 'success' && action.active,
+                        'bg-warm-gray text-white': action.variant === 'danger' && action.active,
+                        'bg-primary text-white': action.variant === 'success' && action.active,
                       }
                     )}
                     title={action.label}
@@ -451,7 +451,7 @@ export function OneHandedInput({
                   onClick={handleClear}
                   disabled={disabled}
                   className={cn(
-                    "flex items-center justify-center rounded-full text-warm-gray hover:text-red-500 transition-colors",
+                    "flex items-center justify-center rounded-full text-warm-gray hover:text-primary transition-colors",
                     "w-8 h-8"
                   )}
                   title="Clear input"
@@ -499,8 +499,8 @@ export function OneHandedInput({
             
             {showCounter && (
               <span className={cn({
-                'text-red-500': maxLength && currentValue.length > maxLength * 0.9,
-                'text-yellow-500': maxLength && currentValue.length > maxLength * 0.75,
+                'text-warm-gray': maxLength && currentValue.length > maxLength * 0.9,
+                'text-warm-gray': maxLength && currentValue.length > maxLength * 0.75,
               })}>
                 {currentValue.length}{maxLength && ` / ${maxLength}`}
               </span>
