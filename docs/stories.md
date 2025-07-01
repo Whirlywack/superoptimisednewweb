@@ -220,11 +220,11 @@ _All stories below are written to utilise this exact stack._
 ## 📄 **Additional Templates Needed**
 
 - [x] `Homepage` (hero + community + mission + latest)
-- [ ] `JourneyTimeline` (header + timeline + pagination)
-- [ ] `ProjectPortfolio` (project grid + filters)
-- [ ] `IndividualPost` (article with community responses)
-- [ ] `AboutMission` (story + philosophy + contact)
-- [ ] `MagicLinkForm` (questionnaire flow)
+- [x] `JourneyTimeline` (header + timeline + pagination)
+- [x] `ProjectPortfolio` (project grid + filters)
+- [x] `IndividualPost` (article with community responses)
+- [x] `AboutMission` (story + philosophy + contact)
+- [x] `MagicLinkForm` (questionnaire flow)
 - [ ] `ErrorPage` (404, expired link)
 - [ ] `SearchResults` (filtered content)
 - [ ] `UserDashboard` (profile + activity)
