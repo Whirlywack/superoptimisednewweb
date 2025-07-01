@@ -143,9 +143,9 @@ export const CustomLabels: Story = {
     question: 'How do you feel about the new design?',
     description: 'Your feedback helps us improve the user experience.',
     labels: {
-      yes: 'Love it! 👍',
-      no: 'Not a fan 👎',
-      unsure: 'Need more time 🤔'
+      yes: 'Love it!',
+      no: 'Not a fan',
+      unsure: 'Need more time'
     },
     layout: 'horizontal',
     size: 'md',
@@ -327,8 +327,8 @@ const quickFeedbackArgs = {
   size: 'sm',
   showUnsure: false,
   labels: {
-    yes: '👍 Helpful',
-    no: '👎 Not helpful'
+    yes: 'Helpful',
+    no: 'Not helpful'
   },
   allowSkip: true,
   required: false,
