@@ -157,35 +157,16 @@ export function LikertScale({
         {options.map((option) => (
           <ChoiceButton
             key={option.value}
-            variant={value === option.value ? 'selected' : 'default'}
+            label={layout === 'horizontal' && option.shortLabel ? option.shortLabel : option.label}
+            description={`(${option.value})`}
+            selected={value === option.value}
+            variant="default"
             size={size}
             disabled={disabled}
             onClick={() => handleSelect(option.value)}
             className={getOptionClasses()}
             aria-pressed={value === option.value}
-          >
-            <div className="flex flex-col items-center gap-1">
-              {/* Show short label on small screens for horizontal layout */}
-              <span className={cn(
-                layout === 'horizontal' && 'sm:hidden',
-                'font-medium'
-              )}>
-                {layout === 'horizontal' ? (option.shortLabel || option.label) : option.label}
-              </span>
-              
-              {/* Show full label on larger screens for horizontal layout */}
-              {layout === 'horizontal' && (
-                <span className="hidden sm:block font-medium">
-                  {option.label}
-                </span>
-              )}
-              
-              {/* Scale number */}
-              <span className="text-xs text-warm-gray">
-                ({option.value})
-              </span>
-            </div>
-          </ChoiceButton>
+          />
         ))}
       </div>
 

@@ -85,31 +85,103 @@ _All stories below are written to utilise this exact stack._
 > 4. Add visual regression snapshot (Chromatic)
 > 5. Write JSDoc & prop types via `zod`
 
-### Atoms
+### Atoms ✅ COMPLETE
 
-- [ ] Typography: `H1`
-- [ ] Typography: `H2`
-- [ ] Typography: `H3`
-- [ ] Typography: `H4`
-- [ ] Typography: `Paragraph`
-- [ ] Typography: `InlineCode`
-- [ ] Button: `Primary`
-- [ ] Button: `Outline`
-- [ ] Icon `LucideIcon` wrapper
-- [ ] Input `TextField`
-- [ ] Input `Checkbox`
-- [ ] Input `Radio`
-- [ ] Tag / Badge component
-- [ ] Spinner Loader
+- [x] Typography: `H1`
+- [x] Typography: `H2`
+- [x] Typography: `H3`
+- [x] Typography: `H4`
+- [x] Typography: `Paragraph`
+- [x] Typography: `InlineCode`
+- [x] Button: `Primary`
+- [x] Button: `Outline`
+- [x] Icon `LucideIcon` wrapper
+- [x] Input `TextField`
+- [x] Input `Checkbox`
+- [x] Input `Radio`
+- [x] Tag / Badge component
+- [x] Spinner Loader
 
-### Molecules
+## 🔧 **Additional Atoms** ✅ COMPLETE
 
-- [ ] FormGroup (label + input + error)
-- [ ] Toast Notification (react-toastify wrapper)
-- [ ] Modal dialog
-- [ ] Dropdown menu
-- [ ] Avatar with fallback initials
-- [ ] Card (header, body, footer slots)
+- [x] Typography: `MonoText` (for dates, technical metadata)
+- [x] Typography: `Link` (with hover states, external link handling)
+- [x] Typography: `CodeBlock` (syntax highlighted code)
+- [x] Progress: `ProgressBar` (for building progress indicators)
+- [x] Layout: `Divider` (section separators)
+- [x] Status: `ProjectStatus` (in-progress, complete, concept badges)
+- [x] Interaction: `FocusRing` (consistent focus states)
+
+### Molecules ✅ COMPLETE
+
+- [x] FormGroup (label + input + error)
+- [x] Toast Notification (react-toastify wrapper)
+- [x] Modal dialog
+- [x] Dropdown menu
+- [x] Avatar with fallback initials
+- [x] Card (header, body, footer slots)
+
+## 🎯 **Questionnaire-Specific Atoms**
+
+- [x] `QuestionLabel` (clear, mobile-friendly question text)
+- [x] `OptionButton` (large touch targets for mobile)
+- [x] `RatingDot` (individual rating points)
+- [x] `RankHandle` (drag handle for reordering)
+- [x] `ValidationMessage` (error states for required questions)
+- [x] `ProgressDot` (questionnaire progress indicator)
+- [x] `SkipButton` (optional question handling)
+
+## 🧩 **Question Type Molecules**
+
+### Core Question Types:
+
+- [x] `ABTestQuestion` (compare two technical approaches)
+- [x] `MultipleChoice` (4 options max for mobile)
+- [x] `YesNoQuestion` (binary decisions with optional "unsure")
+- [x] `RatingScale` (1-10 with labeled endpoints)
+- [x] `RankingQuestion` (drag-to-reorder up to 6 items)
+- [x] `LikertScale` (strongly disagree → strongly agree)
+- [x] `TextFeedback` (open-ended with character limit)
+- [x] `TechStackSelector` (checkbox group for technologies)
+
+### Developer-Specific Question Types:
+
+- [x] `PriorityMatrix` (effort vs impact 2x2 grid)
+- [x] `FeatureVoting` (allocate limited points across options)
+- [ ] `CodeApproachComparison` (side-by-side code snippets)
+- [ ] `ArchitectureChoice` (visual diagram selection)
+- [ ] `TimestampEstimate` (development time estimation)
+- [ ] `DifficultyRating` (technical complexity assessment)
+- [ ] `TechDebtTolerance` (trade-off acceptance scale)
+
+## 🏗️ **Questionnaire Organisms**
+
+- [ ] `QuestionCard` (single question container with progress)
+- [ ] `QuestionFlow` (handles question sequence and validation)
+- [ ] `ProgressHeader` (shows completion status)
+- [ ] `ConditionalLogic` (shows/hides questions based on answers)
+- [ ] `ResponseSummary` (review answers before submission)
+- [ ] `ThankYouScreen` (completion with next steps)
+
+## 📱 **Mobile-First Components**
+
+- [ ] `LargeButtonChoice` (44px+ touch targets)
+- [ ] `SwipeRating` (swipe-based rating input)
+- [ ] `TapToRank` (mobile-friendly ranking)
+- [ ] `OneHandedInput` (thumb-reachable controls)
+
+## 🧩 **Additional Molecules Needed**
+
+- [ ] `PostMeta` (date + project + reading time grouped)
+- [ ] `EngagementMetrics` (emoji + count combinations)
+- [ ] `NewsletterSignup` (email input + subscribe button)
+- [ ] `FilterButtonGroup` (clean button-based filters)
+- [ ] `Breadcrumb` (navigation context)
+- [ ] `PaginationControls` (prev/next with page info)
+- [ ] `CommunityQuote` (blockquote with attribution)
+- [ ] `ProjectProgress` (progress bar + status + meta)
+- [ ] `PostPreview` (title + excerpt + tags)
+- [ ] `SearchInput` (input with search styling)
 
 ### Organisms
 
@@ -119,10 +191,53 @@ _All stories below are written to utilise this exact stack._
 - [ ] Article List (responsive grid)
 - [ ] Markdown Renderer (code blocks, headings)
 
+## 🏗️ **Additional Organisms Needed**
+
+- [ ] `PageHeader` (dramatic title + description)
+- [ ] `HeroSection` (current building focus)
+- [ ] `PostCard` (complete journey post card)
+- [ ] `CommunityVoices` (grid of community quotes)
+- [ ] `ProjectShowcase` (project card with tech stack)
+- [ ] `CurrentFocus` (building progress section)
+- [ ] `JourneyTimeline` (chronological post listing)
+- [ ] `MissionStatement` (philosophy content block)
+- [ ] `StatsBar` (post count, last updated, projects)
+
 ### Templates
 
 - [ ] DocSite layout (sidebar nav + content)
 - [ ] Marketing layout (hero + feature sections)
+
+## 📄 **Additional Templates Needed**
+
+- [ ] `Homepage` (hero + community + mission + latest)
+- [ ] `JourneyTimeline` (header + timeline + pagination)
+- [ ] `ProjectPortfolio` (project grid + filters)
+- [ ] `IndividualPost` (article with community responses)
+- [ ] `AboutMission` (story + philosophy + contact)
+- [ ] `MagicLinkForm` (questionnaire flow)
+- [ ] `ErrorPage` (404, expired link)
+
+## 📱 **Mobile-First Considerations**
+
+- [ ] `MobileNav` (hamburger menu, drawer)
+- [ ] `TouchTarget` (44px minimum touch areas)
+- [ ] `ResponsiveGrid` (content grids that stack properly)
+- [ ] `MobileFilter` (filter controls optimized for touch)
+
+## ♿ **Accessibility-Specific Components**
+
+- [ ] `SkipLink` (keyboard navigation)
+- [ ] `ScreenReaderText` (sr-only content)
+- [ ] `FocusTrap` (modal/dropdown focus management)
+- [ ] `AnnounceRegion` (dynamic content updates)
+
+## 🔧 **Developer Experience Components**
+
+- [ ] `DevIndicator` (show component boundaries in dev)
+- [ ] `PropsTable` (for Storybook documentation)
+- [ ] `ColorSwatch` (design system documentation)
+- [ ] `TypographyScale` (typography examples)
 
 ---
 

@@ -97,25 +97,17 @@ export function MultipleChoice({
         {limitedOptions.map((option) => (
           <ChoiceButton
             key={option.id}
-            variant={value === option.id ? 'selected' : 'default'}
+            label={option.label}
+            description={option.description}
+            selected={value === option.id}
+            variant="default"
             size={optionSize}
             disabled={disabled || option.disabled}
             onClick={() => handleSelect(option.id)}
             icon={option.icon}
             className="w-full text-left justify-start"
             aria-pressed={value === option.id}
-          >
-            <div className="flex-1">
-              <div className="font-medium text-off-black">
-                {option.label}
-              </div>
-              {option.description && (
-                <div className="text-sm text-warm-gray mt-1">
-                  {option.description}
-                </div>
-              )}
-            </div>
-          </ChoiceButton>
+          />
         ))}
       </div>
 

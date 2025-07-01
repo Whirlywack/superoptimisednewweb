@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import plugin from "tailwindcss/plugin";
 
 export default {
   darkMode: ["class"],
@@ -17,6 +18,59 @@ export default {
       },
     },
     extend: {
+      colors: {
+        // Superoptimised Design System Colors
+        "off-black": "#1a1a1a",
+        "off-white": "#fafafa",
+        "warm-gray": "#6b7280",
+        "light-gray": "#f3f4f6",
+        primary: {
+          DEFAULT: "#64748b",
+          50: "#f8fafc",
+          100: "#f1f5f9",
+          200: "#e2e8f0",
+          300: "#cbd5e1",
+          400: "#94a3b8",
+          500: "#64748b",
+          600: "#475569",
+          700: "#334155",
+          800: "#1e293b",
+          900: "#0f172a",
+          foreground: "#fafafa",
+        },
+      },
+      fontFamily: {
+        sans: ["Inter", "system-ui", "sans-serif"],
+        mono: ["JetBrains Mono", "monospace"],
+      },
+      fontSize: {
+        // Typography scale from design system
+        h1: ["2.25rem", { lineHeight: "1.2", fontWeight: "700" }],
+        h2: ["1.875rem", { lineHeight: "1.3", fontWeight: "600" }],
+        h3: ["1.5rem", { lineHeight: "1.4", fontWeight: "600" }],
+        h4: ["1.25rem", { lineHeight: "1.4", fontWeight: "500" }],
+        body: ["1rem", { lineHeight: "1.6", fontWeight: "400" }],
+        small: ["0.875rem", { lineHeight: "1.5", fontWeight: "400" }],
+        code: ["0.875rem", { lineHeight: "1.4", fontWeight: "400" }],
+      },
+      spacing: {
+        // Spacing scale from design system
+        section: "3rem",
+        component: "2rem",
+        paragraph: "1rem",
+        list: "0.5rem",
+      },
+      screens: {
+        // Responsive breakpoints from design system
+        mobile: "320px",
+        tablet: "768px",
+        desktop: "1024px",
+        wide: "1440px",
+      },
+      maxWidth: {
+        // Reading width constraint
+        reading: "65ch",
+      },
       animation: {
         "bounce-fast": "bounce 0.5s infinite",
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -303,5 +357,75 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    plugin(function({ addUtilities, theme }) {
+      const typographyUtilities = {
+        '.text-h1': {
+          fontSize: theme('fontSize.h1[0]'),
+          lineHeight: theme('fontSize.h1[1].lineHeight'),
+          fontWeight: theme('fontSize.h1[1].fontWeight'),
+          marginBottom: '2rem',
+        },
+        '.text-h2': {
+          fontSize: theme('fontSize.h2[0]'),
+          lineHeight: theme('fontSize.h2[1].lineHeight'),
+          fontWeight: theme('fontSize.h2[1].fontWeight'),
+          marginBottom: '1.5rem',
+        },
+        '.text-h3': {
+          fontSize: theme('fontSize.h3[0]'),
+          lineHeight: theme('fontSize.h3[1].lineHeight'),
+          fontWeight: theme('fontSize.h3[1].fontWeight'),
+          marginBottom: '1.25rem',
+        },
+        '.text-h4': {
+          fontSize: theme('fontSize.h4[0]'),
+          lineHeight: theme('fontSize.h4[1].lineHeight'),
+          fontWeight: theme('fontSize.h4[1].fontWeight'),
+          marginBottom: '1rem',
+        },
+        '.text-body': {
+          fontSize: theme('fontSize.body[0]'),
+          lineHeight: theme('fontSize.body[1].lineHeight'),
+          fontWeight: theme('fontSize.body[1].fontWeight'),
+          marginBottom: '1rem',
+        },
+        '.text-small': {
+          fontSize: theme('fontSize.small[0]'),
+          lineHeight: theme('fontSize.small[1].lineHeight'),
+          fontWeight: theme('fontSize.small[1].fontWeight'),
+          marginBottom: '0.75rem',
+        },
+        '.text-code': {
+          fontSize: theme('fontSize.code[0]'),
+          lineHeight: theme('fontSize.code[1].lineHeight'),
+          fontWeight: theme('fontSize.code[1].fontWeight'),
+          fontFamily: theme('fontFamily.mono'),
+          marginBottom: '1rem',
+        },
+      };
+
+      const spacingUtilities = {
+        '.section': {
+          marginTop: theme('spacing.section'),
+          marginBottom: theme('spacing.section'),
+        },
+        '.component': {
+          marginTop: theme('spacing.component'),
+          marginBottom: theme('spacing.component'),
+        },
+        '.paragraph': {
+          marginTop: theme('spacing.paragraph'),
+          marginBottom: theme('spacing.paragraph'),
+        },
+        '.list': {
+          marginTop: theme('spacing.list'),
+          marginBottom: theme('spacing.list'),
+        },
+      };
+
+      addUtilities({ ...typographyUtilities, ...spacingUtilities });
+    }),
+  ],
 } satisfies Config;

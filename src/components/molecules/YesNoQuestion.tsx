@@ -111,43 +111,43 @@ export function YesNoQuestion({
       <div className={getLayoutClasses()}>
         {/* Yes Option */}
         <ChoiceButton
-          variant={value === 'yes' ? 'selected' : 'default'}
+          label={yesLabel}
+          selected={value === 'yes'}
+          variant="default"
           size={size}
           disabled={disabled}
           onClick={() => handleSelect('yes')}
           icon={<Check className="w-5 h-5" />}
           className={getButtonClasses()}
           aria-pressed={value === 'yes'}
-        >
-          {yesLabel}
-        </ChoiceButton>
+        />
 
         {/* No Option */}
         <ChoiceButton
-          variant={value === 'no' ? 'selected' : 'default'}
+          label={noLabel}
+          selected={value === 'no'}
+          variant="default"
           size={size}
           disabled={disabled}
           onClick={() => handleSelect('no')}
           icon={<X className="w-5 h-5" />}
           className={getButtonClasses()}
           aria-pressed={value === 'no'}
-        >
-          {noLabel}
-        </ChoiceButton>
+        />
 
         {/* Unsure Option */}
         {showUnsure && (
           <ChoiceButton
-            variant={value === 'unsure' ? 'selected' : 'default'}
+            label={unsureLabel}
+            selected={value === 'unsure'}
+            variant="default"
             size={size}
             disabled={disabled}
             onClick={() => handleSelect('unsure')}
             icon={<HelpCircle className="w-5 h-5" />}
             className={getButtonClasses()}
             aria-pressed={value === 'unsure'}
-          >
-            {unsureLabel}
-          </ChoiceButton>
+          />
         )}
       </div>
 
