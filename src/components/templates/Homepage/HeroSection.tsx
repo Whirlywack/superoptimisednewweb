@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { cn } from '@/lib/utils';
 import { ProjectAnnouncement } from './HeroSection/ProjectAnnouncement';
 import { ProgressIndicator } from './HeroSection/ProgressIndicator';
 import { DualInteractivePolls } from './HeroSection/DualInteractivePolls';
@@ -13,7 +12,7 @@ export function HeroSection() {
       className="py-24"
       aria-labelledby="hero-heading"
     >
-      <div className="max-w-[1200px] mx-auto px-8">
+      <div className="mx-auto max-w-[1200px] px-8">
         <div className="grid grid-cols-12 gap-6">
           <div className="col-span-12">
             {/* Project Announcement */}

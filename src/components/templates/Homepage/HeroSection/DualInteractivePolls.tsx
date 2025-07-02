@@ -1,11 +1,10 @@
 'use client';
 
 import React, { useState, useContext, useEffect } from 'react';
-import { Twitter } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
 import { XPToastContext } from '../XPToastProvider';
-import { questionBank, Question } from '../questionBank';
+import type { Question } from '../questionBank';
+import { questionBank } from '../questionBank';
 
 interface PollState {
   id: string;
@@ -14,7 +13,6 @@ interface PollState {
   isAnimating: boolean;
 }
 
-const generateVoteCount = () => Math.floor(Math.random() * 15) + 3; // 3-18 votes
 
 export function DualInteractivePolls() {
   const { showXPToast } = useContext(XPToastContext);
@@ -112,7 +110,7 @@ Building in public with @superoptimised 🚀
 
   if (polls.length === 0) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <PollSkeleton />
         <PollSkeleton />
       </div>
@@ -120,7 +118,7 @@ Building in public with @superoptimised 🚀
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 my-12">
+    <div className="my-12 grid grid-cols-1 gap-8 md:grid-cols-2">
       {polls.map((poll) => (
         <PollWidget 
           key={poll.id}
@@ -146,17 +144,17 @@ function PollWidget({ poll, onVote, onShare }: PollWidgetProps) {
   return (
     <div 
       className={cn(
-        "bg-white border-2 border-light-gray rounded-lg p-8 transition-all duration-200",
-        poll.isAnimating && "opacity-0 transform translate-y-1"
+        "rounded-lg border-2 border-light-gray bg-white p-8 transition-all duration-200",
+        poll.isAnimating && "translate-y-1 opacity-0"
       )}
     >
       {/* Question */}
-      <div className="text-sm font-semibold text-off-black leading-snug mb-8">
+      <div className="mb-8 text-sm font-semibold leading-snug text-off-black">
         {poll.question.text}
       </div>
 
       {/* Options */}
-      <div className="flex gap-4 mb-8">
+      <div className="mb-8 flex gap-4">
         {poll.question.options.map((option, index) => {
           const isSelected = poll.selectedOption === option;
           
@@ -166,10 +164,10 @@ function PollWidget({ poll, onVote, onShare }: PollWidgetProps) {
               onClick={() => onVote(index)}
               disabled={hasVoted}
               className={cn(
-                "flex-1 p-4 text-sm font-medium text-center rounded transition-all duration-200",
-                "border-2 border-transparent cursor-pointer",
+                "flex-1 rounded p-4 text-center text-sm font-medium transition-all duration-200",
+                "cursor-pointer border-2 border-transparent",
                 isSelected 
-                  ? "bg-primary text-white border-primary" 
+                  ? "border-primary bg-primary text-white" 
                   : "bg-light-gray text-off-black hover:border-primary hover:bg-white"
               )}
             >
@@ -180,7 +178,7 @@ function PollWidget({ poll, onVote, onShare }: PollWidgetProps) {
       </div>
 
       {/* Meta */}
-      <div className="text-xs text-warm-gray text-center">
+      <div className="text-center text-xs text-warm-gray">
         <span className="font-mono">{totalVotes} votes so far</span>
         <span className="mx-2">•</span>
         <button 
@@ -196,17 +194,17 @@ function PollWidget({ poll, onVote, onShare }: PollWidgetProps) {
 
 function PollSkeleton() {
   return (
-    <div className="bg-white border-2 border-light-gray rounded-lg p-6">
+    <div className="rounded-lg border-2 border-light-gray bg-white p-6">
       <div className="animate-pulse space-y-4">
-        <div className="h-4 bg-light-gray rounded w-3/4"></div>
-        <div className="h-3 bg-light-gray rounded w-1/2"></div>
+        <div className="h-4 w-3/4 rounded bg-light-gray"></div>
+        <div className="h-3 w-1/2 rounded bg-light-gray"></div>
         <div className="space-y-3">
-          <div className="h-12 bg-light-gray rounded"></div>
-          <div className="h-12 bg-light-gray rounded"></div>
+          <div className="h-12 rounded bg-light-gray"></div>
+          <div className="h-12 rounded bg-light-gray"></div>
         </div>
         <div className="flex justify-between">
-          <div className="h-3 bg-light-gray rounded w-20"></div>
-          <div className="h-3 bg-light-gray rounded w-16"></div>
+          <div className="h-3 w-20 rounded bg-light-gray"></div>
+          <div className="h-3 w-16 rounded bg-light-gray"></div>
         </div>
       </div>
     </div>

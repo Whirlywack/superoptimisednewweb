@@ -35,15 +35,14 @@ const communityStats = [
 export function CommunityProof() {
   return (
     <section 
-      className="w-full px-4 py-xl"
+      className="w-full px-4 py-24"
       aria-labelledby="community-heading"
     >
-      <div className="max-w-6xl mx-auto">
+      <div className="mx-auto max-w-6xl">
         {/* Section Title - Centered, slightly bigger heading */}
         <h2 
           id="community-heading"
-          className="font-bold text-off-black text-center mb-2xl"
-          style={{ fontSize: '2rem' }}
+          className="mb-2xl text-center text-xl font-bold text-off-black"
         >
           Community Input Shapes Every Decision
         </h2>
@@ -52,12 +51,12 @@ export function CommunityProof() {
         <div className="mb-2xl">
           <div className="w-full">
             <div className={cn(
-              "bg-white border-2 border-light-gray rounded-lg p-lg"
+              "rounded-lg border-2 border-light-gray bg-white p-lg"
             )}>
               {/* Tweet Header */}
-              <div className="flex items-start gap-3 mb-4">
-                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Twitter className="h-6 w-6 text-primary" />
+              <div className="mb-4 flex items-start gap-3">
+                <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-primary/10">
+                  <Twitter className="size-6 text-primary" />
                 </div>
                 <div>
                   <div className="font-semibold text-off-black">
@@ -71,7 +70,7 @@ export function CommunityProof() {
 
               {/* Tweet Content */}
               <div className="mb-4">
-                <p className="text-body text-off-black leading-relaxed">
+                <p className="text-body leading-relaxed text-off-black">
                   Should I prioritize mobile-first design or desktop experience for the questionnaire system? 
                   Mobile = better accessibility, Desktop = richer interactions. Your thoughts?
                 </p>
@@ -88,24 +87,24 @@ export function CommunityProof() {
                   <span className="font-medium">Desktop: 33%</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <BarChart3 className="h-4 w-4" />
+                  <BarChart3 className="size-4" />
                   <span>15 votes</span>
                 </div>
               </div>
 
               {/* View on X Link */}
-              <div className="mt-4 pt-4 border-t border-light-gray">
+              <div className="mt-4 border-t border-light-gray pt-4">
                 <Link
                   href="https://x.com/superoptimised"
                   target="_blank"
                   rel="noopener noreferrer"
                   className={cn(
                     "inline-flex items-center gap-2 text-small text-primary",
-                    "hover:text-primary/80 transition-colors duration-200",
-                    "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md px-2 py-1"
+                    "transition-colors duration-200 hover:text-primary/80",
+                    "rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                   )}
                 >
-                  <Twitter className="h-4 w-4" />
+                  <Twitter className="size-4" />
                   View full conversation on X
                 </Link>
               </div>
@@ -114,28 +113,25 @@ export function CommunityProof() {
         </div>
 
         {/* Community Stats Grid - Full width with light gray background */}
-        <div className="w-full bg-primary/5 rounded-lg p-lg">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-md mb-md">
-              {communityStats.map((stat, index) => {
-                const IconComponent = stat.icon;
-                return (
+        <div className="w-full rounded-lg bg-primary/5 p-lg">
+          <div className="mb-md grid grid-cols-2 gap-md md:grid-cols-4">
+              {communityStats.map((stat, index) => (
                   <div 
                     key={index}
                     className="text-center"
                   >
-                    <div className="font-bold text-primary font-mono mb-2" style={{ fontSize: '3rem' }}>
+                    <div className="mb-2 text-xl font-mono font-bold text-primary">
                       {stat.value}
                     </div>
                     <div className="text-sm text-warm-gray">
                       {stat.label}
                     </div>
                   </div>
-                );
-              })}
+                ))}
           </div>
 
           {/* Footer Note */}
-          <p className="text-xs text-warm-gray text-center italic leading-relaxed">
+          <p className="text-center text-xs italic leading-relaxed text-warm-gray">
             Real-time community input from X polls and website questionnaires 
             shapes every technical decision.
           </p>

@@ -5,7 +5,7 @@ import { LinkButton } from '@/components/ui/button';
 
 export function CallToActionButtons() {
   return (
-    <div className="flex flex-wrap gap-8 mt-12">
+    <div className="mt-12 flex flex-wrap gap-8">
       {/* Primary Button */}
       <LinkButton 
         href="/journey"

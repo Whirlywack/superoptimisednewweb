@@ -1,7 +1,9 @@
 'use client';
 
-import React, { createContext, useState, useCallback, ReactNode, useEffect } from 'react';
+import type { ReactNode } from 'react';
+import React, { createContext, useState, useCallback } from 'react';
 import { cn } from '@/lib/utils';
+import { Zap, Trophy } from 'lucide-react';
 
 interface XPToast {
   id: string;
@@ -57,7 +59,7 @@ export function XPToastProvider({ children }: XPToastProviderProps) {
     return selectedMessage;
   };
 
-  const showXPToast = useCallback((type: 'poll' | 'newsletter' = 'poll') => {
+  const showXPToast = useCallback((_type: 'poll' | 'newsletter' = 'poll') => {
     // Get current participation count
     const currentCount = parseInt(localStorage.getItem('participationCount') || '0', 10);
     const newCount = currentCount + 1;
@@ -104,10 +106,13 @@ export function XPToastProvider({ children }: XPToastProviderProps) {
     }, 3000);
   }, []);
 
+  // Keep these functions for future use
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const getParticipationCount = useCallback(() => {
     return parseInt(localStorage.getItem('participationCount') || '0', 10);
   }, []);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const getStreak = useCallback(() => {
     return parseInt(localStorage.getItem('feedbackStreak') || '0', 10);
   }, []);
@@ -122,7 +127,7 @@ export function XPToastProvider({ children }: XPToastProviderProps) {
       
       {/* Toast Container */}
       <div 
-        className="fixed top-4 right-4 z-50 space-y-2"
+        className="fixed right-4 top-4 z-50 space-y-2"
         aria-live="polite"
         aria-label="XP notifications"
       >
@@ -151,9 +156,9 @@ function XPToastItem({ toast, onRemove }: XPToastItemProps) {
   return (
     <div
       className={cn(
-        "flex items-center gap-3 px-4 py-3 rounded-lg shadow-xl",
+        "flex items-center gap-3 rounded-lg px-4 py-3 shadow-xl",
         "border border-white/20 backdrop-blur-sm",
-        "animate-in slide-in-from-right-full duration-300 bounce-in",
+        "bounce-in duration-300 animate-in slide-in-from-right-full",
         "min-w-72 max-w-96",
         gradientClass
       )}
@@ -161,32 +166,31 @@ function XPToastItem({ toast, onRemove }: XPToastItemProps) {
       aria-label={toast.message}
     >
       {/* XP Icon */}
-      <div className="flex-shrink-0">
+      <div className="shrink-0">
         <div className={cn(
-          "w-10 h-10 rounded-full bg-white/20 flex items-center justify-center",
+          "flex size-10 items-center justify-center rounded-full bg-white/20",
           "border-2 border-white/30",
           toast.isMilestone && "animate-pulse"
         )}>
-          <span className={cn(
-            "font-bold",
-            toast.isMilestone ? "text-lg" : "text-base"
-          )}>
-            {toast.isMilestone ? "🎉" : "⚡"}
-          </span>
+          {toast.isMilestone ? (
+            <Trophy className="size-5 text-white" />
+          ) : (
+            <Zap className="size-4 text-white" />
+          )}
         </div>
       </div>
       
       {/* Message */}
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <p className={cn(
-          "font-mono font-bold text-white leading-tight",
+          "font-mono font-bold leading-tight text-white",
           toast.isMilestone ? "text-base" : "text-sm"
         )}>
           {toast.message}
         </p>
         {toast.isMilestone && (
-          <p className="text-xs text-white/80 font-mono mt-1">
-            Milestone reached! 🎯
+          <p className="mt-1 font-mono text-xs text-white/80">
+            Milestone reached!
           </p>
         )}
       </div>
@@ -195,8 +199,8 @@ function XPToastItem({ toast, onRemove }: XPToastItemProps) {
       <button
         onClick={() => onRemove(toast.id)}
         className={cn(
-          "flex-shrink-0 p-1.5 rounded-full hover:bg-white/20 transition-colors",
-          "focus:outline-none focus:ring-2 focus:ring-white/50 text-white/80 hover:text-white"
+          "shrink-0 rounded-full p-1.5 transition-colors hover:bg-white/20",
+          "text-white/80 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/50"
         )}
         aria-label="Dismiss notification"
       >

@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useState, useContext } from 'react';
-import { Mail, Users, CheckCircle } from 'lucide-react';
+import { Mail, CheckCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
 import { XPToastContext } from './XPToastProvider';
 
 export function NewsletterSection() {
@@ -40,15 +39,15 @@ export function NewsletterSection() {
         className="w-full bg-white px-4 py-xl"
         aria-labelledby="newsletter-heading"
       >
-        <div className="max-w-2xl mx-auto text-center">
-          <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="h-8 w-8 text-primary" />
+        <div className="mx-auto max-w-2xl text-center">
+          <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-primary/10">
+            <CheckCircle className="size-8 text-primary" />
           </div>
-          <h2 className="text-h2 font-bold text-off-black mb-4">
+          <h2 className="mb-4 text-h2 font-bold text-off-black">
             Welcome to the Building Journey!
           </h2>
-          <p className="text-body text-warm-gray leading-relaxed">
-            You're now part of the transparent building process. You'll receive weekly insights 
+          <p className="text-body leading-relaxed text-warm-gray">
+            You&apos;re now part of the transparent building process. You&apos;ll receive weekly insights 
             when valuable content is ready, and your early signup helps reach the 100-builder goal.
           </p>
         </div>
@@ -58,29 +57,28 @@ export function NewsletterSection() {
 
   return (
     <section 
-      className="w-full bg-primary/2 px-4 py-xl"
+      className="w-full bg-primary/[0.02] px-4 py-24"
       aria-labelledby="newsletter-heading"
     >
-      <div className="max-w-6xl mx-auto grid grid-cols-12 gap-6">
+      <div className="mx-auto grid max-w-6xl grid-cols-12 gap-6">
         <div className="col-span-12 md:col-span-9">
           {/* Section Headline - Left aligned, slightly bigger typography */}
           <h2 
             id="newsletter-heading"
-            className="font-bold text-off-black mb-lg"
-            style={{ fontSize: '2rem' }}
+            className="mb-lg text-xl font-bold text-off-black"
           >
             Join the Building Journey
           </h2>
           {/* Description */}
-          <p className="text-base text-warm-gray leading-relaxed mb-lg max-w-reading">
-            Weekly building insights launching when valuable. I won't start sending until I have 
+          <p className="mb-lg max-w-reading text-base leading-relaxed text-warm-gray">
+            Weekly building insights launching when valuable. I won&apos;t start sending until I have 
             meaningful weekly content and at least 100 builders to write to. Your early signup 
-            helps reach that goal and shows there's genuine interest in this transparent approach.
+            helps reach that goal and shows there&apos;s genuine interest in this transparent approach.
           </p>
 
           {/* Email Form */}
           <form onSubmit={handleSubmit} className="mb-md">
-            <div className="flex gap-sm max-w-lg">
+            <div className="flex max-w-lg gap-sm">
               <div className="flex-1">
                 <label htmlFor="newsletter-email" className="sr-only">
                   Email address
@@ -94,10 +92,10 @@ export function NewsletterSection() {
                   required
                   disabled={isSubmitting}
                   className={cn(
-                    "w-full px-md py-sm border-2 border-light-gray rounded-sm",
-                    "text-base bg-white",
-                    "focus:outline-none focus:border-primary",
-                    "disabled:opacity-50 disabled:cursor-not-allowed",
+                    "w-full rounded-sm border-2 border-light-gray px-md py-sm",
+                    "bg-white text-base",
+                    "focus:border-primary focus:outline-none",
+                    "disabled:cursor-not-allowed disabled:opacity-50",
                     "h-[44px]"
                   )}
                 />
@@ -106,14 +104,14 @@ export function NewsletterSection() {
                 type="submit"
                 disabled={isSubmitting || !email}
                 className={cn(
-                  "px-lg py-sm bg-primary text-white border-none rounded-sm",
-                  "font-semibold cursor-pointer transition-all duration-200",
-                  "hover:bg-off-black hover:-translate-y-px",
-                  "disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none",
-                  "whitespace-nowrap h-[44px] text-base flex items-center"
+                  "rounded-sm border-none bg-primary px-lg py-sm text-white",
+                  "cursor-pointer font-semibold transition-all duration-200",
+                  "hover:-translate-y-px hover:bg-off-black",
+                  "disabled:transform-none disabled:cursor-not-allowed disabled:opacity-50",
+                  "flex h-[44px] items-center whitespace-nowrap text-base"
                 )}
               >
-                <Mail className="h-5 w-5 mr-2" />
+                <Mail className="mr-2 size-5" />
                 Be Among the First 100
               </button>
             </div>
@@ -121,7 +119,7 @@ export function NewsletterSection() {
 
           {/* Meta Text */}
           <p className="text-sm text-warm-gray">
-            Currently <span className="text-primary font-mono font-semibold">{builderCount} builders</span> signed up. 
+            Currently <span className="font-mono font-semibold text-primary">{builderCount} builders</span> signed up. 
             Weekly updates when launched, unsubscribe anytime, absolutely no spam.
           </p>
         </div>
