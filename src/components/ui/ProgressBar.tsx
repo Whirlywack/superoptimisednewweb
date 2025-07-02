@@ -44,10 +44,10 @@ export function ProgressBar({
     <div className={cn("w-full", className)} {...props}>
       {showLabel && (
         <div className="flex justify-between items-center mb-1">
-          <span className="text-sm font-medium text-foreground">
+          <span className="text-sm font-medium text-off-black">
             {displayLabel}
           </span>
-          <span className="text-sm text-muted-foreground">
+          <span className="text-sm text-warm-gray">
             {value}/{max}
           </span>
         </div>
@@ -55,7 +55,7 @@ export function ProgressBar({
       
       <div
         className={cn(
-          "w-full bg-muted rounded-full overflow-hidden",
+          "w-full bg-light-gray rounded-full overflow-hidden",
           progressSizes[size]
         )}
         role="progressbar"
