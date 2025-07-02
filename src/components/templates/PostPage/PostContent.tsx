@@ -42,54 +42,42 @@ export function PostContent() {
   };
 
   return (
-    <section className="w-full py-xl px-4">
-      <div className="max-w-6xl mx-auto grid grid-cols-12 gap-6">
+    <section className="w-full px-4 py-xl">
+      <div className="mx-auto grid max-w-6xl grid-cols-12 gap-6">
         {/* Post Content - Left 8 columns */}
         <div className="col-span-12 md:col-span-8">
           {/* Main Content */}
           <div className="max-w-[65ch]">
-            <p style={{ fontSize: '1rem', lineHeight: 1.6, marginBottom: '2rem' }}>
+            <p className="mb-lg text-base leading-relaxed">
               Traditional development happens behind closed doors. Decisions get made in isolation, 
               problems stay hidden until launch, and communities only see the polished final product. 
               <strong>I'm doing the opposite.</strong>
             </p>
 
-            <p style={{ fontSize: '1rem', lineHeight: 1.6, marginBottom: '2rem' }}>
+            <p className="mb-lg text-base leading-relaxed">
               Starting today, every technical decision, every design choice, and every mistake will be 
               documented transparently. Not because transparency is trendy, but because it leads to 
               fundamentally better products.
             </p>
 
-            <h2 style={{ 
-              fontSize: '2rem', 
-              fontWeight: 600, 
-              lineHeight: 1.2, 
-              margin: '4rem 0 3rem 0' 
-            }}>
+            <h2 className="mb-xl mt-2xl text-h2 font-semibold leading-tight">
               The Problem with Secret Development
             </h2>
 
-            <p style={{ fontSize: '1rem', lineHeight: 1.6, marginBottom: '2rem' }}>
+            <p className="mb-lg text-base leading-relaxed">
               Most products fail not because of poor execution, but because of poor assumptions. 
               When you build in isolation, you're building based on your assumptions about what 
               people need, how they behave, and what problems actually matter to them.
             </p>
 
-            <p style={{ fontSize: '1rem', lineHeight: 1.6, marginBottom: '2rem' }}>
+            <p className="mb-lg text-base leading-relaxed">
               The feedback loop is broken. By the time you launch and get real user input, you've 
               already committed months of development to potentially wrong directions. Pivoting 
               becomes expensive. Critical insights come too late.
             </p>
 
             <blockquote 
-              className="border-l-4 border-primary font-italic"
-              style={{ 
-                margin: '3rem 0',
-                padding: '3rem',
-                background: 'rgba(100, 116, 139, 0.1)',
-                fontSize: '1.25rem',
-                maxWidth: '65ch'
-              }}
+              className="mx-0 my-xl max-w-[65ch] border-l-4 border-primary bg-primary/10 p-xl text-lg italic"
             >
               "The best feedback comes from real problems, not survey responses. 
               Building transparently creates trust—and trust creates honest input."
@@ -97,20 +85,14 @@ export function PostContent() {
 
             {/* Community Impact Section */}
             <div 
-              className="border-2 border-primary rounded-lg p-lg"
-              style={{ 
-                background: 'rgba(100, 116, 139, 0.05)',
-                margin: '4rem 0',
-                maxWidth: '65ch'
-              }}
+              className="mx-0 my-2xl max-w-[65ch] rounded-lg border-2 border-primary bg-primary/5 p-lg"
             >
               <div 
-                className="font-semibold text-primary mb-md font-mono"
-                style={{ fontSize: '0.875rem' }}
+                className="mb-md text-sm font-mono font-semibold text-primary"
               >
                 Community Impact on This Post
               </div>
-              <div className="grid grid-cols-3 gap-md mb-md">
+              <div className="mb-md grid grid-cols-3 gap-md">
                 {[
                   { number: '5', label: 'Initial Votes' },
                   { number: '12', label: 'X Replies' },
@@ -118,17 +100,12 @@ export function PostContent() {
                 ].map((stat, index) => (
                   <div key={index} className="text-center">
                     <div 
-                      className="text-primary font-bold font-mono"
-                      style={{ 
-                        fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', 
-                        fontWeight: 800 
-                      }}
+                      className="text-xl font-mono font-extrabold text-primary"
                     >
                       {stat.number}
                     </div>
                     <div 
-                      className="text-warm-gray mt-xs"
-                      style={{ fontSize: '0.75rem' }}
+                      className="mt-xs text-xs text-warm-gray"
                     >
                       {stat.label}
                     </div>
@@ -136,8 +113,7 @@ export function PostContent() {
                 ))}
               </div>
               <p 
-                className="text-warm-gray"
-                style={{ fontSize: '0.875rem' }}
+                className="text-sm text-warm-gray"
               >
                 This post itself was shaped by community input. Initial feedback suggested focusing 
                 on practical benefits rather than philosophical arguments. The opening was rewritten 
@@ -145,22 +121,17 @@ export function PostContent() {
               </p>
             </div>
 
-            <h2 style={{ 
-              fontSize: '2rem', 
-              fontWeight: 600, 
-              lineHeight: 1.2, 
-              margin: '4rem 0 3rem 0' 
-            }}>
+            <h2 className="mb-xl mt-2xl text-h2 font-semibold leading-tight">
               Building with Community Input
             </h2>
 
-            <p style={{ fontSize: '1rem', lineHeight: 1.6, marginBottom: '2rem' }}>
+            <p className="mb-lg text-base leading-relaxed">
               Building in public flips this model. Instead of validating assumptions after building, 
               you test assumptions while building. The community becomes your early warning system 
               for bad decisions and your guide toward better ones.
             </p>
 
-            <p style={{ fontSize: '1rem', lineHeight: 1.6, marginBottom: '2rem' }}>
+            <p className="mb-lg text-base leading-relaxed">
               But it's not just about avoiding mistakes. Community input often reveals opportunities 
               you'd never consider on your own. Different perspectives highlight use cases you missed, 
               edge cases you didn't think about, and solutions you wouldn't have found alone.
@@ -168,16 +139,14 @@ export function PostContent() {
 
             {/* Interactive Poll */}
             <div 
-              className="bg-white border-2 border-light-gray rounded-lg p-lg transition-all duration-200"
-              style={{ margin: '4rem 0', maxWidth: '65ch' }}
+              className="mx-0 my-2xl max-w-[65ch] rounded-lg border-2 border-light-gray bg-white p-lg transition-all duration-200"
             >
               <div 
-                className="font-semibold text-off-black mb-md"
-                style={{ fontSize: '0.875rem', lineHeight: 1.4 }}
+                className="mb-md text-sm font-semibold leading-relaxed text-off-black"
               >
                 What's the biggest benefit of building in public?
               </div>
-              <div className="flex gap-sm mb-md flex-wrap">
+              <div className="mb-md flex flex-wrap gap-sm">
                 {[
                   { value: 'feedback', label: 'Better Feedback' },
                   { value: 'trust', label: 'Building Trust' },
@@ -187,44 +156,37 @@ export function PostContent() {
                     key={option.value}
                     onClick={() => handlePollVote(option.value)}
                     className={cn(
-                      "flex-1 py-sm px-md text-center font-medium rounded transition-all duration-200",
+                      "flex-1 rounded px-md py-sm text-center text-sm font-medium transition-all duration-200",
                       selectedPoll === option.value 
-                        ? "bg-primary text-white border-2 border-primary" 
-                        : "bg-light-gray hover:bg-white hover:border-primary border-2 border-transparent"
+                        ? "border-2 border-primary bg-primary text-white" 
+                        : "border-2 border-transparent bg-light-gray hover:border-primary hover:bg-white"
                     )}
-                    style={{ fontSize: '0.875rem' }}
                   >
                     {option.label}
                   </button>
                 ))}
               </div>
               <div 
-                className="text-warm-gray text-center"
-                style={{ fontSize: '0.75rem' }}
+                className="text-center text-xs text-warm-gray"
               >
                 <span className="font-mono">Help shape future posts</span> • 
-                <a href="https://x.com/superoptimised" className="text-primary hover:underline ml-1">
+                <a href="https://x.com/superoptimised" className="ml-1 text-primary hover:underline">
                   Discuss on X
                 </a>
               </div>
             </div>
 
-            <h3 style={{ 
-              fontSize: '1.5rem', 
-              fontWeight: 600, 
-              lineHeight: 1.3, 
-              margin: '3rem 0 2rem 0' 
-            }}>
+            <h3 className="mb-lg mt-xl text-h3 font-semibold leading-snug">
               The Trust Factor
             </h3>
 
-            <p style={{ fontSize: '1rem', lineHeight: 1.6, marginBottom: '2rem' }}>
+            <p className="mb-lg text-base leading-relaxed">
               When people see your decision-making process, they understand your reasoning. When they 
               understand your reasoning, they trust your conclusions. When they trust your conclusions, 
               they give you honest feedback instead of polite responses.
             </p>
 
-            <p style={{ fontSize: '1rem', lineHeight: 1.6, marginBottom: '2rem' }}>
+            <p className="mb-lg text-base leading-relaxed">
               This creates a virtuous cycle. Transparency builds trust, trust enables honest feedback, 
               honest feedback improves decisions, better decisions build more trust.
             </p>
@@ -265,17 +227,17 @@ export function PostContent() {
 
             {/* Mid-Content Newsletter CTA */}
             <div 
-              className="bg-white border-2 border-primary rounded-lg p-lg text-center"
+              className="rounded-lg border-2 border-primary bg-white p-lg text-center"
               style={{ margin: '4rem 0', maxWidth: '65ch' }}
             >
               <h3 
-                className="font-bold text-off-black mb-md"
+                className="mb-md font-bold text-off-black"
                 style={{ fontSize: '1.25rem' }}
               >
                 Don't Miss a Decision
               </h3>
               <p 
-                className="text-warm-gray mb-lg"
+                className="mb-lg text-warm-gray"
                 style={{ fontSize: '0.875rem' }}
               >
                 Major technical choices happen weekly. Get the full context and help influence 
@@ -290,20 +252,20 @@ export function PostContent() {
                   required
                   disabled={isSubmitting}
                   className={cn(
-                    "w-full px-md py-sm border-2 border-light-gray rounded-sm",
-                    "text-base bg-white",
-                    "focus:outline-none focus:border-primary",
-                    "disabled:opacity-50 disabled:cursor-not-allowed"
+                    "w-full rounded-sm border-2 border-light-gray px-md py-sm",
+                    "bg-white text-base",
+                    "focus:border-primary focus:outline-none",
+                    "disabled:cursor-not-allowed disabled:opacity-50"
                   )}
                 />
                 <button
                   type="submit"
                   disabled={isSubmitting || !email}
                   className={cn(
-                    "w-full py-sm bg-primary text-white border-none rounded-sm text-base",
-                    "font-semibold cursor-pointer transition-all duration-200",
-                    "hover:bg-off-black hover:-translate-y-px",
-                    "disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                    "w-full rounded-sm border-none bg-primary py-sm text-base text-white",
+                    "cursor-pointer font-semibold transition-all duration-200",
+                    "hover:-translate-y-px hover:bg-off-black",
+                    "disabled:transform-none disabled:cursor-not-allowed disabled:opacity-50"
                   )}
                 >
                   Get Decision Updates
@@ -339,7 +301,7 @@ export function PostContent() {
             </p>
 
             <p style={{ fontSize: '1rem', lineHeight: 1.6, marginBottom: '2rem' }}>
-              Follow along on <a href="https://x.com/superoptimised" className="text-primary hover:underline font-medium">X (@superoptimised)</a> 
+              Follow along on <a href="https://x.com/superoptimised" className="font-medium text-primary hover:underline">X (@superoptimised)</a> 
               for live decisions and vote in real-time polls. This website documents the complete 
               journey for those who want the full context.
             </p>
@@ -350,9 +312,9 @@ export function PostContent() {
         <div className="col-span-12 md:col-span-4">
           <div className="sticky top-lg space-y-lg">
             {/* Table of Contents */}
-            <div className="bg-white border-2 border-light-gray rounded-lg p-md">
+            <div className="rounded-lg border-2 border-light-gray bg-white p-md">
               <h3 
-                className="font-semibold text-off-black mb-md"
+                className="mb-md font-semibold text-off-black"
                 style={{ fontSize: '0.875rem' }}
               >
                 In This Post
@@ -387,9 +349,9 @@ export function PostContent() {
             </div>
 
             {/* Post Stats */}
-            <div className="bg-white border-2 border-light-gray rounded-lg p-md">
+            <div className="rounded-lg border-2 border-light-gray bg-white p-md">
               <h3 
-                className="font-semibold text-off-black mb-md"
+                className="mb-md font-semibold text-off-black"
                 style={{ fontSize: '0.875rem' }}
               >
                 Post Impact
@@ -404,7 +366,7 @@ export function PostContent() {
                   { label: 'Newsletter Signups', value: '8' },
                   { label: 'Community Votes', value: '5' }
                 ].map((stat, index) => (
-                  <div key={index} className="flex justify-between mb-sm">
+                  <div key={index} className="mb-sm flex justify-between">
                     <span>{stat.label}</span>
                     <span className="font-mono text-primary">{stat.value}</span>
                   </div>
@@ -413,9 +375,9 @@ export function PostContent() {
             </div>
 
             {/* Coming Next */}
-            <div className="bg-white border-2 border-light-gray rounded-lg p-md">
+            <div className="rounded-lg border-2 border-light-gray bg-white p-md">
               <h3 
-                className="font-semibold text-off-black mb-md"
+                className="mb-md font-semibold text-off-black"
                 style={{ fontSize: '0.875rem' }}
               >
                 Coming Next
@@ -424,7 +386,7 @@ export function PostContent() {
                 className="text-warm-gray"
                 style={{ fontSize: '0.875rem' }}
               >
-                <p className="font-semibold mb-sm">Authentication Decision</p>
+                <p className="mb-sm font-semibold">Authentication Decision</p>
                 <p className="mb-sm">
                   Magic links vs traditional login for anonymous feedback. Community vote in progress.
                 </p>
