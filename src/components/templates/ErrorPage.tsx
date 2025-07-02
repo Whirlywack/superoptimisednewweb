@@ -211,7 +211,7 @@ export function ErrorPage({
         {/* Error Icon and Code */}
         <div className="space-y-6">
           <div className="w-24 h-24 bg-warm-gray/10 dark:bg-warm-gray/20 rounded-full flex items-center justify-center mx-auto">
-            <LucideIcon icon={ErrorIcon} size="2xl" className="text-warm-gray" />
+            <LucideIcon icon={ErrorIcon} size="xl" className="text-warm-gray" />
           </div>
           
           {showErrorDetails && (

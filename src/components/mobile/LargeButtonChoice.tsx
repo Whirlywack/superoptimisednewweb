@@ -205,7 +205,7 @@ export function LargeButtonChoice({
               <div className="flex items-center gap-3 flex-1 min-w-0">
                 {option.icon && (
                   <div className="flex-shrink-0 w-6 h-6 flex items-center justify-center">
-                    <Icon size={20} className={isSelected ? 'text-current' : 'text-warm-gray'}>
+                    <Icon size="lg" className={isSelected ? 'text-current' : 'text-warm-gray'}>
                       {option.icon}
                     </Icon>
                   </div>
@@ -244,7 +244,7 @@ export function LargeButtonChoice({
                     )}
                   >
                     {isSelected && (
-                      <Icon size={12} className="text-white">
+                      <Icon size="xs" className="text-white">
                         <Check />
                       </Icon>
                     )}
@@ -252,7 +252,7 @@ export function LargeButtonChoice({
                 )}
                 
                 {showArrows && !showIndicators && (
-                  <Icon size={16} className="text-warm-gray">
+                  <Icon size="sm" className="text-warm-gray">
                     <ChevronRight />
                   </Icon>
                 )}

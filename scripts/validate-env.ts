@@ -7,6 +7,9 @@
  * before building or running the application.
  */
 
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+
 const requiredEnvVars = {
   // Database
   DATABASE_URL: 'PostgreSQL connection string for Prisma ORM',
@@ -126,7 +129,7 @@ function main() {
 }
 
 // Run if called directly
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   main();
 }
 

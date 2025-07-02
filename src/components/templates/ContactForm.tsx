@@ -35,7 +35,8 @@ import {
   Shield,
   Users,
   Code,
-  Headphones
+  Headphones,
+  CreditCard
 } from "lucide-react";
 
 interface ContactMethod {
