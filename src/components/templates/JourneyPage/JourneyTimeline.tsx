@@ -71,24 +71,14 @@ export function JourneyTimeline() {
   };
 
   return (
-    <section className="w-full py-2xl px-4">
-      <div className="max-w-6xl mx-auto grid grid-cols-12 gap-6">
+    <section className="w-full px-4 py-2xl">
+      <div className="mx-auto grid max-w-6xl grid-cols-12 gap-6">
         {/* Timeline Header */}
-        <div className="col-span-12 text-center mb-2xl">
-          <h2 
-            className="font-semibold text-off-black mb-md"
-            style={{ 
-              fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', 
-              fontWeight: 600, 
-              lineHeight: 1.2 
-            }}
-          >
+        <div className="col-span-12 mb-2xl text-center">
+          <h2 className="mb-md text-xl font-semibold text-off-black">
             Building Timeline
           </h2>
-          <p 
-            className="text-warm-gray"
-            style={{ fontSize: '1rem', lineHeight: 1.6 }}
-          >
+          <p className="text-base text-warm-gray">
             Every decision documented. Community influence tracked. Lessons shared transparently.
           </p>
         </div>
@@ -101,7 +91,7 @@ export function JourneyTimeline() {
                 key={entry.id}
                 className={cn(
                   "relative pl-lg",
-                  "before:content-[''] before:absolute before:left-0 before:top-0 before:w-1 before:h-full",
+                  "before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:content-['']",
                   entry.featured ? "before:bg-primary" : "before:bg-light-gray"
                 )}
               >
@@ -110,22 +100,18 @@ export function JourneyTimeline() {
                     href={entry.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block bg-white border-2 border-light-gray rounded-lg p-lg transition-all duration-200 hover:border-primary hover:-translate-y-0.5 cursor-pointer"
+                    className="block cursor-pointer rounded-lg border-2 border-light-gray bg-white p-lg transition-all duration-200 hover:-translate-y-0.5 hover:border-primary"
                   >
                     {/* Entry Meta */}
-                    <div className="flex items-center justify-between gap-4 mb-md flex-wrap">
-                      <time 
-                        className="text-warm-gray font-mono"
-                        style={{ fontSize: '0.875rem' }}
-                      >
+                    <div className="mb-md flex flex-wrap items-center justify-between gap-4">
+                      <time className="text-sm font-mono text-warm-gray">
                         {entry.date}
                       </time>
                       <span 
-                        className="px-sm py-xs rounded font-semibold"
+                        className="text-xs rounded px-sm py-xs font-semibold"
                         style={{ 
                           background: 'rgba(100, 116, 139, 0.1)', 
-                          color: 'var(--primary)',
-                          fontSize: '0.75rem'
+                          color: 'var(--primary)'
                         }}
                       >
                         {entry.status}
@@ -133,48 +119,35 @@ export function JourneyTimeline() {
                     </div>
                     
                     {/* Entry Title */}
-                    <h3 
-                      className="font-semibold text-off-black mb-md"
-                      style={{ 
-                        fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', 
-                        fontWeight: 600, 
-                        lineHeight: 1.2 
-                      }}
-                    >
+                    <h3 className="mb-md text-xl font-semibold text-off-black">
                       {entry.title}
                     </h3>
                     
                     {/* Entry Excerpt */}
-                    <p 
-                      className="text-warm-gray mb-md max-w-[65ch]"
-                      style={{ fontSize: '1rem', lineHeight: 1.6 }}
-                    >
+                    <p className="mb-md max-w-[65ch] text-base text-warm-gray">
                       {entry.excerpt}
                     </p>
                     
                     {/* Community Impact */}
                     {entry.communityImpact && (
                       <div 
-                        className="p-md my-md rounded"
+                        className="my-md rounded p-md"
                         style={{ background: 'rgba(100, 116, 139, 0.05)' }}
                       >
-                        <div 
-                          className="font-semibold text-primary mb-sm"
-                          style={{ fontSize: '0.875rem' }}
-                        >
+                        <div className="mb-sm text-sm font-semibold text-primary">
                           Community Impact
                         </div>
-                        <div className="flex gap-lg text-warm-gray font-mono flex-wrap" style={{ fontSize: '0.875rem' }}>
+                        <div className="flex flex-wrap gap-lg text-sm font-mono text-warm-gray">
                           <div className="flex items-center gap-1">
-                            <BarChart3 className="w-4 h-4" />
+                            <BarChart3 className="size-4" />
                             <span>{entry.communityImpact.votes}</span>
                           </div>
                           <div className="flex items-center gap-1">
-                            <MessageCircle className="w-4 h-4" />
+                            <MessageCircle className="size-4" />
                             <span>{entry.communityImpact.replies}</span>
                           </div>
                           <div className="flex items-center gap-1">
-                            <Target className="w-4 h-4" />
+                            <Target className="size-4" />
                             <span>{entry.communityImpact.outcome}</span>
                           </div>
                         </div>
@@ -182,16 +155,16 @@ export function JourneyTimeline() {
                     )}
                     
                     {/* Entry Actions */}
-                    <div className="flex items-center justify-between mt-md">
+                    <div className="mt-md flex items-center justify-between">
                       <span 
-                        className="text-primary font-semibold"
-                        style={{ fontSize: '0.875rem' }}
+                        className="font-semibold text-primary"
+                        className="text-sm"
                       >
                         Join the discussion on X →
                       </span>
                       <span 
-                        className="text-warm-gray font-mono"
-                        style={{ fontSize: '0.875rem' }}
+                        className="font-mono text-warm-gray"
+                        className="text-sm"
                       >
                         {entry.readTime}
                       </span>
@@ -200,22 +173,18 @@ export function JourneyTimeline() {
                 ) : (
                   <Link 
                     href={entry.href}
-                    className="block bg-white border-2 border-light-gray rounded-lg p-lg transition-all duration-200 hover:border-primary hover:-translate-y-0.5 cursor-pointer"
+                    className="block cursor-pointer rounded-lg border-2 border-light-gray bg-white p-lg transition-all duration-200 hover:-translate-y-0.5 hover:border-primary"
                   >
                     {/* Entry Meta */}
-                    <div className="flex items-center justify-between gap-4 mb-md flex-wrap">
-                      <time 
-                        className="text-warm-gray font-mono"
-                        style={{ fontSize: '0.875rem' }}
-                      >
+                    <div className="mb-md flex flex-wrap items-center justify-between gap-4">
+                      <time className="text-sm font-mono text-warm-gray">
                         {entry.date}
                       </time>
                       <span 
-                        className="px-sm py-xs rounded font-semibold"
+                        className="text-xs rounded px-sm py-xs font-semibold"
                         style={{ 
                           background: 'rgba(100, 116, 139, 0.1)', 
-                          color: 'var(--primary)',
-                          fontSize: '0.75rem'
+                          color: 'var(--primary)'
                         }}
                       >
                         {entry.status}
@@ -223,48 +192,35 @@ export function JourneyTimeline() {
                     </div>
                     
                     {/* Entry Title */}
-                    <h3 
-                      className="font-semibold text-off-black mb-md"
-                      style={{ 
-                        fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', 
-                        fontWeight: 600, 
-                        lineHeight: 1.2 
-                      }}
-                    >
+                    <h3 className="mb-md text-xl font-semibold text-off-black">
                       {entry.title}
                     </h3>
                     
                     {/* Entry Excerpt */}
-                    <p 
-                      className="text-warm-gray mb-md max-w-[65ch]"
-                      style={{ fontSize: '1rem', lineHeight: 1.6 }}
-                    >
+                    <p className="mb-md max-w-[65ch] text-base text-warm-gray">
                       {entry.excerpt}
                     </p>
                     
                     {/* Community Impact */}
                     {entry.communityImpact && (
                       <div 
-                        className="p-md my-md rounded"
+                        className="my-md rounded p-md"
                         style={{ background: 'rgba(100, 116, 139, 0.05)' }}
                       >
-                        <div 
-                          className="font-semibold text-primary mb-sm"
-                          style={{ fontSize: '0.875rem' }}
-                        >
+                        <div className="mb-sm text-sm font-semibold text-primary">
                           Community Impact
                         </div>
-                        <div className="flex gap-lg text-warm-gray font-mono flex-wrap" style={{ fontSize: '0.875rem' }}>
+                        <div className="flex flex-wrap gap-lg text-sm font-mono text-warm-gray">
                           <div className="flex items-center gap-1">
-                            <BarChart3 className="w-4 h-4" />
+                            <BarChart3 className="size-4" />
                             <span>{entry.communityImpact.votes}</span>
                           </div>
                           <div className="flex items-center gap-1">
-                            <MessageCircle className="w-4 h-4" />
+                            <MessageCircle className="size-4" />
                             <span>{entry.communityImpact.replies}</span>
                           </div>
                           <div className="flex items-center gap-1">
-                            <Target className="w-4 h-4" />
+                            <Target className="size-4" />
                             <span>{entry.communityImpact.outcome}</span>
                           </div>
                         </div>
@@ -272,16 +228,16 @@ export function JourneyTimeline() {
                     )}
                     
                     {/* Entry Actions */}
-                    <div className="flex items-center justify-between mt-md">
+                    <div className="mt-md flex items-center justify-between">
                       <span 
-                        className="text-primary font-semibold"
-                        style={{ fontSize: '0.875rem' }}
+                        className="font-semibold text-primary"
+                        className="text-sm"
                       >
                         Read full post →
                       </span>
                       <span 
-                        className="text-warm-gray font-mono"
-                        style={{ fontSize: '0.875rem' }}
+                        className="font-mono text-warm-gray"
+                        className="text-sm"
                       >
                         {entry.readTime}
                       </span>
@@ -292,57 +248,51 @@ export function JourneyTimeline() {
             ))}
 
             {/* Content Strategy Poll */}
-            <div className="bg-white border-2 border-light-gray rounded-lg p-md transition-all duration-200">
-              <div 
-                className="font-semibold text-off-black mb-md"
-                style={{ fontSize: '0.875rem', lineHeight: 1.4 }}
-              >
+            <div className="rounded-lg border-2 border-light-gray bg-white p-md transition-all duration-200">
+              <div className="mb-md text-base font-semibold text-off-black">
                 What type of content would be most valuable next?
               </div>
-              <div className="flex gap-sm mb-md flex-wrap">
+              <div className="mb-md flex flex-wrap gap-sm">
                 <button
                   onClick={() => handlePollVote('technical')}
                   className={cn(
-                    "flex-1 py-sm px-md text-center font-medium rounded transition-all duration-200",
+                    "flex-1 rounded px-md py-sm text-center font-medium transition-all duration-200",
                     selectedPoll === 'technical' 
-                      ? "bg-primary text-white border-2 border-primary" 
-                      : "bg-light-gray hover:bg-white hover:border-primary border-2 border-transparent"
+                      ? "border-2 border-primary bg-primary text-white" 
+                      : "border-2 border-transparent bg-light-gray hover:border-primary hover:bg-white"
                   )}
-                  style={{ fontSize: '0.875rem' }}
+                  className="text-sm"
                 >
                   Technical Deep-Dives
                 </button>
                 <button
                   onClick={() => handlePollVote('decisions')}
                   className={cn(
-                    "flex-1 py-sm px-md text-center font-medium rounded transition-all duration-200",
+                    "flex-1 rounded px-md py-sm text-center font-medium transition-all duration-200",
                     selectedPoll === 'decisions' 
-                      ? "bg-primary text-white border-2 border-primary" 
-                      : "bg-light-gray hover:bg-white hover:border-primary border-2 border-transparent"
+                      ? "border-2 border-primary bg-primary text-white" 
+                      : "border-2 border-transparent bg-light-gray hover:border-primary hover:bg-white"
                   )}
-                  style={{ fontSize: '0.875rem' }}
+                  className="text-sm"
                 >
                   Decision Breakdowns
                 </button>
                 <button
                   onClick={() => handlePollVote('lessons')}
                   className={cn(
-                    "flex-1 py-sm px-md text-center font-medium rounded transition-all duration-200",
+                    "flex-1 rounded px-md py-sm text-center font-medium transition-all duration-200",
                     selectedPoll === 'lessons' 
-                      ? "bg-primary text-white border-2 border-primary" 
-                      : "bg-light-gray hover:bg-white hover:border-primary border-2 border-transparent"
+                      ? "border-2 border-primary bg-primary text-white" 
+                      : "border-2 border-transparent bg-light-gray hover:border-primary hover:bg-white"
                   )}
-                  style={{ fontSize: '0.875rem' }}
+                  className="text-sm"
                 >
                   Weekly Lessons
                 </button>
               </div>
-              <div 
-                className="text-warm-gray text-center"
-                style={{ fontSize: '0.75rem' }}
-              >
+              <div className="text-center text-xs text-warm-gray">
                 <span className="font-mono">Shape upcoming content</span> • 
-                <a href="https://x.com/superoptimised" className="text-primary hover:underline ml-1">
+                <a href="https://x.com/superoptimised" className="ml-1 text-primary hover:underline">
                   Suggest on X
                 </a>
               </div>
@@ -354,10 +304,9 @@ export function JourneyTimeline() {
         <div className="col-span-12 md:col-span-4">
           <div className="sticky top-lg space-y-lg">
             {/* Journey Stats */}
-            <div className="bg-white border-2 border-light-gray rounded-lg p-md">
+            <div className="rounded-lg border-2 border-light-gray bg-white p-md">
               <h3 
-                className="font-semibold text-off-black mb-md"
-                style={{ fontSize: '0.875rem' }}
+                className="mb-md text-h3 font-semibold text-off-black"
               >
                 Journey Stats
               </h3>
@@ -369,17 +318,11 @@ export function JourneyTimeline() {
                   { label: 'Decisions Made', value: '3' },
                   { label: 'Project Complete', value: '15%' }
                 ].map((stat, index) => (
-                  <div key={index} className="flex justify-between items-center py-xs border-b border-light-gray last:border-b-0">
-                    <span 
-                      className="text-warm-gray"
-                      style={{ fontSize: '0.875rem' }}
-                    >
+                  <div key={index} className="flex items-center justify-between border-b border-light-gray py-xs last:border-b-0">
+                    <span className="text-sm text-warm-gray">
                       {stat.label}
                     </span>
-                    <span 
-                      className="text-primary font-semibold font-mono"
-                      style={{ fontSize: '0.875rem' }}
-                    >
+                    <span className="text-sm font-mono font-bold text-primary">
                       {stat.value}
                     </span>
                   </div>
@@ -388,63 +331,45 @@ export function JourneyTimeline() {
             </div>
 
             {/* Recent X Activity */}
-            <div className="bg-white border-2 border-light-gray rounded-lg p-md">
-              <h3 
-                className="font-semibold text-off-black mb-md"
-                style={{ fontSize: '0.875rem' }}
-              >
+            <div className="rounded-lg border-2 border-light-gray bg-white p-md">
+              <h3 className="mb-md text-h3 font-semibold text-off-black">
                 Live from X
               </h3>
-              <div className="bg-white border-2 border-light-gray rounded-lg p-lg">
+              <div className="rounded-lg border-2 border-light-gray bg-white p-lg">
                 {/* X Header */}
-                <div className="flex items-center gap-sm mb-md">
-                  <div 
-                    className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold"
-                    style={{ fontSize: '0.875rem' }}
-                  >
+                <div className="mb-md flex items-center gap-sm">
+                  <div className="flex size-10 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">
                     SO
                   </div>
                   <div>
-                    <div 
-                      className="font-semibold text-off-black"
-                      style={{ fontSize: '0.875rem' }}
-                    >
+                    <div className="text-sm font-semibold text-off-black">
                       Superoptimised
                     </div>
-                    <div 
-                      className="text-warm-gray font-mono"
-                      style={{ fontSize: '0.75rem' }}
-                    >
+                    <div className="text-xs font-mono text-warm-gray">
                       @superoptimised
                     </div>
                   </div>
                 </div>
                 
                 {/* X Content */}
-                <div 
-                  className="mb-md text-off-black"
-                  style={{ fontSize: '1rem', lineHeight: 1.5 }}
-                >
+                <div className="mb-md text-base text-off-black">
                   Day 1 of building in public: Community is already shaping technical decisions. 
                   Magic links vs traditional auth poll results coming in. This is exactly why 
                   transparent building works.
                 </div>
                 
                 {/* X Stats */}
-                <div 
-                  className="flex gap-md text-warm-gray font-mono"
-                  style={{ fontSize: '0.875rem' }}
-                >
+                <div className="flex gap-md text-sm font-mono text-warm-gray">
                   <div className="flex items-center gap-1">
-                    <Repeat2 className="w-4 h-4" />
+                    <Repeat2 className="size-4" />
                     <span>8</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <Heart className="w-4 h-4" />
+                    <Heart className="size-4" />
                     <span>15</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <MessageCircle className="w-4 h-4" />
+                    <MessageCircle className="size-4" />
                     <span>5</span>
                   </div>
                 </div>

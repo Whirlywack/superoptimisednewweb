@@ -42,23 +42,22 @@ export function JourneyHero() {
 
   return (
     <section 
-      className="w-full py-2xl px-4" 
+      className="w-full px-4 py-2xl" 
       style={{ background: 'linear-gradient(135deg, rgba(100, 116, 139, 0.02), rgba(100, 116, 139, 0.05))' }}
       aria-labelledby="journey-hero-heading"
     >
-      <div className="max-w-6xl mx-auto grid grid-cols-12 gap-6">
+      <div className="mx-auto grid max-w-6xl grid-cols-12 gap-6">
         {/* Hero Content - Left 8 columns */}
         <div className="col-span-12 md:col-span-8">
           {/* Hero Label */}
-          <div className="text-sm text-primary font-semibold uppercase tracking-wide mb-sm font-mono">
+          <div className="mb-sm font-mono text-sm font-semibold uppercase tracking-wide text-primary">
             Building Journey
           </div>
           
           {/* Hero Title */}
           <h1 
             id="journey-hero-heading"
-            className="font-bold text-off-black mb-lg"
-            style={{ fontSize: 'clamp(3rem, 6vw, 5rem)', fontWeight: 700, lineHeight: 1.1, letterSpacing: '-0.01em' }}
+            className="mb-lg text-hero font-bold text-off-black"
           >
             Every Decision<br />
             Shaped By<br />
@@ -66,7 +65,7 @@ export function JourneyHero() {
           </h1>
           
           {/* Hero Description */}
-          <p className="text-lg text-warm-gray leading-relaxed mb-xl max-w-[65ch]">
+          <p className="mb-xl max-w-[65ch] text-lg leading-relaxed text-warm-gray">
             This is the complete building journey where your input drives every technical decision. 
             From initial planning to launch, nothing is hidden. Watch how community feedback 
             transforms ideas into reality, one decision at a time.
@@ -74,33 +73,33 @@ export function JourneyHero() {
           
           {/* Current Status */}
           <div 
-            className="p-lg mb-xl border-l-4 border-primary"
+            className="mb-xl border-l-4 border-primary p-lg"
             style={{ background: 'rgba(100, 116, 139, 0.1)' }}
           >
-            <div className="text-sm text-primary font-semibold mb-sm font-mono">
+            <div className="mb-sm font-mono text-sm font-semibold text-primary">
               Current Focus
             </div>
-            <div className="text-off-black font-medium mb-sm">
+            <div className="mb-sm font-medium text-off-black">
               Building Magic Link Questionnaire System
             </div>
-            <div className="text-sm text-warm-gray font-mono">
+            <div className="font-mono text-sm text-warm-gray">
               Community input: 17 votes across 4 active decisions
             </div>
           </div>
 
           {/* Journey-Specific Poll */}
-          <div className="bg-white border-2 border-light-gray rounded-lg p-md transition-all duration-200">
-            <div className="text-sm font-semibold text-off-black mb-md leading-relaxed">
+          <div className="rounded-lg border-2 border-light-gray bg-white p-md transition-all duration-200">
+            <div className="mb-md text-sm font-semibold leading-relaxed text-off-black">
               What's most valuable in a building journey?
             </div>
-            <div className="flex gap-sm mb-md">
+            <div className="mb-md flex gap-sm">
               <button
                 onClick={() => handlePollVote('decisions')}
                 className={cn(
-                  "flex-1 py-sm px-md text-center text-sm font-medium rounded transition-all duration-200",
+                  "flex-1 rounded px-md py-sm text-center text-sm font-medium transition-all duration-200",
                   selectedPoll === 'decisions' 
-                    ? "bg-primary text-white border-2 border-primary" 
-                    : "bg-light-gray hover:bg-white hover:border-primary border-2 border-transparent"
+                    ? "border-2 border-primary bg-primary text-white" 
+                    : "border-2 border-transparent bg-light-gray hover:border-primary hover:bg-white"
                 )}
               >
                 Decision Process
@@ -108,18 +107,18 @@ export function JourneyHero() {
               <button
                 onClick={() => handlePollVote('lessons')}
                 className={cn(
-                  "flex-1 py-sm px-md text-center text-sm font-medium rounded transition-all duration-200",
+                  "flex-1 rounded px-md py-sm text-center text-sm font-medium transition-all duration-200",
                   selectedPoll === 'lessons' 
-                    ? "bg-primary text-white border-2 border-primary" 
-                    : "bg-light-gray hover:bg-white hover:border-primary border-2 border-transparent"
+                    ? "border-2 border-primary bg-primary text-white" 
+                    : "border-2 border-transparent bg-light-gray hover:border-primary hover:bg-white"
                 )}
               >
                 Lessons Learned
               </button>
             </div>
-            <div className="text-xs text-warm-gray text-center">
+            <div className="text-center text-xs text-warm-gray">
               <span className="font-mono">Help shape future content</span> • 
-              <a href="https://x.com/superoptimised" className="text-primary hover:underline ml-1">
+              <a href="https://x.com/superoptimised" className="ml-1 text-primary hover:underline">
                 Discuss on X
               </a>
             </div>
@@ -127,13 +126,13 @@ export function JourneyHero() {
         </div>
 
         {/* Hero Sidebar - Right 4 columns */}
-        <div className="col-span-12 md:col-span-4 flex flex-col gap-md">
+        <div className="col-span-12 flex flex-col gap-md md:col-span-4">
           {/* Primary Newsletter CTA */}
-          <div className="bg-white border-2 border-primary rounded-lg p-lg text-center">
-            <h3 className="text-lg font-bold text-off-black mb-md">
+          <div className="rounded-lg border-2 border-primary bg-white p-lg text-center">
+            <h3 className="mb-md text-lg font-bold text-off-black">
               Follow Every Decision
             </h3>
-            <p className="text-sm text-warm-gray mb-lg">
+            <p className="mb-lg text-sm text-warm-gray">
               Weekly insights when valuable content is ready. Be among the first 100 builders 
               to get behind-the-scenes development updates.
             </p>
@@ -146,20 +145,20 @@ export function JourneyHero() {
                 required
                 disabled={isSubmitting}
                 className={cn(
-                  "w-full px-md py-sm border-2 border-light-gray rounded-sm",
-                  "text-base bg-white",
-                  "focus:outline-none focus:border-primary",
-                  "disabled:opacity-50 disabled:cursor-not-allowed"
+                  "w-full rounded-sm border-2 border-light-gray px-md py-sm",
+                  "bg-white text-base",
+                  "focus:border-primary focus:outline-none",
+                  "disabled:cursor-not-allowed disabled:opacity-50"
                 )}
               />
               <button
                 type="submit"
                 disabled={isSubmitting || !email}
                 className={cn(
-                  "w-full py-sm bg-primary text-white border-none rounded-sm text-base",
-                  "font-semibold cursor-pointer transition-all duration-200",
-                  "hover:bg-off-black hover:-translate-y-px",
-                  "disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                  "w-full rounded-sm border-none bg-primary py-sm text-base text-white",
+                  "cursor-pointer font-semibold transition-all duration-200",
+                  "hover:-translate-y-px hover:bg-off-black",
+                  "disabled:transform-none disabled:cursor-not-allowed disabled:opacity-50"
                 )}
               >
                 Get Inside Access
@@ -172,19 +171,10 @@ export function JourneyHero() {
             className="rounded-lg p-md text-center"
             style={{ background: 'rgba(100, 116, 139, 0.05)' }}
           >
-            <div 
-              className="font-bold text-primary font-mono"
-              style={{ 
-                fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', 
-                fontWeight: 800 
-              }}
-            >
+            <div className="text-xl font-mono font-bold text-primary">
               17
             </div>
-            <div 
-              className="text-warm-gray mt-xs"
-              style={{ fontSize: '0.75rem' }}
-            >
+            <div className="mt-xs text-xs text-warm-gray">
               Community Votes This Week
             </div>
           </div>
@@ -193,19 +183,10 @@ export function JourneyHero() {
             className="rounded-lg p-md text-center"
             style={{ background: 'rgba(100, 116, 139, 0.05)' }}
           >
-            <div 
-              className="font-bold text-primary font-mono"
-              style={{ 
-                fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', 
-                fontWeight: 800 
-              }}
-            >
+            <div className="text-xl font-mono font-bold text-primary">
               3
             </div>
-            <div 
-              className="text-warm-gray mt-xs"
-              style={{ fontSize: '0.75rem' }}
-            >
+            <div className="mt-xs text-xs text-warm-gray">
               Decisions Influenced
             </div>
           </div>

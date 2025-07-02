@@ -30,33 +30,23 @@ export function MidNewsletterCTA() {
   };
 
   return (
-    <section className="w-full px-4 my-2xl">
-      <div className="max-w-4xl mx-auto">
+    <section className="my-2xl w-full px-4">
+      <div className="mx-auto max-w-4xl">
         <div 
-          className="border-2 border-primary rounded-lg p-lg text-center"
+          className="rounded-lg border-2 border-primary p-lg text-center"
           style={{ 
             background: 'rgba(100, 116, 139, 0.05)',
             margin: '6rem 0'
           }}
         >
-          <h3 
-            className="font-bold text-off-black mb-md"
-            style={{ 
-              fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', 
-              fontWeight: 600, 
-              lineHeight: 1.2 
-            }}
-          >
+          <h3 className="mb-md text-xl font-semibold text-off-black">
             Don't Miss the Next Decision
           </h3>
-          <p 
-            className="text-warm-gray mb-lg max-w-[50ch] mx-auto"
-            style={{ fontSize: '1rem', lineHeight: 1.6 }}
-          >
+          <p className="mx-auto mb-lg max-w-[50ch] text-base leading-relaxed text-warm-gray">
             Major technical choices happen weekly. Get the full context and influence the direction 
             before decisions are finalized.
           </p>
-          <form onSubmit={handleSubmit} className="max-w-md mx-auto flex flex-col gap-sm">
+          <form onSubmit={handleSubmit} className="mx-auto flex max-w-md flex-col gap-sm">
             <input
               type="email"
               value={email}
@@ -65,20 +55,20 @@ export function MidNewsletterCTA() {
               required
               disabled={isSubmitting}
               className={cn(
-                "w-full px-md py-sm border-2 border-light-gray rounded-sm",
-                "text-base bg-white",
-                "focus:outline-none focus:border-primary",
-                "disabled:opacity-50 disabled:cursor-not-allowed"
+                "w-full rounded-sm border-2 border-light-gray px-md py-sm",
+                "bg-white text-base",
+                "focus:border-primary focus:outline-none",
+                "disabled:cursor-not-allowed disabled:opacity-50"
               )}
             />
             <button
               type="submit"
               disabled={isSubmitting || !email}
               className={cn(
-                "w-full py-sm bg-primary text-white border-none rounded-sm text-base",
-                "font-semibold cursor-pointer transition-all duration-200",
-                "hover:bg-off-black hover:-translate-y-px",
-                "disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                "w-full rounded-sm border-none bg-primary py-sm text-base text-white",
+                "cursor-pointer font-semibold transition-all duration-200",
+                "hover:-translate-y-px hover:bg-off-black",
+                "disabled:transform-none disabled:cursor-not-allowed disabled:opacity-50"
               )}
             >
               Get Weekly Updates
