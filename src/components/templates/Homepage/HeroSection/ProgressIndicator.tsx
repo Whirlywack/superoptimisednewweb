@@ -6,37 +6,27 @@ import { ProgressBar } from '@/components/ui/ProgressBar';
 
 export function ProgressIndicator() {
   const progressValue = 15;
-  const progressLabel = "Initial Planning Complete";
 
   return (
-    <div className="max-w-md mx-auto space-y-4">
+    <div className="bg-primary/5 border-l-4 border-primary p-8 my-12">
       {/* Progress Label */}
-      <div className="text-center">
-        <h2 className="text-h4 font-semibold text-off-black mb-2">
-          Current Progress
-        </h2>
+      <div className="text-sm text-primary font-semibold mb-2">
+        Current Progress
       </div>
 
-      {/* Visual Progress Bar */}
-      <div className="space-y-3">
-        <ProgressBar
-          value={progressValue}
-          max={100}
-          size="lg"
-          variant="default"
-          className="w-full"
+      {/* Visual Progress Bar - 6px height to match HTML */}
+      <div className="w-full h-1.5 bg-light-gray rounded-sm overflow-hidden mb-4">
+        <div 
+          className="h-full bg-primary transition-all duration-300 ease-out"
+          style={{ width: `${progressValue}%` }}
           aria-label={`Project progress: ${progressValue}% complete`}
         />
-        
-        {/* Progress Text */}
-        <div className="flex items-center justify-between text-small">
-          <span className="font-medium text-off-black">
-            {progressLabel}
-          </span>
-          <span className="text-primary font-semibold">
-            {progressValue}% Complete
-          </span>
-        </div>
+      </div>
+      
+      {/* Progress Metadata */}
+      <div className="flex items-center justify-between text-sm text-warm-gray">
+        <span className="font-mono">Initial Planning Complete</span>
+        <span>15% Complete</span>
       </div>
     </div>
   );

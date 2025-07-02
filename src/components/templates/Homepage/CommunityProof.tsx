@@ -35,24 +35,24 @@ const communityStats = [
 export function CommunityProof() {
   return (
     <section 
-      className="w-full bg-light-gray/30 px-4 py-16 md:py-20"
+      className="w-full px-4 py-xl"
       aria-labelledby="community-heading"
     >
       <div className="max-w-6xl mx-auto">
-        {/* Section Title */}
+        {/* Section Title - Centered, slightly bigger heading */}
         <h2 
           id="community-heading"
-          className="text-h1 md:text-3xl font-bold text-off-black text-center mb-12"
+          className="font-bold text-off-black text-center mb-2xl"
+          style={{ fontSize: '2rem' }}
         >
           Community Input Shapes Every Decision
         </h2>
 
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Twitter Example */}
-          <div className="order-2 lg:order-1">
+        {/* Twitter Example - Full width block above stats */}
+        <div className="mb-2xl">
+          <div className="w-full">
             <div className={cn(
-              "bg-white border border-light-gray rounded-lg p-6 shadow-sm",
-              "hover:shadow-md transition-shadow duration-200"
+              "bg-white border-2 border-light-gray rounded-lg p-lg"
             )}>
               {/* Tweet Header */}
               <div className="flex items-start gap-3 mb-4">
@@ -111,47 +111,34 @@ export function CommunityProof() {
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Community Stats Grid */}
-          <div className="order-1 lg:order-2">
-            <div className="grid grid-cols-2 gap-6">
+        {/* Community Stats Grid - Full width with light gray background */}
+        <div className="w-full bg-primary/5 rounded-lg p-lg">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-md mb-md">
               {communityStats.map((stat, index) => {
                 const IconComponent = stat.icon;
                 return (
                   <div 
                     key={index}
-                    className={cn(
-                      "bg-white border border-light-gray rounded-lg p-6 text-center",
-                      "hover:shadow-md transition-shadow duration-200"
-                    )}
+                    className="text-center"
                   >
-                    <div className="flex justify-center mb-3">
-                      <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                        <IconComponent className="h-6 w-6 text-primary" />
-                      </div>
-                    </div>
-                    <div className="text-h1 font-bold text-primary mb-1">
+                    <div className="font-bold text-primary font-mono mb-2" style={{ fontSize: '3rem' }}>
                       {stat.value}
                     </div>
-                    <div className="text-body font-semibold text-off-black mb-1">
+                    <div className="text-sm text-warm-gray">
                       {stat.label}
-                    </div>
-                    <div className="text-small text-warm-gray">
-                      {stat.description}
                     </div>
                   </div>
                 );
               })}
-            </div>
-
-            {/* Footer Note */}
-            <div className="mt-8 p-4 bg-primary/5 border border-primary/20 rounded-lg">
-              <p className="text-small text-warm-gray text-center leading-relaxed">
-                Real-time community input from X polls and website questionnaires 
-                shapes every technical decision.
-              </p>
-            </div>
           </div>
+
+          {/* Footer Note */}
+          <p className="text-xs text-warm-gray text-center italic leading-relaxed">
+            Real-time community input from X polls and website questionnaires 
+            shapes every technical decision.
+          </p>
         </div>
       </div>
     </section>

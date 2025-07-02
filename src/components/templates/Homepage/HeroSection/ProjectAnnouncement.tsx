@@ -5,37 +5,30 @@ import { cn } from '@/lib/utils';
 
 export function ProjectAnnouncement() {
   return (
-    <div className="text-center space-y-6">
-      {/* Small Label */}
-      <div className="inline-flex items-center px-4 py-2 bg-primary/10 border border-primary/20 rounded-full">
-        <span className="text-small font-medium text-primary tracking-wide uppercase">
-          Building Decision Made
-        </span>
+    <>
+      {/* Hero Label - Exact HTML match */}
+      <div className="text-sm font-mono text-primary font-semibold tracking-wider uppercase mb-4">
+        Building Decision Made
       </div>
 
-      {/* Main Headline */}
+      {/* Main Headline - Exact HTML match */}
       <h1 
         id="hero-heading"
-        className={cn(
-          "text-h1 md:text-4xl lg:text-5xl font-bold text-off-black",
-          "leading-tight tracking-tight max-w-3xl mx-auto"
-        )}
+        className="text-mega font-extrabold text-off-black leading-none tracking-tighter uppercase mb-8"
       >
-        <span className="block">Magic Link</span>
-        <span className="block">Questionnaire</span>
-        <span className="block text-primary">System</span>
+        Magic Link<br/>
+        Questionnaire<br/>
+        System
       </h1>
 
-      {/* Description Paragraph */}
-      <div className="max-w-2xl mx-auto">
-        <p className="text-body md:text-lg text-warm-gray leading-relaxed">
-          I've decided to build an anonymous community feedback system for developers. 
-          Traditional sign-ups kill honest feedback—magic links solve this.{' '}
-          <strong className="font-semibold text-off-black">
-            Your input helps refine every technical decision along the way.
-          </strong>
-        </p>
-      </div>
-    </div>
+      {/* Description Paragraph - Exact HTML match */}
+      <p className="text-lg text-warm-gray leading-relaxed max-w-[65ch] mb-12">
+        I&apos;ve decided to build an anonymous community feedback system for developers. 
+        Traditional sign-ups kill honest feedback—magic links solve this.{' '}
+        <strong className="font-bold text-warm-gray">
+          Your input helps refine every technical decision along the way.
+        </strong>
+      </p>
+    </>
   );
 }

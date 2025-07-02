@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Superoptimised - Building in Public</title>
+    <meta name="description" content="Following my journey building tools transparently. Every decision documented, community input welcomed. Join the honest development process.">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Superoptimised - Building in Public">
+    <meta property="og:description" content="Following my journey building tools transparently. Every decision documented, community input welcomed.">
+    <meta property="og:image" content="/og-image.jpg">
+    
+    <!-- Preload critical fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS Custom Properties - Enhanced Design System */
+        :root {
+            /* Enhanced Colors - Elevated Brutalism */
+            --off-black: #1a1a1a;
+            --off-white: #fafafa;
+            --warm-gray: #6b7280;
+            --light-gray: #f3f4f6;
+            --primary: #64748b;
+            --success: #10b981;
+            --accent: #0ea5e9;
+            --xp-color: #f59e0b;
+            
+            /* Brutalist Typography Scale - Dramatic Ratios */
+            --text-mega: clamp(4rem, 8vw, 7.5rem);     /* 120px desktop */
+            --text-hero: clamp(3rem, 6vw, 5rem);       /* 80px desktop */
+            --text-xl: clamp(1.5rem, 3vw, 2.5rem);     /* 40px desktop */
+            --text-lg: 1.25rem;                        /* 20px */
+            --text-base: 1rem;                         /* 16px */
+            --text-sm: 0.875rem;                       /* 14px */
+            --text-xs: 0.75rem;                        /* 12px */
+            
+            /* Spacing System */
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 2rem;
+            --space-lg: 3rem;
+            --space-xl: 4rem;
+            --space-2xl: 6rem;
+            
+            /* Layout */
+            --max-width: 1200px;
+            --grid-gap: 24px;
+        }
+        
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-size: var(--text-base);
+            line-height: 1.6;
+            color: var(--off-black);
+            background-color: var(--off-white);
+            font-weight: 400;
+        }
+        
+        /* Typography - Elevated Brutalism */
+        .text-mega {
+            font-size: var(--text-mega);
+            font-weight: 800;
+            line-height: 0.9;
+            letter-spacing: -0.02em;
+            text-transform: uppercase;
+        }
+        
+        .text-hero {
+            font-size: var(--text-hero);
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -0.01em;
+        }
+        
+        .text-xl {
+            font-size: var(--text-xl);
+            font-weight: 600;
+            line-height: 1.2;
+        }
+        
+        .text-lg {
+            font-size: var(--text-lg);
+            font-weight: 500;
+            line-height: 1.4;
+        }
+        
+        .text-base {
+            font-size: var(--text-base);
+            font-weight: 400;
+            line-height: 1.6;
+        }
+        
+        .text-sm {
+            font-size: var(--text-sm);
+            font-weight: 400;
+            line-height: 1.5;
+        }
+        
+        .text-mono {
+            font-family: 'JetBrains Mono', Consolas, 'Courier New', monospace;
+        }
+        
+        /* Layout System */
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 var(--space-md);
+            position: relative;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: var(--grid-gap);
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Navigation */
+        .nav {
+            padding: var(--space-md) 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-weight: 800;
+            font-size: var(--text-xl);
+            color: var(--off-black);
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: var(--space-lg);
+            list-style: none;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: var(--warm-gray);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 200ms ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary);
+        }
+        
+        .social-link {
+            color: var(--warm-gray);
+            text-decoration: none;
+            font-size: var(--text-sm);
+            padding: var(--space-xs) var(--space-sm);
+            border: 1px solid var(--light-gray);
+            border-radius: 4px;
+            transition: all 200ms ease;
+        }
+        
+        .social-link:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: var(--space-2xl) 0;
+            position: relative;
+        }
+        
+        .hero-content {
+            grid-column: 1 / -1;
+        }
+        
+        .hero-label {
+            color: var(--primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: var(--space-sm);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .hero-title {
+            margin-bottom: var(--space-md);
+        }
+        
+        .hero-description {
+            color: var(--warm-gray);
+            margin-bottom: var(--space-lg);
+            max-width: 65ch;
+            font-size: var(--text-lg);
+        }
+        
+        .progress-container {
+            margin: var(--space-lg) 0;
+            padding: var(--space-md);
+            background: rgba(100, 116, 139, 0.05);
+            border-left: 4px solid var(--primary);
+        }
+        
+        .progress-label {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: var(--space-xs);
+            font-size: var(--text-sm);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--light-gray);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: var(--space-sm);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 15%;
+            transition: width 300ms ease;
+        }
+        
+        .progress-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--warm-gray);
+            font-size: var(--text-sm);
+        }
+        
+        /* Dual Poll Container */
+        .dual-polls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-md);
+            margin: var(--space-lg) 0;
+        }
+        
+        /* Quick Poll Widget */
+        .quick-poll {
+            background: white;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            padding: var(--space-md);
+            flex: 1;
+            transition: opacity 200ms ease, transform 200ms ease;
+        }
+        
+        .quick-poll.fading {
+            opacity: 0;
+            transform: translateY(-5px);
+        }
+        
+        .quick-poll.fresh {
+            opacity: 0;
+            transform: translateY(5px);
+        }
+        
+        .quick-poll.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .poll-question {
+            font-weight: 600;
+            margin-bottom: var(--space-md);
+            color: var(--off-black);
+            font-size: var(--text-sm);
+            line-height: 1.4;
+        }
+        
+        .poll-options {
+            display: flex;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-md);
+        }
+        
+        .poll-option {
+            flex: 1;
+            padding: var(--space-sm) var(--space-md);
+            background: var(--light-gray);
+            border: 2px solid transparent;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 200ms ease;
+            text-align: center;
+            font-weight: 500;
+            font-size: var(--text-sm);
+        }
+        
+        .poll-option:hover {
+            border-color: var(--primary);
+            background: white;
+        }
+        
+        .poll-option.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .poll-meta {
+            color: var(--warm-gray);
+            font-size: var(--text-xs);
+            text-align: center;
+        }
+
+        .questionnaire-prompt {
+            background: rgba(100, 116, 139, 0.05);
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            padding: var(--space-md);
+            margin: var(--space-md) 0;
+        }
+
+        .prompt-content p {
+            margin-bottom: var(--space-md);
+            color: var(--off-black);
+        }
+
+        .prompt-options {
+            display: flex;
+            gap: var(--space-sm);
+            flex-wrap: wrap;
+        }
+
+        .additional-questions {
+            margin-top: var(--space-md);
+        }
+
+        .additional-questions .quick-poll {
+            background: rgba(100, 116, 139, 0.02);
+            border-color: var(--primary);
+        }
+
+        /* Community Stats */
+        .community-stats {
+            grid-column: 1 / -1;
+            background: rgba(100, 116, 139, 0.05);
+            border-radius: 8px;
+            padding: var(--space-lg);
+            margin-top: var(--space-lg);
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: var(--space-md);
+            margin-bottom: var(--space-md);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: var(--text-xl);
+            font-weight: 800;
+            color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .stat-label {
+            font-size: var(--text-sm);
+            color: var(--warm-gray);
+            margin-top: var(--space-xs);
+        }
+
+        .stats-note {
+            text-align: center;
+            color: var(--warm-gray);
+            font-size: var(--text-sm);
+            font-style: italic;
+        }
+        
+        /* Hero CTAs */
+        .hero-ctas {
+            display: flex;
+            gap: var(--space-md);
+            flex-wrap: wrap;
+            margin-top: var(--space-lg);
+        }
+        
+        /* Building Philosophy Section */
+        .philosophy {
+            padding: var(--space-2xl) 0;
+            background: rgba(100, 116, 139, 0.02);
+        }
+        
+        .philosophy-content {
+            grid-column: 1 / 9;
+        }
+        
+        .philosophy-title {
+            margin-bottom: var(--space-lg);
+        }
+        
+        .philosophy-text {
+            color: var(--warm-gray);
+            margin-bottom: var(--space-md);
+            max-width: 65ch;
+        }
+        
+        .philosophy-highlight {
+            background: rgba(100, 116, 139, 0.1);
+            padding: var(--space-md);
+            border-left: 4px solid var(--primary);
+            margin: var(--space-lg) 0;
+            font-style: italic;
+        }
+        
+        .x-mention {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .x-mention:hover {
+            text-decoration: underline;
+        }
+        
+        /* Community Proof Section */
+        .community-proof {
+            padding: var(--space-2xl) 0;
+        }
+        
+        .community-title {
+            grid-column: 1 / -1;
+            margin-bottom: var(--space-xl);
+            text-align: center;
+        }
+        
+        .twitter-embed {
+            grid-column: 1 / -1;
+            background: white;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+        }
+        
+        .tweet-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-md);
+        }
+        
+        .tweet-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--light-gray);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .tweet-author {
+            font-weight: 600;
+            color: var(--off-black);
+        }
+        
+        .tweet-handle {
+            color: var(--warm-gray);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .tweet-content {
+            margin-bottom: var(--space-md);
+            line-height: 1.5;
+        }
+        
+        .tweet-stats {
+            display: flex;
+            gap: var(--space-md);
+            color: var(--warm-gray);
+            font-size: var(--text-sm);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .tweet-stat {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+        
+        /* Newsletter Section */
+        .newsletter {
+            padding: var(--space-2xl) 0;
+            background: rgba(100, 116, 139, 0.02);
+        }
+        
+        .newsletter-content {
+            grid-column: 1 / 9;
+        }
+        
+        .newsletter-title {
+            margin-bottom: var(--space-lg);
+        }
+        
+        .newsletter-description {
+            color: var(--warm-gray);
+            margin-bottom: var(--space-lg);
+            max-width: 60ch;
+        }
+        
+        .newsletter-form {
+            display: flex;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-md);
+        }
+        
+        .newsletter-input {
+            flex: 1;
+            padding: var(--space-sm) var(--space-md);
+            border: 2px solid var(--light-gray);
+            border-radius: 4px;
+            font-size: var(--text-base);
+            background: white;
+            max-width: 300px;
+        }
+        
+        .newsletter-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .newsletter-meta {
+            color: var(--warm-gray);
+            font-size: var(--text-sm);
+        }
+        
+        .current-count {
+            color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: var(--space-sm) var(--space-lg);
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 200ms ease;
+            text-decoration: none;
+            display: inline-block;
+            font-size: var(--text-base);
+        }
+        
+        .btn:hover {
+            background: var(--off-black);
+            transform: translateY(-1px);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Footer */
+        .footer {
+            padding: var(--space-xl) 0;
+            border-top: 1px solid var(--light-gray);
+            background: rgba(100, 116, 139, 0.02);
+        }
+        
+        .footer-content {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: var(--space-lg);
+            align-items: center;
+        }
+        
+        .footer-link {
+            color: var(--warm-gray);
+            text-decoration: none;
+            font-size: var(--text-sm);
+        }
+        
+        .footer-link:hover {
+            color: var(--primary);
+        }
+        
+        /* Enhanced XP Toast System */
+        .xp-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--xp-color), #f97316);
+            color: white;
+            padding: var(--space-sm) var(--space-lg);
+            border-radius: 8px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            transform: translateX(400px) scale(0.8);
+            transition: all 300ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .xp-toast.show {
+            transform: translateX(0) scale(1);
+        }
+        
+        .xp-toast.level-up {
+            background: linear-gradient(135deg, var(--success), #059669);
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+        }
+        
+        .xp-toast.milestone {
+            background: linear-gradient(135deg, var(--accent), #0284c7);
+            box-shadow: 0 4px 20px rgba(14, 165, 233, 0.3);
+            font-size: var(--text-lg);
+            padding: var(--space-md) var(--space-xl);
+        }
+        
+        /* Streak Indicator */
+        .streak-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(100, 116, 139, 0.95);
+            color: white;
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: 20px;
+            font-size: var(--text-xs);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 300ms ease;
+            z-index: 999;
+        }
+        
+        .streak-indicator.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 var(--space-sm);
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+                gap: var(--space-sm);
+            }
+            
+            .hero-content,
+            .philosophy-content,
+            .newsletter-content,
+            .community-title,
+            .twitter-embed,
+            .community-stats,
+            .footer-content {
+                grid-column: 1;
+            }
+            
+            .nav-links {
+                gap: var(--space-md);
+            }
+            
+            .hero-ctas,
+            .prompt-options {
+                flex-direction: column;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+            }
+            
+            .newsletter-input {
+                max-width: none;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: var(--space-md);
+                text-align: center;
+            }
+            
+            .dual-polls {
+                grid-template-columns: 1fr;
+                gap: var(--space-sm);
+            }
+
+            .stat-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: var(--space-sm);
+            }
+            
+            .xp-toast {
+                right: 10px;
+                top: 10px;
+                font-size: var(--text-sm);
+                padding: var(--space-xs) var(--space-sm);
+            }
+            
+            .streak-indicator {
+                right: 10px;
+                bottom: 10px;
+            }
+        }
+        
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        
+        /* Focus States */
+        .nav-link:focus,
+        .btn:focus,
+        .newsletter-input:focus,
+        .poll-option:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="container">
+            <div class="nav-container">
+                <a href="/" class="logo">Superoptimised</a>
+                <ul class="nav-links">
+                    <li><a href="/journey" class="nav-link">Journey</a></li>
+                    <li><a href="/about" class="nav-link">About</a></li>
+                    <li><a href="https://x.com/superoptimised" class="social-link" target="_blank">Follow on X</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="grid">
+                <div class="hero-content">
+                    <div class="hero-label text-sm">Building Decision Made</div>
+                    <h1 class="text-mega hero-title">Magic Link<br>Questionnaire<br>System</h1>
+                    <p class="text-lg hero-description">
+                        I've decided to build an anonymous community feedback system for developers. 
+                        Traditional sign-ups kill honest feedback—magic links solve this. 
+                        <strong>Your input helps refine every technical decision along the way.</strong>
+                    </p>
+                    
+                    <div class="progress-container">
+                        <div class="progress-label text-sm">Current Progress</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                        <div class="progress-meta">
+                            <span class="text-mono">Initial Planning Complete</span>
+                            <span>15% Complete</span>
+                        </div>
+                    </div>
+
+                    <!-- Dual Poll Widgets -->
+                    <div class="dual-polls">
+                        <div class="quick-poll">
+                            <div class="poll-question">Quick input: Which authentication approach feels more trustworthy for anonymous feedback?</div>
+                            <div class="poll-options">
+                                <button class="poll-option" data-option="magic-links" data-poll="auth">Magic Links</button>
+                                <button class="poll-option" data-option="anonymous-ids" data-poll="auth">Anonymous IDs</button>
+                            </div>
+                            <div class="poll-meta">
+                                <span class="text-mono">2 votes so far</span> • 
+                                <a href="https://x.com/superoptimised" class="x-mention">Discuss on X</a>
+                            </div>
+                        </div>
+
+                        <div class="quick-poll">
+                            <div class="poll-question">Mobile vs Desktop priority for the questionnaire interface?</div>
+                            <div class="poll-options">
+                                <button class="poll-option" data-option="mobile-first" data-poll="platform">Mobile-First</button>
+                                <button class="poll-option" data-option="desktop-rich" data-poll="platform">Desktop-Rich</button>
+                            </div>
+                            <div class="poll-meta">
+                                <span class="text-mono">0 votes</span> • 
+                                <a href="https://x.com/superoptimised" class="x-mention">Share on X</a>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    
+                    <div class="hero-ctas">
+                        <a href="/journey" class="btn">Follow the Building Process</a>
+                        <a href="/questionnaire" class="btn btn-outline">Take Full Questionnaire</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Building Philosophy -->
+    <section class="philosophy">
+        <div class="container">
+            <div class="grid">
+                <div class="philosophy-content">
+                    <h2 class="text-hero philosophy-title">Why Build in Public?</h2>
+                    <p class="text-base philosophy-text">
+                        Traditional development happens behind closed doors. Decisions are made in isolation, 
+                        problems are hidden until launch, and communities only see the polished final product.
+                    </p>
+                    <p class="text-base philosophy-text">
+                        I'm building differently. Every decision gets documented, every challenge shared, 
+                        and the community helps shape the direction. This transparency leads to better products, 
+                        stronger relationships, and genuine learning.
+                    </p>
+                    
+                    <div class="philosophy-highlight">
+                        "The best feedback comes from real problems, not survey responses. 
+                        Building transparently creates trust—and trust creates honest input."
+                    </div>
+                    
+                    <p class="text-base philosophy-text">
+                        Most conversations happen on <a href="https://x.com/superoptimised" class="x-mention">X (@superoptimised)</a> 
+                        where you can see live decision-making, vote in polls, and influence the building process. 
+                        This website documents the complete journey for deeper context.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Community Proof -->
+    <section class="community-proof">
+        <div class="container">
+            <div class="grid">
+                <h2 class="text-xl community-title">Community Input Shapes Every Decision</h2>
+                
+                <!-- Current Twitter Poll Example -->
+                <div class="twitter-embed">
+                    <div class="tweet-header">
+                        <div class="tweet-avatar">SO</div>
+                        <div>
+                            <div class="tweet-author">Superoptimised</div>
+                            <div class="tweet-handle text-sm">@superoptimised</div>
+                        </div>
+                    </div>
+                    <div class="tweet-content">
+                        Should I prioritize mobile-first design or desktop experience for the questionnaire system? 
+                        Mobile = better accessibility, Desktop = richer interactions. Your thoughts?
+                    </div>
+                    <div class="tweet-stats">
+                        <div class="tweet-stat">
+                            <span>📱</span>
+                            <span>Mobile-first: 67%</span>
+                        </div>
+                        <div class="tweet-stat">
+                            <span>💻</span>
+                            <span>Desktop: 33%</span>
+                        </div>
+                        <div class="tweet-stat">
+                            <span>15 votes</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Community Stats -->
+                <div class="community-stats">
+                    <div class="stat-grid">
+                        <div class="stat-item">
+                            <div class="stat-number">17</div>
+                            <div class="stat-label">Total Votes</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">3</div>
+                            <div class="stat-label">Decisions Influenced</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">4</div>
+                            <div class="stat-label">Active Polls</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">1</div>
+                            <div class="stat-label">Days Building</div>
+                        </div>
+                    </div>
+                    <p class="stats-note">
+                        Real-time community input from X polls and website questionnaires shapes every technical decision.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="newsletter">
+        <div class="container">
+            <div class="grid">
+                <div class="newsletter-content">
+                    <h2 class="text-xl newsletter-title">Join the Building Journey</h2>
+                    <p class="newsletter-description">
+                        Weekly building insights launching when valuable. I won't start sending until I have 
+                        meaningful weekly content and at least 100 builders to write to. Your early signup 
+                        helps reach that goal and shows there's genuine interest in this transparent approach.
+                    </p>
+                    
+                    <div class="newsletter-form">
+                        <input 
+                            type="email" 
+                            placeholder="your@email.com" 
+                            class="newsletter-input"
+                            id="newsletter-email"
+                            required
+                        >
+                        <button type="submit" class="btn" id="newsletter-submit">Be Among the First 100</button>
+                    </div>
+                    
+                    <p class="newsletter-meta">
+                        Currently <span class="current-count" id="subscriber-count">0 builders</span> signed up. 
+                        Weekly updates when launched, unsubscribe anytime, absolutely no spam.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="grid">
+                <div class="footer-content">
+                    <div>
+                        <span class="text-sm" style="color: var(--warm-gray);">
+                            © 2024 Superoptimised. Built transparently.
+                        </span>
+                    </div>
+                    <div class="footer-links">
+                        <a href="/journey" class="footer-link">Journey</a>
+                        <a href="/about" class="footer-link">About</a>
+                        <a href="https://x.com/superoptimised" class="footer-link">X</a>
+                        <a href="mailto:hello@superoptimised.com" class="footer-link">Contact</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Enhanced XP Toast System -->
+    <div class="xp-toast" id="xp-toast" style="display: none;">
+        +5 XP • Thanks for your input!
+    </div>
+
+    <!-- Streak Indicator -->
+    <div class="streak-indicator" id="streak-indicator" style="display: none;">
+        🔥 Feedback Streak: 1
+    </div>
+
+    <script>
+        // Enhanced participation tracking and gamification
+        let participationCount = parseInt(localStorage.getItem('participationCount') || '0');
+        let feedbackStreak = parseInt(localStorage.getItem('feedbackStreak') || '0');
+        let lastParticipationDate = localStorage.getItem('lastParticipationDate');
+        
+        // XP Messages with progression
+        const xpMessages = [
+            { text: "+5 XP • First input!", class: "level-up" },
+            { text: "+10 XP • Getting involved!", class: "" },
+            { text: "+15 XP • Building momentum!", class: "" },
+            { text: "+20 XP • Community champion!", class: "level-up" },
+            { text: "+25 XP • Feedback hero!", class: "" },
+            { text: "+50 XP • Super contributor!", class: "milestone" },
+            { text: "+100 XP • Building legend!", class: "milestone" }
+        ];
+        
+        // Streak messages
+        const streakMessages = [
+            "🔥 Feedback Streak: 1",
+            "⚡ Feedback Streak: 2",
+            "💫 Feedback Streak: 3",
+            "🚀 Feedback Streak: 4",
+            "⭐ Feedback Streak: 5+",
+        ];
+        
+        // Question bank for dynamic replacement
+        const questionBank = {
+            auth: [
+                {
+                    question: "After magic links are chosen, what's the backup authentication method?",
+                    options: [
+                        { text: "Email Code", value: "email-code" },
+                        { text: "Simple Password", value: "simple-password" }
+                    ]
+                },
+                {
+                    question: "How long should magic links remain valid?",
+                    options: [
+                        { text: "15 minutes", value: "15min" },
+                        { text: "24 hours", value: "24hrs" }
+                    ]
+                }
+            ],
+            platform: [
+                {
+                    question: "What's more important for mobile questionnaires?",
+                    options: [
+                        { text: "Speed", value: "speed" },
+                        { text: "Rich Features", value: "features" }
+                    ]
+                },
+                {
+                    question: "Should questionnaires work offline?",
+                    options: [
+                        { text: "Yes, Essential", value: "offline-yes" },
+                        { text: "No, Online Only", value: "offline-no" }
+                    ]
+                }
+            ],
+            general: [
+                {
+                    question: "How long should questionnaires be to get honest responses?",
+                    options: [
+                        { text: "Under 2 min", value: "under-2min" },
+                        { text: "5 min for depth", value: "5min-deep" }
+                    ]
+                },
+                {
+                    question: "What's most important for building trust in anonymous feedback?",
+                    options: [
+                        { text: "Full Transparency", value: "transparency" },
+                        { text: "Dead Simple UX", value: "simplicity" }
+                    ]
+                },
+                {
+                    question: "Should users see real-time results while voting?",
+                    options: [
+                        { text: "Yes, Show Progress", value: "show-results" },
+                        { text: "No, Hide Until End", value: "hide-results" }
+                    ]
+                },
+                {
+                    question: "What motivates you to complete feedback surveys?",
+                    options: [
+                        { text: "Seeing Impact", value: "impact" },
+                        { text: "Quick & Easy", value: "convenience" }
+                    ]
+                }
+            ]
+        };
+        
+        // Track which questions have been used
+        let usedQuestions = {
+            auth: [],
+            platform: [],
+            general: []
+        };
+        
+        // Update streak based on date
+        function updateStreak() {
+            const today = new Date().toDateString();
+            
+            if (lastParticipationDate === today) {
+                return;
+            }
+            
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            
+            if (lastParticipationDate === yesterday.toDateString()) {
+                feedbackStreak++;
+            } else if (lastParticipationDate && lastParticipationDate !== today) {
+                feedbackStreak = 1;
+            } else {
+                feedbackStreak = 1;
+            }
+            
+            localStorage.setItem('feedbackStreak', feedbackStreak.toString());
+            localStorage.setItem('lastParticipationDate', today);
+        }
+        
+        // Get next question from bank
+        function getNextQuestion(pollType) {
+            let availableQuestions = [];
+            
+            // First try specific poll type questions
+            if (questionBank[pollType]) {
+                availableQuestions = questionBank[pollType].filter((_, index) => 
+                    !usedQuestions[pollType].includes(index)
+                );
+            }
+            
+            // If no specific questions left, use general questions
+            if (availableQuestions.length === 0) {
+                availableQuestions = questionBank.general.filter((_, index) => 
+                    !usedQuestions.general.includes(index)
+                );
+                pollType = 'general';
+            }
+            
+            // If still no questions, reset and start over
+            if (availableQuestions.length === 0) {
+                usedQuestions[pollType] = [];
+                availableQuestions = questionBank[pollType] || questionBank.general;
+                pollType = questionBank[pollType] ? pollType : 'general';
+            }
+            
+            // Pick random question
+            const randomIndex = Math.floor(Math.random() * availableQuestions.length);
+            const question = availableQuestions[randomIndex];
+            
+            // Mark as used
+            const originalIndex = (questionBank[pollType] || questionBank.general).indexOf(question);
+            usedQuestions[pollType].push(originalIndex);
+            
+            return { question, pollType: pollType };
+        }
+        
+        // Replace poll with new question
+        function replacePollQuestion(pollContainer, pollType) {
+            const nextQuestion = getNextQuestion(pollType);
+            
+            // Fade out current poll
+            pollContainer.classList.add('fading');
+            
+            setTimeout(() => {
+                // Update poll content
+                const questionEl = pollContainer.querySelector('.poll-question');
+                const optionsEl = pollContainer.querySelector('.poll-options');
+                const metaEl = pollContainer.querySelector('.poll-meta');
+                
+                questionEl.textContent = nextQuestion.question.question;
+                
+                // Clear and rebuild options
+                optionsEl.innerHTML = '';
+                nextQuestion.question.options.forEach(option => {
+                    const button = document.createElement('button');
+                    button.className = 'poll-option';
+                    button.setAttribute('data-option', option.value);
+                    button.setAttribute('data-poll', nextQuestion.pollType);
+                    button.textContent = option.text;
+                    optionsEl.appendChild(button);
+                });
+                
+                // Update meta
+                metaEl.innerHTML = `
+                    <span class="text-mono">0 votes</span> • 
+                    <a href="https://x.com/superoptimised" class="x-mention">Share on X</a>
+                `;
+                
+                // Remove fading class and add fresh
+                pollContainer.classList.remove('fading');
+                pollContainer.classList.add('fresh');
+                
+                // Fade in new question
+                setTimeout(() => {
+                    pollContainer.classList.remove('fresh');
+                    pollContainer.classList.add('active');
+                    
+                    // Re-attach event listeners to new options
+                    attachPollListeners(pollContainer);
+                }, 20);
+                
+            }, 200);
+        }
+        
+        // Attach poll event listeners
+        function attachPollListeners(container = document) {
+            container.querySelectorAll('.poll-option').forEach(option => {
+                // Remove existing listeners to avoid duplicates
+                option.replaceWith(option.cloneNode(true));
+            });
+            
+            container.querySelectorAll('.poll-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const pollContainer = this.closest('.quick-poll');
+                    const pollType = this.dataset.poll;
+                    
+                    // Remove selected from all options in this poll
+                    pollContainer.querySelectorAll('.poll-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // Add selected to clicked option
+                    this.classList.add('selected');
+                    
+                    // Update participation tracking
+                    participationCount++;
+                    localStorage.setItem('participationCount', participationCount.toString());
+                    updateStreak();
+                    
+                    // Show XP feedback
+                    showXPFeedback();
+                    
+                    // Show streak indicator if streak > 1
+                    if (feedbackStreak > 1) {
+                        showStreakIndicator();
+                    }
+                    
+                    // Replace this poll with new question after short delay
+                    setTimeout(() => {
+                        replacePollQuestion(pollContainer, pollType);
+                    }, 600);
+                    
+                    console.log(`Voted for: ${this.dataset.option} in poll: ${pollType}`);
+                });
+            });
+        }
+        
+        // Enhanced XP feedback system
+        function showXPFeedback() {
+            const toast = document.getElementById('xp-toast');
+            const messageIndex = Math.min(participationCount - 1, xpMessages.length - 1);
+            const message = xpMessages[messageIndex];
+            
+            toast.textContent = message.text;
+            toast.className = `xp-toast ${message.class}`;
+            toast.style.display = 'block';
+            
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                }, 300);
+            }, 3000);
+        }
+        
+        // Streak indicator
+        function showStreakIndicator() {
+            const streakEl = document.getElementById('streak-indicator');
+            const messageIndex = Math.min(feedbackStreak - 1, streakMessages.length - 1);
+            
+            streakEl.textContent = streakMessages[messageIndex];
+            streakEl.style.display = 'block';
+            
+            setTimeout(() => {
+                streakEl.classList.add('show');
+            }, 500);
+            
+            setTimeout(() => {
+                streakEl.classList.remove('show');
+                setTimeout(() => {
+                    streakEl.style.display = 'none';
+                }, 300);
+            }, 4000);
+        }
+        
+        // Newsletter form handling
+        document.getElementById('newsletter-submit').addEventListener('click', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('newsletter-email').value;
+            
+            if (!email) return;
+            
+            this.textContent = 'Thank you!';
+            this.disabled = true;
+            
+            const currentCount = parseInt(document.getElementById('subscriber-count').textContent.split(' ')[0]);
+            document.getElementById('subscriber-count').textContent = `${currentCount + 1} builders`;
+            
+            document.getElementById('newsletter-email').value = '';
+            
+            // Show special XP for newsletter signup
+            const toast = document.getElementById('xp-toast');
+            toast.textContent = "+25 XP • Newsletter signup!";
+            toast.className = "xp-toast level-up";
+            toast.style.display = 'block';
+            
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                }, 300);
+            }, 3500);
+            
+            setTimeout(() => {
+                this.textContent = 'Be Among the First 100';
+                this.disabled = false;
+            }, 3000);
+            
+            console.log(`Newsletter signup: ${email}`);
+        });
+        
+        // Progress bar animation on load
+        window.addEventListener('load', function() {
+            const progressFill = document.querySelector('.progress-fill');
+            if (progressFill) {
+                setTimeout(() => {
+                    progressFill.style.width = '15%';
+                }, 500);
+            }
+            
+            // Initialize poll listeners
+            attachPollListeners();
+            
+            // Initialize all polls as active
+            document.querySelectorAll('.quick-poll').forEach(poll => {
+                poll.classList.add('active');
+            });
+        });
+        
+        // Show current streak on page load if exists
+        if (feedbackStreak > 1) {
+            setTimeout(() => {
+                showStreakIndicator();
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

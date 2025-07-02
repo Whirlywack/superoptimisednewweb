@@ -19,50 +19,43 @@ export default {
     },
     extend: {
       colors: {
-        // Superoptimised Design System Colors
+        // Strict 5-Color Brutalist Design System
         "off-black": "#1a1a1a",
-        "off-white": "#fafafa",
+        "off-white": "#fafafa", 
         "warm-gray": "#6b7280",
         "light-gray": "#f3f4f6",
         primary: {
           DEFAULT: "#64748b",
-          50: "#f8fafc",
-          100: "#f1f5f9",
-          200: "#e2e8f0",
-          300: "#cbd5e1",
-          400: "#94a3b8",
-          500: "#64748b",
-          600: "#475569",
-          700: "#334155",
-          800: "#1e293b",
-          900: "#0f172a",
+          light: "#94a3b8",   // Only allowed primary variation
+          dark: "#475569",    // Only allowed primary variation
           foreground: "#fafafa",
         },
-        accent: "#64748b",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        muted: "hsl(var(--muted))",
-        "muted-foreground": "hsl(var(--muted-foreground))",
-        popover: "hsl(var(--popover))",
-        "popover-foreground": "hsl(var(--popover-foreground))",
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        card: "hsl(var(--card))",
-        "card-foreground": "hsl(var(--card-foreground))",
-        "primary-foreground": "hsl(var(--primary-foreground))",
-        secondary: "hsl(var(--secondary))",
-        "secondary-foreground": "hsl(var(--secondary-foreground))",
-        "accent-foreground": "hsl(var(--accent-foreground))",
-        destructive: "hsl(var(--destructive))",
-        "destructive-foreground": "hsl(var(--destructive-foreground))",
-        ring: "hsl(var(--ring))",
+        // Legacy shadcn compatibility (maps to 5-color system)
+        background: "#fafafa",           // Maps to off-white
+        foreground: "#1a1a1a",           // Maps to off-black
+        muted: "#f3f4f6",                // Maps to light-gray
+        "muted-foreground": "#6b7280",   // Maps to warm-gray
+        border: "#f3f4f6",               // Maps to light-gray
+        input: "#fafafa",                // Maps to off-white
+        ring: "#64748b",                 // Maps to primary
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
+        sans: ["Inter var", "Inter", "system-ui", "sans-serif"],
         mono: ["JetBrains Mono", "monospace"],
+        display: ["Lexend", "sans-serif"],
+        figtree: ["Figtree", "sans-serif"],
+        crimson: ['"Crimson Text"', "serif"],
       },
       fontSize: {
-        // Typography scale from design system
+        // Brutalist Typography Scale - Dramatic Ratios
+        "mega": ["clamp(4rem, 8vw, 7.5rem)", { lineHeight: "0.9", fontWeight: "800", letterSpacing: "-0.02em" }],
+        "hero": ["clamp(3rem, 6vw, 5rem)", { lineHeight: "1.1", fontWeight: "700", letterSpacing: "-0.01em" }],
+        "display": ["clamp(1.5rem, 3vw, 2.5rem)", { lineHeight: "1.2", fontWeight: "600" }],
+        "lg": ["1.25rem", { lineHeight: "1.4", fontWeight: "500" }],
+        "base": ["1rem", { lineHeight: "1.6", fontWeight: "400" }],
+        "sm": ["0.875rem", { lineHeight: "1.5", fontWeight: "400" }],
+        "xs": ["0.75rem", { lineHeight: "1.4", fontWeight: "400" }],
+        // Legacy design system compatibility
         h1: ["2.25rem", { lineHeight: "1.2", fontWeight: "700" }],
         h2: ["1.875rem", { lineHeight: "1.3", fontWeight: "600" }],
         h3: ["1.5rem", { lineHeight: "1.4", fontWeight: "600" }],
@@ -72,9 +65,16 @@ export default {
         code: ["0.875rem", { lineHeight: "1.4", fontWeight: "400" }],
       },
       spacing: {
-        // Spacing scale from design system
+        // Brutalist Spacing Scale from Design System
+        xs: "0.5rem",    // 8px - Inner component spacing
+        sm: "1rem",      // 16px - Related element spacing  
+        md: "2rem",      // 32px - Component separation
+        lg: "3rem",      // 48px - Section boundaries
+        xl: "4rem",      // 64px - Major section spacing
+        "2xl": "6rem",   // 96px - Page section divisions
+        // Legacy spacing
         section: "3rem",
-        component: "2rem",
+        component: "2rem", 
         paragraph: "1rem",
         list: "0.5rem",
       },
@@ -353,84 +353,9 @@ export default {
         md: `calc(var(--radius) - 2px)`,
         sm: "calc(var(--radius) - 4px)",
       },
-      fontFamily: {
-        sans: ["Inter var", "sans-serif"],
-        display: ["Lexend", "sans-serif"],
-        figtree: ["Figtree", "sans-serif"],
-        crimson: ['"Crimson Text"', "serif"],
-      },
     },
   },
   plugins: [
     require("tailwindcss-animate"),
-    plugin(function({ addUtilities, theme }) {
-      const typographyUtilities = {
-        '.text-h1': {
-          fontSize: theme('fontSize.h1[0]'),
-          lineHeight: theme('fontSize.h1[1].lineHeight'),
-          fontWeight: theme('fontSize.h1[1].fontWeight'),
-          marginBottom: '2rem',
-        },
-        '.text-h2': {
-          fontSize: theme('fontSize.h2[0]'),
-          lineHeight: theme('fontSize.h2[1].lineHeight'),
-          fontWeight: theme('fontSize.h2[1].fontWeight'),
-          marginBottom: '1.5rem',
-        },
-        '.text-h3': {
-          fontSize: theme('fontSize.h3[0]'),
-          lineHeight: theme('fontSize.h3[1].lineHeight'),
-          fontWeight: theme('fontSize.h3[1].fontWeight'),
-          marginBottom: '1.25rem',
-        },
-        '.text-h4': {
-          fontSize: theme('fontSize.h4[0]'),
-          lineHeight: theme('fontSize.h4[1].lineHeight'),
-          fontWeight: theme('fontSize.h4[1].fontWeight'),
-          marginBottom: '1rem',
-        },
-        '.text-body': {
-          fontSize: theme('fontSize.body[0]'),
-          lineHeight: theme('fontSize.body[1].lineHeight'),
-          fontWeight: theme('fontSize.body[1].fontWeight'),
-          marginBottom: '1rem',
-        },
-        '.text-small': {
-          fontSize: theme('fontSize.small[0]'),
-          lineHeight: theme('fontSize.small[1].lineHeight'),
-          fontWeight: theme('fontSize.small[1].fontWeight'),
-          marginBottom: '0.75rem',
-        },
-        '.text-code': {
-          fontSize: theme('fontSize.code[0]'),
-          lineHeight: theme('fontSize.code[1].lineHeight'),
-          fontWeight: theme('fontSize.code[1].fontWeight'),
-          fontFamily: theme('fontFamily.mono'),
-          marginBottom: '1rem',
-        },
-      };
-
-      const spacingUtilities = {
-        '.section': {
-          marginTop: theme('spacing.section'),
-          marginBottom: theme('spacing.section'),
-        },
-        '.component': {
-          marginTop: theme('spacing.component'),
-          marginBottom: theme('spacing.component'),
-        },
-        '.paragraph': {
-          marginTop: theme('spacing.paragraph'),
-          marginBottom: theme('spacing.paragraph'),
-        },
-        '.list': {
-          marginTop: theme('spacing.list'),
-          marginBottom: theme('spacing.list'),
-        },
-      };
-
-      addUtilities(typographyUtilities);
-      addUtilities(spacingUtilities);
-    }),
   ],
 } satisfies Config;

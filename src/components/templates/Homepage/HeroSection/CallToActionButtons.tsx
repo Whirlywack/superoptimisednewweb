@@ -1,45 +1,28 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
-import { ArrowRight, FileText } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import { LinkButton } from '@/components/ui/button';
 
 export function CallToActionButtons() {
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-lg mx-auto">
+    <div className="flex flex-wrap gap-8 mt-12">
       {/* Primary Button */}
-      <Button
-        size="lg"
+      <LinkButton 
+        href="/journey"
         variant="primary"
-        asChild
-        className="w-full sm:w-auto min-h-[44px] px-6 py-3"
+        size="md"
       >
-        <Link 
-          href="/journey"
-          className="inline-flex items-center gap-2"
-        >
-          <span>Follow the Building Process</span>
-          <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-        </Link>
-      </Button>
+        Follow the Building Process
+      </LinkButton>
 
       {/* Secondary Button */}
-      <Button
-        size="lg"
+      <LinkButton 
+        href="/questionnaire"
         variant="outline"
-        asChild
-        className="w-full sm:w-auto min-h-[44px] px-6 py-3"
+        size="md"
       >
-        <Link 
-          href="/questionnaire"
-          className="inline-flex items-center gap-2"
-        >
-          <FileText className="h-5 w-5" />
-          <span>Take Full Questionnaire</span>
-        </Link>
-      </Button>
+        Take Full Questionnaire
+      </LinkButton>
     </div>
   );
 }

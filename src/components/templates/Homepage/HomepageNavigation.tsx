@@ -2,9 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Twitter } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
 
 export function HomepageNavigation() {
   return (
@@ -19,21 +17,22 @@ export function HomepageNavigation() {
           <Link 
             href="/"
             className={cn(
-              "text-h2 font-bold text-off-black",
+              "text-xl font-extrabold text-off-black",
               "hover:text-primary transition-colors duration-200",
               "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md px-2 py-1"
             )}
+            style={{ fontSize: 'clamp(1.5rem, 3vw, 2.5rem)', fontWeight: 800 }}
           >
             Superoptimised
           </Link>
         </div>
 
-        {/* Center Navigation Links - Desktop */}
+        {/* All Navigation Links - Right Side */}
         <div className="hidden md:flex items-center space-x-8">
           <Link 
             href="/journey"
             className={cn(
-              "text-body font-medium text-off-black",
+              "text-body font-medium text-warm-gray",
               "hover:text-primary transition-colors duration-200",
               "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md px-3 py-2"
             )}
@@ -43,34 +42,28 @@ export function HomepageNavigation() {
           <Link 
             href="/about"
             className={cn(
-              "text-body font-medium text-off-black",
+              "text-body font-medium text-warm-gray",
               "hover:text-primary transition-colors duration-200",
               "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md px-3 py-2"
             )}
           >
             About
           </Link>
-        </div>
-
-        {/* Social CTA */}
-        <div className="flex items-center">
-          <Button
-            variant="outline"
-            size="md"
-            asChild
-            className="inline-flex items-center gap-2"
+          <a
+            href="https://x.com/superoptimised"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Follow Superoptimised on X (Twitter)"
+            className={cn(
+              "px-3 py-2 text-sm font-medium text-warm-gray",
+              "border border-light-gray rounded-sm",
+              "hover:text-primary hover:border-primary",
+              "transition-colors duration-200",
+              "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            )}
           >
-            <a
-              href="https://x.com/superoptimised"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Follow Superoptimised on X (Twitter)"
-            >
-              <Twitter className="h-4 w-4" />
-              <span className="hidden sm:inline">Follow on X</span>
-              <span className="sm:hidden">Follow</span>
-            </a>
-          </Button>
+            Follow on X
+          </a>
         </div>
       </div>
 

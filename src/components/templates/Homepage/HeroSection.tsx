@@ -10,24 +10,25 @@ import { CallToActionButtons } from './HeroSection/CallToActionButtons';
 export function HeroSection() {
   return (
     <section 
-      className={cn(
-        "w-full bg-gradient-to-b from-off-white to-light-gray/30",
-        "px-4 py-12 md:py-16 lg:py-20"
-      )}
+      className="py-24"
       aria-labelledby="hero-heading"
     >
-      <div className="max-w-4xl mx-auto space-y-12 md:space-y-16">
-        {/* Block 2A: Project Announcement */}
-        <ProjectAnnouncement />
+      <div className="max-w-[1200px] mx-auto px-8">
+        <div className="grid grid-cols-12 gap-6">
+          <div className="col-span-12">
+            {/* Project Announcement */}
+            <ProjectAnnouncement />
 
-        {/* Block 2B: Progress Indicator */}
-        <ProgressIndicator />
+            {/* Progress Indicator */}
+            <ProgressIndicator />
 
-        {/* Block 2C: Dual Interactive Polls */}
-        <DualInteractivePolls />
+            {/* Dual Interactive Polls */}
+            <DualInteractivePolls />
 
-        {/* Block 2D: Call-to-Action Buttons */}
-        <CallToActionButtons />
+            {/* Call-to-Action Buttons */}
+            <CallToActionButtons />
+          </div>
+        </div>
       </div>
     </section>
   );
