@@ -80,14 +80,14 @@ export function CodeApproachComparison({
       case 'high':
       case 'easy':
       case 'simple':
-        return 'text-green-600 bg-green-50 dark:text-green-400 dark:bg-green-900/20';
+        return 'text-primary bg-primary/10';
       case 'medium':
       case 'moderate':
-        return 'text-yellow-600 bg-yellow-50 dark:text-yellow-400 dark:bg-yellow-900/20';
+        return 'text-warm-gray bg-light-gray dark:bg-warm-gray/20';
       case 'low':
       case 'difficult':
       case 'complex':
-        return 'text-red-600 bg-red-50 dark:text-red-400 dark:bg-red-900/20';
+        return 'text-off-black dark:text-off-white bg-light-gray dark:bg-warm-gray/20';
       default:
         return 'text-warm-gray bg-light-gray';
     }
@@ -225,13 +225,13 @@ export function CodeApproachComparison({
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                     {approach.pros && approach.pros.length > 0 && (
                       <div className="space-y-2">
-                        <h4 className="font-medium text-green-600 dark:text-green-400">
+                        <h4 className="font-medium text-primary">
                           Pros
                         </h4>
                         <ul className="space-y-1 text-warm-gray">
                           {approach.pros.map((pro, index) => (
                             <li key={index} className="flex items-start gap-2">
-                              <span className="text-green-500 mt-1 text-xs">✓</span>
+                              <span className="text-primary mt-1 text-xs">✓</span>
                               <span>{pro}</span>
                             </li>
                           ))}
@@ -240,13 +240,13 @@ export function CodeApproachComparison({
                     )}
                     {approach.cons && approach.cons.length > 0 && (
                       <div className="space-y-2">
-                        <h4 className="font-medium text-red-600 dark:text-red-400">
+                        <h4 className="font-medium text-off-black dark:text-off-white">
                           Cons
                         </h4>
                         <ul className="space-y-1 text-warm-gray">
                           {approach.cons.map((con, index) => (
                             <li key={index} className="flex items-start gap-2">
-                              <span className="text-red-500 mt-1 text-xs">✗</span>
+                              <span className="text-warm-gray mt-1 text-xs">✗</span>
                               <span>{con}</span>
                             </li>
                           ))}

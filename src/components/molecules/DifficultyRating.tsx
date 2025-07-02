@@ -91,7 +91,7 @@ export function DifficultyRating({
         label: 'Very Easy',
         description: 'Trivial task, can be done quickly with existing knowledge',
         icon: <Star className="w-5 h-5" />,
-        color: 'text-green-500',
+        color: 'text-primary',
         examples: ['Fix typo', 'Update documentation', 'Change color values']
       },
       {
@@ -99,7 +99,7 @@ export function DifficultyRating({
         label: 'Easy',
         description: 'Simple task requiring basic programming skills',
         icon: <Star className="w-5 h-5" />,
-        color: 'text-green-400',
+        color: 'text-primary',
         examples: ['Add form validation', 'Create simple component', 'Write unit test']
       },
       {
@@ -107,7 +107,7 @@ export function DifficultyRating({
         label: 'Medium',
         description: 'Moderate complexity requiring some research or planning',
         icon: <Star className="w-5 h-5" />,
-        color: 'text-yellow-500',
+        color: 'text-warm-gray',
         examples: ['Integrate third-party API', 'Optimize database queries', 'Implement caching']
       },
       {
@@ -115,7 +115,7 @@ export function DifficultyRating({
         label: 'Hard',
         description: 'Complex task requiring significant expertise and careful planning',
         icon: <Star className="w-5 h-5" />,
-        color: 'text-orange-500',
+        color: 'text-off-black dark:text-off-white',
         examples: ['Design new architecture', 'Implement real-time features', 'Performance optimization']
       },
       {
@@ -123,29 +123,29 @@ export function DifficultyRating({
         label: 'Very Hard',
         description: 'Extremely complex, may require research or learning new technologies',
         icon: <Star className="w-5 h-5" />,
-        color: 'text-red-500',
+        color: 'text-off-black dark:text-off-white',
         examples: ['Build custom framework', 'Implement ML algorithms', 'Solve scalability issues']
       }
     ],
     circles: [
-      { level: 1, label: 'Beginner', icon: <Circle className="w-4 h-4" />, color: 'text-green-500' },
-      { level: 2, label: 'Novice', icon: <Circle className="w-5 h-5" />, color: 'text-green-400' },
-      { level: 3, label: 'Intermediate', icon: <Circle className="w-6 h-6" />, color: 'text-yellow-500' },
-      { level: 4, label: 'Advanced', icon: <Circle className="w-7 h-7" />, color: 'text-orange-500' },
-      { level: 5, label: 'Expert', icon: <Circle className="w-8 h-8" />, color: 'text-red-500' }
+      { level: 1, label: 'Beginner', icon: <Circle className="w-4 h-4" />, color: 'text-primary' },
+      { level: 2, label: 'Novice', icon: <Circle className="w-5 h-5" />, color: 'text-primary' },
+      { level: 3, label: 'Intermediate', icon: <Circle className="w-6 h-6" />, color: 'text-warm-gray' },
+      { level: 4, label: 'Advanced', icon: <Circle className="w-7 h-7" />, color: 'text-off-black dark:text-off-white' },
+      { level: 5, label: 'Expert', icon: <Circle className="w-8 h-8" />, color: 'text-off-black dark:text-off-white' }
     ],
     shapes: [
-      { level: 1, label: 'Basic', icon: <Circle className="w-5 h-5" />, color: 'text-green-500' },
-      { level: 2, label: 'Simple', icon: <Square className="w-5 h-5" />, color: 'text-green-400' },
-      { level: 3, label: 'Moderate', icon: <Triangle className="w-5 h-5" />, color: 'text-yellow-500' },
-      { level: 4, label: 'Complex', icon: <Hexagon className="w-5 h-5" />, color: 'text-orange-500' },
-      { level: 5, label: 'Advanced', icon: <Star className="w-5 h-5" />, color: 'text-red-500' }
+      { level: 1, label: 'Basic', icon: <Circle className="w-5 h-5" />, color: 'text-primary' },
+      { level: 2, label: 'Simple', icon: <Square className="w-5 h-5" />, color: 'text-primary' },
+      { level: 3, label: 'Moderate', icon: <Triangle className="w-5 h-5" />, color: 'text-warm-gray' },
+      { level: 4, label: 'Complex', icon: <Hexagon className="w-5 h-5" />, color: 'text-off-black dark:text-off-white' },
+      { level: 5, label: 'Advanced', icon: <Star className="w-5 h-5" />, color: 'text-off-black dark:text-off-white' }
     ],
     bars: Array.from({ length: 5 }, (_, i) => ({
       level: (i + 1) as DifficultyLevel,
       label: `Level ${i + 1}`,
       icon: <div className={`w-3 bg-current rounded`} style={{ height: `${(i + 1) * 4 + 8}px` }} />,
-      color: `text-${['green', 'green', 'yellow', 'orange', 'red'][i]}-${[500, 400, 500, 500, 500][i]}`
+      color: ['text-primary', 'text-primary', 'text-warm-gray', 'text-off-black dark:text-off-white', 'text-off-black dark:text-off-white'][i]
     })),
     custom: []
   };
@@ -258,7 +258,7 @@ export function DifficultyRating({
               <Star
                 className={cn(
                   "w-8 h-8 transition-colors",
-                  isFilled ? "text-yellow-400 fill-current" : "text-warm-gray"
+                  isFilled ? "text-primary fill-current" : "text-warm-gray"
                 )}
               />
             </button>
@@ -312,9 +312,9 @@ export function DifficultyRating({
       )}
 
       {/* Difficulty Guide */}
-      <div className="flex items-start space-x-2 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-        <Brain className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
-        <div className="text-sm text-blue-800 dark:text-blue-300">
+      <div className="flex items-start space-x-2 p-3 bg-light-gray dark:bg-warm-gray/20 rounded-lg">
+        <Brain className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+        <div className="text-sm text-off-black dark:text-off-white">
           <strong>Rating Guide:</strong> Consider technical complexity, required expertise, 
           time investment, and potential risks when rating difficulty.
         </div>

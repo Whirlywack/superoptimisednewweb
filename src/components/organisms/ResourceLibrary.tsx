@@ -117,11 +117,11 @@ export function ResourceLibrary({
   const getDifficultyColor = (difficulty?: string) => {
     switch (difficulty) {
       case "beginner":
-        return "text-green-600 dark:text-green-400";
+        return "text-primary";
       case "intermediate":
-        return "text-yellow-600 dark:text-yellow-400";
+        return "text-warm-gray";
       case "advanced":
-        return "text-red-600 dark:text-red-400";
+        return "text-off-black dark:text-off-white";
       default:
         return "text-warm-gray";
     }
@@ -172,7 +172,7 @@ export function ResourceLibrary({
         icon={Star}
         size="xs"
         className={cn(
-          i < rating ? "text-yellow-500" : "text-light-gray dark:text-warm-gray/30"
+          i < rating ? "text-primary" : "text-light-gray dark:text-warm-gray/30"
         )}
       />
     ));
