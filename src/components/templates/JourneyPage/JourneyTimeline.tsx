@@ -62,7 +62,7 @@ export function JourneyTimeline() {
 
   const handlePollVote = (option: string) => {
     setSelectedPoll(option);
-    showXPToast('+10 XP • Building momentum!');
+    showXPToast('poll');
     
     // Auto-refresh poll after vote (simulated)
     setTimeout(() => {
@@ -157,14 +157,12 @@ export function JourneyTimeline() {
                     {/* Entry Actions */}
                     <div className="mt-md flex items-center justify-between">
                       <span 
-                        className="font-semibold text-primary"
-                        className="text-sm"
+                        className="font-semibold text-primary text-sm"
                       >
                         Join the discussion on X →
                       </span>
                       <span 
-                        className="font-mono text-warm-gray"
-                        className="text-sm"
+                        className="font-mono text-warm-gray text-sm"
                       >
                         {entry.readTime}
                       </span>
@@ -230,14 +228,12 @@ export function JourneyTimeline() {
                     {/* Entry Actions */}
                     <div className="mt-md flex items-center justify-between">
                       <span 
-                        className="font-semibold text-primary"
-                        className="text-sm"
+                        className="font-semibold text-primary text-sm"
                       >
                         Read full post →
                       </span>
                       <span 
-                        className="font-mono text-warm-gray"
-                        className="text-sm"
+                        className="font-mono text-warm-gray text-sm"
                       >
                         {entry.readTime}
                       </span>
@@ -256,36 +252,33 @@ export function JourneyTimeline() {
                 <button
                   onClick={() => handlePollVote('technical')}
                   className={cn(
-                    "flex-1 rounded px-md py-sm text-center font-medium transition-all duration-200",
+                    "flex-1 rounded px-md py-sm text-center font-medium transition-all duration-200 text-sm",
                     selectedPoll === 'technical' 
                       ? "border-2 border-primary bg-primary text-white" 
                       : "border-2 border-transparent bg-light-gray hover:border-primary hover:bg-white"
                   )}
-                  className="text-sm"
                 >
                   Technical Deep-Dives
                 </button>
                 <button
                   onClick={() => handlePollVote('decisions')}
                   className={cn(
-                    "flex-1 rounded px-md py-sm text-center font-medium transition-all duration-200",
+                    "flex-1 rounded px-md py-sm text-center font-medium transition-all duration-200 text-sm",
                     selectedPoll === 'decisions' 
                       ? "border-2 border-primary bg-primary text-white" 
                       : "border-2 border-transparent bg-light-gray hover:border-primary hover:bg-white"
                   )}
-                  className="text-sm"
                 >
                   Decision Breakdowns
                 </button>
                 <button
                   onClick={() => handlePollVote('lessons')}
                   className={cn(
-                    "flex-1 rounded px-md py-sm text-center font-medium transition-all duration-200",
+                    "flex-1 rounded px-md py-sm text-center font-medium transition-all duration-200 text-sm",
                     selectedPoll === 'lessons' 
                       ? "border-2 border-primary bg-primary text-white" 
                       : "border-2 border-transparent bg-light-gray hover:border-primary hover:bg-white"
                   )}
-                  className="text-sm"
                 >
                   Weekly Lessons
                 </button>

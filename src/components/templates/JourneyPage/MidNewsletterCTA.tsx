@@ -21,7 +21,7 @@ export function MidNewsletterCTA() {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       setEmail('');
-      showXPToast('+25 XP • Newsletter signup!');
+      showXPToast('newsletter');
     } catch (error) {
       console.error('Newsletter signup failed:', error);
     } finally {

@@ -22,7 +22,7 @@ export function JourneyHero() {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       setEmail('');
-      showXPToast('+25 XP • Newsletter signup!');
+      showXPToast('newsletter');
     } catch (error) {
       console.error('Newsletter signup failed:', error);
     } finally {
@@ -32,7 +32,7 @@ export function JourneyHero() {
 
   const handlePollVote = (option: string) => {
     setSelectedPoll(option);
-    showXPToast('+5 XP • Thanks for your input!');
+    showXPToast('poll');
     
     // Auto-refresh poll after vote (simulated)
     setTimeout(() => {
