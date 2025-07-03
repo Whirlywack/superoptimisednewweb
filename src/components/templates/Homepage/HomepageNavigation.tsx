@@ -2,9 +2,12 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
 export function HomepageNavigation() {
+  const pathname = usePathname();
+  
   return (
     <nav 
       className="w-full border-b border-light-gray bg-off-white py-8 px-4"
@@ -31,7 +34,8 @@ export function HomepageNavigation() {
           <Link 
             href="/journey"
             className={cn(
-              "text-body font-medium text-warm-gray",
+              "text-body font-medium",
+              pathname === "/journey" ? "text-off-black font-semibold" : "text-warm-gray",
               "transition-colors duration-200 hover:text-primary",
               "rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             )}
@@ -41,7 +45,8 @@ export function HomepageNavigation() {
           <Link 
             href="/about"
             className={cn(
-              "text-body font-medium text-warm-gray",
+              "text-body font-medium",
+              pathname === "/about" ? "text-off-black font-semibold" : "text-warm-gray",
               "transition-colors duration-200 hover:text-primary",
               "rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             )}
@@ -72,7 +77,8 @@ export function HomepageNavigation() {
           <Link 
             href="/journey"
             className={cn(
-              "text-body font-medium text-off-black",
+              "text-body font-medium",
+              pathname === "/journey" ? "text-off-black font-semibold" : "text-off-black",
               "transition-colors duration-200 hover:text-primary",
               "rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             )}
@@ -82,7 +88,8 @@ export function HomepageNavigation() {
           <Link 
             href="/about"
             className={cn(
-              "text-body font-medium text-off-black",
+              "text-body font-medium",
+              pathname === "/about" ? "text-off-black font-semibold" : "text-off-black",
               "transition-colors duration-200 hover:text-primary",
               "rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             )}
