@@ -1,29 +1,18 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
-import { Twitter, Mail } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import React from "react";
+import Link from "next/link";
 
 const footerLinks = [
-  { label: 'Journey', href: '/journey' },
-  { label: 'About', href: '/about' },
-  { label: 'Contact', href: '/contact' },
-];
-
-const socialLinks = [
-  {
-    label: 'X (Twitter)',
-    href: 'https://x.com/superoptimised',
-    icon: Twitter,
-  },
+  { label: "Journey", href: "/journey" },
+  { label: "About", href: "/about" },
 ];
 
 export function HomepageFooter() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer 
+    <footer
       className="w-full border-t border-light-gray bg-primary/[0.02] px-4 py-16"
       role="contentinfo"
     >
@@ -45,7 +34,7 @@ export function HomepageFooter() {
                   {link.label}
                 </Link>
               ))}
-              
+
               {/* X Link */}
               <a
                 href="https://x.com/superoptimised"
@@ -55,7 +44,7 @@ export function HomepageFooter() {
               >
                 X
               </a>
-              
+
               {/* Contact Link */}
               <a
                 href="mailto:hello@superoptimised.com"

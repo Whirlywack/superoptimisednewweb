@@ -1,23 +1,23 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/utils';
+import React from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 export function HomepageNavigation() {
   const pathname = usePathname();
-  
+
   return (
-    <nav 
-      className="w-full border-b border-light-gray bg-off-white py-8 px-4"
+    <nav
+      className="w-full border-b border-light-gray bg-off-white px-4 py-8"
       role="navigation"
       aria-label="Main navigation"
     >
       <div className="container mx-auto flex max-w-6xl items-center justify-between">
         {/* Logo */}
         <div className="flex items-center">
-          <Link 
+          <Link
             href="/"
             className={cn(
               "text-xl font-extrabold text-off-black",
@@ -31,22 +31,22 @@ export function HomepageNavigation() {
 
         {/* All Navigation Links - Right Side */}
         <div className="hidden items-center space-x-8 md:flex">
-          <Link 
+          <Link
             href="/journey"
             className={cn(
               "text-body font-medium",
-              pathname === "/journey" ? "text-off-black font-semibold" : "text-warm-gray",
+              pathname === "/journey" ? "font-semibold text-off-black" : "text-warm-gray",
               "transition-colors duration-200 hover:text-primary",
               "rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             )}
           >
             Journey
           </Link>
-          <Link 
+          <Link
             href="/about"
             className={cn(
               "text-body font-medium",
-              pathname === "/about" ? "text-off-black font-semibold" : "text-warm-gray",
+              pathname === "/about" ? "font-semibold text-off-black" : "text-warm-gray",
               "transition-colors duration-200 hover:text-primary",
               "rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             )}
@@ -57,13 +57,10 @@ export function HomepageNavigation() {
             href="https://x.com/superoptimised"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Follow Superoptimised on X (Twitter)"
             className={cn(
-              "px-3 py-2 text-sm font-medium text-warm-gray",
-              "rounded-sm border border-light-gray",
-              "hover:border-primary hover:text-primary",
-              "transition-colors duration-200",
-              "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              "text-body font-medium text-warm-gray",
+              "transition-colors duration-200 hover:text-primary",
+              "rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             )}
           >
             Follow on X
@@ -74,22 +71,22 @@ export function HomepageNavigation() {
       {/* Mobile Navigation Links */}
       <div className="mt-4 border-t border-light-gray pt-4 md:hidden">
         <div className="flex items-center justify-center space-x-8">
-          <Link 
+          <Link
             href="/journey"
             className={cn(
               "text-body font-medium",
-              pathname === "/journey" ? "text-off-black font-semibold" : "text-off-black",
+              pathname === "/journey" ? "font-semibold text-off-black" : "text-off-black",
               "transition-colors duration-200 hover:text-primary",
               "rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             )}
           >
             Journey
           </Link>
-          <Link 
+          <Link
             href="/about"
             className={cn(
               "text-body font-medium",
-              pathname === "/about" ? "text-off-black font-semibold" : "text-off-black",
+              pathname === "/about" ? "font-semibold text-off-black" : "text-off-black",
               "transition-colors duration-200 hover:text-primary",
               "rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             )}
