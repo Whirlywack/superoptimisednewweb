@@ -18,9 +18,9 @@ const buttonVariants = {
     "disabled:bg-primary/50 disabled:cursor-not-allowed",
   ],
   outline: [
-    "border border-primary text-primary bg-transparent",
-    "hover:bg-primary hover:text-primary-foreground",
-    "active:bg-primary/95 active:scale-[0.98]",
+    "border-2 border-transparent text-primary bg-transparent",
+    "hover:bg-primary/[0.05] hover:border-light-gray",
+    "active:bg-primary/10 active:scale-[0.98]",
     "disabled:border-primary/50 disabled:text-primary/50 disabled:cursor-not-allowed",
   ],
   ghost: [
@@ -55,7 +55,7 @@ export function Button({
   ...props
 }: ButtonProps) {
   const Comp = asChild ? Slot : "button";
-  
+
   const isDisabled = disabled || loading;
 
   return (
@@ -81,7 +81,7 @@ export function Button({
       {...props}
     >
       {loading && (
-        <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+        <div className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
       )}
       {children}
     </Comp>
@@ -98,7 +98,7 @@ interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
 
 const iconButtonSizes = {
   sm: "h-9 w-9",
-  md: "h-11 w-11", 
+  md: "h-11 w-11",
   lg: "h-12 w-12",
 };
 
@@ -137,9 +137,9 @@ export function IconButton({
       {...props}
     >
       {loading ? (
-        <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+        <div className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
       ) : (
-        <span className="flex h-4 w-4 items-center justify-center">{icon}</span>
+        <span className="flex size-4 items-center justify-center">{icon}</span>
       )}
     </button>
   );
@@ -160,9 +160,7 @@ export function LinkButton({
   children,
   ...props
 }: LinkButtonProps) {
-  const externalProps = external 
-    ? { target: "_blank", rel: "noopener noreferrer" }
-    : {};
+  const externalProps = external ? { target: "_blank", rel: "noopener noreferrer" } : {};
 
   return (
     <a
