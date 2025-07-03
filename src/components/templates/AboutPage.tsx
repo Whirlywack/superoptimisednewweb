@@ -121,7 +121,7 @@ export function AboutPage() {
                     of conversations with real people.
                   </p>
 
-                  <div className="my-12 max-w-prose border-l-4 border-primary bg-primary/[0.1] p-8 italic">
+                  <div className="my-12 max-w-prose border-l-4 border-primary bg-primary/[0.1] p-8 italic text-off-black">
                     &ldquo;What if instead of building and then asking for feedback, I asked for
                     feedback while building?&rdquo;
                   </div>

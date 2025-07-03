@@ -20,7 +20,7 @@ export function HomepageNavigation() {
           <Link
             href="/"
             className={cn(
-              "text-display font-extrabold text-off-black",
+              "text-[clamp(1.5rem,3vw,2.5rem)] font-extrabold leading-tight text-off-black",
               "transition-colors duration-200 hover:text-primary",
               "rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             )}
