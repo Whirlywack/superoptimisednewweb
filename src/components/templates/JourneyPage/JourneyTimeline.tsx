@@ -283,7 +283,7 @@ export function JourneyTimeline() {
                   { label: "Community Votes", value: "17" },
                   { label: "Decisions Made", value: "3" },
                   { label: "Project Complete", value: "15%" },
-                ].map((stat, _index) => (
+                ].map((stat, index) => (
                   <div
                     key={index}
                     className="flex items-center justify-between border-b border-light-gray py-xs last:border-b-0"

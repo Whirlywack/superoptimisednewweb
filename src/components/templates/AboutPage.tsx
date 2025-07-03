@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button, LinkButton } from "@/components/ui/button";
+import { LinkButton } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { HomepageNavigation } from "./Homepage/HomepageNavigation";
 import { HomepageFooter } from "./Homepage/HomepageFooter";
 import { XPToastProvider } from "./Homepage/XPToastProvider";
@@ -41,64 +42,83 @@ export function AboutPage() {
         {/* Main Content */}
         <main className="flex-1">
           {/* Hero Section */}
-          <section className="bg-gradient-to-br from-primary/[0.02] to-primary/[0.05] py-16">
-            <div className="container mx-auto max-w-6xl px-8">
-              <div className="grid grid-cols-12 gap-6">
-                <div className="col-span-8">
-                  <div className="mb-4 font-mono text-sm font-semibold uppercase tracking-wide text-primary">
-                    Solo Developer Experiment
-                  </div>
-                  <h1 className="mb-8 text-5xl font-bold leading-[1.1] text-off-black">
-                    Your Input Shapes
-                    <br />
-                    What Gets Built
-                  </h1>
-                  <p className="mb-12 max-w-prose text-lg leading-relaxed text-warm-gray">
-                    This is an experiment in building products where the community has direct say in
-                    every decision. We&apos;re a small team (just me) sharing failures and wins
-                    transparently, learning together, and letting your feedback guide what gets
-                    created next.
-                  </p>
+          <section
+            className="w-full px-4 py-2xl"
+            style={{
+              background:
+                "linear-gradient(135deg, rgba(100, 116, 139, 0.02), rgba(100, 116, 139, 0.05))",
+            }}
+          >
+            <div className="mx-auto grid max-w-6xl grid-cols-12 gap-6">
+              <div className="col-span-12 md:col-span-8">
+                <div className="mb-sm font-mono text-sm font-semibold uppercase tracking-wide text-primary">
+                  Solo Developer Experiment
+                </div>
+                <h1 className="mb-8 text-hero font-bold leading-[1.1] text-off-black">
+                  Your Input Shapes
+                  <br />
+                  What Gets Built
+                </h1>
+                <p className="mb-12 max-w-prose text-lg leading-relaxed text-warm-gray">
+                  This is an experiment in building products where the community has direct say in
+                  every decision. We&apos;re a small team (just me) sharing failures and wins
+                  transparently, learning together, and letting your feedback guide what gets
+                  created next.
+                </p>
 
-                  {/* Inline Stats */}
-                  <div className="flex gap-12 rounded-lg border-l-4 border-primary bg-primary/[0.05] p-8">
-                    <div className="flex min-w-[80px] flex-col items-center">
-                      <div className="font-mono text-lg font-extrabold text-primary">1</div>
-                      <div className="mt-2 text-center text-xs text-warm-gray">Day Building</div>
-                    </div>
-                    <div className="flex min-w-[80px] flex-col items-center">
-                      <div className="font-mono text-lg font-extrabold text-primary">17</div>
-                      <div className="mt-2 text-center text-xs text-warm-gray">Community Votes</div>
-                    </div>
-                    <div className="flex min-w-[80px] flex-col items-center">
-                      <div className="font-mono text-lg font-extrabold text-primary">∞</div>
-                      <div className="mt-2 text-center text-xs text-warm-gray">Things to Learn</div>
-                    </div>
+                {/* Inline Stats */}
+                <div className="flex gap-12 rounded-lg border-l-4 border-primary bg-primary/[0.05] p-8">
+                  <div className="flex min-w-[80px] flex-col items-center">
+                    <div className="font-mono text-lg font-extrabold text-primary">1</div>
+                    <div className="mt-2 text-center text-xs text-warm-gray">Day Building</div>
+                  </div>
+                  <div className="flex min-w-[80px] flex-col items-center">
+                    <div className="font-mono text-lg font-extrabold text-primary">17</div>
+                    <div className="mt-2 text-center text-xs text-warm-gray">Community Votes</div>
+                  </div>
+                  <div className="flex min-w-[80px] flex-col items-center">
+                    <div className="font-mono text-lg font-extrabold text-primary">∞</div>
+                    <div className="mt-2 text-center text-xs text-warm-gray">Things to Learn</div>
                   </div>
                 </div>
+              </div>
 
-                <div className="col-span-4">
-                  {/* Newsletter CTA */}
-                  <div className="rounded-lg border-2 border-light-gray bg-white p-8 text-center">
-                    <h3 className="mb-4 font-semibold text-off-black">Join the Experiment</h3>
-                    <p className="mb-8 text-sm text-warm-gray">
-                      Get updates when there&apos;s something worth sharing. No schedule, just
-                      progress and lessons learned together.
-                    </p>
-                    <form onSubmit={handleNewsletterSubmit} className="space-y-4">
-                      <input
-                        type="email"
-                        placeholder="your@email.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="w-full rounded border-2 border-light-gray bg-white px-4 py-3 text-base focus:border-primary focus:outline-none"
-                        required
-                      />
-                      <Button type="submit" disabled={isSubmitting} className="w-full">
-                        {isSubmitting ? "Counting you in..." : "Count Me In"}
-                      </Button>
-                    </form>
-                  </div>
+              <div className="col-span-12 md:col-span-4">
+                {/* Newsletter CTA */}
+                <div className="rounded-lg border-2 border-primary bg-white p-lg text-center">
+                  <h3 className="mb-md text-lg font-bold text-off-black">Follow Every Decision</h3>
+                  <p className="mb-lg text-sm text-warm-gray">
+                    Weekly insights when valuable content is ready. Be among the first 100 builders
+                    to get behind-the-scenes development updates.
+                  </p>
+                  <form onSubmit={handleNewsletterSubmit} className="flex flex-col gap-sm">
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="your@email.com"
+                      required
+                      disabled={isSubmitting}
+                      className={cn(
+                        "w-full rounded-sm border-2 border-light-gray px-md py-sm",
+                        "bg-white text-base",
+                        "focus:border-primary focus:outline-none",
+                        "disabled:cursor-not-allowed disabled:opacity-50"
+                      )}
+                    />
+                    <button
+                      type="submit"
+                      disabled={isSubmitting || !email}
+                      className={cn(
+                        "w-full rounded-sm border-none bg-primary py-sm text-base text-white",
+                        "cursor-pointer font-semibold transition-all duration-200",
+                        "hover:-translate-y-px hover:bg-off-black",
+                        "disabled:transform-none disabled:cursor-not-allowed disabled:opacity-50"
+                      )}
+                    >
+                      Get Inside Access
+                    </button>
+                  </form>
                 </div>
               </div>
             </div>

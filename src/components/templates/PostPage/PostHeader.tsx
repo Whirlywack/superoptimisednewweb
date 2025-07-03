@@ -31,7 +31,7 @@ export function PostHeader() {
 
   return (
     <header
-      className="w-full border-b border-light-gray px-4 py-lg"
+      className="w-full border-b border-light-gray px-4 py-2xl"
       aria-labelledby="post-header-heading"
     >
       <div className="mx-auto grid max-w-6xl grid-cols-12 gap-6">
