@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Superoptimised</title>
+    <meta name="description" content="A solo developer's experiment in building products where your input directly shapes what gets built. Sharing failures, wins, and everything in between transparently.">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="About - Superoptimised">
+    <meta property="og:description" content="A solo developer's experiment in building products where your input directly shapes what gets built. Sharing failures, wins, and everything in between transparently.">
+    <meta property="og:image" content="/og-about.jpg">
+    
+    <!-- Schema.org structured data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Superoptimised",
+        "description": "Solo developer building products transparently with community feedback",
+        "url": "https://superoptimised.com/about",
+        "sameAs": [
+            "https://x.com/superoptimised"
+        ]
+    }
+    </script>
+    
+    <!-- Preload critical fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS Custom Properties - 5-Color Brutalist System */
+        :root {
+            /* Core 5 Colors Only */
+            --off-black: #1a1a1a;
+            --off-white: #fafafa;
+            --warm-gray: #6b7280;
+            --light-gray: #f3f4f6;
+            --primary: #64748b;
+            
+            /* Primary Variations for States */
+            --primary-light: #94a3b8;
+            --primary-dark: #475569;
+            
+            /* Brutalist Typography Scale */
+            --text-mega: clamp(4rem, 8vw, 7.5rem);
+            --text-hero: clamp(3rem, 6vw, 5rem);
+            --text-xl: clamp(1.5rem, 3vw, 2.5rem);
+            --text-lg: 1.25rem;
+            --text-base: 1rem;
+            --text-sm: 0.875rem;
+            --text-xs: 0.75rem;
+            
+            /* Spacing System */
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 2rem;
+            --space-lg: 3rem;
+            --space-xl: 4rem;
+            --space-2xl: 6rem;
+            
+            /* Layout */
+            --max-width: 1200px;
+            --grid-gap: 24px;
+        }
+        
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-size: var(--text-base);
+            line-height: 1.6;
+            color: var(--off-black);
+            background-color: var(--off-white);
+            font-weight: 400;
+        }
+        
+        /* Typography - Elevated Brutalism */
+        .text-mega {
+            font-size: var(--text-mega);
+            font-weight: 800;
+            line-height: 0.9;
+            letter-spacing: -0.02em;
+            text-transform: uppercase;
+        }
+        
+        .text-hero {
+            font-size: var(--text-hero);
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -0.01em;
+        }
+        
+        .text-xl {
+            font-size: var(--text-xl);
+            font-weight: 600;
+            line-height: 1.2;
+        }
+        
+        .text-lg {
+            font-size: var(--text-lg);
+            font-weight: 500;
+            line-height: 1.4;
+        }
+        
+        .text-base {
+            font-size: var(--text-base);
+            font-weight: 400;
+            line-height: 1.6;
+        }
+        
+        .text-sm {
+            font-size: var(--text-sm);
+            font-weight: 400;
+            line-height: 1.5;
+        }
+        
+        .text-mono {
+            font-family: 'JetBrains Mono', Consolas, 'Courier New', monospace;
+        }
+        
+        /* Layout System */
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 var(--space-md);
+            position: relative;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: var(--grid-gap);
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Navigation */
+        .nav {
+            padding: var(--space-md) 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-weight: 800;
+            font-size: var(--text-xl);
+            color: var(--off-black);
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: var(--space-lg);
+            list-style: none;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: var(--warm-gray);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 200ms ease;
+        }
+        
+        .nav-link.active {
+            color: var(--off-black);
+            font-weight: 600;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary);
+        }
+        
+        .social-link {
+            color: var(--warm-gray);
+            text-decoration: none;
+            font-size: var(--text-sm);
+            padding: var(--space-xs) var(--space-sm);
+            border: 1px solid var(--light-gray);
+            border-radius: 4px;
+            transition: all 200ms ease;
+        }
+        
+        .social-link:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        /* Unique Hero Section - Compact with Stats */
+        .hero {
+            padding: var(--space-xl) 0;
+            background: linear-gradient(135deg, rgba(100, 116, 139, 0.02), rgba(100, 116, 139, 0.05));
+        }
+        
+        .hero-content {
+            grid-column: 1 / 9;
+        }
+        
+        .hero-sidebar {
+            grid-column: 9 / -1;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+        }
+        
+        .hero-label {
+            color: var(--primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: var(--space-sm);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .hero-title {
+            margin-bottom: var(--space-md);
+        }
+        
+        .hero-description {
+            color: var(--warm-gray);
+            margin-bottom: var(--space-lg);
+            max-width: 65ch;
+            font-size: var(--text-lg);
+        }
+        
+        /* Inline Stats - No White Space */
+        .inline-stats {
+            display: flex;
+            gap: var(--space-lg);
+            margin: var(--space-lg) 0;
+            padding: var(--space-md);
+            background: rgba(100, 116, 139, 0.05);
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 80px;
+        }
+        
+        .stat-number {
+            font-size: var(--text-lg);
+            font-weight: 800;
+            color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .stat-label {
+            font-size: var(--text-xs);
+            color: var(--warm-gray);
+            text-align: center;
+            margin-top: var(--space-xs);
+        }
+        
+        /* Story Section - Continuous Flow */
+        .story {
+            padding: var(--space-xl) 0 var(--space-2xl) 0;
+        }
+        
+        .story-content {
+            grid-column: 1 / 9;
+        }
+        
+        .story-sidebar {
+            grid-column: 9 / -1;
+        }
+        
+        .story-text {
+            color: var(--warm-gray);
+            margin-bottom: var(--space-md);
+            max-width: 65ch;
+        }
+        
+        .story-highlight {
+            background: rgba(100, 116, 139, 0.1);
+            padding: var(--space-lg);
+            border-left: 4px solid var(--primary);
+            margin: var(--space-lg) 0;
+            font-style: italic;
+            max-width: 65ch;
+        }
+        
+        /* Sidebar Elements */
+        .sidebar-sticky {
+            position: sticky;
+            top: var(--space-lg);
+        }
+        
+        .sidebar-widget {
+            background: white;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+            text-align: center;
+        }
+        
+        .widget-title {
+            font-weight: 600;
+            margin-bottom: var(--space-md);
+            color: var(--off-black);
+        }
+        
+        .newsletter-form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+        
+        .newsletter-input {
+            padding: var(--space-sm) var(--space-md);
+            border: 2px solid var(--light-gray);
+            border-radius: 4px;
+            font-size: var(--text-base);
+            background: white;
+        }
+        
+        .newsletter-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .cta-description {
+            color: var(--warm-gray);
+            margin-bottom: var(--space-lg);
+            font-size: var(--text-sm);
+        }
+        
+        /* Action Links */
+        .action-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+        
+        .action-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-xs);
+            padding: var(--space-sm) 0;
+            border: 2px solid transparent;
+            border-radius: 4px;
+            transition: all 200ms ease;
+        }
+        
+        .action-link:hover {
+            background: rgba(100, 116, 139, 0.05);
+            border-color: var(--light-gray);
+        }
+        
+        /* Current Focus Widget */
+        .focus-widget {
+            background: rgba(100, 116, 139, 0.02);
+            border-radius: 8px;
+            padding: var(--space-md);
+            text-align: left;
+        }
+        
+        .focus-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-xs) 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .focus-item:last-child {
+            border-bottom: none;
+        }
+        
+        .focus-label {
+            color: var(--warm-gray);
+            font-size: var(--text-sm);
+        }
+        
+        .focus-value {
+            color: var(--primary);
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: var(--text-sm);
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: var(--space-sm) var(--space-lg);
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 200ms ease;
+            text-decoration: none;
+            display: inline-block;
+            font-size: var(--text-base);
+            width: 100%;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+        
+        /* Footer */
+        .footer {
+            padding: var(--space-xl) 0;
+            border-top: 1px solid var(--light-gray);
+            background: rgba(100, 116, 139, 0.02);
+        }
+        
+        .footer-content {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: var(--space-lg);
+            align-items: center;
+        }
+        
+        .footer-link {
+            color: var(--warm-gray);
+            text-decoration: none;
+            font-size: var(--text-sm);
+        }
+        
+        .footer-link:hover {
+            color: var(--primary);
+        }
+        
+        /* XP Toast System */
+        .xp-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            padding: var(--space-sm) var(--space-lg);
+            border-radius: 8px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            transform: translateX(400px) scale(0.8);
+            transition: all 300ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(100, 116, 139, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .xp-toast.show {
+            transform: translateX(0) scale(1);
+        }
+        
+        .xp-toast.emphasis {
+            background: var(--primary-dark);
+            box-shadow: 0 4px 20px rgba(71, 85, 105, 0.3);
+        }
+        
+        /* X Mention Links */
+        .x-mention {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .x-mention:hover {
+            text-decoration: underline;
+        }
+        
+        /* Mobile Optimization */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 var(--space-sm);
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+                gap: var(--space-sm);
+            }
+            
+            .hero-content,
+            .hero-sidebar,
+            .story-content,
+            .story-sidebar,
+            .footer-content {
+                grid-column: 1;
+            }
+            
+            .hero-sidebar {
+                margin-top: var(--space-lg);
+            }
+            
+            .story-sidebar {
+                margin-top: var(--space-lg);
+            }
+            
+            .nav-links {
+                gap: var(--space-md);
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: var(--space-md);
+                text-align: center;
+            }
+            
+            .inline-stats {
+                flex-direction: column;
+                gap: var(--space-sm);
+                align-items: center;
+            }
+            
+            .stat-item {
+                flex-direction: row;
+                gap: var(--space-sm);
+                min-width: auto;
+            }
+            
+            .xp-toast {
+                right: 10px;
+                top: 10px;
+                font-size: var(--text-sm);
+                padding: var(--space-xs) var(--space-sm);
+            }
+        }
+        
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        
+        /* Focus States */
+        .nav-link:focus,
+        .btn:focus,
+        .newsletter-input:focus,
+        .action-link:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="container">
+            <div class="nav-container">
+                <a href="/" class="logo">Superoptimised</a>
+                <ul class="nav-links">
+                    <li><a href="/journey" class="nav-link">Journey</a></li>
+                    <li><a href="/about" class="nav-link active">About</a></li>
+                    <li><a href="https://x.com/superoptimised" class="social-link" target="_blank">Follow on X</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Unique Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="grid">
+                <div class="hero-content">
+                    <div class="hero-label text-sm">Solo Developer Experiment</div>
+                    <h1 class="text-hero hero-title">Your Input Shapes<br>What Gets Built</h1>
+                    <p class="text-lg hero-description">
+                        This is an experiment in building products where the community has direct say 
+                        in every decision. We're a small team (just me) sharing failures and wins 
+                        transparently, learning together, and letting your feedback guide what gets 
+                        created next.
+                    </p>
+                    
+                    <!-- Inline Stats - No White Space -->
+                    <div class="inline-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">1</div>
+                            <div class="stat-label">Day Building</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">17</div>
+                            <div class="stat-label">Community Votes</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">∞</div>
+                            <div class="stat-label">Things to Learn</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hero-sidebar">
+                    <!-- Newsletter CTA -->
+                    <div class="sidebar-widget">
+                        <h3 class="widget-title">Join the Experiment</h3>
+                        <p class="cta-description">
+                            Get updates when there's something worth sharing. No schedule, 
+                            just progress and lessons learned together.
+                        </p>
+                        <form class="newsletter-form" id="newsletter-form">
+                            <input 
+                                type="email" 
+                                placeholder="your@email.com" 
+                                class="newsletter-input"
+                                id="newsletter-email"
+                                required
+                            >
+                            <button type="submit" class="btn" id="newsletter-submit">Count Me In</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Story Section - Continuous Flow -->
+    <section class="story">
+        <div class="container">
+            <div class="grid">
+                <div class="story-content">
+                    <p class="story-text">
+                        Like most developers, I've built plenty of things that nobody wanted. 
+                        The pattern was always the same: great idea (I thought), months of solo development, 
+                        launch to silence, wonder what went wrong.
+                    </p>
+                    
+                    <p class="story-text">
+                        The problem wasn't the code—it was the isolation. I was solving problems 
+                        that existed mostly in my head, building features based on assumptions 
+                        instead of conversations with real people.
+                    </p>
+                    
+                    <div class="story-highlight">
+                        "What if instead of building and then asking for feedback, 
+                        I asked for feedback while building?"
+                    </div>
+                    
+                    <p class="story-text">
+                        So here's the experiment: I'm building everything completely in the open. 
+                        Every technical decision gets discussed on 
+                        <a href="https://x.com/superoptimised" class="x-mention">X (@superoptimised)</a>. 
+                        Every mistake gets documented. Every success gets shared transparently.
+                    </p>
+                    
+                    <p class="story-text">
+                        Right now, we're building a magic link questionnaire system because the 
+                        community voted that traditional signup forms kill honest feedback. But 
+                        that choice came from real conversations, not boardroom assumptions.
+                    </p>
+                    
+                    <p class="story-text">
+                        I don't know where this experiment will lead. Maybe we'll build something 
+                        genuinely useful. Maybe we'll discover that certain approaches don't work. 
+                        Maybe we'll learn things that change how we think about building products altogether.
+                    </p>
+                    
+                    <p class="story-text">
+                        What I do know is that every conversation so far has been more valuable than 
+                        any assumption I would have made alone. <strong>Your input doesn't just inform 
+                        the product—it becomes part of the story.</strong>
+                    </p>
+                    
+                    <p class="story-text">
+                        Want to help shape what gets built next? The most interesting conversations 
+                        happen in real-time, where your feedback can change the direction before 
+                        decisions are locked in.
+                    </p>
+                </div>
+
+                <div class="story-sidebar">
+                    <div class="sidebar-sticky">
+                        <!-- Actions -->
+                        <div class="sidebar-widget">
+                            <h3 class="widget-title">Take Action</h3>
+                            <ul class="action-links">
+                                <li><a href="/journey" class="action-link">
+                                    <span>📝</span>
+                                    <span>Read the full journey</span>
+                                </a></li>
+                                <li><a href="/questionnaire" class="action-link">
+                                    <span>🗳️</span>
+                                    <span>Vote on current decisions</span>
+                                </a></li>
+                                <li><a href="https://x.com/superoptimised" class="action-link">
+                                    <span>🐦</span>
+                                    <span>Join live conversations</span>
+                                </a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Current Focus -->
+                        <div class="sidebar-widget">
+                            <h3 class="widget-title">Right Now</h3>
+                            <div class="focus-widget">
+                                <div class="focus-item">
+                                    <span class="focus-label">Building</span>
+                                    <span class="focus-value">Magic Links</span>
+                                </div>
+                                <div class="focus-item">
+                                    <span class="focus-label">Learning</span>
+                                    <span class="focus-value">User Feedback</span>
+                                </div>
+                                <div class="focus-item">
+                                    <span class="focus-label">Next</span>
+                                    <span class="focus-value">You Decide</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="grid">
+                <div class="footer-content">
+                    <div>
+                        <span class="text-sm" style="color: var(--warm-gray);">
+                            © 2024 Superoptimised. Built transparently.
+                        </span>
+                    </div>
+                    <div class="footer-links">
+                        <a href="/" class="footer-link">Home</a>
+                        <a href="/journey" class="footer-link">Journey</a>
+                        <a href="/about" class="footer-link">About</a>
+                        <a href="https://x.com/superoptimised" class="footer-link">X</a>
+                        <a href="mailto:hello@superoptimised.com" class="footer-link">Contact</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- XP Toast System -->
+    <div class="xp-toast" id="xp-toast" style="display: none;">
+        +5 XP • Thanks for joining the experiment!
+    </div>
+
+    <script>
+        // Simple newsletter form handling
+        document.getElementById('newsletter-submit').addEventListener('click', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('newsletter-email').value;
+            
+            if (!email) return;
+            
+            this.textContent = 'Welcome aboard!';
+            this.disabled = true;
+            
+            document.getElementById('newsletter-email').value = '';
+            
+            // Show XP toast
+            const toast = document.getElementById('xp-toast');
+            toast.style.display = 'block';
+            
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                }, 300);
+            }, 3000);
+            
+            setTimeout(() => {
+                this.textContent = 'Count Me In';
+                this.disabled = false;
+            }, 3000);
+            
+            console.log(`Newsletter signup: ${email}`);
+        });
+    </script>
+</body>
+</html>

@@ -201,7 +201,7 @@ export function AboutPage() {
                         <span>Read the full journey</span>
                       </LinkButton>
                       <LinkButton
-                        href="/questionnaire"
+                        href="/research"
                         variant="outline"
                         size="sm"
                         className="w-full justify-start"
