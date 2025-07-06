@@ -4,7 +4,7 @@ import {
   getQuestionByIdSchema,
   getQuestionResultsSchema,
 } from "../schemas";
-import { safeExecute } from "../errors";
+import { safeExecute, QuestionNotFoundError } from "../errors";
 import { prisma } from "../../db";
 
 export const questionRouter = createTRPCRouter({
@@ -16,10 +16,10 @@ export const questionRouter = createTRPCRouter({
         where: {
           isActive: true,
           ...(category && { category }),
-          OR: [{ scheduledStart: null }, { scheduledStart: { lte: new Date() } }],
+          OR: [{ startDate: null }, { startDate: { lte: new Date() } }],
           AND: [
             {
-              OR: [{ scheduledEnd: null }, { scheduledEnd: { gte: new Date() } }],
+              OR: [{ endDate: null }, { endDate: { gte: new Date() } }],
             },
           ],
         },
@@ -55,10 +55,10 @@ export const questionRouter = createTRPCRouter({
         where: {
           id: input.id,
           isActive: true,
-          OR: [{ scheduledStart: null }, { scheduledStart: { lte: new Date() } }],
+          OR: [{ startDate: null }, { startDate: { lte: new Date() } }],
           AND: [
             {
-              OR: [{ scheduledEnd: null }, { scheduledEnd: { gte: new Date() } }],
+              OR: [{ endDate: null }, { endDate: { gte: new Date() } }],
             },
           ],
         },
@@ -80,7 +80,7 @@ export const questionRouter = createTRPCRouter({
       });
 
       if (!question) {
-        throw new Error(`Question with ID ${input.id} not found or is not active`);
+        throw new QuestionNotFoundError(input.id);
       }
 
       return {
@@ -97,7 +97,7 @@ export const questionRouter = createTRPCRouter({
         include: {
           questionResponses: {
             select: {
-              response: true,
+              responseData: true,
               createdAt: true,
             },
           },
@@ -105,7 +105,7 @@ export const questionRouter = createTRPCRouter({
       });
 
       if (!question) {
-        throw new Error(`Question with ID ${input.questionId} not found`);
+        throw new QuestionNotFoundError(input.questionId);
       }
 
       const responses = question.questionResponses;
@@ -115,7 +115,7 @@ export const questionRouter = createTRPCRouter({
       if (question.questionType === "binary") {
         const results = responses.reduce(
           (acc, response) => {
-            const choice = response.response as string;
+            const choice = response.responseData as string;
             acc[choice] = (acc[choice] || 0) + 1;
             return acc;
           },
@@ -139,7 +139,7 @@ export const questionRouter = createTRPCRouter({
         questionId: question.id,
         questionType: question.questionType,
         totalResponses,
-        responses: responses.map((r) => r.response),
+        responses: responses.map((r) => r.responseData),
       };
     }, "getQuestionResults");
   }),

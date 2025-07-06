@@ -99,12 +99,25 @@ export function handleVotingError(error: unknown): never {
   });
 }
 
+// Utility function to sanitize errors for logging (removes sensitive data)
+function sanitizeErrorForLog(error: unknown): unknown {
+  if (error instanceof Error) {
+    return {
+      name: error.name,
+      message: error.message,
+      // Don't include stack trace in production or sensitive props
+    };
+  }
+  return "Unknown error occurred";
+}
+
 // Utility function to safely execute database operations with error handling
 export async function safeExecute<T>(operation: () => Promise<T>, context?: string): Promise<T> {
   try {
     return await operation();
   } catch (error) {
-    console.error(`Error in ${context || "operation"}:`, error);
+    // Log sanitized error without sensitive information
+    console.error(`Error in ${context || "operation"}:`, sanitizeErrorForLog(error));
     handleVotingError(error);
   }
 }

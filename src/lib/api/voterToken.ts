@@ -22,8 +22,18 @@ export function generateVoterToken(): string {
 /**
  * Get or create a voter token from request cookies
  */
+// UUID v4 regex pattern for validation
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
 export function getVoterTokenFromRequest(request: NextRequest): string | null {
-  return request.cookies.get(VOTER_TOKEN_COOKIE)?.value || null;
+  const token = request.cookies.get(VOTER_TOKEN_COOKIE)?.value;
+
+  // Validate token format to prevent malicious input
+  if (token && UUID_REGEX.test(token)) {
+    return token;
+  }
+
+  return null;
 }
 
 /**

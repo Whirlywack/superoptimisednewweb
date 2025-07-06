@@ -9,6 +9,7 @@ interface StatUpdate {
 // In-memory cache for frequently accessed stats
 const statsCache = new Map<string, { value: number; lastUpdated: Date }>();
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const MAX_CACHE_SIZE = 100; // Prevent memory leaks
 
 // Batch update queue
 let batchQueue: StatUpdate[] = [];
@@ -143,6 +144,15 @@ export async function warmStatsCache() {
     const now = new Date();
 
     liveStats.forEach((stat) => {
+      // Implement LRU eviction if cache is full
+      if (statsCache.size >= MAX_CACHE_SIZE) {
+        // Remove oldest entry
+        const firstKey = statsCache.keys().next().value;
+        if (firstKey) {
+          statsCache.delete(firstKey);
+        }
+      }
+
       statsCache.set(stat.statKey, {
         value: stat.statValue,
         lastUpdated: now,

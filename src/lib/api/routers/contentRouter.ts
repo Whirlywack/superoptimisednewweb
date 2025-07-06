@@ -95,7 +95,13 @@ export const contentRouter = createTRPCRouter({
         orderBy: { statKey: "asc" },
       });
 
-      const projectStats: Record<string, unknown> = {};
+      interface ProjectStatValue {
+        value: string;
+        description: string | null;
+        lastUpdated: Date;
+      }
+
+      const projectStats: Record<string, ProjectStatValue> = {};
       stats.forEach((stat) => {
         projectStats[stat.statKey] = {
           value: stat.statValue,

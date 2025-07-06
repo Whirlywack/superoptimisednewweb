@@ -44,7 +44,7 @@ export type Database = {
           question_id?: string;
           voter_token_id?: string | null;
           user_id?: string | null;
-          response_data?: any;
+          response_data?: unknown;
           ip_address?: string | null;
           user_agent?: string | null;
           created_at?: string;
