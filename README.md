@@ -5,6 +5,7 @@ Welcome to the **Superoptimised Next.js AI Starter** documentation hub. This fil
 ## 🎯 Interactive Database Features
 
 **Phase 1 Complete**: Core tRPC API foundation with anonymous voting system
+**Phase 2 Complete**: Real-time Updates & WebSocket Integration
 
 ✅ **Anonymous Voting System**
 
@@ -29,6 +30,20 @@ Welcome to the **Superoptimised Next.js AI Starter** documentation hub. This fil
 - XP rewards for voting (+5 XP base)
 - Live statistics updates
 - Rate limiting and abuse protection
+
+✅ **Real-time Features**
+
+- WebSocket subscriptions via Supabase Realtime
+- `useRealtimeVotes` hook for live vote counts
+- `useRealtimeStats` hook for community statistics
+- Automatic fallback to polling (15s intervals)
+
+✅ **Performance Optimization**
+
+- Batch stats updates (5s delay, 50 max)
+- In-memory caching with 5min TTL
+- Real-time aggregation on vote submission
+- Optimized database queries
 
 | File                                                         | Purpose                                                                                                                       |
 | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -63,6 +78,9 @@ npx prisma migrate dev
 # Seed database with initial questions and content
 npx prisma db seed
 
+# Setup Supabase Realtime (run SQL in Supabase SQL Editor)
+# See docs/supabase-setup.sql for required policies
+
 # Run dev servers (Next.js + Storybook)
 npm run dev            # http://localhost:3000
 npm run storybook      # http://localhost:6006
@@ -74,8 +92,15 @@ Once running, you can test the interactive voting system:
 
 1. Visit the homepage to see active questions
 2. Vote on questions (anonymous, no login required)
-3. View real-time vote results and statistics
-4. Check the tRPC API endpoints at `/api/trpc`
+3. View real-time vote results and statistics (WebSocket + polling fallback)
+4. Test the tRPC API endpoints at `/api/trpc`
+5. Monitor real-time stats updates on community pages
+
+**Real-time Features:**
+
+- Vote counts update instantly via WebSocket
+- Community stats refresh automatically
+- Graceful fallback to 15-second polling if WebSocket fails
 
 ## 📂 Directory Overview
 
