@@ -1,5 +1,10 @@
 import { createTRPCRouter, votingProcedure, publicProcedure } from "../trpc";
-import { submitVoteSchema, getVoteStatsSchema, getEngagementStatsSchema, claimXpSchema } from "../schemas";
+import {
+  submitVoteSchema,
+  getVoteStatsSchema,
+  getEngagementStatsSchema,
+  claimXpSchema,
+} from "../schemas";
 import { safeExecute, DuplicateVoteError, QuestionNotFoundError, RateLimitError } from "../errors";
 import { prisma } from "../../db";
 import { randomUUID } from "crypto";
@@ -35,10 +40,10 @@ function calculateStreakDays(voteDates: Date[]): number {
 
   // Sort dates in descending order
   const sortedDates = voteDates.sort((a, b) => b.getTime() - a.getTime());
-  
+
   // Get unique days (ignore time)
   const uniqueDays = new Set(
-    sortedDates.map(date => {
+    sortedDates.map((date) => {
       const day = new Date(date);
       day.setHours(0, 0, 0, 0);
       return day.getTime();
@@ -46,17 +51,17 @@ function calculateStreakDays(voteDates: Date[]): number {
   );
 
   const dayTimestamps = Array.from(uniqueDays).sort((a, b) => b - a);
-  
+
   if (dayTimestamps.length === 0) return 0;
 
   let streak = 1;
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  
+
   // Check if most recent vote was today or yesterday
   const mostRecentDay = new Date(dayTimestamps[0]);
   const daysDiff = (today.getTime() - mostRecentDay.getTime()) / (1000 * 60 * 60 * 24);
-  
+
   if (daysDiff > 1) {
     return 0; // Streak broken if no vote today or yesterday
   }
@@ -66,7 +71,7 @@ function calculateStreakDays(voteDates: Date[]): number {
     const currentDay = dayTimestamps[i];
     const previousDay = dayTimestamps[i - 1];
     const dayDiff = (previousDay - currentDay) / (1000 * 60 * 60 * 24);
-    
+
     if (dayDiff === 1) {
       streak++;
     } else {
@@ -256,7 +261,7 @@ export const voteRouter = createTRPCRouter({
           _sum: { xpAmount: true },
           _count: { id: true },
         }),
-        
+
         // Vote streaks (simulated - would need daily analytics)
         prisma.analyticsDaily.findMany({
           orderBy: { date: "desc" },
@@ -267,7 +272,7 @@ export const voteRouter = createTRPCRouter({
             uniqueVoters: true,
           },
         }),
-        
+
         // Top performers (anonymous)
         prisma.voterToken.findMany({
           orderBy: { voteCount: "desc" },
@@ -294,11 +299,11 @@ export const voteRouter = createTRPCRouter({
             _sum: { xpAmount: true },
             _count: { id: true },
           }),
-          
+
           prisma.questionResponse.count({
             where: { voterTokenId },
           }),
-          
+
           // Calculate current streak (simplified)
           prisma.questionResponse.findMany({
             where: { voterTokenId },
@@ -309,14 +314,14 @@ export const voteRouter = createTRPCRouter({
         ]);
 
         // Calculate streak days
-        const streakDays = calculateStreakDays(userStreak.map(v => v.createdAt));
+        const streakDays = calculateStreakDays(userStreak.map((v) => v.createdAt));
 
         userStats = {
           totalXp: userXp._sum.xpAmount || 0,
           totalVotes: userVotes,
           currentStreak: streakDays,
           xpTransactions: userXp._count.id,
-          rank: topPerformers.findIndex(p => p.id === voterTokenId) + 1,
+          rank: topPerformers.findIndex((p) => p.id === voterTokenId) + 1,
         };
       }
 
@@ -324,11 +329,36 @@ export const voteRouter = createTRPCRouter({
       let milestones = null;
       if (includeMilestones) {
         milestones = [
-          { votes: 10, xpReward: 50, title: "Getting Started", achieved: userStats ? userStats.totalVotes >= 10 : false },
-          { votes: 25, xpReward: 100, title: "Community Member", achieved: userStats ? userStats.totalVotes >= 25 : false },
-          { votes: 50, xpReward: 250, title: "Active Participant", achieved: userStats ? userStats.totalVotes >= 50 : false },
-          { votes: 100, xpReward: 500, title: "Community Champion", achieved: userStats ? userStats.totalVotes >= 100 : false },
-          { votes: 250, xpReward: 1000, title: "Superoptimised Builder", achieved: userStats ? userStats.totalVotes >= 250 : false },
+          {
+            votes: 10,
+            xpReward: 50,
+            title: "Getting Started",
+            achieved: userStats ? userStats.totalVotes >= 10 : false,
+          },
+          {
+            votes: 25,
+            xpReward: 100,
+            title: "Community Member",
+            achieved: userStats ? userStats.totalVotes >= 25 : false,
+          },
+          {
+            votes: 50,
+            xpReward: 250,
+            title: "Active Participant",
+            achieved: userStats ? userStats.totalVotes >= 50 : false,
+          },
+          {
+            votes: 100,
+            xpReward: 500,
+            title: "Community Champion",
+            achieved: userStats ? userStats.totalVotes >= 100 : false,
+          },
+          {
+            votes: 250,
+            xpReward: 1000,
+            title: "Superoptimised Builder",
+            achieved: userStats ? userStats.totalVotes >= 250 : false,
+          },
         ];
       }
 
@@ -417,5 +447,130 @@ export const voteRouter = createTRPCRouter({
         totalXp,
       };
     }, "claimXP");
+  }),
+
+  // Daily engagement aggregation for analytics
+  aggregateDailyStats: publicProcedure.mutation(async () => {
+    return safeExecute(async () => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+
+      // Check if today's stats already exist
+      const existingStats = await prisma.analyticsDaily.findFirst({
+        where: { date: today },
+      });
+
+      if (existingStats) {
+        throw new Error("Daily stats for today already aggregated");
+      }
+
+      // Get today's engagement data
+      const [todayVotes, uniqueVoters, todayXp, todayNewsletterSignups] = await Promise.all([
+        // Total votes today
+        prisma.questionResponse.count({
+          where: {
+            createdAt: {
+              gte: today,
+              lt: tomorrow,
+            },
+          },
+        }),
+
+        // Unique voters today
+        prisma.questionResponse.findMany({
+          where: {
+            createdAt: {
+              gte: today,
+              lt: tomorrow,
+            },
+          },
+          distinct: ["voterTokenId"],
+          select: { voterTokenId: true },
+        }),
+
+        // Total XP earned today
+        prisma.xpLedger.aggregate({
+          where: {
+            createdAt: {
+              gte: today,
+              lt: tomorrow,
+            },
+          },
+          _sum: { xpAmount: true },
+        }),
+
+        // Newsletter signups today
+        prisma.newsletterSubscriber.count({
+          where: {
+            createdAt: {
+              gte: today,
+              lt: tomorrow,
+            },
+          },
+        }),
+      ]);
+
+      // Get popular questions (most voted today)
+      const popularQuestions = await prisma.questionResponse.groupBy({
+        by: ["questionId"],
+        where: {
+          createdAt: {
+            gte: today,
+            lt: tomorrow,
+          },
+        },
+        _count: {
+          questionId: true,
+        },
+        orderBy: {
+          _count: {
+            questionId: "desc",
+          },
+        },
+        take: 5,
+      });
+
+      // Include question titles
+      const questionsWithTitles = await Promise.all(
+        popularQuestions.map(async (pq) => {
+          const question = await prisma.question.findUnique({
+            where: { id: pq.questionId },
+            select: { title: true },
+          });
+          return {
+            questionId: pq.questionId,
+            title: question?.title || "Unknown Question",
+            voteCount: pq._count.questionId,
+          };
+        })
+      );
+
+      // Create daily analytics record
+      const dailyStats = await prisma.analyticsDaily.create({
+        data: {
+          date: today,
+          totalVotes: todayVotes,
+          uniqueVoters: uniqueVoters.length,
+          totalXpEarned: todayXp._sum.xpAmount || 0,
+          newsletterSignups: todayNewsletterSignups,
+          popularQuestions: questionsWithTitles,
+        },
+      });
+
+      return {
+        success: true,
+        date: today.toISOString().split("T")[0],
+        stats: {
+          totalVotes: dailyStats.totalVotes,
+          uniqueVoters: dailyStats.uniqueVoters,
+          totalXpEarned: dailyStats.totalXpEarned,
+          newsletterSignups: dailyStats.newsletterSignups,
+          popularQuestions: dailyStats.popularQuestions,
+        },
+      };
+    }, "aggregateDailyStats");
   }),
 });

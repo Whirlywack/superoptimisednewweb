@@ -20,13 +20,13 @@ export const XpClaimEmail = ({ totalXp, claimUrl }: XpClaimEmailProps) => {
               Superoptimised
             </h2>
           </div>
-          
+
           <h1 style={h1}>🏆 Your XP is Ready to Claim!</h1>
-          
+
           <p style={heroText}>
-            Thanks for being part of the Superoptimised community! You've earned{" "}
-            <strong>{totalXp.toLocaleString()} XP</strong> through your participation 
-            in community voting and engagement.
+            Thanks for being part of the Superoptimised community! You&apos;ve earned{" "}
+            <strong>{totalXp.toLocaleString()} XP</strong> through your participation in community
+            voting and engagement.
           </p>
 
           <div style={xpContainer}>
@@ -41,16 +41,16 @@ export const XpClaimEmail = ({ totalXp, claimUrl }: XpClaimEmailProps) => {
           </div>
 
           <p style={text}>
-            This secure link will expire in 24 hours for your security. Click the button 
-            above to complete your XP claim and see your contribution to the community.
+            This secure link will expire in 24 hours for your security. Click the button above to
+            complete your XP claim and see your contribution to the community.
           </p>
 
           <div style={footerSection}>
             <p style={footerText}>
-              Your privacy matters to us. This email is sent only for XP claiming and 
-              your data is never shared or linked to your anonymous votes.
+              Your privacy matters to us. This email is sent only for XP claiming and your data is
+              never shared or linked to your anonymous votes.
             </p>
-            
+
             <p style={footerText}>
               Questions? Reply to this email or reach out on{" "}
               <a href="https://x.com/superoptimised" style={link}>
@@ -69,7 +69,8 @@ export default XpClaimEmail;
 // Styles
 const main = {
   backgroundColor: "#ffffff",
-  fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
+  fontFamily:
+    '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
 };
 
 const container = {

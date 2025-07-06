@@ -15,7 +15,7 @@ function SuccessContent() {
   return (
     <div className="flex min-h-screen flex-col bg-off-white">
       <HomepageNavigation />
-      
+
       <main className="flex-1 py-16">
         <div className="mx-auto max-w-2xl px-4">
           {/* Success Icon */}
@@ -23,9 +23,7 @@ function SuccessContent() {
             <div className="mx-auto mb-4 flex size-20 items-center justify-center rounded-full bg-green-100">
               <CheckCircle className="size-10 text-green-600" />
             </div>
-            <h1 className="mb-4 text-3xl font-bold text-off-black">
-              🎉 XP Successfully Claimed!
-            </h1>
+            <h1 className="mb-4 text-3xl font-bold text-off-black">🎉 XP Successfully Claimed!</h1>
             <p className="text-lg text-warm-gray">
               Congratulations! Your community participation has been officially recognized.
             </p>
@@ -37,9 +35,7 @@ function SuccessContent() {
             <div className="mb-2 font-mono text-4xl font-bold text-primary">
               {parseInt(totalXp).toLocaleString()} XP
             </div>
-            <div className="text-warm-gray">
-              Earned through community voting and engagement
-            </div>
+            <div className="text-warm-gray">Earned through community voting and engagement</div>
             {email && (
               <div className="mt-4 text-sm text-warm-gray">
                 Confirmed for: <strong>{email}</strong>
@@ -54,36 +50,22 @@ function SuccessContent() {
               What This Means
             </h2>
             <div className="space-y-3 text-warm-gray">
-              <p>
-                • Your anonymous votes have helped shape the direction of Superoptimised
-              </p>
-              <p>
-                • You're part of a community-driven development experiment
-              </p>
-              <p>
-                • Your XP represents real impact on product decisions
-              </p>
-              <p>
-                • This data helps us understand engagement and improve the platform
-              </p>
+              <p>• Your anonymous votes have helped shape the direction of Superoptimised</p>
+              <p>• You&apos;re part of a community-driven development experiment</p>
+              <p>• Your XP represents real impact on product decisions</p>
+              <p>• This data helps us understand engagement and improve the platform</p>
             </div>
           </div>
 
           {/* Next Steps */}
           <div className="mb-8 rounded-lg border border-light-gray bg-white p-6">
-            <h2 className="mb-4 text-xl font-semibold text-off-black">
-              Keep Building With Us
-            </h2>
+            <h2 className="mb-4 text-xl font-semibold text-off-black">Keep Building With Us</h2>
             <div className="space-y-4">
-              <LinkButton
-                href="/"
-                className="w-full justify-center"
-                size="lg"
-              >
+              <LinkButton href="/" className="w-full justify-center" size="lg">
                 Continue Voting on Current Decisions
                 <ArrowRight className="ml-2 size-4" />
               </LinkButton>
-              
+
               <LinkButton
                 href="/journey"
                 variant="outline"
@@ -92,7 +74,7 @@ function SuccessContent() {
               >
                 Follow the Building Journey
               </LinkButton>
-              
+
               <LinkButton
                 href="https://x.com/superoptimised"
                 variant="outline"
@@ -108,13 +90,13 @@ function SuccessContent() {
           {/* Privacy Note */}
           <div className="rounded border-l-4 border-primary/20 bg-primary/5 p-4">
             <p className="text-sm text-warm-gray">
-              <strong>Privacy protected:</strong> Your XP claim doesn't affect your anonymous 
+              <strong>Privacy protected:</strong> Your XP claim doesn&apos;t affect your anonymous
               voting status. You can continue participating without any changes to your privacy.
             </p>
           </div>
         </div>
       </main>
-      
+
       <HomepageFooter />
     </div>
   );
@@ -122,7 +104,7 @@ function SuccessContent() {
 
 export default function ClaimXpSuccessPage() {
   return (
-    <Suspense 
+    <Suspense
       fallback={
         <div className="flex min-h-screen items-center justify-center bg-off-white">
           <div className="text-center">
