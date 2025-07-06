@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { api } from "@/lib/trpc/react";
 
 export interface UseClaimXpOptions {
   voterTokenHash?: string;
