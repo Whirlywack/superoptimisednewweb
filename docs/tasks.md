@@ -13,7 +13,7 @@
 
 **Status**: All core phases implemented and production-ready
 
-- ✅ **Phase 5 COMPLETE**: Content Management System with dynamic content blocks, milestone tracking, and timeline integration
+- ✅ **Phase 5 COMPLETE**: Content Management System with dynamic content blocks, milestone tracking, timeline integration, and SEO optimization
 
 ---
 
@@ -133,25 +133,23 @@
 - ✅ **Task 5.2.3**: Add automated progress updates based on completed features
 - ✅ **Task 5.2.4**: Integrate real milestone data into existing journey page timeline
 
-### 5.3 Blog Post Management
+### 5.3 Blog Post Management ✅
 
 - ✅ **Task 5.3.1**: Create `getBlogPosts` endpoint with pagination
 - ✅ **Task 5.3.2**: Replace hardcoded journey timeline with database posts
 - ✅ **Task 5.3.3**: Add Markdown rendering for post content
 - ✅ **Task 5.3.4**: Implement post slug-based routing (/journey/[slug])
 
-## Phase 5.4 — SEO & Crawl-Optimisation Tasks
+### 5.4 SEO & Crawl-Optimisation ✅
 
-| ID        | Task                                          | Acceptance Criteria                                                                                                                                  |
-| --------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **5.4.1** | **Create `/robots.txt` route**                | • Returns:<br> `User-agent: *`<br> `Sitemap: <SITE_URL>/sitemap.xml`<br>• Unit test asserts 200 status + exact body                                  |
-| **5.4.2** | **Dynamic `/api/sitemap.xml` endpoint**       | • Builds XML from all blog-post slugs **+** static pages (`/`, `/about`, `/journey`) <br>• Sends header `Cache-Control: public, max-age=86400`       |
-| **5.4.3** | **Global `metadata` export for static pages** | • Add `export const metadata` to Home, About, Journey pages <br>• Fields: `title`, `description`, `openGraph` — populated from DB/content blocks     |
-| **5.4.4** | **Dynamic post-level metadata**               | • In `/journey/[slug]`, fetch post → return `metadata` incl. OG image <br>• 404 if slug not found                                                    |
-| **5.4.5** | **Canonical URL helper**                      | • Inject `<link rel="canonical">` on every page <br>• Helper derives URL from `SITE_URL` env var <br>• Jest test verifies correct domain             |
-| **5.4.6** | **Default OG image fallback**                 | • Place `/public/og-default.png` <br>• Metadata uses fallback when post lacks cover image                                                            |
-| **5.4.7** | **JSON-LD breadcrumbs on post pages**         | • Inject `<script type="application/ld+json">` with `BreadcrumbList` (Home → Journey → Post) <br>• JSON parses without error in unit test            |
-| **5.4.8** | **Build-time sitemap/robots generation**      | • Add `next-sitemap.js` (or custom script) <br>• `npm run build` outputs `public/sitemap.xml` & `public/robots.txt` <br>• CI checks both files exist |
+- ✅ **Task 5.4.1**: Create `/robots.txt` route with proper disallow rules and sitemap reference
+- ✅ **Task 5.4.2**: Dynamic `/sitemap.xml` endpoint building XML from all blog posts + static pages with cache headers
+- ✅ **Task 5.4.3**: Global `metadata` export for static pages (Home, About, Journey, Research)
+- ✅ **Task 5.4.4**: Dynamic post-level metadata with OG images, canonical URLs, and 404 handling
+- ✅ **Task 5.4.5**: Canonical URL helper functions with environment variable support and Jest tests
+- ✅ **Task 5.4.6**: Default OG image fallback system with `/public/og-default.png`
+- ✅ **Task 5.4.7**: JSON-LD breadcrumbs on post pages with validated BreadcrumbList structure
+- ✅ **Task 5.4.8**: Build-time sitemap/robots generation script integrated into npm build process
 
 > **Env note:** define `SITE_URL` as `http://localhost:3000` during development and switch to the production domain before launch.
 
