@@ -1,5 +1,5 @@
 import { JourneyPage } from '@/components/templates/JourneyPage';
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Building Journey - Superoptimised',

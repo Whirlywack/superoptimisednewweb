@@ -60,6 +60,11 @@ export const claimXpSchema = z.object({
   voterTokenHash: z.string(),
 });
 
+export const getEngagementStatsSchema = z.object({
+  voterTokenId: z.string().cuid().optional(),
+  includeMilestones: z.boolean().optional(),
+});
+
 // Newsletter schemas
 export const subscribeNewsletterSchema = z.object({
   email: z.string().email(),
