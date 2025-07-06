@@ -6,12 +6,16 @@ import { cn } from "@/lib/utils";
 import { HomepageNavigation } from "./Homepage/HomepageNavigation";
 import { HomepageFooter } from "./Homepage/HomepageFooter";
 import { XPToastProvider } from "./Homepage/XPToastProvider";
+import { useCommunityStats } from "@/hooks/useCommunityStats";
 import { BookOpen, Vote, Twitter } from "lucide-react";
 
 export function AboutPage() {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showToast, setShowToast] = useState(false);
+
+  // Get real community stats
+  const { stats } = useCommunityStats();
 
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,12 +73,24 @@ export function AboutPage() {
                 {/* Inline Stats */}
                 <div className="flex gap-12 rounded-lg border-l-4 border-primary bg-primary/[0.05] p-8">
                   <div className="flex min-w-[80px] flex-col items-center">
-                    <div className="font-mono text-lg font-extrabold text-primary">1</div>
-                    <div className="mt-2 text-center text-xs text-warm-gray">Day Building</div>
+                    <div className="font-mono text-lg font-extrabold text-primary">
+                      {Math.ceil(
+                        (Date.now() - new Date("2024-01-01").getTime()) / (1000 * 60 * 60 * 24)
+                      )}
+                    </div>
+                    <div className="mt-2 text-center text-xs text-warm-gray">Days Building</div>
                   </div>
                   <div className="flex min-w-[80px] flex-col items-center">
-                    <div className="font-mono text-lg font-extrabold text-primary">17</div>
+                    <div className="font-mono text-lg font-extrabold text-primary">
+                      {stats?.totalVotes?.toLocaleString() || "17"}
+                    </div>
                     <div className="mt-2 text-center text-xs text-warm-gray">Community Votes</div>
+                  </div>
+                  <div className="flex min-w-[80px] flex-col items-center">
+                    <div className="font-mono text-lg font-extrabold text-primary">
+                      {stats?.uniqueVoters?.toLocaleString() || "3"}
+                    </div>
+                    <div className="mt-2 text-center text-xs text-warm-gray">Unique Voters</div>
                   </div>
                   <div className="flex min-w-[80px] flex-col items-center">
                     <div className="font-mono text-lg font-extrabold text-primary">∞</div>

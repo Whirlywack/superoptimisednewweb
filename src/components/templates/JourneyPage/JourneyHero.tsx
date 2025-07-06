@@ -3,12 +3,16 @@
 import React, { useState, useContext } from "react";
 import { cn } from "@/lib/utils";
 import { XPToastContext } from "../Homepage/XPToastProvider";
+import { useCommunityStats } from "@/hooks/useCommunityStats";
 
 export function JourneyHero() {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedPoll, setSelectedPoll] = useState<string | null>(null);
   const { showXPToast } = useContext(XPToastContext);
+
+  // Get real community stats
+  const { stats } = useCommunityStats();
 
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,7 +86,8 @@ export function JourneyHero() {
               Building Magic Link Questionnaire System
             </div>
             <div className="font-mono text-sm text-warm-gray">
-              Community input: 17 votes across 4 active decisions
+              Community input: {stats?.totalVotes || "17"} votes across{" "}
+              {stats?.activeQuestions || "4"} active decisions
             </div>
           </div>
 
@@ -168,7 +173,9 @@ export function JourneyHero() {
             className="rounded-lg p-md text-center"
             style={{ background: "rgba(100, 116, 139, 0.05)" }}
           >
-            <div className="font-mono text-xl font-bold text-primary">17</div>
+            <div className="font-mono text-xl font-bold text-primary">
+              {stats?.totalVotes || "17"}
+            </div>
             <div className="mt-xs text-xs text-warm-gray">Community Votes This Week</div>
           </div>
 
@@ -176,8 +183,10 @@ export function JourneyHero() {
             className="rounded-lg p-md text-center"
             style={{ background: "rgba(100, 116, 139, 0.05)" }}
           >
-            <div className="font-mono text-xl font-bold text-primary">3</div>
-            <div className="mt-xs text-xs text-warm-gray">Decisions Influenced</div>
+            <div className="font-mono text-xl font-bold text-primary">
+              {stats?.uniqueVoters || "3"}
+            </div>
+            <div className="mt-xs text-xs text-warm-gray">Unique Voters</div>
           </div>
         </div>
       </div>
