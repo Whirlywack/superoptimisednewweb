@@ -10,7 +10,7 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
-import { getServerAuthSession, UserRole } from "../auth";
+import { getServerAuthSession } from "../auth";
 
 /**
  * 1. CONTEXT
@@ -47,8 +47,9 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
       ...shape,
       data: {
         ...shape.data,
-        zodError:
-          error.cause instanceof ZodError ? error.cause.flatten() : null,
+        zodError: error.cause instanceof ZodError ? error.cause.flatten() : null,
+        customError: error.cause?.name || null,
+        timestamp: new Date().toISOString(),
       },
     };
   },
@@ -76,13 +77,54 @@ export const createCallerFactory = t.createCallerFactory;
 export const createTRPCRouter = t.router;
 
 /**
- * Public (unauthenticated) procedure
+ * Request logging middleware for performance monitoring
+ */
+const loggingMiddleware = t.middleware(async ({ path, type, next }) => {
+  const start = Date.now();
+
+  console.log(`[tRPC] ${type.toUpperCase()} ${path} - Started`);
+
+  const result = await next();
+
+  const duration = Date.now() - start;
+  const status = result.ok ? "SUCCESS" : "ERROR";
+
+  console.log(`[tRPC] ${type.toUpperCase()} ${path} - ${status} (${duration}ms)`);
+
+  if (!result.ok) {
+    console.error(`[tRPC] Error in ${path}:`, result.error);
+  }
+
+  return result;
+});
+
+/**
+ * Rate limiting middleware for voting endpoints
+ */
+const rateLimitMiddleware = t.middleware(async ({ next, path }) => {
+  // For voting endpoints, we'll implement IP-based rate limiting
+  if (path.includes("vote") || path.includes("submit")) {
+    // This will be enhanced when we implement the actual rate limiting logic
+    // For now, just log the attempt
+    console.log(`[tRPC] Rate limit check for ${path}`);
+  }
+
+  return next();
+});
+
+/**
+ * Public (unauthenticated) procedure with logging
  *
  * This is the base piece you use to build new queries and mutations on your tRPC API. It does not
  * guarantee that a user querying is authorized, but you can still access user session data if they
  * are logged in.
  */
-export const publicProcedure = t.procedure;
+export const publicProcedure = t.procedure.use(loggingMiddleware);
+
+/**
+ * Public procedure with rate limiting (for voting endpoints)
+ */
+export const rateLimitedProcedure = t.procedure.use(loggingMiddleware).use(rateLimitMiddleware);
 
 /**
  * Protected (authenticated) procedure
@@ -92,7 +134,7 @@ export const publicProcedure = t.procedure;
  *
  * @see https://trpc.io/docs/procedures
  */
-export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
+export const protectedProcedure = t.procedure.use(loggingMiddleware).use(({ ctx, next }) => {
   if (!ctx.session || !ctx.session.user) {
     throw new TRPCError({
       code: "UNAUTHORIZED",
