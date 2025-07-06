@@ -1,66 +1,16 @@
 "use client";
 
 import React, { useState, useContext } from "react";
-import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { XPToastContext } from "../Homepage/XPToastProvider";
-import { BarChart3, MessageCircle, Target, Repeat2, Heart } from "lucide-react";
-
-interface CommunityImpact {
-  votes: string;
-  replies: string;
-  outcome: string;
-}
-
-interface TimelineEntry {
-  id: string;
-  date: string;
-  title: string;
-  excerpt: string;
-  status: "Foundation" | "In Progress" | "Complete";
-  href: string;
-  readTime: string;
-  featured?: boolean;
-  communityImpact?: CommunityImpact;
-}
-
-const timelineEntries: TimelineEntry[] = [
-  {
-    id: "1",
-    date: "Day 1 • January 2, 2024",
-    title: "Why Building in Public Creates Better Products",
-    excerpt:
-      "Traditional development happens behind closed doors—decisions made in isolation, problems hidden until launch. I'm documenting every choice, sharing every challenge, and letting community feedback guide the direction. This transparency leads to better products and stronger relationships with the people who'll actually use what I build.",
-    status: "Foundation",
-    href: "/journey/day-1-foundation",
-    readTime: "4 min read",
-    featured: true,
-    communityImpact: {
-      votes: "5 initial votes on direction",
-      replies: "12 replies on X thread",
-      outcome: "Project scope refined based on feedback",
-    },
-  },
-  {
-    id: "2",
-    date: "Coming This Week",
-    title: "Authentication Decision: Magic Links vs Traditional Login",
-    excerpt:
-      "The community is helping decide between magic link authentication and traditional username/password. Current vote: 67% favor magic links for anonymous feedback systems. This post will break down the technical implications and final implementation decision.",
-    status: "In Progress",
-    href: "https://x.com/superoptimised",
-    readTime: "Live voting",
-    communityImpact: {
-      votes: "17 votes and counting",
-      replies: "8 alternative suggestions",
-      outcome: "Decision deadline: Friday",
-    },
-  },
-];
+import { ProjectTimeline } from "@/components/organisms/ProjectTimeline";
+import { MessageCircle, Repeat2, Heart } from "lucide-react";
+import { useProjectTimeline } from "@/hooks/useProjectTimeline";
 
 export function JourneyTimeline() {
   const [selectedPoll, setSelectedPoll] = useState<string | null>(null);
   const { showXPToast } = useContext(XPToastContext);
+  const { data: timelineData } = useProjectTimeline();
 
   const handlePollVote = (option: string) => {
     setSelectedPoll(option);
@@ -85,187 +35,58 @@ export function JourneyTimeline() {
 
         {/* Timeline Content - Left 8 columns */}
         <div className="col-span-12 md:col-span-8">
-          <div className="space-y-xl">
-            {timelineEntries.map((entry, _index) => (
-              <article
-                key={entry.id}
+          <ProjectTimeline
+            variant="compact"
+            showUpcoming={true}
+            showEstimates={false}
+            className="bg-transparent"
+          />
+
+          {/* Content Strategy Poll */}
+          <div className="mt-8 rounded-lg border-2 border-light-gray bg-white p-md transition-all duration-200">
+            <div className="mb-md text-base font-semibold text-off-black">
+              What type of content would be most valuable next?
+            </div>
+            <div className="mb-md flex flex-wrap gap-sm">
+              <button
+                onClick={() => handlePollVote("technical")}
                 className={cn(
-                  "relative pl-lg",
-                  "before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:content-['']",
-                  entry.featured ? "before:bg-primary" : "before:bg-light-gray"
+                  "flex-1 rounded px-md py-sm text-center text-sm font-medium transition-all duration-200",
+                  selectedPoll === "technical"
+                    ? "border-2 border-primary bg-primary text-white"
+                    : "border-2 border-transparent bg-light-gray hover:border-primary hover:bg-white"
                 )}
               >
-                {entry.href.startsWith("http") ? (
-                  <a
-                    href={entry.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block cursor-pointer rounded-lg border-2 border-light-gray bg-white p-lg transition-all duration-200 hover:-translate-y-0.5 hover:border-primary"
-                  >
-                    {/* Entry Meta */}
-                    <div className="mb-md flex flex-wrap items-center justify-between gap-4">
-                      <time className="font-mono text-sm text-warm-gray">{entry.date}</time>
-                      <span
-                        className="rounded px-sm py-xs text-xs font-semibold"
-                        style={{
-                          background: "rgba(100, 116, 139, 0.1)",
-                          color: "var(--primary)",
-                        }}
-                      >
-                        {entry.status}
-                      </span>
-                    </div>
-
-                    {/* Entry Title */}
-                    <h3 className="mb-md text-xl font-semibold text-off-black">{entry.title}</h3>
-
-                    {/* Entry Excerpt */}
-                    <p className="mb-md max-w-prose text-base text-warm-gray">{entry.excerpt}</p>
-
-                    {/* Community Impact */}
-                    {entry.communityImpact && (
-                      <div
-                        className="my-md rounded p-md"
-                        style={{ background: "rgba(100, 116, 139, 0.05)" }}
-                      >
-                        <div className="mb-sm text-sm font-semibold text-primary">
-                          Community Impact
-                        </div>
-                        <div className="flex flex-wrap gap-lg font-mono text-sm text-warm-gray">
-                          <div className="flex items-center gap-1">
-                            <BarChart3 className="size-4" />
-                            <span>{entry.communityImpact.votes}</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <MessageCircle className="size-4" />
-                            <span>{entry.communityImpact.replies}</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <Target className="size-4" />
-                            <span>{entry.communityImpact.outcome}</span>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Entry Actions */}
-                    <div className="mt-md flex items-center justify-between">
-                      <span className="text-sm font-semibold text-primary">
-                        Join the discussion on X →
-                      </span>
-                      <span className="font-mono text-sm text-warm-gray">{entry.readTime}</span>
-                    </div>
-                  </a>
-                ) : (
-                  <Link
-                    href={entry.href}
-                    className="block cursor-pointer rounded-lg border-2 border-light-gray bg-white p-lg transition-all duration-200 hover:-translate-y-0.5 hover:border-primary"
-                  >
-                    {/* Entry Meta */}
-                    <div className="mb-md flex flex-wrap items-center justify-between gap-4">
-                      <time className="font-mono text-sm text-warm-gray">{entry.date}</time>
-                      <span
-                        className="rounded px-sm py-xs text-xs font-semibold"
-                        style={{
-                          background: "rgba(100, 116, 139, 0.1)",
-                          color: "var(--primary)",
-                        }}
-                      >
-                        {entry.status}
-                      </span>
-                    </div>
-
-                    {/* Entry Title */}
-                    <h3 className="mb-md text-xl font-semibold text-off-black">{entry.title}</h3>
-
-                    {/* Entry Excerpt */}
-                    <p className="mb-md max-w-prose text-base text-warm-gray">{entry.excerpt}</p>
-
-                    {/* Community Impact */}
-                    {entry.communityImpact && (
-                      <div
-                        className="my-md rounded p-md"
-                        style={{ background: "rgba(100, 116, 139, 0.05)" }}
-                      >
-                        <div className="mb-sm text-sm font-semibold text-primary">
-                          Community Impact
-                        </div>
-                        <div className="flex flex-wrap gap-lg font-mono text-sm text-warm-gray">
-                          <div className="flex items-center gap-1">
-                            <BarChart3 className="size-4" />
-                            <span>{entry.communityImpact.votes}</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <MessageCircle className="size-4" />
-                            <span>{entry.communityImpact.replies}</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <Target className="size-4" />
-                            <span>{entry.communityImpact.outcome}</span>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Entry Actions */}
-                    <div className="mt-md flex items-center justify-between">
-                      <span className="text-sm font-semibold text-primary">Read full post →</span>
-                      <span className="font-mono text-sm text-warm-gray">{entry.readTime}</span>
-                    </div>
-                  </Link>
+                Technical Deep-Dives
+              </button>
+              <button
+                onClick={() => handlePollVote("decisions")}
+                className={cn(
+                  "flex-1 rounded px-md py-sm text-center text-sm font-medium transition-all duration-200",
+                  selectedPoll === "decisions"
+                    ? "border-2 border-primary bg-primary text-white"
+                    : "border-2 border-transparent bg-light-gray hover:border-primary hover:bg-white"
                 )}
-              </article>
-            ))}
-
-            {/* Content Strategy Poll */}
-            <div className="rounded-lg border-2 border-light-gray bg-white p-md transition-all duration-200">
-              <div className="mb-md text-base font-semibold text-off-black">
-                What type of content would be most valuable next?
-              </div>
-              <div className="mb-md flex flex-wrap gap-sm">
-                <button
-                  onClick={() => handlePollVote("technical")}
-                  className={cn(
-                    "flex-1 rounded px-md py-sm text-center text-sm font-medium transition-all duration-200",
-                    selectedPoll === "technical"
-                      ? "border-2 border-primary bg-primary text-white"
-                      : "border-2 border-transparent bg-light-gray hover:border-primary hover:bg-white"
-                  )}
-                >
-                  Technical Deep-Dives
-                </button>
-                <button
-                  onClick={() => handlePollVote("decisions")}
-                  className={cn(
-                    "flex-1 rounded px-md py-sm text-center text-sm font-medium transition-all duration-200",
-                    selectedPoll === "decisions"
-                      ? "border-2 border-primary bg-primary text-white"
-                      : "border-2 border-transparent bg-light-gray hover:border-primary hover:bg-white"
-                  )}
-                >
-                  Decision Breakdowns
-                </button>
-                <button
-                  onClick={() => handlePollVote("lessons")}
-                  className={cn(
-                    "flex-1 rounded px-md py-sm text-center text-sm font-medium transition-all duration-200",
-                    selectedPoll === "lessons"
-                      ? "border-2 border-primary bg-primary text-white"
-                      : "border-2 border-transparent bg-light-gray hover:border-primary hover:bg-white"
-                  )}
-                >
-                  Weekly Lessons
-                </button>
-              </div>
-              <div className="text-center text-xs text-warm-gray">
-                <span className="font-mono">Shape upcoming content</span> •
-                <a
-                  href="https://x.com/superoptimised"
-                  className="ml-1 text-primary hover:underline"
-                >
-                  Suggest on X
-                </a>
-              </div>
+              >
+                Decision Breakdowns
+              </button>
+              <button
+                onClick={() => handlePollVote("lessons")}
+                className={cn(
+                  "flex-1 rounded px-md py-sm text-center text-sm font-medium transition-all duration-200",
+                  selectedPoll === "lessons"
+                    ? "border-2 border-primary bg-primary text-white"
+                    : "border-2 border-transparent bg-light-gray hover:border-primary hover:bg-white"
+                )}
+              >
+                Weekly Lessons
+              </button>
+            </div>
+            <div className="text-center text-xs text-warm-gray">
+              <span className="font-mono">Shape upcoming content</span> •
+              <a href="https://x.com/superoptimised" className="ml-1 text-primary hover:underline">
+                Suggest on X
+              </a>
             </div>
           </div>
         </div>
@@ -277,21 +98,49 @@ export function JourneyTimeline() {
             <div className="rounded-lg border-2 border-light-gray bg-white p-md">
               <h3 className="mb-md text-lg font-semibold text-off-black">Journey Stats</h3>
               <div className="space-y-sm">
-                {[
-                  { label: "Days Building", value: "1" },
-                  { label: "Posts Published", value: "1" },
-                  { label: "Community Votes", value: "17" },
-                  { label: "Decisions Made", value: "3" },
-                  { label: "Project Complete", value: "15%" },
-                ].map((stat, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between border-b border-light-gray py-xs last:border-b-0"
-                  >
-                    <span className="text-sm text-warm-gray">{stat.label}</span>
-                    <span className="font-mono text-sm font-bold text-primary">{stat.value}</span>
-                  </div>
-                ))}
+                {timelineData ? (
+                  [
+                    {
+                      label: "Days Building",
+                      value: Math.ceil(
+                        (new Date().getTime() - new Date("2024-11-15").getTime()) /
+                          (1000 * 60 * 60 * 24)
+                      ).toString(),
+                    },
+                    {
+                      label: "Milestones Completed",
+                      value: timelineData.events
+                        .filter((e) => e.status === "completed")
+                        .length.toString(),
+                    },
+                    {
+                      label: "Development Phases",
+                      value: timelineData.events
+                        .filter((e) => e.type === "phase")
+                        .length.toString(),
+                    },
+                    {
+                      label: "Community Milestones",
+                      value: timelineData.events
+                        .filter((e) => e.type === "milestone")
+                        .length.toString(),
+                    },
+                    {
+                      label: "Project Complete",
+                      value: `${timelineData.progress.overallPercentage}%`,
+                    },
+                  ].map((stat, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between border-b border-light-gray py-xs last:border-b-0"
+                    >
+                      <span className="text-sm text-warm-gray">{stat.label}</span>
+                      <span className="font-mono text-sm font-bold text-primary">{stat.value}</span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-sm text-warm-gray">Loading stats...</div>
+                )}
               </div>
             </div>
 

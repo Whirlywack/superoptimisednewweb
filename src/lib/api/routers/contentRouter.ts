@@ -262,4 +262,102 @@ export const contentRouter = createTRPCRouter({
       return await getVersioningStats();
     }, "getVersioningStats");
   }),
+
+  getProjectTimeline: publicProcedure.query(async () => {
+    return safeExecute(async () => {
+      const progress = await calculateProjectProgress();
+
+      // Create timeline events from milestones with real dates
+      const timelineEvents = progress.milestones.map((milestone) => ({
+        id: milestone.id,
+        title: milestone.title,
+        description: milestone.description,
+        date: milestone.completedAt || null,
+        type: "milestone" as const,
+        status: milestone.isCompleted
+          ? ("completed" as const)
+          : milestone.completionPercentage > 0
+            ? ("in_progress" as const)
+            : ("upcoming" as const),
+        completionPercentage: milestone.completionPercentage,
+        category: milestone.category,
+        isEstimated: !milestone.completedAt && milestone.completionPercentage > 0,
+      }));
+
+      // Add completed phases with actual dates based on tasks.md timeline
+      const completedPhases = [
+        {
+          id: "phase-1",
+          title: "Phase 1: Core tRPC API Foundation",
+          description: "Database schema, tRPC setup, and basic voting infrastructure",
+          date: new Date("2024-11-15"),
+          type: "phase" as const,
+          status: "completed" as const,
+          completionPercentage: 100,
+          category: "Backend",
+        },
+        {
+          id: "phase-2",
+          title: "Phase 2: Real-time Updates & WebSocket Integration",
+          description: "Live vote statistics and real-time engagement tracking",
+          date: new Date("2024-11-22"),
+          type: "phase" as const,
+          status: "completed" as const,
+          completionPercentage: 100,
+          category: "Backend",
+        },
+        {
+          id: "phase-3",
+          title: "Phase 3: Frontend Integration & localStorage Migration",
+          description: "React Query integration and optimistic updates",
+          date: new Date("2024-11-30"),
+          type: "phase" as const,
+          status: "completed" as const,
+          completionPercentage: 100,
+          category: "Frontend",
+        },
+        {
+          id: "phase-4",
+          title: "Phase 4: XP System & Engagement Tracking",
+          description: "Gamification features and user progression tracking",
+          date: new Date("2024-12-07"),
+          type: "phase" as const,
+          status: "completed" as const,
+          completionPercentage: 100,
+          category: "Features",
+        },
+        {
+          id: "phase-5",
+          title: "Phase 5: Content Management System",
+          description: "Dynamic content blocks and project progress tracking",
+          date: new Date("2024-12-15"),
+          type: "phase" as const,
+          status: "in_progress" as const,
+          completionPercentage: 87.5, // 7/8 tasks completed
+          category: "CMS",
+        },
+      ];
+
+      // Combine and sort all events
+      const allEvents = [...timelineEvents, ...completedPhases].sort((a, b) => {
+        if (a.status === "completed" && b.status !== "completed") return -1;
+        if (b.status === "completed" && a.status !== "completed") return 1;
+        if (a.status === "in_progress" && b.status === "upcoming") return -1;
+        if (b.status === "in_progress" && a.status === "upcoming") return 1;
+
+        if (a.date && b.date) {
+          return a.date.getTime() - b.date.getTime();
+        }
+        if (a.date && !b.date) return -1;
+        if (!a.date && b.date) return 1;
+        return 0;
+      });
+
+      return {
+        events: allEvents,
+        progress,
+        lastUpdated: new Date(),
+      };
+    }, "getProjectTimeline");
+  }),
 });

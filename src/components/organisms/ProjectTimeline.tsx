@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { LucideIcon } from "@/components/ui/Icon";
 import { Tag } from "@/components/ui/Tag";
 import { CheckCircle2, Circle, Clock, Calendar, Code, Zap, Users, TrendingUp } from "lucide-react";
-import type { ProjectProgress } from "@/lib/milestone-tracker";
+import { useProjectTimeline } from "@/hooks/useProjectTimeline";
 
 interface ProjectTimelineEvent {
   id: string;
@@ -18,7 +18,6 @@ interface ProjectTimelineEvent {
 }
 
 interface ProjectTimelineProps extends React.HTMLAttributes<HTMLElement> {
-  progress: ProjectProgress;
   showUpcoming?: boolean;
   showEstimates?: boolean;
   variant?: "default" | "compact";
@@ -27,7 +26,6 @@ interface ProjectTimelineProps extends React.HTMLAttributes<HTMLElement> {
 }
 
 export function ProjectTimeline({
-  progress,
   showUpcoming = true,
   showEstimates = false,
   variant = "default",
@@ -35,6 +33,7 @@ export function ProjectTimeline({
   className,
   ...props
 }: ProjectTimelineProps) {
+  const { data: timelineData, isLoading, error } = useProjectTimeline();
   const getEventIcon = (type: string, status: string) => {
     if (status === "completed") return CheckCircle2;
     if (status === "in_progress") return Clock;
@@ -87,146 +86,53 @@ export function ProjectTimeline({
     return isEstimated ? `~${formatted}` : formatted;
   };
 
-  const generateEstimatedDate = (daysFromNow: number): Date => {
-    const date = new Date();
-    date.setDate(date.getDate() + daysFromNow);
-    return date;
-  };
-
-  const generateTimelineEvents = (): ProjectTimelineEvent[] => {
-    const events: ProjectTimelineEvent[] = [];
-
-    // Add completed phases (hardcoded dates for now - would come from database)
-    events.push(
-      {
-        id: "phase-1",
-        title: "Phase 1: Core tRPC API Foundation",
-        description: "Database schema, tRPC setup, and basic voting infrastructure",
-        date: new Date("2024-11-15"),
-        type: "phase",
-        status: "completed",
-        completionPercentage: 100,
-        category: "Backend",
-      },
-      {
-        id: "phase-2",
-        title: "Phase 2: Real-time Updates & WebSocket Integration",
-        description: "Live vote statistics and real-time engagement tracking",
-        date: new Date("2024-11-22"),
-        type: "phase",
-        status: "completed",
-        completionPercentage: 100,
-        category: "Backend",
-      },
-      {
-        id: "phase-3",
-        title: "Phase 3: Frontend Integration & localStorage Migration",
-        description: "React Query integration and optimistic updates",
-        date: new Date("2024-11-30"),
-        type: "phase",
-        status: "completed",
-        completionPercentage: 100,
-        category: "Frontend",
-      },
-      {
-        id: "phase-4",
-        title: "Phase 4: XP System & Engagement Tracking",
-        description: "Gamification features and user progression tracking",
-        date: new Date("2024-12-07"),
-        type: "phase",
-        status: "completed",
-        completionPercentage: 100,
-        category: "Features",
-      },
-      {
-        id: "phase-5",
-        title: "Phase 5: Content Management System",
-        description: "Dynamic content blocks and project progress tracking",
-        date: new Date("2024-12-15"),
-        type: "phase",
-        status: "in_progress",
-        completionPercentage: 87.5, // 7/8 tasks completed
-        category: "CMS",
-      }
+  // Handle loading and error states
+  if (isLoading) {
+    return (
+      <div className={cn("space-y-6", className)} {...props}>
+        <div className="space-y-2">
+          <h2 className="text-2xl font-bold text-off-black dark:text-off-white">
+            Project Timeline
+          </h2>
+          <div className="text-warm-gray">Loading timeline...</div>
+        </div>
+        <div className="space-y-4">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="flex animate-pulse gap-4">
+              <div className="size-10 rounded-full bg-light-gray dark:bg-warm-gray/30" />
+              <div className="flex-1 space-y-2">
+                <div className="h-4 w-3/4 rounded bg-light-gray dark:bg-warm-gray/30" />
+                <div className="h-3 w-1/2 rounded bg-light-gray dark:bg-warm-gray/30" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     );
+  }
 
-    // Add milestone events from the progress data
-    progress.milestones.forEach((milestone) => {
-      events.push({
-        id: milestone.id,
-        title: milestone.title,
-        description: milestone.description,
-        date: milestone.completedAt || null,
-        type: "milestone",
-        status: milestone.isCompleted
-          ? "completed"
-          : milestone.completionPercentage > 0
-            ? "in_progress"
-            : "upcoming",
-        completionPercentage: milestone.completionPercentage,
-        category: milestone.category,
-      });
-    });
+  if (error || !timelineData) {
+    return (
+      <div className={cn("space-y-6", className)} {...props}>
+        <div className="space-y-2">
+          <h2 className="text-2xl font-bold text-off-black dark:text-off-white">
+            Project Timeline
+          </h2>
+          <div className="text-warm-gray">Unable to load timeline data.</div>
+        </div>
+      </div>
+    );
+  }
 
-    // Add upcoming phases with estimated dates
-    if (showUpcoming) {
-      const upcomingPhases = [
-        {
-          id: "phase-6",
-          title: "Phase 6: Advanced Question Types",
-          description: "Multi-choice, rating, and ranking question support",
-          daysFromNow: 14,
-          category: "Features",
-        },
-        {
-          id: "phase-7",
-          title: "Phase 7: Newsletter System Integration",
-          description: "Email campaigns and subscriber management",
-          daysFromNow: 28,
-          category: "Marketing",
-        },
-        {
-          id: "phase-8",
-          title: "Phase 8: Admin Dashboard",
-          description: "Content management and analytics interface",
-          daysFromNow: 42,
-          category: "Admin",
-        },
-      ];
+  const { events, progress } = timelineData;
 
-      upcomingPhases.forEach((phase) => {
-        events.push({
-          id: phase.id,
-          title: phase.title,
-          description: phase.description,
-          date: showEstimates ? generateEstimatedDate(phase.daysFromNow) : null,
-          type: "phase",
-          status: "upcoming",
-          category: phase.category,
-          isEstimated: showEstimates,
-        });
-      });
-    }
+  // Filter events based on showUpcoming
+  const filteredEvents = showUpcoming
+    ? events
+    : events.filter((event) => event.status !== "upcoming");
 
-    // Sort by date (completed first, then upcoming)
-    return events
-      .sort((a, b) => {
-        if (a.status === "completed" && b.status !== "completed") return -1;
-        if (b.status === "completed" && a.status !== "completed") return 1;
-        if (a.status === "in_progress" && b.status === "upcoming") return -1;
-        if (b.status === "in_progress" && a.status === "upcoming") return 1;
-
-        if (a.date && b.date) {
-          return a.date.getTime() - b.date.getTime();
-        }
-        if (a.date && !b.date) return -1;
-        if (!a.date && b.date) return 1;
-        return 0;
-      })
-      .slice(0, maxEvents);
-  };
-
-  const events = generateTimelineEvents();
+  // Apply maxEvents limit if specified
+  const finalEvents = maxEvents ? filteredEvents.slice(0, maxEvents) : filteredEvents;
 
   const renderEvent = (event: ProjectTimelineEvent, index: number, isLast: boolean) => {
     const EventIcon = getEventIcon(event.type, event.status);
@@ -338,11 +244,13 @@ export function ProjectTimeline({
 
       {/* Timeline Events */}
       <div className="space-y-0">
-        {events.map((event, index) => renderEvent(event, index, index === events.length - 1))}
+        {finalEvents.map((event, index) =>
+          renderEvent(event, index, index === finalEvents.length - 1)
+        )}
       </div>
 
       {/* Footer */}
-      {events.length === 0 && (
+      {finalEvents.length === 0 && (
         <div className="py-8 text-center text-warm-gray">
           <p>No timeline events available.</p>
         </div>
