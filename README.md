@@ -73,6 +73,8 @@ Welcome to the **Superoptimised Next.js AI Starter** documentation hub. This fil
 - Code block syntax highlighting with copy-to-clipboard functionality
 - Heading anchors, external link indicators, and responsive tables
 - Blog post viewer component with reading time estimation
+- **Dynamic slug-based routing** (`/journey/[slug]`) with SEO metadata generation
+- Static site generation for published posts with automatic 404 handling
 
 ---
 
@@ -364,7 +366,7 @@ api.blog.getBlogPosts.useQuery({
   limit: 10,
   postType: "journey", // "blog" | "journey" | "announcement"
   featured: true,
-  search: "markdown"
+  search: "markdown",
 });
 ```
 

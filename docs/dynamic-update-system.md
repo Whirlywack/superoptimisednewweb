@@ -691,12 +691,12 @@ This comprehensive content management system ensures that all website content is
 export const blogRouter = createTRPCRouter({
   getBlogPosts: publicProcedure.input(getBlogPostsSchema).query(async ({ input }) => {
     const { page, limit, postType, status, featured, search } = input;
-    
+
     // Dynamic where clause building
     const where: Record<string, unknown> = {
       status: status || "published",
     };
-    
+
     if (postType) where.postType = postType;
     if (featured !== undefined) where.featured = featured;
     if (search) {
@@ -706,22 +706,22 @@ export const blogRouter = createTRPCRouter({
         { content: { contains: search, mode: "insensitive" } },
       ];
     }
-    
+
     return { posts, pagination };
   }),
-  
+
   getBlogPostBySlug: publicProcedure.input(getBlogPostBySlugSchema).query(async ({ input }) => {
     // Fetch individual post by slug with 404 handling
   }),
-  
+
   getRecentPosts: publicProcedure.query(async ({ input }) => {
     // Recent posts for sidebar/related content
   }),
-  
+
   getFeaturedPosts: publicProcedure.query(async ({ input }) => {
     // Featured posts for homepage highlights
   }),
-  
+
   getBlogStats: publicProcedure.query(async () => {
     // Blog statistics and analytics
   }),
@@ -746,7 +746,7 @@ export function JourneyPostsTimeline() {
     limit: 10,
     status: "published",
   });
-  
+
   const { data: timelineData } = useProjectTimeline();
 
   const getCombinedTimeline = (): TimelineItem[] => {
@@ -798,17 +798,20 @@ export function JourneyPostsTimeline() {
 The new markdown system provides enterprise-grade content rendering with:
 
 **Security Features:**
+
 - **XSS Protection**: `rehype-sanitize` plugin strips malicious HTML
 - **Content Validation**: Zod schemas validate all markdown input
 - **Safe Rendering**: No innerHTML usage, pure React components
 
 **Interactive Features:**
+
 - **Syntax Highlighting**: `react-syntax-highlighter` with Prism theme
 - **Copy-to-Clipboard**: One-click code copying with visual feedback
 - **Heading Anchors**: Deep-linkable headings with smooth scrolling
 - **External Link Indicators**: Visual indicators for external links
 
 **Responsive Design:**
+
 - **Table Overflow**: Horizontal scrolling for wide tables
 - **Image Optimization**: Lazy loading with proper sizing
 - **Code Block Headers**: Language indicators and copy buttons
@@ -860,7 +863,7 @@ function CodeBlock({ children, language, showCopyButton, fileName }) {
             </span>
           )}
         </div>
-        
+
         {showCopyButton && (
           <button onClick={handleCopy}>
             {copied ? "Copied!" : "Copy"}
@@ -921,7 +924,7 @@ export function BlogPostViewer({ post, variant = "full" }) {
               <span>{post.author.name}</span>
             </div>
           )}
-          
+
           <div className="flex items-center gap-1">
             <Calendar size="xs" />
             <time>{publishedDate.toLocaleDateString()}</time>
@@ -949,7 +952,7 @@ export function BlogPostViewer({ post, variant = "full" }) {
           <div className="text-sm text-warm-gray">
             Published on {publishedDate.toLocaleDateString()}
           </div>
-          
+
           <div className="flex items-center gap-2">
             <span className="text-sm text-warm-gray">Share:</span>
             <a
@@ -1036,7 +1039,7 @@ SELECT COUNT(*) FROM posts WHERE status = 'published';
 SELECT post_type, COUNT(*) FROM posts GROUP BY post_type;
 
 -- Verify sample content
-SELECT title, excerpt, LENGTH(content) as content_length 
+SELECT title, excerpt, LENGTH(content) as content_length
 FROM posts WHERE post_type = 'journey';
 ```
 
@@ -1057,3 +1060,128 @@ FROM posts WHERE post_type = 'journey';
 - **Search Debouncing**: 300ms debounce for search queries
 
 This enhanced blog system provides a solid foundation for content management while maintaining the real-time, dynamic nature of the overall application.
+
+### Dynamic Post Slug Routing (/journey/[slug])
+
+**Implementation Details:**
+
+```typescript
+// Dynamic route at /app/journey/[slug]/page.tsx
+export default async function JourneyPost({ params }: PageProps) {
+  try {
+    const post = await api.blog.getBlogPostBySlug({ slug: params.slug });
+
+    if (!post) {
+      notFound();
+    }
+
+    return <BlogPostViewer post={post} />;
+  } catch (error) {
+    console.error('Error fetching blog post:', error);
+    notFound();
+  }
+}
+```
+
+**SEO & Metadata Generation:**
+
+```typescript
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  try {
+    const post = await api.blog.getBlogPostBySlug({ slug: params.slug });
+
+    if (!post) {
+      return { title: "Post Not Found - Superoptimised" };
+    }
+
+    return {
+      title: `${post.title} | Superoptimised Journey`,
+      description: post.excerpt || `Read about ${post.title} in the building journey.`,
+      openGraph: {
+        title: post.title,
+        description: post.excerpt,
+        type: "article",
+        publishedTime: post.publishedAt?.toISOString(),
+        images: [{ url: `/api/og/${post.slug}`, width: 1200, height: 630 }],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: post.title,
+        description: post.excerpt,
+        images: [`/api/og/${post.slug}`],
+      },
+      alternates: {
+        canonical: `/journey/${post.slug}`,
+      },
+    };
+  } catch (error) {
+    return { title: "Post Not Found - Superoptimised" };
+  }
+}
+```
+
+**Static Site Generation:**
+
+```typescript
+export async function generateStaticParams() {
+  try {
+    const { posts } = await api.blog.getBlogPosts({
+      page: 1,
+      limit: 100,
+      status: "published",
+      postType: "journey",
+    });
+
+    return posts.map((post) => ({
+      slug: post.slug,
+    }));
+  } catch (error) {
+    console.error("Error generating static params:", error);
+    return [];
+  }
+}
+```
+
+**Automatic Timeline Integration:**
+
+The journey timeline component automatically generates clickable links for all published blog posts:
+
+```typescript
+// In JourneyPostsTimeline.tsx
+{item.type === "post" && item.slug ? (
+  <a
+    href={`/journey/${item.slug}`}
+    className="hover:text-primary transition-colors"
+  >
+    {item.title}
+  </a>
+) : (
+  item.title
+)}
+```
+
+**Testing Slug Routing:**
+
+1. **Development Testing**:
+
+   ```bash
+   # Start dev server
+   npm run dev
+
+   # Test existing slug
+   curl http://localhost:3000/journey/day-1-foundation
+
+   # Test 404 handling
+   curl http://localhost:3000/journey/non-existent-slug
+   ```
+
+2. **Database Seeded Routes**:
+   - `/journey/day-1-foundation` - Technical architecture decisions
+   - Additional slugs generated from database posts automatically
+
+3. **404 Handling**:
+   - Custom not-found page at `/journey/[slug]/not-found.tsx`
+   - User-friendly error messages with navigation options
+   - Automatic fallback to journey index page
+
+This slug-based routing system provides SEO-friendly URLs, proper metadata generation, and seamless integration with the existing blog system while maintaining TypeScript safety and error handling.
