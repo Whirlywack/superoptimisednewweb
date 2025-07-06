@@ -8,6 +8,7 @@ Welcome to the **Superoptimised Next.js AI Starter** documentation hub. This fil
 **Phase 2 Complete**: Real-time Updates & WebSocket Integration  
 **Phase 3 Complete**: Frontend Integration & localStorage Migration
 **Phase 4 Complete**: XP System & Engagement Tracking with Email Claiming
+**Phase 5 Complete**: Content Management System with Timeline & Versioning
 
 ✅ **Anonymous Voting System**
 
@@ -55,6 +56,14 @@ Welcome to the **Superoptimised Next.js AI Starter** documentation hub. This fil
 - Live data integration across all pages (Homepage, About, Journey)
 - Real-time progress indicators with dynamic project completion
 - Optimistic UI updates and error handling with toast notifications
+
+✅ **Content Management System (Phase 5)**
+
+- Database-driven content blocks (26+ blocks across pages)
+- Content versioning with rollback capabilities
+- Real-time project timeline with milestone tracking (`/timeline`)
+- Automated progress updates based on completed features
+- Server Component architecture for content fetching
 
 ---
 
@@ -179,13 +188,14 @@ VALUES ('current_phase', 'Phase 3: Frontend Integration', 'Current development p
 ### XP Reward System
 
 **Progressive XP Calculation:**
+
 ```typescript
 // XP rewards based on vote count milestones
 function calculateXpForVote(voteNumber: number): number {
-  if (voteNumber <= 5) return 5;    // First 5 votes: 5 XP each
-  if (voteNumber <= 10) return 10;  // Votes 6-10: 10 XP each
-  if (voteNumber <= 25) return 15;  // Votes 11-25: 15 XP each
-  if (voteNumber <= 50) return 20;  // Votes 26-50: 20 XP each
+  if (voteNumber <= 5) return 5; // First 5 votes: 5 XP each
+  if (voteNumber <= 10) return 10; // Votes 6-10: 10 XP each
+  if (voteNumber <= 25) return 15; // Votes 11-25: 15 XP each
+  if (voteNumber <= 50) return 20; // Votes 26-50: 20 XP each
   if (voteNumber <= 100) return 25; // Votes 51-100: 25 XP each
   if (voteNumber <= 250) return 50; // Votes 101-250: 50 XP each
   return 100; // Votes 250+: 100 XP each
@@ -193,6 +203,7 @@ function calculateXpForVote(voteNumber: number): number {
 ```
 
 **XP Recording Process:**
+
 1. User submits vote → Progressive XP calculated based on their vote count
 2. XP transaction recorded in `xp_ledger` table with action type "vote"
 3. Voter's total vote count incremented
@@ -202,6 +213,7 @@ function calculateXpForVote(voteNumber: number): number {
 ### Engagement Analytics
 
 **Streak Calculation:**
+
 ```typescript
 // Calculate consecutive voting days
 function calculateStreakDays(voteDates: Date[]): number {
@@ -212,24 +224,27 @@ function calculateStreakDays(voteDates: Date[]): number {
 ```
 
 **Milestone System:**
+
 - **Getting Started**: 10 votes → 50 XP bonus
-- **Community Member**: 25 votes → 100 XP bonus  
+- **Community Member**: 25 votes → 100 XP bonus
 - **Active Participant**: 50 votes → 250 XP bonus
 - **Community Champion**: 100 votes → 500 XP bonus
 - **Superoptimised Builder**: 250 votes → 1000 XP bonus
 
 **Analytics Endpoint (`getEngagementStats`):**
+
 ```typescript
 api.vote.getEngagementStats.useQuery({
   voterTokenId: "optional-for-user-specific-stats",
-  includeMilestones: true
-})
+  includeMilestones: true,
+});
 // Returns: global stats, user stats, milestones, leaderboard
 ```
 
 ### XP Claiming System
 
 **Secure Claiming Process:**
+
 1. **Claim Initiation**: User opens `ClaimXpModal` component
 2. **Email Verification**: User enters email → `claimXP` endpoint creates claim record
 3. **Magic Link Email**: Resend sends styled email with 24-hour expiration token
@@ -237,6 +252,7 @@ api.vote.getEngagementStats.useQuery({
 5. **Success Page**: User redirected to `/claim-xp/success` with XP total
 
 **Database Flow:**
+
 ```sql
 -- XP claim record created
 INSERT INTO xp_claims (voter_token_id, email, claim_token, total_xp, expires_at, status)
@@ -247,25 +263,29 @@ UPDATE xp_claims SET status = 'claimed', claimed_at = NOW() WHERE claim_token = 
 ```
 
 **Email Template Features:**
+
 - Beautiful HTML email with XP total prominently displayed
 - Secure magic link with expiration notice
 - Privacy messaging about anonymous voting protection
 - Branded styling consistent with app design
 
 **Error Handling:**
+
 - **Invalid/Expired Links**: `/claim-xp/invalid` with helpful troubleshooting
-- **System Errors**: `/claim-xp/error` with error codes and support info  
+- **System Errors**: `/claim-xp/error` with error codes and support info
 - **Duplicate Claims**: Prevention at database level with user-friendly messaging
 
 ### Security & Privacy
 
 **Anonymous Protection:**
+
 - XP claiming doesn't compromise voting anonymity
 - Voter tokens remain hashed and unlinkable to emails
 - Email used only for claim verification, not vote tracking
 - Privacy notice in all claim interfaces
 
 **Rate Limiting & Validation:**
+
 - One claim per voter token (prevents double claiming)
 - 24-hour magic link expiration
 - Secure token generation with crypto.randomUUID()
@@ -274,6 +294,7 @@ UPDATE xp_claims SET status = 'claimed', claimed_at = NOW() WHERE claim_token = 
 ### Testing the XP System
 
 **Manual Testing Flow:**
+
 1. Vote on questions to earn XP (watch progressive rewards)
 2. Check XP totals in vote submission toasts
 3. Test engagement stats API for streaks and milestones
@@ -281,25 +302,158 @@ UPDATE xp_claims SET status = 'claimed', claimed_at = NOW() WHERE claim_token = 
 5. Verify claim success page shows correct totals
 
 **Database Verification:**
+
 ```sql
 -- Check XP transactions
 SELECT * FROM xp_ledger WHERE voter_token_id = 'token-id';
 
 -- Check engagement stats
-SELECT voter_token_id, COUNT(*) as vote_count, SUM(xp_amount) as total_xp 
+SELECT voter_token_id, COUNT(*) as vote_count, SUM(xp_amount) as total_xp
 FROM xp_ledger GROUP BY voter_token_id;
 
--- Check claim records  
+-- Check claim records
 SELECT * FROM xp_claims WHERE status = 'claimed';
 ```
 
-| File                                                         | Purpose                                                                                                                       |
-| ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| [`database-schema.md`](./docs/database-schema.md)            | Complete database design with 12 tables for interactive features                                                              |
-| [`tasks.md`](./docs/tasks.md)                                | 100+ story-point tasks organized in 13 phases for continued development                                                       |
+---
+
+## 🏗️ Phase 5: Content Management System
+
+### Dynamic Content Blocks
+
+**Database-Driven Content:**
+
+```typescript
+// Content blocks replace hardcoded strings
+export interface ContentBlock {
+  id: string;
+  pageKey: string; // 'homepage_hero', 'about_mission'
+  blockKey: string; // 'title', 'description', 'stats'
+  contentType: string; // 'text', 'json', 'markdown'
+  content: string;
+  version: number;
+  isActive: boolean;
+}
+```
+
+**Content API Endpoints:**
+
+- `getContentBlocks` - Fetch all content for a page
+- `updateContentWithVersion` - Update content with versioning
+- `rollbackContent` - Rollback to previous version
+- `compareVersions` - Compare different content versions
+- `getVersioningStats` - Content versioning analytics
+
+### Project Timeline Integration
+
+**Real-time Timeline (`/timeline`):**
+
+- Displays project phases with real completion dates
+- Milestone tracking with completion percentages
+- Community milestones (votes, XP, subscribers)
+- Development milestones (phase completions)
+- Follows Elevated Brutalism design system
+
+**Timeline Data Sources:**
+
+```typescript
+// Timeline events from multiple sources
+interface TimelineEvent {
+  id: string;
+  title: string;
+  description: string;
+  date: Date | null;
+  type: "phase" | "milestone" | "feature" | "community";
+  status: "completed" | "in_progress" | "upcoming";
+  completionPercentage?: number;
+  category?: string;
+}
+```
+
+### Milestone Tracking System
+
+**Automated Progress Tracking:**
+
+```typescript
+// Progress events trigger automatic updates
+export async function onVoteSubmitted(voterTokenId: string, questionId: string) {
+  await trackProgressEvent({
+    type: "vote_submitted",
+    data: { voterTokenId, questionId },
+    timestamp: new Date(),
+  });
+}
+
+// Milestones tracked automatically
+const voteMilestones = [25, 50, 100, 250, 500, 1000];
+const xpMilestones = [100, 500, 1000, 2500, 5000];
+const newsletterMilestones = [10, 25, 50, 100, 250];
+```
+
+**Progress Calculation:**
+
+- Overall project completion: 42% (18/43 tasks)
+- Current phase: Phase 5 (Content Management System)
+- Real-time milestone detection and database updates
+- Integration with existing vote and XP systems
+
+### Content Versioning
+
+**Version Control for Content:**
+
+- Every content update creates a new version
+- Rollback capability to any previous version
+- Change tracking with reasons and timestamps
+- Comparison between versions with diff calculation
+
+**Versioning API:**
+
+```typescript
+// Create new version
+await createContentVersion(
+  contentBlockId,
+  newContent,
+  "Updated based on user feedback",
+  "admin-user-id"
+);
+
+// Rollback to previous version
+await rollbackContentToVersion(
+  contentBlockId,
+  targetVersion,
+  "Reverted due to error",
+  "admin-user-id"
+);
+```
+
+### Server Component Architecture
+
+**Homepage Content (`/`):**
+
+- `ProjectAnnouncement` now Server Component
+- Fetches content from database with fallbacks
+- Bold text parsing (**text** → `<strong>text</strong>`)
+
+**About Page Content (`/about`):**
+
+- `AboutPageWrapper` Server Component wraps client component
+- Structured content interface with type safety
+- Complex content parsing (line breaks, mentions, links)
+
+**Testing Content System:**
+
+1. Update content blocks in database
+2. See immediate changes on website (5min cache)
+3. Test version history and rollback functionality
+4. Monitor timeline for real-time progress updates
+
+| File                                                          | Purpose                                                                                                                       |
+| ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| [`database-schema.md`](./docs/database-schema.md)             | Complete database design with 12 tables for interactive features                                                              |
+| [`tasks.md`](./docs/tasks.md)                                 | 100+ story-point tasks organized in 13 phases for continued development                                                       |
 | [`dynamic-update-system.md`](./docs/dynamic-update-system.md) | Technical deep dive into real-time data flow, progress bar logic, and XP system architecture                                  |
-| [`design-system.md`](./design-system.md)                     | Describes the Superoptimised design system: colour palette, typography scale, spacing tokens, and atomic component standards. |
-| [`front-enddesign-prompts.md`](./front-enddesign-prompts.md) | Curated prompts for AI pair-programmers to generate pixel-perfect UI code that adheres to the design system.                  |
+| [`design-system.md`](./design-system.md)                      | Describes the Superoptimised design system: colour palette, typography scale, spacing tokens, and atomic component standards. |
+| [`front-enddesign-prompts.md`](./front-enddesign-prompts.md)  | Curated prompts for AI pair-programmers to generate pixel-perfect UI code that adheres to the design system.                  |
 
 ---
 
