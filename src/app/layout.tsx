@@ -8,18 +8,19 @@ import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { ThemeAwareToast } from "@/components/theme/ThemeAwareToast";
 
 export const metadata: Metadata = {
-  title: "",
-  description: "",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"),
+  title: {
+    default: "Superoptimised - Building in Public",
+    template: "%s | Superoptimised",
+  },
+  description:
+    "Building a Magic Link Questionnaire System with radical transparency. Every decision documented, community input shapes the direction.",
   icons: {
     icon: "/favicon.ico",
   },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
