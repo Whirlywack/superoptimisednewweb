@@ -24,14 +24,37 @@ import { getServerAuthSession } from "../auth";
  *
  * @see https://trpc.io/docs/server/context
  */
-export const createTRPCContext = async (opts: { headers: Headers }) => {
+export const createTRPCContext = async (opts: { headers: Headers; req?: Request }) => {
   const session = await getServerAuthSession();
+
+  // Extract IP address for rate limiting
+  const ipAddress = opts.req ? getClientIPAddress(opts.req) : undefined;
 
   return {
     session,
+    ipAddress,
     ...opts,
   };
 };
+
+/**
+ * Extract client IP address from request headers
+ */
+function getClientIPAddress(req: Request): string {
+  const forwardedFor = req.headers.get("x-forwarded-for");
+  const realIP = req.headers.get("x-real-ip");
+
+  if (forwardedFor) {
+    return forwardedFor.split(",")[0].trim();
+  }
+
+  if (realIP) {
+    return realIP;
+  }
+
+  // Fallback to connection remote address (won't work in serverless)
+  return "127.0.0.1";
+}
 
 /**
  * 2. INITIALIZATION
@@ -99,14 +122,29 @@ const loggingMiddleware = t.middleware(async ({ path, type, next }) => {
 });
 
 /**
+ * Voter token middleware for anonymous voting
+ */
+const voterTokenMiddleware = t.middleware(async ({ ctx, next }) => {
+  // This middleware will be enhanced to handle voter tokens from cookies
+  // For now, we'll add the voter token context structure
+  return next({
+    ctx: {
+      ...ctx,
+      voterToken: null, // Will be populated from cookies in actual implementation
+      voterTokenRecord: null,
+    },
+  });
+});
+
+/**
  * Rate limiting middleware for voting endpoints
  */
-const rateLimitMiddleware = t.middleware(async ({ next, path }) => {
+const rateLimitMiddleware = t.middleware(async ({ ctx, next, path }) => {
   // For voting endpoints, we'll implement IP-based rate limiting
   if (path.includes("vote") || path.includes("submit")) {
     // This will be enhanced when we implement the actual rate limiting logic
     // For now, just log the attempt
-    console.log(`[tRPC] Rate limit check for ${path}`);
+    console.log(`[tRPC] Rate limit check for ${path} from IP: ${ctx.ipAddress}`);
   }
 
   return next();
@@ -125,6 +163,14 @@ export const publicProcedure = t.procedure.use(loggingMiddleware);
  * Public procedure with rate limiting (for voting endpoints)
  */
 export const rateLimitedProcedure = t.procedure.use(loggingMiddleware).use(rateLimitMiddleware);
+
+/**
+ * Voting procedure with voter token and rate limiting
+ */
+export const votingProcedure = t.procedure
+  .use(loggingMiddleware)
+  .use(voterTokenMiddleware)
+  .use(rateLimitMiddleware);
 
 /**
  * Protected (authenticated) procedure
