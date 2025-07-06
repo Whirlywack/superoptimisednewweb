@@ -8,8 +8,13 @@ import { HomepageFooter } from "./Homepage/HomepageFooter";
 import { XPToastProvider } from "./Homepage/XPToastProvider";
 import { useCommunityStats } from "@/hooks/useCommunityStats";
 import { BookOpen, Vote, Twitter } from "lucide-react";
+import type { AboutPageContent } from "./AboutPageWrapper";
 
-export function AboutPage() {
+interface AboutPageProps {
+  content: AboutPageContent;
+}
+
+export function AboutPage({ content }: AboutPageProps) {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showToast, setShowToast] = useState(false);
@@ -56,18 +61,18 @@ export function AboutPage() {
             <div className="mx-auto grid max-w-6xl grid-cols-12 gap-6">
               <div className="col-span-12 md:col-span-8">
                 <div className="mb-sm font-mono text-sm font-semibold uppercase tracking-wide text-primary">
-                  Solo Developer Experiment
+                  {content.hero.label}
                 </div>
                 <h1 className="mb-8 text-hero font-bold leading-[1.1] text-off-black">
-                  Your Input Shapes
-                  <br />
-                  What Gets Built
+                  {content.hero.title.split("\n").map((line, index) => (
+                    <React.Fragment key={index}>
+                      {line}
+                      {index < content.hero.title.split("\n").length - 1 && <br />}
+                    </React.Fragment>
+                  ))}
                 </h1>
                 <p className="mb-12 max-w-prose text-lg leading-relaxed text-warm-gray">
-                  This is an experiment in building products where the community has direct say in
-                  every decision. We&apos;re a small team (just me) sharing failures and wins
-                  transparently, learning together, and letting your feedback guide what gets
-                  created next.
+                  {content.hero.description}
                 </p>
 
                 {/* Inline Stats */}
@@ -102,11 +107,10 @@ export function AboutPage() {
               <div className="col-span-12 md:col-span-4">
                 {/* Newsletter CTA */}
                 <div className="rounded-lg border-2 border-primary bg-white p-lg text-center">
-                  <h3 className="mb-md text-lg font-bold text-off-black">Follow Every Decision</h3>
-                  <p className="mb-lg text-sm text-warm-gray">
-                    Weekly insights when valuable content is ready. Be among the first 100 builders
-                    to get behind-the-scenes development updates.
-                  </p>
+                  <h3 className="mb-md text-lg font-bold text-off-black">
+                    {content.newsletter.title}
+                  </h3>
+                  <p className="mb-lg text-sm text-warm-gray">{content.newsletter.description}</p>
                   <form onSubmit={handleNewsletterSubmit} className="flex flex-col gap-sm">
                     <input
                       type="email"
@@ -132,7 +136,7 @@ export function AboutPage() {
                         "disabled:transform-none disabled:cursor-not-allowed disabled:opacity-50"
                       )}
                     >
-                      Get Inside Access
+                      {content.newsletter.buttonText}
                     </button>
                   </form>
                 </div>
@@ -144,68 +148,57 @@ export function AboutPage() {
           <section className="w-full px-4 py-16 pb-24">
             <div className="mx-auto grid max-w-6xl grid-cols-12 gap-6">
               <div className="col-span-12 md:col-span-8">
-                <p className="mb-8 max-w-prose text-warm-gray">
-                  Like most developers, I&apos;ve built plenty of things that nobody wanted. The
-                  pattern was always the same: great idea (I thought), months of solo development,
-                  launch to silence, wonder what went wrong.
-                </p>
+                <p className="mb-8 max-w-prose text-warm-gray">{content.story.intro}</p>
 
-                <p className="mb-8 max-w-prose text-warm-gray">
-                  The problem wasn&apos;t the code—it was the isolation. I was solving problems that
-                  existed mostly in my head, building features based on assumptions instead of
-                  conversations with real people.
-                </p>
+                <p className="mb-8 max-w-prose text-warm-gray">{content.story.problem}</p>
 
                 <div className="my-12 max-w-prose border-l-4 border-primary bg-primary/[0.1] p-8 italic text-off-black">
-                  &ldquo;What if instead of building and then asking for feedback, I asked for
-                  feedback while building?&rdquo;
+                  &ldquo;{content.story.quote}&rdquo;
                 </div>
 
                 <p className="mb-8 max-w-prose text-warm-gray">
-                  So here&apos;s the experiment: I&apos;m building everything completely in the
-                  open. Every technical decision gets discussed on{" "}
-                  <a
-                    href="https://x.com/superoptimised"
-                    className="font-medium text-primary hover:underline"
-                  >
-                    X (@superoptimised)
-                  </a>
-                  . Every mistake gets documented. Every success gets shared transparently.
+                  {content.story.experiment.includes("@superoptimised") ? (
+                    <>
+                      {content.story.experiment.split("@superoptimised")[0]}
+                      <a
+                        href="https://x.com/superoptimised"
+                        className="font-medium text-primary hover:underline"
+                      >
+                        X (@superoptimised)
+                      </a>
+                      {content.story.experiment.split("@superoptimised")[1]}
+                    </>
+                  ) : (
+                    content.story.experiment
+                  )}
                 </p>
+
+                <p className="mb-8 max-w-prose text-warm-gray">{content.story.currentFocus}</p>
+
+                <p className="mb-8 max-w-prose text-warm-gray">{content.story.uncertainty}</p>
 
                 <p className="mb-8 max-w-prose text-warm-gray">
-                  Right now, we&apos;re building a magic link questionnaire system because the
-                  community voted that traditional signup forms kill honest feedback. But that
-                  choice came from real conversations, not boardroom assumptions.
+                  {content.story.conclusion.includes("**") ? (
+                    <>
+                      {content.story.conclusion.split("**")[0]}
+                      <strong>{content.story.conclusion.split("**")[1]}</strong>
+                      {content.story.conclusion.split("**")[2]}
+                    </>
+                  ) : (
+                    content.story.conclusion
+                  )}
                 </p>
 
-                <p className="mb-8 max-w-prose text-warm-gray">
-                  I don&apos;t know where this experiment will lead. Maybe we&apos;ll build
-                  something genuinely useful. Maybe we&apos;ll discover that certain approaches
-                  don&apos;t work. Maybe we&apos;ll learn things that change how we think about
-                  building products altogether.
-                </p>
-
-                <p className="mb-8 max-w-prose text-warm-gray">
-                  What I do know is that every conversation so far has been more valuable than any
-                  assumption I would have made alone.{" "}
-                  <strong>
-                    Your input doesn&apos;t just inform the product—it becomes part of the story.
-                  </strong>
-                </p>
-
-                <p className="max-w-prose text-warm-gray">
-                  Want to help shape what gets built next? The most interesting conversations happen
-                  in real-time, where your feedback can change the direction before decisions are
-                  locked in.
-                </p>
+                <p className="max-w-prose text-warm-gray">{content.story.callToAction}</p>
               </div>
 
               <div className="col-span-12 md:col-span-4">
                 <div className="sticky top-12 space-y-8">
                   {/* Actions */}
                   <div className="rounded-lg border-2 border-light-gray bg-white p-8">
-                    <h3 className="mb-4 text-left font-semibold text-off-black">Take Action</h3>
+                    <h3 className="mb-4 text-left font-semibold text-off-black">
+                      {content.sidebar.takeActionTitle}
+                    </h3>
                     <div className="space-y-4 text-left">
                       <LinkButton
                         href="/journey"
@@ -240,24 +233,26 @@ export function AboutPage() {
 
                   {/* Current Focus */}
                   <div className="rounded-lg border-2 border-light-gray bg-white p-8">
-                    <h3 className="mb-4 font-semibold text-off-black">Right Now</h3>
+                    <h3 className="mb-4 font-semibold text-off-black">
+                      {content.sidebar.currentFocusTitle}
+                    </h3>
                     <div className="rounded-lg bg-primary/[0.02] p-4 text-left">
                       <div className="flex items-center justify-between border-b border-light-gray py-2">
                         <span className="text-sm text-warm-gray">Building</span>
                         <span className="font-mono text-sm font-semibold text-primary">
-                          Magic Links
+                          {content.sidebar.currentFocusData.building}
                         </span>
                       </div>
                       <div className="flex items-center justify-between border-b border-light-gray py-2">
                         <span className="text-sm text-warm-gray">Learning</span>
                         <span className="font-mono text-sm font-semibold text-primary">
-                          User Feedback
+                          {content.sidebar.currentFocusData.learning}
                         </span>
                       </div>
                       <div className="flex items-center justify-between py-2">
                         <span className="text-sm text-warm-gray">Next</span>
                         <span className="font-mono text-sm font-semibold text-primary">
-                          You Decide
+                          {content.sidebar.currentFocusData.next}
                         </span>
                       </div>
                     </div>

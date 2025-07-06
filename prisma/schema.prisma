@@ -207,12 +207,34 @@ model ContentBlock {
   blockKey    String   @map("block_key") // 'title', 'description', 'stats', etc.
   contentType String   @map("content_type") // 'text', 'json', 'markdown'
   content     String
+  version     Int      @default(1)
   isActive    Boolean  @default(true) @map("is_active")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
+  // Relationships
+  versions ContentVersion[]
+
   @@unique([pageKey, blockKey])
   @@map("content_blocks")
+}
+
+// Content versioning for rollback capability
+model ContentVersion {
+  id             String   @id @default(cuid())
+  contentBlockId String   @map("content_block_id")
+  version        Int
+  content        String
+  contentType    String   @map("content_type")
+  changeReason   String?  @map("change_reason")
+  createdAt      DateTime @default(now()) @map("created_at")
+  createdBy      String?  @map("created_by") // User ID or system identifier
+
+  // Relationships
+  contentBlock ContentBlock @relation(fields: [contentBlockId], references: [id], onDelete: Cascade)
+
+  @@unique([contentBlockId, version])
+  @@map("content_versions")
 }
 
 // Project stats and metrics

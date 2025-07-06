@@ -16,6 +16,7 @@ import {
 } from "../voterToken";
 import { incrementVoteStats } from "../statsCache";
 import { sendXpClaimEmail } from "../../email/sendEmail";
+import { onVoteSubmitted, onXpClaimed } from "../../progress-automation";
 
 /**
  * Calculate progressive XP rewards based on vote count
@@ -169,6 +170,9 @@ export const voteRouter = createTRPCRouter({
         where: { voterTokenId: voterTokenRecord.id },
         _sum: { xpAmount: true },
       });
+
+      // Track progress event for automation
+      await onVoteSubmitted(voterTokenRecord.id, questionId);
 
       return {
         success: true,
@@ -436,6 +440,9 @@ export const voteRouter = createTRPCRouter({
       // Send verification email
       try {
         await sendXpClaimEmail(email, totalXp, claimToken);
+
+        // Track progress event for automation
+        await onXpClaimed(email, totalXp);
       } catch (emailError) {
         console.error("Failed to send XP claim email:", emailError);
         // Continue execution - the claim record exists, user can try again

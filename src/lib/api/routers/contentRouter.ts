@@ -1,9 +1,77 @@
 import { createTRPCRouter, publicProcedure } from "../trpc";
-import { getCommunityStatsSchema, getProjectStatsSchema } from "../schemas";
+import { getCommunityStatsSchema, getProjectStatsSchema, getContentBlocksSchema } from "../schemas";
 import { safeExecute } from "../errors";
 import { prisma } from "../../db";
+import { calculateProjectProgress, refreshProjectProgress } from "../../milestone-tracker";
+import {
+  createContentVersion,
+  getContentVersions,
+  rollbackContentToVersion,
+  compareContentVersions,
+  getVersioningStats,
+} from "../../content-versioning";
+import { z } from "zod";
 
 export const contentRouter = createTRPCRouter({
+  getContentBlocks: publicProcedure.input(getContentBlocksSchema).query(async ({ input }) => {
+    return safeExecute(async () => {
+      const { pageKey, blockKey } = input;
+
+      if (blockKey) {
+        // Get specific content block
+        const contentBlock = await prisma.contentBlock.findUnique({
+          where: {
+            pageKey_blockKey: {
+              pageKey,
+              blockKey,
+            },
+          },
+        });
+
+        if (!contentBlock || !contentBlock.isActive) {
+          return null;
+        }
+
+        return {
+          id: contentBlock.id,
+          pageKey: contentBlock.pageKey,
+          blockKey: contentBlock.blockKey,
+          contentType: contentBlock.contentType,
+          content: contentBlock.content,
+          updatedAt: contentBlock.updatedAt,
+        };
+      }
+
+      // Get all content blocks for a page
+      const contentBlocks = await prisma.contentBlock.findMany({
+        where: {
+          pageKey,
+          isActive: true,
+        },
+        orderBy: { blockKey: "asc" },
+      });
+
+      const blocks: Record<
+        string,
+        { id: string; contentType: string; content: string; updatedAt: Date }
+      > = {};
+      contentBlocks.forEach((block) => {
+        blocks[block.blockKey] = {
+          id: block.id,
+          contentType: block.contentType,
+          content: block.content,
+          updatedAt: block.updatedAt,
+        };
+      });
+
+      return {
+        pageKey,
+        blocks,
+        lastUpdated: new Date(),
+      };
+    }, "getContentBlocks");
+  }),
+
   getCommunityStats: publicProcedure.input(getCommunityStatsSchema).query(async ({ input }) => {
     return safeExecute(async () => {
       const { includeDaily = false } = input;
@@ -112,5 +180,208 @@ export const contentRouter = createTRPCRouter({
 
       return projectStats;
     }, "getProjectStats");
+  }),
+
+  getProjectProgress: publicProcedure.query(async () => {
+    return safeExecute(async () => {
+      return await calculateProjectProgress();
+    }, "getProjectProgress");
+  }),
+
+  refreshProjectProgress: publicProcedure.mutation(async () => {
+    return safeExecute(async () => {
+      return await refreshProjectProgress();
+    }, "refreshProjectProgress");
+  }),
+
+  getProjectTimeline: publicProcedure.query(async () => {
+    return safeExecute(async () => {
+      // Get project progress data
+      const progress = await calculateProjectProgress();
+
+      // Get project stats with real dates
+      const projectStats = await prisma.projectStat.findMany({
+        where: {
+          OR: [
+            { statKey: { startsWith: "phase_" } },
+            { statKey: { startsWith: "milestone_" } },
+            { statKey: { contains: "_completed_at" } },
+            { statKey: { contains: "_started_at" } },
+          ],
+        },
+        orderBy: { statKey: "asc" },
+      });
+
+      // Create timeline events with real dates
+      const timelineEvents = [];
+
+      // Add completed phases with real dates
+      const phaseCompletions = projectStats.filter((stat) =>
+        stat.statKey.includes("_completed_at")
+      );
+
+      // Define phase information
+      const phaseDefinitions = {
+        phase_1: {
+          title: "Core tRPC API Foundation",
+          description: "Database schema, tRPC setup, and basic voting infrastructure",
+          category: "Backend",
+        },
+        phase_2: {
+          title: "Real-time Updates & WebSocket Integration",
+          description: "Live vote statistics and real-time engagement tracking",
+          category: "Backend",
+        },
+        phase_3: {
+          title: "Frontend Integration & localStorage Migration",
+          description: "React Query integration and optimistic updates",
+          category: "Frontend",
+        },
+        phase_4: {
+          title: "XP System & Engagement Tracking",
+          description: "Gamification features and user progression tracking",
+          category: "Features",
+        },
+        phase_5: {
+          title: "Content Management System",
+          description: "Dynamic content blocks and project progress tracking",
+          category: "CMS",
+        },
+      };
+
+      // Add phase events
+      for (const [phaseKey, phaseDef] of Object.entries(phaseDefinitions)) {
+        const completionStat = phaseCompletions.find(
+          (stat) => stat.statKey === `${phaseKey}_completed_at`
+        );
+
+        timelineEvents.push({
+          id: `${phaseKey}-completion`,
+          title: `Phase ${phaseKey.split("_")[1]}: ${phaseDef.title}`,
+          description: phaseDef.description,
+          date: completionStat ? new Date(completionStat.statValue) : null,
+          type: "phase",
+          status: completionStat
+            ? "completed"
+            : phaseKey === "phase_5"
+              ? "in_progress"
+              : "upcoming",
+          completionPercentage: completionStat ? 100 : phaseKey === "phase_5" ? 87.5 : 0,
+          category: phaseDef.category,
+        });
+      }
+
+      // Add milestone events from progress
+      progress.milestones.forEach((milestone) => {
+        const milestoneCompletion = projectStats.find(
+          (stat) => stat.statKey === `milestone_${milestone.id}`
+        );
+
+        timelineEvents.push({
+          id: milestone.id,
+          title: milestone.title,
+          description: milestone.description,
+          date: milestoneCompletion ? new Date(milestoneCompletion.statValue) : null,
+          type: "milestone",
+          status: milestone.isCompleted
+            ? "completed"
+            : milestone.completionPercentage > 0
+              ? "in_progress"
+              : "upcoming",
+          completionPercentage: milestone.completionPercentage,
+          category: milestone.category,
+        });
+      });
+
+      // Sort by status and date
+      timelineEvents.sort((a, b) => {
+        const statusOrder = { completed: 0, in_progress: 1, upcoming: 2 };
+        if (statusOrder[a.status] !== statusOrder[b.status]) {
+          return statusOrder[a.status] - statusOrder[b.status];
+        }
+
+        if (a.date && b.date) {
+          return a.date.getTime() - b.date.getTime();
+        }
+        if (a.date && !b.date) return -1;
+        if (!a.date && b.date) return 1;
+        return 0;
+      });
+
+      return {
+        events: timelineEvents,
+        progress,
+        lastUpdated: new Date(),
+      };
+    }, "getProjectTimeline");
+  }),
+
+  // Content versioning endpoints
+  getContentVersions: publicProcedure
+    .input(z.object({ contentBlockId: z.string() }))
+    .query(async ({ input }) => {
+      return safeExecute(async () => {
+        return await getContentVersions(input.contentBlockId);
+      }, "getContentVersions");
+    }),
+
+  updateContentWithVersion: publicProcedure
+    .input(
+      z.object({
+        contentBlockId: z.string(),
+        newContent: z.string(),
+        changeReason: z.string().optional(),
+        createdBy: z.string().optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      return safeExecute(async () => {
+        return await createContentVersion(
+          input.contentBlockId,
+          input.newContent,
+          input.changeReason,
+          input.createdBy
+        );
+      }, "updateContentWithVersion");
+    }),
+
+  rollbackContent: publicProcedure
+    .input(
+      z.object({
+        contentBlockId: z.string(),
+        targetVersion: z.number(),
+        rollbackReason: z.string().optional(),
+        rollbackBy: z.string().optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      return safeExecute(async () => {
+        return await rollbackContentToVersion(
+          input.contentBlockId,
+          input.targetVersion,
+          input.rollbackReason,
+          input.rollbackBy
+        );
+      }, "rollbackContent");
+    }),
+
+  compareVersions: publicProcedure
+    .input(
+      z.object({
+        contentBlockId: z.string(),
+        version1: z.number(),
+        version2: z.number(),
+      })
+    )
+    .query(async ({ input }) => {
+      return safeExecute(async () => {
+        return await compareContentVersions(input.contentBlockId, input.version1, input.version2);
+      }, "compareVersions");
+    }),
+
+  getVersioningStats: publicProcedure.query(async () => {
+    return safeExecute(async () => {
+      return await getVersioningStats();
+    }, "getVersioningStats");
   }),
 });
