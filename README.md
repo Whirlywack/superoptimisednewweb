@@ -65,6 +65,15 @@ Welcome to the **Superoptimised Next.js AI Starter** documentation hub. This fil
 - Automated progress updates based on completed features
 - Server Component architecture for content fetching
 
+✅ **Blog Post Management (Phase 5.3)**
+
+- `getBlogPosts` API endpoint with pagination and filtering
+- Journey timeline integration with database blog posts
+- **Enhanced Markdown rendering** with syntax highlighting and XSS protection
+- Code block syntax highlighting with copy-to-clipboard functionality
+- Heading anchors, external link indicators, and responsive tables
+- Blog post viewer component with reading time estimation
+
 ---
 
 ## 🔧 Phase 3: Live Data Integration Architecture
@@ -344,6 +353,50 @@ export interface ContentBlock {
 - `compareVersions` - Compare different content versions
 - `getVersioningStats` - Content versioning analytics
 
+### Blog Post Management & Markdown System
+
+**Blog Post API:**
+
+```typescript
+// Blog posts with pagination and filtering
+api.blog.getBlogPosts.useQuery({
+  page: 1,
+  limit: 10,
+  postType: "journey", // "blog" | "journey" | "announcement"
+  featured: true,
+  search: "markdown"
+});
+```
+
+**Enhanced Markdown Renderer:**
+
+- **Security**: XSS protection via `rehype-sanitize`
+- **Syntax Highlighting**: Code blocks with `react-syntax-highlighter`
+- **Interactive Features**: Copy-to-clipboard, heading anchors
+- **Responsive Design**: Tables, images, and responsive layouts
+- **Multiple Variants**: article, blog, documentation, comment styles
+
+**Markdown Features:**
+
+```typescript
+<MarkdownRenderer
+  content={post.content}
+  variant="blog"
+  enableSyntaxHighlight={true}
+  showHeadingAnchors={true}
+  showCopyButton={true}
+/>
+```
+
+**Supported Elements:**
+
+- Code blocks with syntax highlighting (JavaScript, TypeScript, Python, etc.)
+- Headings with clickable anchors for deep linking
+- External links with indicators and security attributes
+- Tables with responsive overflow handling
+- Images with lazy loading and proper sizing
+- Blockquotes with styled borders and background
+
 ### Project Timeline Integration
 
 **Real-time Timeline (`/timeline`):**
@@ -466,6 +519,7 @@ await rollbackContentToVersion(
 - **API:** tRPC (latest “next” channel)
 - **Auth:** NextAuth 4 (Supabase adapter)
 - **Email:** Resend 4.x
+- **Markdown:** react-markdown + rehype-sanitize + react-syntax-highlighter
 - **Component Lab:** Storybook 8.5 + Chromatic CI
 - **Testing:** Jest, React Testing Library, Playwright (e2e)
 

@@ -677,3 +677,383 @@ const rolledBack = await api.content.rollbackContent.mutate({
 ```
 
 This comprehensive content management system ensures that all website content is dynamic, versionable, and trackable while maintaining excellent performance through strategic caching and real-time updates.
+
+---
+
+## Phase 5.3: Blog Post Management & Markdown System
+
+### Enhanced Blog Post API
+
+**tRPC Blog Router Implementation:**
+
+```typescript
+// Blog posts API with comprehensive filtering and pagination
+export const blogRouter = createTRPCRouter({
+  getBlogPosts: publicProcedure.input(getBlogPostsSchema).query(async ({ input }) => {
+    const { page, limit, postType, status, featured, search } = input;
+    
+    // Dynamic where clause building
+    const where: Record<string, unknown> = {
+      status: status || "published",
+    };
+    
+    if (postType) where.postType = postType;
+    if (featured !== undefined) where.featured = featured;
+    if (search) {
+      where.OR = [
+        { title: { contains: search, mode: "insensitive" } },
+        { excerpt: { contains: search, mode: "insensitive" } },
+        { content: { contains: search, mode: "insensitive" } },
+      ];
+    }
+    
+    return { posts, pagination };
+  }),
+  
+  getBlogPostBySlug: publicProcedure.input(getBlogPostBySlugSchema).query(async ({ input }) => {
+    // Fetch individual post by slug with 404 handling
+  }),
+  
+  getRecentPosts: publicProcedure.query(async ({ input }) => {
+    // Recent posts for sidebar/related content
+  }),
+  
+  getFeaturedPosts: publicProcedure.query(async ({ input }) => {
+    // Featured posts for homepage highlights
+  }),
+  
+  getBlogStats: publicProcedure.query(async () => {
+    // Blog statistics and analytics
+  }),
+});
+```
+
+### Journey Timeline Integration
+
+**JourneyPostsTimeline Component:**
+
+The journey page now displays a unified timeline combining:
+
+1. **Database Blog Posts**: Journey posts from the `posts` table
+2. **Project Timeline Events**: Phases and milestones from timeline API
+3. **Combined Sorting**: Chronological order with featured posts prioritized
+
+```typescript
+// Combined timeline implementation
+export function JourneyPostsTimeline() {
+  const { data: blogData } = useBlogPosts({
+    postType: "journey",
+    limit: 10,
+    status: "published",
+  });
+  
+  const { data: timelineData } = useProjectTimeline();
+
+  const getCombinedTimeline = (): TimelineItem[] => {
+    const items: TimelineItem[] = [];
+
+    // Add blog posts as timeline items
+    if (blogData?.posts) {
+      blogData.posts.forEach((post) => {
+        items.push({
+          id: `post-${post.id}`,
+          title: post.title,
+          description: post.excerpt,
+          date: new Date(post.publishedAt),
+          type: "post",
+          status: "completed",
+          postType: post.postType,
+          slug: post.slug,
+          featured: post.featured,
+        });
+      });
+    }
+
+    // Add timeline events
+    if (timelineData?.events) {
+      timelineData.events.forEach((event) => {
+        if (event.date) {
+          items.push({
+            id: event.id,
+            title: event.title,
+            description: event.description,
+            date: event.date,
+            type: event.type,
+            status: event.status,
+            completionPercentage: event.completionPercentage,
+          });
+        }
+      });
+    }
+
+    return items.sort((a, b) => b.date.getTime() - a.date.getTime());
+  };
+}
+```
+
+### Advanced Markdown Rendering System
+
+**Enhanced MarkdownRenderer Component:**
+
+The new markdown system provides enterprise-grade content rendering with:
+
+**Security Features:**
+- **XSS Protection**: `rehype-sanitize` plugin strips malicious HTML
+- **Content Validation**: Zod schemas validate all markdown input
+- **Safe Rendering**: No innerHTML usage, pure React components
+
+**Interactive Features:**
+- **Syntax Highlighting**: `react-syntax-highlighter` with Prism theme
+- **Copy-to-Clipboard**: One-click code copying with visual feedback
+- **Heading Anchors**: Deep-linkable headings with smooth scrolling
+- **External Link Indicators**: Visual indicators for external links
+
+**Responsive Design:**
+- **Table Overflow**: Horizontal scrolling for wide tables
+- **Image Optimization**: Lazy loading with proper sizing
+- **Code Block Headers**: Language indicators and copy buttons
+- **Mobile-First**: Touch-friendly interactions and spacing
+
+```typescript
+// MarkdownRenderer usage
+<MarkdownRenderer
+  content={post.content}
+  variant="blog"                    // article | blog | documentation | comment
+  maxWidth="prose"                  // none | prose | narrow
+  enableSyntaxHighlight={true}      // Code syntax highlighting
+  showHeadingAnchors={true}         // Clickable heading links
+  showCopyButton={true}             // Copy code functionality
+  onHeadingClick={(id, text) => {   // Custom heading click handling
+    // Analytics or custom behavior
+  }}
+/>
+```
+
+**Supported Markdown Elements:**
+
+1. **Headings (H1-H6)**: With anchor links and scroll behavior
+2. **Code Blocks**: Multi-language syntax highlighting
+3. **Inline Code**: Styled with background and proper spacing
+4. **Links**: External link detection with security attributes
+5. **Images**: Responsive with lazy loading
+6. **Tables**: Responsive with proper borders and spacing
+7. **Lists**: Ordered and unordered with consistent styling
+8. **Blockquotes**: Styled with borders and background
+9. **Emphasis**: Bold and italic text styling
+10. **Horizontal Rules**: Section dividers
+
+**Code Block Features:**
+
+```typescript
+// Example code block with all features
+function CodeBlock({ children, language, showCopyButton, fileName }) {
+  return (
+    <div className="group relative my-4">
+      {/* Header with language indicator and copy button */}
+      <div className="flex items-center justify-between px-4 py-2 bg-warm-gray/10">
+        <div className="flex items-center gap-2">
+          <Code size="sm" />
+          {fileName && <span className="font-mono">{fileName}</span>}
+          {language && (
+            <span className="text-xs px-2 py-1 rounded bg-primary/10">
+              {language}
+            </span>
+          )}
+        </div>
+        
+        {showCopyButton && (
+          <button onClick={handleCopy}>
+            {copied ? "Copied!" : "Copy"}
+          </button>
+        )}
+      </div>
+
+      {/* Syntax highlighted content */}
+      <SyntaxHighlighter
+        style={prism}
+        language={language}
+        customStyle={{
+          backgroundColor: "#1a1a1a",
+          color: "#fafafa",
+          padding: "1rem",
+          fontSize: "0.875rem",
+          lineHeight: "1.5",
+        }}
+      >
+        {children}
+      </SyntaxHighlighter>
+    </div>
+  );
+}
+```
+
+### BlogPostViewer Component
+
+**Full-Featured Blog Post Display:**
+
+```typescript
+// Complete blog post viewing experience
+export function BlogPostViewer({ post, variant = "full" }) {
+  const publishedDate = new Date(post.publishedAt);
+  const estimatedReadTime = Math.ceil(post.content.split(" ").length / 200);
+
+  return (
+    <article className="max-w-4xl mx-auto">
+      {/* Header with meta information */}
+      <header className="mb-8">
+        <div className="flex items-center gap-2 mb-4">
+          {post.featured && <Tag variant="secondary">Featured</Tag>}
+          <Tag variant="secondary">{post.postType}</Tag>
+        </div>
+
+        <h1 className="text-4xl font-bold text-off-black mb-4">
+          {post.title}
+        </h1>
+
+        <p className="text-lg text-warm-gray mb-6">
+          {post.excerpt}
+        </p>
+
+        <div className="flex items-center gap-4 text-sm text-warm-gray">
+          {post.author && (
+            <div className="flex items-center gap-1">
+              <User size="xs" />
+              <span>{post.author.name}</span>
+            </div>
+          )}
+          
+          <div className="flex items-center gap-1">
+            <Calendar size="xs" />
+            <time>{publishedDate.toLocaleDateString()}</time>
+          </div>
+
+          <div className="flex items-center gap-1">
+            <Clock size="xs" />
+            <span>{estimatedReadTime} min read</span>
+          </div>
+        </div>
+      </header>
+
+      {/* Markdown content */}
+      <MarkdownRenderer
+        content={post.content}
+        variant="blog"
+        enableSyntaxHighlight={true}
+        showHeadingAnchors={true}
+        showCopyButton={true}
+      />
+
+      {/* Social sharing footer */}
+      <footer className="mt-12 pt-8 border-t">
+        <div className="flex items-center justify-between">
+          <div className="text-sm text-warm-gray">
+            Published on {publishedDate.toLocaleDateString()}
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-warm-gray">Share:</span>
+            <a
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(window.location.href)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline text-sm"
+            >
+              Twitter
+            </a>
+          </div>
+        </div>
+      </footer>
+    </article>
+  );
+}
+```
+
+### React Hooks for Blog Data
+
+**useBlogPosts Hook:**
+
+```typescript
+// Type-safe blog post fetching with caching
+export function useBlogPosts(options: UseBlogPostsOptions = {}) {
+  const {
+    page = 1,
+    limit = 10,
+    postType,
+    status = "published",
+    featured,
+    search,
+    enabled = true,
+  } = options;
+
+  const input = {
+    page,
+    limit,
+    postType,
+    status,
+    featured,
+    search,
+  };
+
+  return api.blog.getBlogPosts.useQuery(input, {
+    enabled,
+    staleTime: 2 * 60 * 1000, // 2 minutes
+    cacheTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: false,
+  });
+}
+```
+
+### Testing the Blog System
+
+**Manual Testing Steps:**
+
+1. **Blog Post API**: Test pagination, filtering, and search functionality
+2. **Markdown Rendering**: Verify syntax highlighting and XSS protection
+3. **Journey Timeline**: Check blog post integration with timeline events
+4. **Copy Functionality**: Test code block copying across different browsers
+5. **Responsive Design**: Verify mobile layouts and touch interactions
+
+**API Testing Examples:**
+
+```bash
+# Test blog posts pagination
+curl "http://localhost:3000/api/trpc/blog.getBlogPosts?input=%7B%22page%22%3A1%2C%22limit%22%3A5%7D"
+
+# Test journey post filtering
+curl "http://localhost:3000/api/trpc/blog.getBlogPosts?input=%7B%22postType%22%3A%22journey%22%7D"
+
+# Test individual post fetching
+curl "http://localhost:3000/api/trpc/blog.getBlogPostBySlug?input=%7B%22slug%22%3A%22day-1-foundation%22%7D"
+```
+
+**Database Verification:**
+
+```sql
+-- Check blog post count
+SELECT COUNT(*) FROM posts WHERE status = 'published';
+
+-- Check post types distribution
+SELECT post_type, COUNT(*) FROM posts GROUP BY post_type;
+
+-- Verify sample content
+SELECT title, excerpt, LENGTH(content) as content_length 
+FROM posts WHERE post_type = 'journey';
+```
+
+### Performance Considerations
+
+**Caching Strategy:**
+
+- **Blog Posts**: 2-minute stale time, 5-minute cache time
+- **Individual Posts**: Cache by slug with longer TTL
+- **Markdown Rendering**: Component-level memoization
+- **Code Highlighting**: Language-specific caching
+
+**Optimization Features:**
+
+- **Lazy Loading**: Images and code blocks load on scroll
+- **Bundle Splitting**: Syntax highlighter loaded dynamically
+- **Memory Management**: Proper cleanup of event listeners
+- **Search Debouncing**: 300ms debounce for search queries
+
+This enhanced blog system provides a solid foundation for content management while maintaining the real-time, dynamic nature of the overall application.

@@ -135,9 +135,9 @@
 
 ### 5.3 Blog Post Management
 
-- **Task 5.3.1**: Create `getBlogPosts` endpoint with pagination
-- **Task 5.3.2**: Replace hardcoded journey timeline with database posts
-- **Task 5.3.3**: Add Markdown rendering for post content
+- ✅ **Task 5.3.1**: Create `getBlogPosts` endpoint with pagination
+- ✅ **Task 5.3.2**: Replace hardcoded journey timeline with database posts
+- ✅ **Task 5.3.3**: Add Markdown rendering for post content
 - **Task 5.3.4**: Implement post slug-based routing (/journey/[slug])
 
 ## Phase 5.4 — SEO & Crawl-Optimisation Tasks

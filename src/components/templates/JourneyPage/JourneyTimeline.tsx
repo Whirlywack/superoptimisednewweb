@@ -3,7 +3,7 @@
 import React, { useState, useContext } from "react";
 import { cn } from "@/lib/utils";
 import { XPToastContext } from "../Homepage/XPToastProvider";
-import { ProjectTimeline } from "@/components/organisms/ProjectTimeline";
+import { JourneyPostsTimeline } from "./JourneyPostsTimeline";
 import { MessageCircle, Repeat2, Heart } from "lucide-react";
 import { useProjectTimeline } from "@/hooks/useProjectTimeline";
 
@@ -35,10 +35,10 @@ export function JourneyTimeline() {
 
         {/* Timeline Content - Left 8 columns */}
         <div className="col-span-12 md:col-span-8">
-          <ProjectTimeline
+          <JourneyPostsTimeline
             variant="compact"
             showUpcoming={true}
-            showEstimates={false}
+            maxItems={15}
             className="bg-transparent"
           />
 
