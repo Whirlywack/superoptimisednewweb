@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /auth/
+Disallow: /claim-xp/
+
+Sitemap: http://localhost:3000/sitemap.xml

@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "prisma generate && next build",
+    "build": "prisma generate && npm run generate-seo && next build",
+    "generate-seo": "tsx scripts/generate-static-seo.ts",
     "start": "next start",
     "lint": "next lint",
     "vercel-build": "prisma generate && next build",

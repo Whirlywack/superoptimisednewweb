@@ -2,6 +2,12 @@ import { BlogPostViewer } from "@/components/templates/BlogPostViewer";
 import { api } from "@/lib/trpc/server";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import {
+  getCanonicalUrl,
+  generatePostOgImage,
+  getDefaultOgImage,
+  generatePostBreadcrumbs,
+} from "@/lib/utils/seo";
 
 interface PageProps {
   params: {
@@ -23,7 +29,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const title = `${post.title} | Superoptimised Journey`;
     const description =
       post.excerpt || `Read about ${post.title} in the Superoptimised building journey.`;
-    const ogImage = `/api/og/${post.slug}`;
+    const ogImage = generatePostOgImage(post.slug);
+    const fallbackOgImage = getDefaultOgImage();
+    const canonicalUrl = getCanonicalUrl(`/journey/${post.slug}`);
 
     return {
       title,
@@ -34,6 +42,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         type: "article",
         publishedTime: post.publishedAt?.toISOString(),
         authors: post.author?.name ? [post.author.name] : ["Superoptimised"],
+        url: canonicalUrl,
         images: [
           {
             url: ogImage,
@@ -41,16 +50,22 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
             height: 630,
             alt: post.title,
           },
+          {
+            url: fallbackOgImage,
+            width: 1200,
+            height: 630,
+            alt: "Superoptimised - Building in Public",
+          },
         ],
       },
       twitter: {
         card: "summary_large_image",
         title: post.title,
         description,
-        images: [ogImage],
+        images: [ogImage, fallbackOgImage],
       },
       alternates: {
-        canonical: `/journey/${post.slug}`,
+        canonical: canonicalUrl,
       },
     };
   } catch (error) {
@@ -70,7 +85,14 @@ export default async function JourneyPost({ params }: PageProps) {
       notFound();
     }
 
-    return <BlogPostViewer post={post} />;
+    const breadcrumbJsonLd = generatePostBreadcrumbs(post.title, post.slug);
+
+    return (
+      <>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbJsonLd }} />
+        <BlogPostViewer post={post} />
+      </>
+    );
   } catch (error) {
     console.error("Error fetching blog post:", error);
     notFound();
