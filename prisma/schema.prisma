@@ -22,6 +22,12 @@ model User {
   isAdmin        Boolean   @default(false)
   accounts       Account[]
   sessions       Session[]
+
+  // Interactive features relationships
+  questionResponses QuestionResponse[]
+  xpLedger          XpLedger[]
+  engagementStats   EngagementStats[]
+  posts             Post[]
 }
 
 model Account {
@@ -68,4 +74,208 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+// ============================================================================
+// INTERACTIVE FEATURES SCHEMA
+// ============================================================================
+
+// Anonymous voter tracking via SHA-256 hashed tokens
+model VoterToken {
+  id         String   @id @default(cuid())
+  tokenHash  String   @unique @map("token_hash")
+  createdAt  DateTime @default(now()) @map("created_at")
+  lastActive DateTime @default(now()) @map("last_active")
+  ipAddress  String?  @map("ip_address")
+  voteCount  Int      @default(0) @map("vote_count")
+
+  // Relationships
+  questionResponses QuestionResponse[]
+  xpLedger          XpLedger[]
+  engagementStats   EngagementStats[]
+
+  @@map("voter_tokens")
+}
+
+// Core questions supporting all types
+model Question {
+  id           String    @id @default(cuid())
+  title        String
+  description  String?
+  questionType String    @map("question_type") // 'binary', 'multiple_choice', 'rating', 'ranking', 'text', 'image'
+  questionData Json      @map("question_data") // Type-specific config (options, images, etc.)
+  category     String? // 'auth', 'platform', 'general', etc.
+  isActive     Boolean   @default(true) @map("is_active")
+  startDate    DateTime? @map("start_date")
+  endDate      DateTime? @map("end_date")
+  displayOrder Int       @default(0) @map("display_order")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  // Relationships
+  responses QuestionResponse[]
+  xpLedger  XpLedger[]
+
+  @@map("questions")
+}
+
+// User responses to questions
+model QuestionResponse {
+  id           String   @id @default(cuid())
+  questionId   String   @map("question_id")
+  voterTokenId String?  @map("voter_token_id")
+  userId       String?  @map("user_id")
+  responseData Json     @map("response_data") // Flexible for all question types
+  ipAddress    String?  @map("ip_address")
+  userAgent    String?  @map("user_agent")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  // Relationships
+  question   Question    @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  voterToken VoterToken? @relation(fields: [voterTokenId], references: [id], onDelete: SetNull)
+  user       User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("question_responses")
+}
+
+// XP tracking for engagement
+model XpLedger {
+  id               String   @id @default(cuid())
+  voterTokenId     String?  @map("voter_token_id")
+  userId           String?  @map("user_id")
+  actionType       String   @map("action_type") // 'vote', 'newsletter_signup', 'streak_bonus'
+  xpAmount         Int      @map("xp_amount")
+  sourceQuestionId String?  @map("source_question_id")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  // Relationships
+  voterToken     VoterToken? @relation(fields: [voterTokenId], references: [id], onDelete: SetNull)
+  user           User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  sourceQuestion Question?   @relation(fields: [sourceQuestionId], references: [id], onDelete: SetNull)
+
+  @@map("xp_ledger")
+}
+
+// Engagement streaks and milestones
+model EngagementStats {
+  id            String   @id @default(cuid())
+  voterTokenId  String?  @map("voter_token_id")
+  userId        String?  @map("user_id")
+  currentStreak Int      @default(0) @map("current_streak")
+  longestStreak Int      @default(0) @map("longest_streak")
+  totalVotes    Int      @default(0) @map("total_votes")
+  totalXp       Int      @default(0) @map("total_xp")
+  lastActivity  DateTime @default(now()) @map("last_activity")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  // Relationships
+  voterToken VoterToken? @relation(fields: [voterTokenId], references: [id], onDelete: SetNull)
+  user       User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@unique([voterTokenId])
+  @@unique([userId])
+  @@map("engagement_stats")
+}
+
+// Blog posts and journey entries
+model Post {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  title       String
+  excerpt     String?
+  content     String // Markdown
+  postType    String    @map("post_type") // 'blog', 'journey', 'announcement'
+  status      String    @default("draft") // 'draft', 'published', 'archived'
+  featured    Boolean   @default(false)
+  authorId    String?   @map("author_id")
+  publishedAt DateTime? @map("published_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  // Relationships
+  author User? @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+  @@map("posts")
+}
+
+// Dynamic content blocks for pages
+model ContentBlock {
+  id          String   @id @default(cuid())
+  pageKey     String   @map("page_key") // 'homepage_hero', 'about_mission', etc.
+  blockKey    String   @map("block_key") // 'title', 'description', 'stats', etc.
+  contentType String   @map("content_type") // 'text', 'json', 'markdown'
+  content     String
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@unique([pageKey, blockKey])
+  @@map("content_blocks")
+}
+
+// Project stats and metrics
+model ProjectStat {
+  id          String   @id @default(cuid())
+  statKey     String   @unique @map("stat_key") // 'progress_percentage', 'days_building', etc.
+  statValue   String   @map("stat_value") // JSON string for complex values
+  description String?
+  lastUpdated DateTime @default(now()) @map("last_updated")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("project_stats")
+}
+
+// Newsletter subscriptions
+model NewsletterSubscriber {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  name              String?
+  sourcePage        String?   @map("source_page") // Which page/component led to signup
+  preferences       Json      @default("{}") // Content preferences
+  status            String    @default("pending") // 'pending', 'confirmed', 'unsubscribed'
+  verificationToken String?   @map("verification_token")
+  confirmedAt       DateTime? @map("confirmed_at")
+  unsubscribedAt    DateTime? @map("unsubscribed_at")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  @@map("newsletter_subscribers")
+}
+
+// Pre-computed analytics for performance
+model AnalyticsDaily {
+  id                String   @id @default(cuid())
+  date              DateTime @unique @db.Date
+  totalVotes        Int      @default(0) @map("total_votes")
+  uniqueVoters      Int      @default(0) @map("unique_voters")
+  totalXpEarned     Int      @default(0) @map("total_xp_earned")
+  newsletterSignups Int      @default(0) @map("newsletter_signups")
+  popularQuestions  Json     @default("[]") @map("popular_questions")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  @@map("analytics_daily")
+}
+
+// Real-time stats cache
+model LiveStat {
+  id          String   @id @default(cuid())
+  statKey     String   @unique @map("stat_key") // 'total_votes', 'active_questions', etc.
+  statValue   Int      @map("stat_value")
+  lastUpdated DateTime @default(now()) @map("last_updated")
+
+  @@map("live_stats")
+}
+
+// IP-based rate limiting for abuse protection
+model RateLimit {
+  id           String   @id @default(cuid())
+  ipAddress    String   @map("ip_address")
+  actionType   String   @map("action_type") // 'vote', 'newsletter'
+  requestCount Int      @default(1) @map("request_count")
+  windowStart  DateTime @default(now()) @map("window_start")
+  expiresAt    DateTime @map("expires_at")
+
+  @@unique([ipAddress, actionType])
+  @@map("rate_limits")
 }
