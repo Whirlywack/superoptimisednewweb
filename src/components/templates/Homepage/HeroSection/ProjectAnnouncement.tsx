@@ -1,29 +1,52 @@
-import React from "react";
-import { getContentWithFallback } from "@/lib/content-blocks";
+"use client";
 
-export async function ProjectAnnouncement() {
-  // Fetch content blocks with fallbacks
-  const [heroLabel, heroTitle, heroDescription] = await Promise.all([
-    getContentWithFallback("homepage_hero", "hero_label", "Building Decision Made"),
-    getContentWithFallback("homepage_hero", "hero_title", "Magic Link\nQuestionnaire\nSystem"),
-    getContentWithFallback(
-      "homepage_hero",
-      "hero_description",
-      "I've decided to build an anonymous community feedback system for developers. Traditional sign-ups kill honest feedback—magic links solve this. **Your input helps refine every technical decision along the way.**"
-    ),
-  ]);
+import React from "react";
+import { api } from "@/lib/trpc/react";
+
+export function ProjectAnnouncement() {
+  // Fetch content blocks with tRPC
+  const { data: heroLabel } = api.content.getContentBlocks.useQuery(
+    { pageKey: "homepage_hero", blockKey: "hero_label" },
+    {
+      refetchOnWindowFocus: false,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    }
+  );
+
+  const { data: heroTitle } = api.content.getContentBlocks.useQuery(
+    { pageKey: "homepage_hero", blockKey: "hero_title" },
+    {
+      refetchOnWindowFocus: false,
+      staleTime: 5 * 60 * 1000,
+    }
+  );
+
+  const { data: heroDescription } = api.content.getContentBlocks.useQuery(
+    { pageKey: "homepage_hero", blockKey: "hero_description" },
+    {
+      refetchOnWindowFocus: false,
+      staleTime: 5 * 60 * 1000,
+    }
+  );
+
+  // Fallback values
+  const label = heroLabel?.content || "Building Decision Made";
+  const title = heroTitle?.content || "Magic Link\nQuestionnaire\nSystem";
+  const description =
+    heroDescription?.content ||
+    "I've decided to build an anonymous community feedback system for developers. Traditional sign-ups kill honest feedback—magic links solve this. **Your input helps refine every technical decision along the way.**";
 
   // Split title into lines for proper rendering
-  const titleLines = heroTitle.split("\n");
+  const titleLines = title.split("\n");
 
   // Parse description for bold text
-  const descriptionParts = heroDescription.split("**");
+  const descriptionParts = description.split("**");
 
   return (
     <>
       {/* Hero Label - From database */}
       <div className="mb-4 font-mono text-sm font-semibold uppercase tracking-wider text-primary">
-        {heroLabel}
+        {label}
       </div>
 
       {/* Main Headline - From database */}
