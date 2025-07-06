@@ -119,7 +119,7 @@ export async function getVoterRateLimit(ipAddress: string): Promise<{
   resetTime: Date;
 }> {
   const rateLimit = await prisma.rateLimit.findUnique({
-    where: { ipAddress },
+    where: { ipAddress_actionType: { ipAddress, actionType: "vote" } },
   });
 
   const now = new Date();
@@ -128,15 +128,18 @@ export async function getVoterRateLimit(ipAddress: string): Promise<{
   if (!rateLimit || rateLimit.windowStart < oneDayAgo) {
     // Create or reset rate limit window
     const newRateLimit = await prisma.rateLimit.upsert({
-      where: { ipAddress },
+      where: { ipAddress_actionType: { ipAddress, actionType: "vote" } },
       create: {
         ipAddress,
+        actionType: "vote",
         requestCount: 0,
         windowStart: now,
+        expiresAt: new Date(now.getTime() + 24 * 60 * 60 * 1000),
       },
       update: {
         requestCount: 0,
         windowStart: now,
+        expiresAt: new Date(now.getTime() + 24 * 60 * 60 * 1000),
       },
     });
 
@@ -158,12 +161,15 @@ export async function getVoterRateLimit(ipAddress: string): Promise<{
  * Increment rate limit counter
  */
 export async function incrementRateLimit(ipAddress: string): Promise<void> {
+  const now = new Date();
   await prisma.rateLimit.upsert({
-    where: { ipAddress },
+    where: { ipAddress_actionType: { ipAddress, actionType: "vote" } },
     create: {
       ipAddress,
+      actionType: "vote",
       requestCount: 1,
-      windowStart: new Date(),
+      windowStart: now,
+      expiresAt: new Date(now.getTime() + 24 * 60 * 60 * 1000),
     },
     update: {
       requestCount: {

@@ -8,6 +8,7 @@ import {
   getVoterRateLimit,
   incrementRateLimit,
 } from "../voterToken";
+import { incrementVoteStats } from "../statsCache";
 
 export const voteRouter = createTRPCRouter({
   submitVote: votingProcedure.input(submitVoteSchema).mutation(async ({ input, ctx }) => {
@@ -29,10 +30,10 @@ export const voteRouter = createTRPCRouter({
         where: {
           id: questionId,
           isActive: true,
-          OR: [{ scheduledStart: null }, { scheduledStart: { lte: new Date() } }],
+          OR: [{ startDate: null }, { startDate: { lte: new Date() } }],
           AND: [
             {
-              OR: [{ scheduledEnd: null }, { scheduledEnd: { gte: new Date() } }],
+              OR: [{ endDate: null }, { endDate: { gte: new Date() } }],
             },
           ],
         },
@@ -59,30 +60,33 @@ export const voteRouter = createTRPCRouter({
         data: {
           questionId,
           voterTokenId: voterTokenRecord.id,
-          response,
+          responseData: response,
           ipAddress,
         },
       });
 
-      // Update live stats
-      await prisma.liveStat.upsert({
-        where: { statKey: "total_votes" },
-        create: { statKey: "total_votes", statValue: 1 },
-        update: { statValue: { increment: 1 } },
-      });
+      // Update live stats using optimized batch caching
+      const isNewVoter = voterTokenRecord.voteCount === 0;
+      incrementVoteStats(isNewVoter);
 
-      // Record XP for the vote
-      await prisma.xpLedger.create({
-        data: {
-          voterTokenId: voterTokenRecord.id,
-          action: "vote",
-          amount: 5, // Base XP for voting
-          metadata: {
-            questionId,
-            questionType: question.questionType,
+      // Update voter token vote count and record XP
+      await Promise.all([
+        // Increment voter's vote count
+        prisma.voterToken.update({
+          where: { id: voterTokenRecord.id },
+          data: { voteCount: { increment: 1 } },
+        }),
+
+        // Record XP for the vote
+        prisma.xpLedger.create({
+          data: {
+            voterTokenId: voterTokenRecord.id,
+            actionType: "vote",
+            xpAmount: 5, // Base XP for voting
+            sourceQuestionId: questionId,
           },
-        },
-      });
+        }),
+      ]);
 
       return {
         success: true,
@@ -99,10 +103,10 @@ export const voteRouter = createTRPCRouter({
       const { questionId } = input;
 
       const stats = await prisma.questionResponse.groupBy({
-        by: ["response"],
+        by: ["responseData"],
         where: { questionId },
         _count: {
-          response: true,
+          responseData: true,
         },
       });
 
@@ -114,9 +118,10 @@ export const voteRouter = createTRPCRouter({
         questionId,
         totalVotes,
         breakdown: stats.map((stat) => ({
-          option: stat.response as string,
-          count: stat._count.response,
-          percentage: totalVotes > 0 ? Math.round((stat._count.response / totalVotes) * 100) : 0,
+          option: stat.responseData as string,
+          count: stat._count.responseData,
+          percentage:
+            totalVotes > 0 ? Math.round((stat._count.responseData / totalVotes) * 100) : 0,
         })),
       };
     }, "getVoteStats");
@@ -145,7 +150,7 @@ export const voteRouter = createTRPCRouter({
 
       const totalXp = await prisma.xpLedger.aggregate({
         where: { voterTokenId: ctx.voterTokenRecord.id },
-        _sum: { amount: true },
+        _sum: { xpAmount: true },
       });
 
       return {
@@ -154,10 +159,10 @@ export const voteRouter = createTRPCRouter({
           questionId: vote.questionId,
           questionTitle: vote.question.title,
           category: vote.question.category,
-          response: vote.response,
+          response: vote.responseData,
           createdAt: vote.createdAt,
         })),
-        totalXp: totalXp._sum.amount || 0,
+        totalXp: totalXp._sum.xpAmount || 0,
       };
     }, "getUserVoteHistory");
   }),
