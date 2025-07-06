@@ -19,7 +19,7 @@ const customJestConfig = {
   ],
   coverageThreshold: {
     global: {
-      branches: 60, // Lowered from 80 to be more realistic
+      branches: 60,
       functions: 60,
       lines: 60,
       statements: 60,
@@ -27,6 +27,13 @@ const customJestConfig = {
   },
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
+    // Mock problematic ESM modules
+    "^react-markdown$": "<rootDir>/src/__mocks__/react-markdown.js",
+    "^rehype-sanitize$": "<rootDir>/src/__mocks__/rehype-sanitize.js",
+    "^rehype-highlight$": "<rootDir>/src/__mocks__/rehype-sanitize.js",
+    "^react-syntax-highlighter$": "<rootDir>/src/__mocks__/react-syntax-highlighter.js",
+    "^react-syntax-highlighter/dist/esm/(.*)$":
+      "<rootDir>/src/__mocks__/react-syntax-highlighter.js",
   },
   transformIgnorePatterns: ["node_modules/(?!(superjson|@trpc|lucide-react|@tanstack)/)"],
 };
