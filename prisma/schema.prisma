@@ -93,6 +93,7 @@ model VoterToken {
   questionResponses QuestionResponse[]
   xpLedger          XpLedger[]
   engagementStats   EngagementStats[]
+  xpClaims          XpClaim[]
 
   @@map("voter_tokens")
 }
@@ -265,6 +266,23 @@ model LiveStat {
   lastUpdated DateTime @default(now()) @map("last_updated")
 
   @@map("live_stats")
+}
+
+// XP claiming system for email verification
+model XpClaim {
+  id           String    @id @default(cuid())
+  voterTokenId String    @map("voter_token_id")
+  email        String
+  claimToken   String    @unique @map("claim_token")
+  totalXp      Int       @map("total_xp")
+  status       String    @default("pending") // 'pending', 'claimed', 'expired'
+  expiresAt    DateTime  @map("expires_at")
+  claimedAt    DateTime? @map("claimed_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  voterToken VoterToken @relation(fields: [voterTokenId], references: [id], onDelete: Cascade)
+
+  @@map("xp_claims")
 }
 
 // IP-based rate limiting for abuse protection
