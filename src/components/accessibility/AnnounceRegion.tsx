@@ -1,29 +1,24 @@
-'use client';
+"use client";
 
-import React, { useEffect, useRef, useState } from 'react';
-import { cn } from '@/lib/utils';
+import React, { useEffect, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
 
 export interface AnnounceRegionProps extends React.HTMLAttributes<HTMLDivElement> {
   message: string;
-  priority?: 'polite' | 'assertive';
+  priority?: "polite" | "assertive";
   atomic?: boolean;
   className?: string;
 }
 
 export function AnnounceRegion({
   message,
-  priority = 'polite',
+  priority = "polite",
   atomic = true,
   className,
   ...props
 }: AnnounceRegionProps) {
   return (
-    <div
-      aria-live={priority}
-      aria-atomic={atomic}
-      className={cn('sr-only', className)}
-      {...props}
-    >
+    <div aria-live={priority} aria-atomic={atomic} className={cn("sr-only", className)} {...props}>
       {message}
     </div>
   );
@@ -40,10 +35,10 @@ export function LiveAnnouncer({ children, className }: LiveAnnouncerProps) {
   const politeTimeoutRef = useRef<NodeJS.Timeout>();
   const assertiveTimeoutRef = useRef<NodeJS.Timeout>();
 
-  const announce = (message: string, priority: 'polite' | 'assertive' = 'polite') => {
-    if (priority === 'polite') {
-      setPoliteMessages(prev => [...prev, message]);
-      
+  const announce = (message: string, priority: "polite" | "assertive" = "polite") => {
+    if (priority === "polite") {
+      setPoliteMessages((prev) => [...prev, message]);
+
       // Clear the message after 1 second
       if (politeTimeoutRef.current) {
         clearTimeout(politeTimeoutRef.current);
@@ -52,8 +47,8 @@ export function LiveAnnouncer({ children, className }: LiveAnnouncerProps) {
         setPoliteMessages([]);
       }, 1000);
     } else {
-      setAssertiveMessages(prev => [...prev, message]);
-      
+      setAssertiveMessages((prev) => [...prev, message]);
+
       // Clear the message after 1 second
       if (assertiveTimeoutRef.current) {
         clearTimeout(assertiveTimeoutRef.current);
@@ -80,15 +75,15 @@ export function LiveAnnouncer({ children, className }: LiveAnnouncerProps) {
     <div className={className}>
       {/* Live regions for announcements */}
       <div aria-live="polite" aria-atomic="true" className="sr-only">
-        {politeMessages.join('. ')}
+        {politeMessages.join(". ")}
       </div>
-      
+
       <div aria-live="assertive" aria-atomic="true" className="sr-only">
-        {assertiveMessages.join('. ')}
+        {assertiveMessages.join(". ")}
       </div>
 
       {/* Render children with announce function */}
-      {typeof children === 'function' ? children(announce) : children}
+      {typeof children === "function" ? children(announce) : children}
     </div>
   );
 }
@@ -99,26 +94,26 @@ export interface StatusAnnouncerProps {
 }
 
 export function StatusAnnouncer({ children, className }: StatusAnnouncerProps) {
-  const [status, setStatus] = useState('');
-  const [priority, setPriority] = useState<'polite' | 'assertive'>('polite');
+  const [status, setStatus] = useState("");
+  const [priority, setPriority] = useState<"polite" | "assertive">("polite");
   const timeoutRef = useRef<NodeJS.Timeout>();
 
   const announceStatus = (
-    message: string, 
-    priority: 'polite' | 'assertive' = 'polite',
+    message: string,
+    priority: "polite" | "assertive" = "polite",
     duration = 3000
   ) => {
     setStatus(message);
     setPriority(priority);
-    
+
     // Clear previous timeout
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
-    
+
     // Clear the status after the specified duration
     timeoutRef.current = setTimeout(() => {
-      setStatus('');
+      setStatus("");
     }, duration);
   };
 
@@ -138,10 +133,10 @@ export function StatusAnnouncer({ children, className }: StatusAnnouncerProps) {
       </div>
 
       {/* Render children with announceStatus function */}
-      {React.Children.map(children, child => {
+      {React.Children.map(children, (child) => {
         if (React.isValidElement(child)) {
           return React.cloneElement(child, {
-            // @ts-ignore - Adding announceStatus as a prop
+            // @ts-expect-error - Adding announceStatus as a prop
             announceStatus,
           });
         }
@@ -162,14 +157,14 @@ export interface LoadingAnnouncerProps {
 
 export function LoadingAnnouncer({
   isLoading,
-  loadingMessage = 'Loading content, please wait',
-  completedMessage = 'Content loaded successfully',
-  errorMessage = 'Error loading content',
+  loadingMessage = "Loading content, please wait",
+  completedMessage = "Content loaded successfully",
+  errorMessage = "Error loading content",
   error = false,
   className,
 }: LoadingAnnouncerProps) {
   const [previousLoading, setPreviousLoading] = useState(isLoading);
-  const [announcement, setAnnouncement] = useState('');
+  const [announcement, setAnnouncement] = useState("");
 
   useEffect(() => {
     // Only announce when loading state changes
@@ -181,24 +176,20 @@ export function LoadingAnnouncer({
       } else {
         setAnnouncement(completedMessage);
       }
-      
+
       setPreviousLoading(isLoading);
-      
+
       // Clear announcement after 3 seconds
       const timeout = setTimeout(() => {
-        setAnnouncement('');
+        setAnnouncement("");
       }, 3000);
-      
+
       return () => clearTimeout(timeout);
     }
   }, [isLoading, error, previousLoading, loadingMessage, completedMessage, errorMessage]);
 
   return (
-    <div
-      aria-live="polite"
-      aria-atomic="true"
-      className={cn('sr-only', className)}
-    >
+    <div aria-live="polite" aria-atomic="true" className={cn("sr-only", className)}>
       {announcement}
     </div>
   );
@@ -216,44 +207,36 @@ export interface ProgressAnnouncerProps {
 export function ProgressAnnouncer({
   value,
   max = 100,
-  step = 1,
+  step: _step = 1,
   announceEvery = 10,
-  label = 'Progress',
+  label = "Progress",
   className,
 }: ProgressAnnouncerProps) {
   const [lastAnnounced, setLastAnnounced] = useState(-1);
-  const [announcement, setAnnouncement] = useState('');
+  const [announcement, setAnnouncement] = useState("");
 
   useEffect(() => {
     const percentage = Math.round((value / max) * 100);
-    
+
     // Announce at specified intervals or when complete
-    if (
-      (percentage % announceEvery === 0 && percentage !== lastAnnounced) ||
-      percentage === 100
-    ) {
-      const message = percentage === 100 
-        ? `${label} completed` 
-        : `${label} ${percentage} percent complete`;
-      
+    if ((percentage % announceEvery === 0 && percentage !== lastAnnounced) || percentage === 100) {
+      const message =
+        percentage === 100 ? `${label} completed` : `${label} ${percentage} percent complete`;
+
       setAnnouncement(message);
       setLastAnnounced(percentage);
-      
+
       // Clear announcement after 2 seconds
       const timeout = setTimeout(() => {
-        setAnnouncement('');
+        setAnnouncement("");
       }, 2000);
-      
+
       return () => clearTimeout(timeout);
     }
   }, [value, max, announceEvery, lastAnnounced, label]);
 
   return (
-    <div
-      aria-live="polite"
-      aria-atomic="true"
-      className={cn('sr-only', className)}
-    >
+    <div aria-live="polite" aria-atomic="true" className={cn("sr-only", className)}>
       {announcement}
     </div>
   );
@@ -265,23 +248,23 @@ export interface FormAnnouncerProps {
 }
 
 export function FormAnnouncer({ children, className }: FormAnnouncerProps) {
-  const [validationMessage, setValidationMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [validationMessage, setValidationMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const announceValidation = (message: string) => {
     setValidationMessage(message);
-    setTimeout(() => setValidationMessage(''), 3000);
+    setTimeout(() => setValidationMessage(""), 3000);
   };
 
   const announceSuccess = (message: string) => {
     setSuccessMessage(message);
-    setTimeout(() => setSuccessMessage(''), 5000);
+    setTimeout(() => setSuccessMessage(""), 5000);
   };
 
   const announceError = (message: string) => {
     setErrorMessage(message);
-    setTimeout(() => setErrorMessage(''), 5000);
+    setTimeout(() => setErrorMessage(""), 5000);
   };
 
   return (
@@ -290,22 +273,22 @@ export function FormAnnouncer({ children, className }: FormAnnouncerProps) {
       <div aria-live="polite" aria-atomic="true" className="sr-only">
         {validationMessage}
       </div>
-      
+
       {/* Success messages - polite */}
       <div aria-live="polite" aria-atomic="true" className="sr-only">
         {successMessage}
       </div>
-      
+
       {/* Error messages - assertive */}
       <div aria-live="assertive" aria-atomic="true" className="sr-only">
         {errorMessage}
       </div>
 
       {/* Render children with announce functions */}
-      {React.Children.map(children, child => {
+      {React.Children.map(children, (child) => {
         if (React.isValidElement(child)) {
           return React.cloneElement(child, {
-            // @ts-ignore - Adding announce functions as props
+            // @ts-expect-error - Adding announce functions as props
             announceValidation,
             announceSuccess,
             announceError,
@@ -321,7 +304,7 @@ export interface NotificationAnnouncerProps {
   notifications: Array<{
     id: string;
     message: string;
-    type: 'info' | 'success' | 'warning' | 'error';
+    type: "info" | "success" | "warning" | "error";
     announced?: boolean;
   }>;
   onNotificationAnnounced?: (id: string) => void;
@@ -333,43 +316,39 @@ export function NotificationAnnouncer({
   onNotificationAnnounced,
   className,
 }: NotificationAnnouncerProps) {
-  const [currentAnnouncement, setCurrentAnnouncement] = useState('');
-  const [priority, setPriority] = useState<'polite' | 'assertive'>('polite');
+  const [currentAnnouncement, setCurrentAnnouncement] = useState("");
+  const [priority, setPriority] = useState<"polite" | "assertive">("polite");
 
   useEffect(() => {
     // Find the first unannounced notification
-    const unannounced = notifications.find(n => !n.announced);
-    
+    const unannounced = notifications.find((n) => !n.announced);
+
     if (unannounced) {
-      const priority = unannounced.type === 'error' ? 'assertive' : 'polite';
+      const priority = unannounced.type === "error" ? "assertive" : "polite";
       const prefix = {
-        info: 'Information:',
-        success: 'Success:',
-        warning: 'Warning:',
-        error: 'Error:',
+        info: "Information:",
+        success: "Success:",
+        warning: "Warning:",
+        error: "Error:",
       }[unannounced.type];
-      
+
       setCurrentAnnouncement(`${prefix} ${unannounced.message}`);
       setPriority(priority);
-      
+
       // Mark as announced
       onNotificationAnnounced?.(unannounced.id);
-      
+
       // Clear announcement after 3 seconds
       const timeout = setTimeout(() => {
-        setCurrentAnnouncement('');
+        setCurrentAnnouncement("");
       }, 3000);
-      
+
       return () => clearTimeout(timeout);
     }
   }, [notifications, onNotificationAnnounced]);
 
   return (
-    <div
-      aria-live={priority}
-      aria-atomic="true"
-      className={cn('sr-only', className)}
-    >
+    <div aria-live={priority} aria-atomic="true" className={cn("sr-only", className)}>
       {currentAnnouncement}
     </div>
   );

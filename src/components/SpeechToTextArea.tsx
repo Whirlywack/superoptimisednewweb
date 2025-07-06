@@ -1,16 +1,6 @@
-import React, {
-  useState,
-  useRef,
-  forwardRef,
-  useImperativeHandle,
-} from "react";
+import React, { useState, useRef, forwardRef, useImperativeHandle } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faMicrophone,
-  faStop,
-  faSpinner,
-  faUpload,
-} from "@fortawesome/free-solid-svg-icons";
+import { faMicrophone, faStop, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 
@@ -31,10 +21,7 @@ export interface SpeechToTextAreaRef {
   clear: () => void;
 }
 
-export const SpeechToTextArea = forwardRef<
-  SpeechToTextAreaRef,
-  SpeechToTextInputProps
->(
+export const SpeechToTextArea = forwardRef<SpeechToTextAreaRef, SpeechToTextInputProps>(
   (
     {
       value,
@@ -45,7 +32,7 @@ export const SpeechToTextArea = forwardRef<
       placeholder = "Type your message...",
       shouldSubmitOnEnter = true,
     },
-    ref,
+    ref
   ) => {
     const [isRecording, setIsRecording] = useState(false);
     const [waveformActive, setWaveformActive] = useState(false);
@@ -60,7 +47,7 @@ export const SpeechToTextArea = forwardRef<
 
     const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
     const [isTranscribing, setIsTranscribing] = useState(false);
-    const [isUploading, setIsUploading] = useState(false);
+    const [isUploading] = useState(false);
 
     const startRecording = async () => {
       let stream = mediaStream;
@@ -79,11 +66,7 @@ export const SpeechToTextArea = forwardRef<
       setIsRecording(true);
       setWaveformActive(true);
 
-      const mimeTypes = [
-        "audio/webm;codecs=opus",
-        "audio/ogg;codecs=opus",
-        "audio/mp4",
-      ];
+      const mimeTypes = ["audio/webm;codecs=opus", "audio/ogg;codecs=opus", "audio/mp4"];
 
       let mimeType = "";
       for (const type of mimeTypes) {
@@ -131,8 +114,7 @@ export const SpeechToTextArea = forwardRef<
           await audioCtxRef.current.close();
           audioCtxRef.current = null;
         }
-        if (animationFrameIdRef.current)
-          cancelAnimationFrame(animationFrameIdRef.current);
+        if (animationFrameIdRef.current) cancelAnimationFrame(animationFrameIdRef.current);
         setIsRecording(false);
         setWaveformActive(false);
 
@@ -164,9 +146,7 @@ export const SpeechToTextArea = forwardRef<
       }
     };
 
-    const fetchTranscription = async (
-      audioBlob: Blob,
-    ): Promise<string | null> => {
+    const fetchTranscription = async (audioBlob: Blob): Promise<string | null> => {
       setIsTranscribing(true);
       try {
         const formData = new FormData();
@@ -194,9 +174,7 @@ export const SpeechToTextArea = forwardRef<
       }
     };
 
-    const handleTextareaChange = (
-      e: React.ChangeEvent<HTMLTextAreaElement>,
-    ) => {
+    const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       onChange(e);
       adjustTextareaHeight();
     };
@@ -266,9 +244,9 @@ export const SpeechToTextArea = forwardRef<
         <motion.div
           className={`${
             waveformActive
-              ? "border-aurora-500/50 bg-gradient-to-r from-aurora-500/30 via-aurora-50/30 to-aurora-500/30 text-transparent"
+              ? "border-aurora-500/50 from-aurora-500/30 via-aurora-50/30 to-aurora-500/30 bg-gradient-to-r text-transparent"
               : ""
-          } hide-scrollbar flex h-full w-full items-center overflow-hidden overflow-y-scroll rounded-2xl  border-aurora-100 bg-aurora-50/30 dark:border-sky-600/30 dark:bg-slate-700`}
+          } hide-scrollbar border-aurora-100 bg-aurora-50/30 flex size-full items-center overflow-hidden overflow-y-scroll rounded-2xl dark:border-sky-600/30 dark:bg-slate-700`}
           animate={{
             padding: waveformActive ? "1.5rem" : "0.375rem",
           }}
@@ -277,9 +255,7 @@ export const SpeechToTextArea = forwardRef<
           <textarea
             ref={textareaRef}
             className={`${
-              waveformActive
-                ? "text-transparent"
-                : "text-dark-blue dark:text-slate-100"
+              waveformActive ? "text-transparent" : "text-dark-blue dark:text-slate-100"
             } ${
               isLoading ? "opacity-50" : ""
             } hide-scrollbar transition-height m-0 flex-1 resize-none border-0 bg-transparent px-3 py-2 transition-colors focus:outline-none focus:ring-0 focus-visible:ring-0`}
@@ -306,9 +282,9 @@ export const SpeechToTextArea = forwardRef<
               type="button"
               className={`${
                 waveformActive
-                  ? "z-20 mr-5 text-blossom-500 hover:text-blossom-700"
+                  ? "text-blossom-500 hover:text-blossom-700 z-20 mr-5"
                   : "text-aurora-500 hover:text-aurora-600"
-              } transform text-xl dark:text-gray-300 dark:hover:text-gray-500`}
+              } text-xl dark:text-gray-300 dark:hover:text-gray-500`}
               onClick={isRecording ? stopRecording : startRecording}
               aria-label={isRecording ? "Stop recording" : "Start recording"}
               disabled={isTranscribing || isUploading}
@@ -327,10 +303,8 @@ export const SpeechToTextArea = forwardRef<
                 type="button"
                 className={`${
                   waveformActive ? "hidden" : ""
-                } flex h-8 w-8 items-center justify-center rounded-full bg-aurora-500 text-white transition-colors hover:bg-aurora-600 focus-visible:outline-none disabled:bg-gray-300 dark:bg-sky-600 dark:hover:bg-sky-700 dark:disabled:bg-gray-600`}
-                disabled={
-                  !value.trim() || isLoading || waveformActive || isUploading
-                }
+                } bg-aurora-500 hover:bg-aurora-600 flex size-8 items-center justify-center rounded-full text-white transition-colors focus-visible:outline-none disabled:bg-gray-300 dark:bg-sky-600 dark:hover:bg-sky-700 dark:disabled:bg-gray-600`}
+                disabled={!value.trim() || isLoading || waveformActive || isUploading}
                 onClick={(e) => {
                   e.preventDefault();
                   void handleSubmit();
@@ -357,15 +331,14 @@ export const SpeechToTextArea = forwardRef<
             )}
           </div>
           {waveformActive && (
-            <div className="absolute left-1/2 top-5 flex -translate-x-1/2 transform justify-center">
+            <div className="absolute left-1/2 top-5 flex -translate-x-1/2 justify-center">
               <div className="flex">
                 {heights.map((height, index) => {
                   const centerIndex = heights.length / 2;
                   const distanceFromCenter = Math.abs(index - centerIndex);
                   const maxDistance = heights.length / 2;
                   const factor = 1 - distanceFromCenter / maxDistance;
-                  const adjustedHeight =
-                    index > 0 ? Math.round(height * factor * 1.3) : 0;
+                  const adjustedHeight = index > 0 ? Math.round(height * factor * 1.3) : 0;
                   return (
                     <motion.div
                       key={index}
@@ -373,16 +346,13 @@ export const SpeechToTextArea = forwardRef<
                         adjustedHeight > 100
                           ? "bg-aurora-500"
                           : adjustedHeight > 50
-                          ? "bg-aurora-500/80"
-                          : "bg-aurora-500/40"
+                            ? "bg-aurora-500/80"
+                            : "bg-aurora-500/40"
                       }`}
                       style={{
                         height: "50px",
                         transformOrigin: "center",
-                        marginLeft: `${Math.max(
-                          Math.round(maxHeight / 30),
-                          6,
-                        )}px`,
+                        marginLeft: `${Math.max(Math.round(maxHeight / 30), 6)}px`,
                       }}
                       animate={{
                         scaleY: Math.max(adjustedHeight, 20) / 128,
@@ -400,7 +370,7 @@ export const SpeechToTextArea = forwardRef<
         </motion.div>
       </div>
     );
-  },
+  }
 );
 
 SpeechToTextArea.displayName = "SpeechToTextArea";

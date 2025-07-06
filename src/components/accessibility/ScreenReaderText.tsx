@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { cn } from '@/lib/utils';
+import React from "react";
+import { cn } from "@/lib/utils";
 
 export interface ScreenReaderTextProps extends React.HTMLAttributes<HTMLSpanElement> {
   children: React.ReactNode;
@@ -9,21 +9,21 @@ export interface ScreenReaderTextProps extends React.HTMLAttributes<HTMLSpanElem
   asChild?: boolean;
 }
 
-export function ScreenReaderText({ 
-  children, 
-  className, 
+export function ScreenReaderText({
+  children,
+  className,
   asChild = false,
-  ...props 
+  ...props
 }: ScreenReaderTextProps) {
-  const Component = asChild ? React.Fragment : 'span';
-  
+  const Component = asChild ? React.Fragment : "span";
+
   if (asChild) {
     return (
       <>
         {React.Children.map(children, (child) => {
           if (React.isValidElement(child)) {
             return React.cloneElement(child, {
-              className: cn('sr-only', child.props.className),
+              className: cn("sr-only", child.props.className),
               ...props,
             });
           }
@@ -34,10 +34,7 @@ export function ScreenReaderText({
   }
 
   return (
-    <Component
-      className={cn('sr-only', className)}
-      {...props}
-    >
+    <Component className={cn("sr-only", className)} {...props}>
       {children}
     </Component>
   );
@@ -49,18 +46,18 @@ export interface VisuallyHiddenProps extends React.HTMLAttributes<HTMLElement> {
   as?: keyof JSX.IntrinsicElements;
 }
 
-export function VisuallyHidden({ 
-  children, 
-  className, 
-  as: Component = 'span',
-  ...props 
+export function VisuallyHidden({
+  children,
+  className,
+  as: Component = "span",
+  ...props
 }: VisuallyHiddenProps) {
   return (
     <Component
       className={cn(
-        'absolute w-px h-px p-0 -m-px overflow-hidden',
-        'whitespace-nowrap border-0',
-        '[clip:rect(0,0,0,0)]',
+        "absolute -m-px size-px overflow-hidden p-0",
+        "whitespace-nowrap border-0",
+        "[clip:rect(0,0,0,0)]",
         className
       )}
       {...props}
@@ -76,18 +73,13 @@ export interface SROnlyProps extends React.HTMLAttributes<HTMLSpanElement> {
   className?: string;
 }
 
-export function SROnly({ 
-  children, 
-  focusable = false,
-  className, 
-  ...props 
-}: SROnlyProps) {
+export function SROnly({ children, focusable = false, className, ...props }: SROnlyProps) {
   return (
     <span
       className={cn(
-        'sr-only',
-        focusable && 'focus:not-sr-only focus:absolute focus:top-0 focus:left-0 focus:z-50',
-        focusable && 'focus:px-4 focus:py-2 focus:bg-off-black focus:text-off-white focus:rounded',
+        "sr-only",
+        focusable && "focus:not-sr-only focus:absolute focus:left-0 focus:top-0 focus:z-50",
+        focusable && "focus:rounded focus:bg-off-black focus:px-4 focus:py-2 focus:text-off-white",
         className
       )}
       tabIndex={focusable ? 0 : undefined}
@@ -106,46 +98,42 @@ export interface AccessibleLabelProps {
   className?: string;
 }
 
-export function AccessibleLabel({ 
-  children, 
-  label, 
+export function AccessibleLabel({
+  children,
+  label,
   description,
   required = false,
-  className 
+  className,
 }: AccessibleLabelProps) {
   const labelId = React.useId();
-  const descriptionId = description ? React.useId() : undefined;
+  const descriptionId = React.useId();
 
   return (
     <div className={className}>
-      <label 
-        id={labelId}
-        className="block text-base font-medium text-off-black mb-2"
-      >
+      <label id={labelId} className="mb-2 block text-base font-medium text-off-black">
         {label}
         {required && (
           <>
-            <span className="text-red-500 ml-1" aria-hidden="true">*</span>
+            <span className="ml-1 text-red-500" aria-hidden="true">
+              *
+            </span>
             <ScreenReaderText>required</ScreenReaderText>
           </>
         )}
       </label>
-      
+
       {description && (
-        <p 
-          id={descriptionId}
-          className="text-small text-warm-gray mb-3"
-        >
+        <p id={descriptionId} className="mb-3 text-small text-warm-gray">
           {description}
         </p>
       )}
-      
+
       {React.Children.map(children, (child) => {
         if (React.isValidElement(child)) {
           return React.cloneElement(child, {
-            'aria-labelledby': labelId,
-            'aria-describedby': descriptionId,
-            'aria-required': required,
+            "aria-labelledby": labelId,
+            "aria-describedby": description ? descriptionId : undefined,
+            "aria-required": required,
           });
         }
         return child;
@@ -163,26 +151,21 @@ export interface IconWithTextProps {
   textClassName?: string;
 }
 
-export function IconWithText({ 
-  icon, 
-  children, 
+export function IconWithText({
+  icon,
+  children,
   iconDescription,
   className,
   iconClassName,
-  textClassName 
+  textClassName,
 }: IconWithTextProps) {
   return (
-    <span className={cn('inline-flex items-center gap-2', className)}>
-      <span 
-        className={iconClassName} 
-        aria-hidden="true"
-      >
+    <span className={cn("inline-flex items-center gap-2", className)}>
+      <span className={iconClassName} aria-hidden="true">
         {icon}
       </span>
       <ScreenReaderText>{iconDescription}</ScreenReaderText>
-      <span className={textClassName}>
-        {children}
-      </span>
+      <span className={textClassName}>{children}</span>
     </span>
   );
 }
@@ -193,48 +176,37 @@ export interface ButtonWithSRTextProps extends React.ButtonHTMLAttributes<HTMLBu
   className?: string;
 }
 
-export function ButtonWithSRText({ 
-  children, 
-  srText,
-  className, 
-  ...props 
-}: ButtonWithSRTextProps) {
+export function ButtonWithSRText({ children, srText, className, ...props }: ButtonWithSRTextProps) {
   return (
     <button
       className={cn(
-        'inline-flex items-center gap-2 px-4 py-2 rounded-lg',
-        'bg-primary text-off-white hover:bg-primary/90',
-        'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
-        'transition-colors duration-200',
+        "inline-flex items-center gap-2 rounded-lg px-4 py-2",
+        "bg-primary text-off-white hover:bg-primary/90",
+        "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
+        "transition-colors duration-200",
         className
       )}
       {...props}
     >
       {children}
-      {srText && (
-        <ScreenReaderText>{srText}</ScreenReaderText>
-      )}
+      {srText && <ScreenReaderText>{srText}</ScreenReaderText>}
     </button>
   );
 }
 
 export interface StatusAnnouncementProps {
   message: string;
-  type?: 'polite' | 'assertive';
+  type?: "polite" | "assertive";
   className?: string;
 }
 
-export function StatusAnnouncement({ 
-  message, 
-  type = 'polite',
-  className 
+export function StatusAnnouncement({
+  message,
+  type = "polite",
+  className,
 }: StatusAnnouncementProps) {
   return (
-    <div
-      aria-live={type}
-      aria-atomic="true"
-      className={cn('sr-only', className)}
-    >
+    <div aria-live={type} aria-atomic="true" className={cn("sr-only", className)}>
       {message}
     </div>
   );

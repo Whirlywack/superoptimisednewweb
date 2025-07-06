@@ -107,12 +107,12 @@ function getClientForModel(model: AIModel): AIClientResponse {
 export async function generateGeminiWebResponse(
   messages: Array<{ role: "user" | "system" | "assistant"; content: string }>,
   model: AIModel = "GEMINI_FLASH_WEB",
-  ground = true,
+  ground = true
 ): Promise<GeminiGroundedResponse> {
   const modelId = AI_MODELS[model];
   const geminiModel = genAI.getGenerativeModel({
     model: modelId,
-    // @ts-ignore
+    // @ts-expect-error - Google Search tools config may not be fully typed
     tools: ground ? [{ googleSearch: {} }] : undefined,
   });
 
@@ -124,13 +124,8 @@ export async function generateGeminiWebResponse(
   const text = response.text();
 
   let sourceLink: string | undefined = undefined;
-  if (
-    ground &&
-    response.candidates?.[0]?.groundingMetadata?.searchEntryPoint
-      ?.renderedContent
-  ) {
-    sourceLink =
-      response.candidates[0].groundingMetadata.searchEntryPoint.renderedContent;
+  if (ground && response.candidates?.[0]?.groundingMetadata?.searchEntryPoint?.renderedContent) {
+    sourceLink = response.candidates[0].groundingMetadata.searchEntryPoint.renderedContent;
   }
 
   return {
@@ -143,7 +138,7 @@ export function parseJsonResponse(response: string): any {
   // First try parsing the response directly
   try {
     return JSON.parse(response);
-  } catch (e) {
+  } catch {
     // If direct parsing fails, look for code blocks
     const codeBlockRegex = /```(?:json|[^\n]*\n)?([\s\S]*?)```/;
     const match = response.match(codeBlockRegex);
@@ -151,7 +146,7 @@ export function parseJsonResponse(response: string): any {
     if (match && match[1]) {
       try {
         return JSON.parse(match[1].trim());
-      } catch (innerError) {
+      } catch {
         throw new Error("Failed to parse JSON from code block");
       }
     }
@@ -163,18 +158,14 @@ export function parseJsonResponse(response: string): any {
 export async function generateChatCompletion(
   messages: Array<{ role: "user" | "system" | "assistant"; content: string }>,
   model: AIModel = "O1",
-  additionalOptions: Partial<OpenAI.ChatCompletionCreateParamsNonStreaming> = {},
+  additionalOptions: Partial<OpenAI.ChatCompletionCreateParamsNonStreaming> = {}
 ): Promise<string> {
   try {
     const modelId = AI_MODELS[model];
 
     // Handle Gemini models directly
     if (modelId.includes("gemini")) {
-      const geminiResp = await generateGeminiWebResponse(
-        messages,
-        model,
-        false,
-      );
+      const geminiResp = await generateGeminiWebResponse(messages, model, false);
       return geminiResp.text;
     }
 
@@ -189,10 +180,7 @@ export async function generateChatCompletion(
     const completion = await client.chat.completions.create(options);
     return completion.choices[0]?.message?.content ?? "";
   } catch (error) {
-    console.error(
-      `Error generating chat completion for model ${model}:`,
-      error,
-    );
+    console.error(`Error generating chat completion for model ${model}:`, error);
     throw error;
   }
 }
