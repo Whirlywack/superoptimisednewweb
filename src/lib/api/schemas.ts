@@ -103,6 +103,47 @@ export const deleteQuestionSchema = z.object({
   id: z.string().cuid(),
 });
 
+// Blog post schemas
+export const getBlogPostsSchema = z.object({
+  page: z.number().min(1).default(1),
+  limit: z.number().min(1).max(50).default(10),
+  postType: z.enum(["blog", "journey", "announcement"]).optional(),
+  status: z.enum(["draft", "published", "archived"]).optional().default("published"),
+  featured: z.boolean().optional(),
+  search: z.string().optional(),
+});
+
+export const getBlogPostBySlugSchema = z.object({
+  slug: z.string().min(1),
+});
+
+export const createBlogPostSchema = z.object({
+  slug: z.string().min(1).max(200),
+  title: z.string().min(1).max(500),
+  excerpt: z.string().optional(),
+  content: z.string(),
+  postType: z.enum(["blog", "journey", "announcement"]).default("blog"),
+  status: z.enum(["draft", "published", "archived"]).default("draft"),
+  featured: z.boolean().default(false),
+  publishedAt: z.date().optional(),
+});
+
+export const updateBlogPostSchema = z.object({
+  id: z.string().cuid(),
+  slug: z.string().min(1).max(200).optional(),
+  title: z.string().min(1).max(500).optional(),
+  excerpt: z.string().optional(),
+  content: z.string().optional(),
+  postType: z.enum(["blog", "journey", "announcement"]).optional(),
+  status: z.enum(["draft", "published", "archived"]).optional(),
+  featured: z.boolean().optional(),
+  publishedAt: z.date().optional(),
+});
+
+export const deleteBlogPostSchema = z.object({
+  id: z.string().cuid(),
+});
+
 // Response type helpers
 export type GetActiveQuestionsInput = z.infer<typeof getActiveQuestionsSchema>;
 export type SubmitVoteInput = z.infer<typeof submitVoteSchema>;
@@ -110,3 +151,7 @@ export type GetContentBlocksInput = z.infer<typeof getContentBlocksSchema>;
 export type RecordXpInput = z.infer<typeof recordXpSchema>;
 export type CreateQuestionInput = z.infer<typeof createQuestionSchema>;
 export type UpdateQuestionInput = z.infer<typeof updateQuestionSchema>;
+export type GetBlogPostsInput = z.infer<typeof getBlogPostsSchema>;
+export type GetBlogPostBySlugInput = z.infer<typeof getBlogPostBySlugSchema>;
+export type CreateBlogPostInput = z.infer<typeof createBlogPostSchema>;
+export type UpdateBlogPostInput = z.infer<typeof updateBlogPostSchema>;

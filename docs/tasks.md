@@ -13,6 +13,8 @@
 
 **Status**: All core phases implemented and production-ready
 
+- ✅ **Phase 5 COMPLETE**: Content Management System with dynamic content blocks, milestone tracking, and timeline integration
+
 ---
 
 ## Phase 1: Core tRPC API Foundation (High Priority) ✅ COMPLETED
@@ -115,21 +117,21 @@
 
 ---
 
-## Phase 5: Content Management System (Medium Priority)
+## Phase 5: Content Management System (Medium Priority) ✅ COMPLETED
 
-### 5.1 Dynamic Content Integration
+### 5.1 Dynamic Content Integration ✅
 
-- **Task 5.1.1**: Create `getContentBlocks` endpoint for page content
-- **Task 5.1.2**: Replace homepage hero text with database content blocks
-- **Task 5.1.3**: Replace About page mission content with database values
-- **Task 5.1.4**: Add content versioning and rollback capability
+- ✅ **Task 5.1.1**: Create `getContentBlocks` endpoint for page content
+- ✅ **Task 5.1.2**: Replace homepage hero text with database content blocks
+- ✅ **Task 5.1.3**: Replace About page mission content with database values
+- ✅ **Task 5.1.4**: Add content versioning and rollback capability
 
-### 5.2 Project Stats & Progress
+### 5.2 Project Stats & Progress ✅
 
-- **Task 5.2.1**: Create `getProjectStats` endpoint for progress tracking
-- **Task 5.2.2**: Implement milestone tracking system (completion percentages)
-- **Task 5.2.3**: Add automated progress updates based on completed features
-- **Task 5.2.4**: Create project timeline integration with real dates
+- ✅ **Task 5.2.1**: Create `getProjectStats` endpoint for progress tracking
+- ✅ **Task 5.2.2**: Implement milestone tracking system (completion percentages)
+- ✅ **Task 5.2.3**: Add automated progress updates based on completed features
+- ✅ **Task 5.2.4**: Integrate real milestone data into existing journey page timeline
 
 ### 5.3 Blog Post Management
 
@@ -137,6 +139,21 @@
 - **Task 5.3.2**: Replace hardcoded journey timeline with database posts
 - **Task 5.3.3**: Add Markdown rendering for post content
 - **Task 5.3.4**: Implement post slug-based routing (/journey/[slug])
+
+## Phase 5.4 — SEO & Crawl-Optimisation Tasks
+
+| ID        | Task                                          | Acceptance Criteria                                                                                                                                  |
+| --------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **5.4.1** | **Create `/robots.txt` route**                | • Returns:<br> `User-agent: *`<br> `Sitemap: <SITE_URL>/sitemap.xml`<br>• Unit test asserts 200 status + exact body                                  |
+| **5.4.2** | **Dynamic `/api/sitemap.xml` endpoint**       | • Builds XML from all blog-post slugs **+** static pages (`/`, `/about`, `/journey`) <br>• Sends header `Cache-Control: public, max-age=86400`       |
+| **5.4.3** | **Global `metadata` export for static pages** | • Add `export const metadata` to Home, About, Journey pages <br>• Fields: `title`, `description`, `openGraph` — populated from DB/content blocks     |
+| **5.4.4** | **Dynamic post-level metadata**               | • In `/journey/[slug]`, fetch post → return `metadata` incl. OG image <br>• 404 if slug not found                                                    |
+| **5.4.5** | **Canonical URL helper**                      | • Inject `<link rel="canonical">` on every page <br>• Helper derives URL from `SITE_URL` env var <br>• Jest test verifies correct domain             |
+| **5.4.6** | **Default OG image fallback**                 | • Place `/public/og-default.png` <br>• Metadata uses fallback when post lacks cover image                                                            |
+| **5.4.7** | **JSON-LD breadcrumbs on post pages**         | • Inject `<script type="application/ld+json">` with `BreadcrumbList` (Home → Journey → Post) <br>• JSON parses without error in unit test            |
+| **5.4.8** | **Build-time sitemap/robots generation**      | • Add `next-sitemap.js` (or custom script) <br>• `npm run build` outputs `public/sitemap.xml` & `public/robots.txt` <br>• CI checks both files exist |
+
+> **Env note:** define `SITE_URL` as `http://localhost:3000` during development and switch to the production domain before launch.
 
 ---
 

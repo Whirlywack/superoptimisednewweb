@@ -1,6 +1,6 @@
 # Dynamic Update System & Progress Bar Logic
 
-This document explains how the website's live data integration works, including the new Phase 5 Content Management System, project timeline, and progress bar system connections to the database for real-time updates.
+This document explains how the website's live data integration works, including the **completed Phase 5 Content Management System**, project timeline integration with real milestone data, and progress bar system connections to the database for real-time updates.
 
 ## Overview
 
@@ -495,35 +495,47 @@ export async function rollbackContentToVersion(
 
 ### Project Timeline Integration
 
-**Real-time Timeline (`/timeline`)**:
+**Journey Page Timeline Integration (`/journey`)**:
 
 ```typescript
-// Timeline displays live project progress
+// Journey page now uses real milestone data in existing timeline
 export function useProjectTimeline() {
-  const { data: timelineData } = api.content.getProjectTimeline.useQuery(undefined, {
-    staleTime: 5 * 60 * 1000,
-    cacheTime: 10 * 60 * 1000,
+  return api.content.getProjectTimeline.useQuery(undefined, {
+    refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
+    staleTime: 2 * 60 * 1000, // Consider data stale after 2 minutes
   });
+}
 
-  const timelineEvents = useMemo(() => {
-    if (!timelineData?.events) return [];
+// Integrated into existing JourneyTimeline component
+export function JourneyTimeline() {
+  const { data: timelineData, isLoading, error } = useProjectTimeline();
 
-    return timelineData.events.map((event) => ({
-      ...event,
-      date: event.date ? new Date(event.date) : null,
-    }));
-  }, [timelineData]);
-
-  return { timelineEvents, progress: timelineData?.progress };
+  return (
+    <div className="grid grid-cols-12 gap-8">
+      <div className="col-span-12 md:col-span-8">
+        <ProjectTimeline
+          variant="compact"
+          showUpcoming={true}
+          showEstimates={false}
+          className="bg-transparent"
+        />
+        {/* Content Strategy Poll remains unchanged */}
+      </div>
+    </div>
+  );
 }
 ```
 
 **Timeline Data Sources**:
 
-1. **Phase Completions**: Real dates from `project_stats` table
-2. **Community Milestones**: Live calculation from votes, XP, subscribers
-3. **Development Milestones**: Task completion tracking
-4. **Future Estimates**: Calculated based on current velocity
+1. **Phase Completions**: Hardcoded phase dates with real completion status from milestone system
+2. **Community Milestones**: Live calculation from votes, XP, subscribers via `calculateProjectProgress()`
+3. **Development Milestones**: Real milestone tracking with completion percentages
+4. **Status Determination**: Completed/in-progress/upcoming based on actual data vs targets
+
+**Task 5.2.4 Implementation**:
+
+The timeline integration replaced hardcoded events in the journey page with real milestone data from the database. The `ProjectTimeline` component now fetches live data through the `getProjectTimeline` tRPC endpoint, displaying actual project progress with completion percentages and real dates where available.
 
 ### Automated Progress Tracking
 
