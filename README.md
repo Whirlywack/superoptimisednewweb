@@ -2,11 +2,40 @@
 
 Welcome to the **Superoptimised Next.js AI Starter** documentation hub. This file links out to the living documents inside the `docs` folder and gives newcomers a bird’s-eye view of what each document contains.
 
-| File | Purpose |
-|------|---------|
-| [`stories.md`](./stories.md) | Single-story-point checklist covering every task required to build, test, deploy, and maintain the application. Use it as your authoritative project backlog. |
-| [`design-system.md`](./design-system.md) | Describes the Superoptimised design system: colour palette, typography scale, spacing tokens, and atomic component standards. |
-| [`front-enddesign-prompts.md`](./front-enddesign-prompts.md) | Curated prompts for AI pair-programmers to generate pixel-perfect UI code that adheres to the design system. |
+## 🎯 Interactive Database Features
+
+**Phase 1 Complete**: Core tRPC API foundation with anonymous voting system
+
+✅ **Anonymous Voting System**
+
+- SHA-256 hashed voter tokens for privacy
+- Duplicate vote prevention
+- IP-based rate limiting (100 votes/24h)
+
+✅ **Question Management API**
+
+- `getActiveQuestions` - Fetch questions by category
+- `getQuestionById` - Single question with stats
+- `getQuestionResults` - Vote aggregation with percentages
+
+✅ **Voting API**
+
+- `submitVote` - Submit votes with validation
+- `getVoteStats` - Real-time vote statistics
+- `getUserVoteHistory` - Anonymous voting history
+
+✅ **XP & Engagement Tracking**
+
+- XP rewards for voting (+5 XP base)
+- Live statistics updates
+- Rate limiting and abuse protection
+
+| File                                                         | Purpose                                                                                                                       |
+| ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| [`database-schema.md`](./docs/database-schema.md)            | Complete database design with 12 tables for interactive features                                                              |
+| [`tasks.md`](./docs/tasks.md)                                | 100+ story-point tasks organized in 13 phases for continued development                                                       |
+| [`design-system.md`](./design-system.md)                     | Describes the Superoptimised design system: colour palette, typography scale, spacing tokens, and atomic component standards. |
+| [`front-enddesign-prompts.md`](./front-enddesign-prompts.md) | Curated prompts for AI pair-programmers to generate pixel-perfect UI code that adheres to the design system.                  |
 
 ---
 
@@ -31,10 +60,22 @@ npm install
 # Prepare database
 npx prisma migrate dev
 
+# Seed database with initial questions and content
+npx prisma db seed
+
 # Run dev servers (Next.js + Storybook)
 npm run dev            # http://localhost:3000
 npm run storybook      # http://localhost:6006
 ```
+
+## 🗳️ Testing the Voting System
+
+Once running, you can test the interactive voting system:
+
+1. Visit the homepage to see active questions
+2. Vote on questions (anonymous, no login required)
+3. View real-time vote results and statistics
+4. Check the tRPC API endpoints at `/api/trpc`
 
 ## 📂 Directory Overview
 
