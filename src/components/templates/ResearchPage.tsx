@@ -75,17 +75,14 @@ function ProgressBar({ current, total }: { current: number; total: number }) {
 
   return (
     <div className="w-full">
-      <div className="mb-sm flex justify-between">
-        <span className="font-mono text-xs font-semibold uppercase tracking-wide text-primary">
-          {current} of {total}
-        </span>
-        <span className="font-mono text-xs font-semibold text-warm-gray">
-          {Math.round(percentage)}%
+      <div className="mb-sm">
+        <span className="font-mono text-sm font-semibold text-primary">
+          Question {current} of {total}
         </span>
       </div>
-      <div className="h-1 w-full bg-light-gray">
+      <div className="h-2 w-full bg-light-gray">
         <div
-          className="h-1 bg-primary transition-all duration-500 ease-out"
+          className="h-2 bg-primary transition-all duration-500 ease-out"
           style={{ width: `${percentage}%` }}
         />
       </div>
@@ -161,9 +158,11 @@ function SingleQuestion({
             <h1 className="mb-md text-5xl font-bold leading-none text-off-black md:text-6xl">
               {question.title}
             </h1>
-            <p className="mx-auto max-w-prose text-base leading-relaxed text-warm-gray">
-              {question.description}
-            </p>
+            <div className="mx-auto max-w-prose border-l-2 border-light-gray pl-md">
+              <p className="text-sm italic leading-relaxed text-warm-gray">
+                {question.description}
+              </p>
+            </div>
           </div>
 
           <div className="space-y-md">
@@ -187,18 +186,30 @@ function SingleQuestion({
                   )}
                 >
                   {showResults && (
-                    <div
-                      className="absolute inset-y-0 left-0 border-r-2 border-primary transition-all duration-500 ease-linear"
-                      style={{ width: `${percentage}%` }}
-                    />
+                    <>
+                      <div
+                        className="absolute inset-y-0 left-0 bg-primary/5 transition-all duration-500 ease-linear"
+                        style={{ width: `${percentage}%` }}
+                      />
+                      {isSelected && (
+                        <div className="absolute right-2 top-2">
+                          <div className="size-3 rounded-full bg-primary" />
+                        </div>
+                      )}
+                    </>
                   )}
                   <div className="relative z-10">
                     <div className="flex items-start justify-between">
                       <span className="text-xl font-bold leading-tight">{option.text}</span>
                       {showResults && (
-                        <span className="ml-md font-mono text-lg font-bold text-primary">
-                          {percentage}%
-                        </span>
+                        <div className="ml-md text-right">
+                          <span className="font-mono text-xl font-bold text-primary">
+                            {percentage}%
+                          </span>
+                          <div className="font-mono text-sm text-warm-gray">
+                            {question.votes[option.id]} votes
+                          </div>
+                        </div>
                       )}
                     </div>
                     {option.description && (
@@ -213,22 +224,28 @@ function SingleQuestion({
           </div>
 
           {showResults && (
-            <div className="mt-lg space-y-md text-center">
-              <div className="inline-flex items-center gap-sm border border-light-gray bg-off-white px-md py-sm">
-                <span className="font-mono text-xs font-semibold uppercase tracking-wide text-primary">
-                  {question.totalVotes} total votes
-                </span>
+            <div className="mt-lg space-y-md">
+              {/* Vote Summary */}
+              <div className="text-center">
+                <div className="inline-flex items-center gap-sm border-2 border-primary bg-off-white px-lg py-md">
+                  <span className="font-mono text-base font-semibold text-primary">
+                    {question.totalVotes} Total Votes
+                  </span>
+                </div>
               </div>
 
+              {/* Next Question Progress */}
               {isProgressing && currentIndex < totalQuestions - 1 && (
                 <div className="space-y-sm">
-                  <div className="text-warm-gray">
-                    <span className="font-mono text-sm">Next question</span>
+                  <div className="text-center">
+                    <span className="font-mono text-base font-semibold text-off-black">
+                      Next Question
+                    </span>
                   </div>
-                  <div className="mx-auto w-full max-w-xs">
-                    <div className="h-0.5 w-full bg-light-gray">
+                  <div className="mx-auto w-full max-w-md">
+                    <div className="h-1 w-full bg-light-gray">
                       <div
-                        className="h-0.5 bg-primary transition-all duration-75 ease-linear"
+                        className="h-1 bg-primary transition-all duration-75 ease-linear"
                         style={{ width: `${progressPercent}%` }}
                       />
                     </div>
@@ -236,9 +253,12 @@ function SingleQuestion({
                 </div>
               )}
 
+              {/* Final Question Processing */}
               {showResults && currentIndex === totalQuestions - 1 && (
-                <div className="text-warm-gray">
-                  <span className="font-mono text-sm">Processing...</span>
+                <div className="text-center">
+                  <span className="font-mono text-base font-semibold text-off-black">
+                    Processing Results...
+                  </span>
                 </div>
               )}
             </div>
@@ -255,6 +275,7 @@ function SingleQuestion({
 export function ResearchPage() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answeredQuestions, setAnsweredQuestions] = useState<Set<number>>(new Set());
+  const [userResponses, setUserResponses] = useState<Record<number, string>>({});
   const { showXPToast } = useContext(XPToastContext);
 
   // Debug: Log current state
@@ -268,10 +289,18 @@ export function ResearchPage() {
     // Track the vote
     showXPToast("research-vote");
 
-    // Mark question as answered
+    // Mark question as answered and store response
     const newAnswered = new Set(answeredQuestions);
     newAnswered.add(currentQuestionIndex);
     setAnsweredQuestions(newAnswered);
+
+    // Store user response
+    const newResponses = { ...userResponses };
+    newResponses[currentQuestionIndex] = optionId;
+    setUserResponses(newResponses);
+
+    // Store responses in localStorage for completion page
+    localStorage.setItem("research-responses", JSON.stringify(newResponses));
 
     console.log(
       "Setting timeout for question advancement. Current:",
@@ -294,6 +323,8 @@ export function ResearchPage() {
           return prevIndex + 1;
         } else {
           console.log("All questions complete, redirecting to completion page");
+          // Store final responses before redirect
+          localStorage.setItem("research-responses", JSON.stringify(newResponses));
           // Redirect to completion page instead of showing inline completion
           window.location.href = "/research/complete";
           return prevIndex;

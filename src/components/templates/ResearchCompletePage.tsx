@@ -71,9 +71,56 @@ function NewsletterSignup() {
 
 export function ResearchCompletePage() {
   const { showXPToast } = useContext(XPToastContext);
+  const [showResponses, setShowResponses] = useState(false);
+  const [userResponses, setUserResponses] = useState<Record<string, string>>({});
+
+  // Load user responses from localStorage
+  React.useEffect(() => {
+    const stored = localStorage.getItem("research-responses");
+    if (stored) {
+      setUserResponses(JSON.parse(stored));
+    }
+  }, []);
+
+  // Mock questions data - in real app, this would come from API
+  const questions = [
+    {
+      id: "auth-method",
+      title: "How should users authenticate to vote?",
+      options: {
+        "magic-links": "Magic Links",
+        "social-auth": "Social Login",
+      },
+    },
+    {
+      id: "mobile-experience",
+      title: "Which platform should we prioritize first?",
+      options: {
+        "mobile-first": "Mobile-First",
+        "desktop-first": "Desktop-First",
+      },
+    },
+    {
+      id: "notifications",
+      title: "How would you like decision updates?",
+      options: {
+        "email-weekly": "Weekly Email",
+        "real-time": "Real-time Alerts",
+      },
+    },
+    {
+      id: "voting-style",
+      title: "What voting system feels most fair?",
+      options: {
+        "ranked-choice": "Ranked Choice",
+        "point-system": "Point Allocation",
+      },
+    },
+  ];
 
   const handleShare = () => {
-    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent("Just voted on @superoptimised's building decisions! 🗳️ Your voice shapes what gets built:")}&url=${encodeURIComponent(window.location.origin + "/research")}`;
+    const responseCount = Object.keys(userResponses).length;
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(`Just completed ${responseCount}/4 research questions for @superoptimised's building project! 🗳️ Your voice shapes what gets built:`)}&url=${encodeURIComponent(window.location.origin + "/research")}`;
     window.open(url, "_blank");
     showXPToast("social-share");
   };
@@ -97,20 +144,76 @@ export function ResearchCompletePage() {
               </p>
             </div>
 
-            {/* Stats */}
+            {/* XP Breakdown */}
             <div className="mb-xl">
-              <div className="border border-light-gray bg-off-white p-lg">
-                <div className="grid grid-cols-2 gap-lg">
-                  <div className="text-center">
-                    <div className="font-mono text-3xl font-bold text-off-black">4</div>
-                    <div className="font-mono text-sm text-warm-gray">Questions</div>
+              <div className="border-2 border-primary bg-off-white p-lg">
+                <h3 className="mb-md font-mono text-sm font-semibold uppercase tracking-wide text-primary">
+                  XP Breakdown
+                </h3>
+                <div className="space-y-sm">
+                  <div className="flex justify-between">
+                    <span className="font-mono text-sm text-warm-gray">4 questions × 10 XP</span>
+                    <span className="font-mono text-sm font-bold text-off-black">40</span>
                   </div>
-                  <div className="text-center">
-                    <div className="font-mono text-3xl font-bold text-primary">+40</div>
-                    <div className="font-mono text-sm text-warm-gray">XP Earned</div>
+                  <div className="flex justify-between">
+                    <span className="font-mono text-sm text-warm-gray">Completion bonus</span>
+                    <span className="font-mono text-sm font-bold text-off-black">0</span>
+                  </div>
+                  <div className="border-t border-light-gray pt-sm">
+                    <div className="flex justify-between">
+                      <span className="font-mono text-base font-bold text-off-black">Total XP</span>
+                      <span className="font-mono text-xl font-bold text-primary">+40</span>
+                    </div>
+                  </div>
+
+                  {/* Progress to next level */}
+                  <div className="mt-md">
+                    <div className="mb-xs flex justify-between">
+                      <span className="font-mono text-xs text-warm-gray">Level Progress</span>
+                      <span className="font-mono text-xs text-warm-gray">40/100 XP</span>
+                    </div>
+                    <div className="h-2 w-full bg-light-gray">
+                      <div className="h-2 w-2/5 bg-primary transition-all duration-300" />
+                    </div>
                   </div>
                 </div>
               </div>
+            </div>
+
+            {/* Your Responses */}
+            <div className="mb-xl">
+              <button
+                onClick={() => setShowResponses(!showResponses)}
+                className="w-full border border-light-gray bg-off-white p-md font-mono text-sm font-medium text-off-black transition-all duration-100 hover:border-primary"
+              >
+                {showResponses ? "▼" : "▶"} Your Responses
+              </button>
+
+              {showResponses && (
+                <div className="mt-md space-y-md border border-light-gray bg-off-white p-md">
+                  {questions.map((question, index) => {
+                    const responseId = userResponses[index.toString()];
+                    const responseText = responseId
+                      ? question.options[responseId as keyof typeof question.options]
+                      : "No response";
+
+                    return (
+                      <div
+                        key={question.id}
+                        className="border-b border-light-gray pb-sm last:border-b-0"
+                      >
+                        <div className="font-mono text-xs font-semibold uppercase tracking-wide text-primary">
+                          Question {index + 1}
+                        </div>
+                        <div className="mb-xs text-sm font-medium text-off-black">
+                          {question.title}
+                        </div>
+                        <div className="font-mono text-sm text-primary">→ {responseText}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             {/* Action Button */}
