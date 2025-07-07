@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import { HomepageNavigation } from "./Homepage/HomepageNavigation";
 import { HomepageFooter } from "./Homepage/HomepageFooter";
-import { XPToastProvider, XPToastContext } from "./Homepage/XPToastProvider";
+import { XPToastProvider } from "./Homepage/XPToastProvider";
 import { useActiveQuestions } from "@/hooks/useActiveQuestions";
 import { useVoteSubmission } from "@/hooks/useVoteSubmission";
 import { useQuestionStats } from "@/hooks/useQuestionStats";
@@ -79,8 +79,9 @@ function SingleQuestion({
   const { submitVote, isVoting } = useVoteSubmission({
     onSuccess: () => {
       // Vote successful, stats will update automatically via real-time hook
+      // Real XP toast is already handled by useVoteSubmission
     },
-    showToasts: false, // We handle XP manually in parent
+    showToasts: true, // Use built-in real XP toasts instead of fake ones
   });
 
   const handleVote = async (optionId: string) => {
@@ -326,7 +327,6 @@ export function ResearchPage() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answeredQuestions, setAnsweredQuestions] = useState<Set<number>>(new Set());
   const [userResponses, setUserResponses] = useState<Record<string, string>>({});
-  const { showXPToast } = useContext(XPToastContext);
 
   // Fetch research questions from database
   const {
@@ -349,8 +349,7 @@ export function ResearchPage() {
 
     console.log("Vote received for option:", optionId, "on question:", currentQuestion.id);
 
-    // Show XP toast for vote submission
-    showXPToast("poll");
+    // XP toast is now handled by the SingleQuestion component with real XP values
 
     // Mark question as answered and store response
     const newAnswered = new Set(answeredQuestions);
