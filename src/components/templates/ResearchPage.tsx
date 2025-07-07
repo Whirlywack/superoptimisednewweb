@@ -5,8 +5,25 @@ import { cn } from "@/lib/utils";
 import { HomepageNavigation } from "./Homepage/HomepageNavigation";
 import { HomepageFooter } from "./Homepage/HomepageFooter";
 import { XPToastProvider, XPToastContext } from "./Homepage/XPToastProvider";
+import { useActiveQuestions } from "@/hooks/useActiveQuestions";
+import { useVoteSubmission } from "@/hooks/useVoteSubmission";
+import { useQuestionStats } from "@/hooks/useQuestionStats";
 
-interface ResearchQuestion {
+interface DatabaseQuestion {
+  id: string;
+  title: string;
+  description: string | null;
+  questionType: string;
+  questionData: {
+    options?: string[];
+    optionLabels?: Record<string, string>;
+    optionDescriptions?: Record<string, string>;
+  };
+  category: string | null;
+  responseCount: number;
+}
+
+interface ProcessedQuestion {
   id: string;
   title: string;
   description: string;
@@ -15,60 +32,7 @@ interface ResearchQuestion {
     text: string;
     description?: string;
   }[];
-  votes: Record<string, number>;
-  totalVotes: number;
 }
-
-const researchQuestions: ResearchQuestion[] = [
-  {
-    id: "auth-method",
-    title: "How should users authenticate to vote?",
-    description: "We need to prevent spam while keeping it accessible for everyone.",
-    options: [
-      { id: "magic-links", text: "Magic Links", description: "Email-based, no passwords" },
-      { id: "social-auth", text: "Social Login", description: "Google, GitHub, etc." },
-    ],
-    votes: { "magic-links": 23, "social-auth": 17 },
-    totalVotes: 40,
-  },
-  {
-    id: "mobile-experience",
-    title: "Which platform should we prioritize first?",
-    description: "Limited time means focusing on one experience initially.",
-    options: [
-      { id: "mobile-first", text: "Mobile-First", description: "Optimized for phones" },
-      { id: "desktop-first", text: "Desktop-First", description: "Rich desktop experience" },
-    ],
-    votes: { "mobile-first": 31, "desktop-first": 14 },
-    totalVotes: 45,
-  },
-  {
-    id: "notifications",
-    title: "How would you like decision updates?",
-    description: "When new community decisions need your input.",
-    options: [
-      { id: "email-weekly", text: "Weekly Email", description: "Digest of all decisions" },
-      { id: "real-time", text: "Real-time Alerts", description: "Immediate notifications" },
-    ],
-    votes: { "email-weekly": 28, "real-time": 19 },
-    totalVotes: 47,
-  },
-  {
-    id: "voting-style",
-    title: "What voting system feels most fair?",
-    description: "For prioritizing features and making decisions.",
-    options: [
-      { id: "ranked-choice", text: "Ranked Choice", description: "Rank options by preference" },
-      {
-        id: "point-system",
-        text: "Point Allocation",
-        description: "Distribute points across options",
-      },
-    ],
-    votes: { "ranked-choice": 22, "point-system": 25 },
-    totalVotes: 47,
-  },
-];
 
 function ProgressBar({ current, total }: { current: number; total: number }) {
   const percentage = (current / total) * 100;
@@ -96,7 +60,7 @@ function SingleQuestion({
   currentIndex,
   totalQuestions,
 }: {
-  question: ResearchQuestion;
+  question: ProcessedQuestion;
   onVote: (optionId: string) => void;
   currentIndex: number;
   totalQuestions: number;
@@ -106,37 +70,70 @@ function SingleQuestion({
   const [progressPercent, setProgressPercent] = useState<number>(0);
   const [isProgressing, setIsProgressing] = useState(false);
 
-  const handleVote = (optionId: string) => {
+  // Get real-time vote statistics for this question
+  const { totalVotes, breakdown } = useQuestionStats({
+    questionId: question.id,
+    refetchInterval: showResults ? 3000 : 0, // Only poll when showing results
+  });
+
+  const { submitVote, isVoting } = useVoteSubmission({
+    onSuccess: () => {
+      // Vote successful, stats will update automatically via real-time hook
+    },
+    showToasts: false, // We handle XP manually in parent
+  });
+
+  const handleVote = async (optionId: string) => {
+    if (isVoting(question.id)) return; // Prevent double voting
+
     setSelectedOption(optionId);
     setShowResults(true);
-    onVote(optionId);
 
-    // Start progress bar for next question
-    if (currentIndex < totalQuestions - 1) {
-      setIsProgressing(true);
-      setProgressPercent(0);
+    try {
+      // Submit vote to database
+      await submitVote(question.id, optionId);
 
-      const duration = 3000; // 3 seconds
-      const interval = 50; // Update every 50ms for smooth animation
-      const increment = (interval / duration) * 100;
+      // Notify parent component
+      onVote(optionId);
 
-      const timer = setInterval(() => {
-        setProgressPercent((prev) => {
-          const next = prev + increment;
-          if (next >= 100) {
-            clearInterval(timer);
-            setIsProgressing(false);
-            return 100;
-          }
-          return next;
-        });
-      }, interval);
+      // Start progress bar for next question
+      if (currentIndex < totalQuestions - 1) {
+        setIsProgressing(true);
+        setProgressPercent(0);
+
+        const duration = 3000; // 3 seconds
+        const interval = 50; // Update every 50ms for smooth animation
+        const increment = (interval / duration) * 100;
+
+        const timer = setInterval(() => {
+          setProgressPercent((prev) => {
+            const next = prev + increment;
+            if (next >= 100) {
+              clearInterval(timer);
+              setIsProgressing(false);
+              return 100;
+            }
+            return next;
+          });
+        }, interval);
+      }
+    } catch {
+      // Reset state on error
+      setSelectedOption(null);
+      setShowResults(false);
     }
   };
 
   const getVotePercentage = (optionId: string) => {
-    if (question.totalVotes === 0) return 0;
-    return Math.round((question.votes[optionId] / question.totalVotes) * 100);
+    if (!breakdown || totalVotes === 0) return 0;
+    const option = breakdown.find((b) => b.option === optionId);
+    return option ? option.percentage : 0;
+  };
+
+  const getVoteCount = (optionId: string) => {
+    if (!breakdown) return 0;
+    const option = breakdown.find((b) => b.option === optionId);
+    return option ? option.count : 0;
   };
 
   return (
@@ -207,7 +204,7 @@ function SingleQuestion({
                             {percentage}%
                           </span>
                           <div className="font-mono text-sm text-warm-gray">
-                            {question.votes[option.id]} votes
+                            {getVoteCount(option.id)} votes
                           </div>
                         </div>
                       )}
@@ -229,7 +226,7 @@ function SingleQuestion({
               <div className="text-center">
                 <div className="inline-flex items-center gap-sm border-2 border-primary bg-off-white px-lg py-md">
                   <span className="font-mono text-base font-semibold text-primary">
-                    {question.totalVotes} Total Votes
+                    {totalVotes} Total Votes
                   </span>
                 </div>
               </div>
@@ -272,31 +269,97 @@ function SingleQuestion({
   );
 }
 
+function processQuestion(dbQuestion: DatabaseQuestion): ProcessedQuestion {
+  const { questionData } = dbQuestion;
+  const options = questionData?.options || [];
+  const optionLabels = questionData?.optionLabels || {};
+  const optionDescriptions = questionData?.optionDescriptions || {};
+
+  return {
+    id: dbQuestion.id,
+    title: dbQuestion.title,
+    description: dbQuestion.description || "",
+    options: options.map((optionId: string) => ({
+      id: optionId,
+      text: optionLabels[optionId] || optionId,
+      description: optionDescriptions[optionId],
+    })),
+  };
+}
+
+function ResearchPageSkeleton() {
+  return (
+    <div className="flex min-h-screen flex-col bg-off-white">
+      <HomepageNavigation />
+
+      {/* Progress Bar Skeleton */}
+      <div className="w-full border-b border-light-gray bg-white px-4 py-md">
+        <div className="mx-auto max-w-2xl">
+          <div className="mb-sm">
+            <div className="h-4 w-32 animate-pulse bg-light-gray"></div>
+          </div>
+          <div className="h-2 w-full bg-light-gray"></div>
+        </div>
+      </div>
+
+      {/* Question Skeleton */}
+      <main className="flex flex-1 items-start justify-center px-4 pb-xl pt-lg">
+        <div className="w-full max-w-2xl">
+          <div className="mb-lg text-center">
+            <div className="mb-md h-16 w-full animate-pulse bg-light-gray"></div>
+            <div className="mx-auto h-8 max-w-prose animate-pulse bg-light-gray"></div>
+          </div>
+
+          <div className="space-y-md">
+            <div className="h-24 w-full animate-pulse bg-light-gray"></div>
+            <div className="h-24 w-full animate-pulse bg-light-gray"></div>
+          </div>
+        </div>
+      </main>
+
+      <HomepageFooter />
+    </div>
+  );
+}
+
 export function ResearchPage() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answeredQuestions, setAnsweredQuestions] = useState<Set<number>>(new Set());
-  const [userResponses, setUserResponses] = useState<Record<number, string>>({});
+  const [userResponses, setUserResponses] = useState<Record<string, string>>({});
   const { showXPToast } = useContext(XPToastContext);
 
-  // Debug: Log current state
-  console.log("Current question index:", currentQuestionIndex);
-  console.log("Total questions:", researchQuestions.length);
-  console.log("Answered questions:", Array.from(answeredQuestions));
+  // Fetch research questions from database
+  const {
+    questions: dbQuestions,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useActiveQuestions({
+    category: "research",
+    limit: 10,
+  });
+
+  // Process database questions into component format
+  const questions = dbQuestions ? dbQuestions.map(processQuestion) : [];
 
   const handleVote = (optionId: string) => {
-    console.log("Vote received for option:", optionId, "on question:", currentQuestionIndex);
+    const currentQuestion = questions[currentQuestionIndex];
+    if (!currentQuestion) return;
 
-    // Track the vote
-    showXPToast("research-vote");
+    console.log("Vote received for option:", optionId, "on question:", currentQuestion.id);
+
+    // Show XP toast for vote submission
+    showXPToast("poll");
 
     // Mark question as answered and store response
     const newAnswered = new Set(answeredQuestions);
     newAnswered.add(currentQuestionIndex);
     setAnsweredQuestions(newAnswered);
 
-    // Store user response
+    // Store user response by question ID (not index)
     const newResponses = { ...userResponses };
-    newResponses[currentQuestionIndex] = optionId;
+    newResponses[currentQuestion.id] = optionId;
     setUserResponses(newResponses);
 
     // Store responses in localStorage for completion page
@@ -306,7 +369,7 @@ export function ResearchPage() {
       "Setting timeout for question advancement. Current:",
       currentQuestionIndex,
       "Total:",
-      researchQuestions.length
+      questions.length
     );
 
     // Auto-advance to next question after 3 seconds
@@ -316,16 +379,16 @@ export function ResearchPage() {
           "Timeout fired. Previous index:",
           prevIndex,
           "Total questions:",
-          researchQuestions.length
+          questions.length
         );
-        if (prevIndex < researchQuestions.length - 1) {
+        if (prevIndex < questions.length - 1) {
           console.log("Advancing to next question:", prevIndex + 1);
           return prevIndex + 1;
         } else {
           console.log("All questions complete, redirecting to completion page");
           // Store final responses before redirect
           localStorage.setItem("research-responses", JSON.stringify(newResponses));
-          // Redirect to completion page instead of showing inline completion
+          // Redirect to completion page
           window.location.href = "/research/complete";
           return prevIndex;
         }
@@ -333,16 +396,60 @@ export function ResearchPage() {
     }, 3000);
   };
 
-  // No inline completion screen needed - redirects to /research/complete
+  // Loading state
+  if (isLoading) {
+    return (
+      <XPToastProvider>
+        <ResearchPageSkeleton />
+      </XPToastProvider>
+    );
+  }
+
+  // Error state
+  if (isError || !questions || questions.length === 0) {
+    return (
+      <XPToastProvider>
+        <div className="flex min-h-screen flex-col bg-off-white">
+          <HomepageNavigation />
+          <main className="flex flex-1 items-center justify-center px-4">
+            <div className="text-center">
+              <h1 className="mb-4 text-2xl font-bold text-off-black">
+                Unable to Load Research Questions
+              </h1>
+              <p className="mb-8 text-warm-gray">
+                {error || "There was an error loading the research questions. Please try again."}
+              </p>
+              <button
+                onClick={() => refetch()}
+                className="border-2 border-primary bg-primary px-6 py-3 font-mono text-white transition-all hover:bg-off-white hover:text-primary"
+              >
+                Try Again
+              </button>
+            </div>
+          </main>
+          <HomepageFooter />
+        </div>
+      </XPToastProvider>
+    );
+  }
+
+  const currentQuestion = questions[currentQuestionIndex];
+  if (!currentQuestion) {
+    return (
+      <XPToastProvider>
+        <ResearchPageSkeleton />
+      </XPToastProvider>
+    );
+  }
 
   return (
     <XPToastProvider>
       <SingleQuestion
         key={currentQuestionIndex}
-        question={researchQuestions[currentQuestionIndex]}
+        question={currentQuestion}
         onVote={handleVote}
         currentIndex={currentQuestionIndex}
-        totalQuestions={researchQuestions.length}
+        totalQuestions={questions.length}
       />
     </XPToastProvider>
   );
