@@ -5,34 +5,21 @@ import { cn } from "@/lib/utils";
 import { HomepageNavigation } from "./Homepage/HomepageNavigation";
 import { HomepageFooter } from "./Homepage/HomepageFooter";
 import { XPToastProvider } from "./Homepage/XPToastProvider";
-import { useActiveQuestions } from "@/hooks/useActiveQuestions";
 import { useVoteSubmission } from "@/hooks/useVoteSubmission";
 import { useQuestionStats } from "@/hooks/useQuestionStats";
+import { useResearchPageOptimization } from "@/hooks/useResearchPageOptimization";
+import { ResearchErrorBoundary } from "@/components/ui/ResearchErrorBoundary";
+import { useAdvancedFeedback } from "@/hooks/useAdvancedFeedback";
+import {
+  VoteButtonLoading,
+  AnimatedCounter,
+  SlideIn,
+  ProgressRing,
+} from "@/components/ui/EnhancedLoadingStates";
+import { useAccessibility } from "@/hooks/useAccessibility";
 
-interface DatabaseQuestion {
-  id: string;
-  title: string;
-  description: string | null;
-  questionType: string;
-  questionData: {
-    options?: string[];
-    optionLabels?: Record<string, string>;
-    optionDescriptions?: Record<string, string>;
-  };
-  category: string | null;
-  responseCount: number;
-}
-
-interface ProcessedQuestion {
-  id: string;
-  title: string;
-  description: string;
-  options: {
-    id: string;
-    text: string;
-    description?: string;
-  }[];
-}
+// Import types from the optimization hook
+import type { ProcessedQuestion } from "@/hooks/useResearchPageOptimization";
 
 function ProgressBar({ current, total }: { current: number; total: number }) {
   const percentage = (current / total) * 100;
@@ -70,16 +57,25 @@ function SingleQuestion({
   const [progressPercent, setProgressPercent] = useState<number>(0);
   const [isProgressing, setIsProgressing] = useState(false);
 
-  // Get real-time vote statistics for this question
-  const { totalVotes, breakdown } = useQuestionStats({
+  // Get real-time vote statistics for this question with optimistic updates
+  const { totalVotes, breakdown, applyOptimisticUpdate, hasOptimisticUpdates } = useQuestionStats({
     questionId: question.id,
-    refetchInterval: showResults ? 3000 : 0, // Only poll when showing results
+    refetchInterval: showResults ? 2000 : 0, // Faster polling when showing results
+    enableOptimistic: true,
   });
+
+  const { voteSubmitted, buttonClick, progressUpdate } = useAdvancedFeedback();
+  const { announceToScreenReader, shouldReduceMotion, isKeyboardUser } = useAccessibility();
 
   const { submitVote, isVoting } = useVoteSubmission({
     onSuccess: () => {
       // Vote successful, stats will update automatically via real-time hook
       // Real XP toast is already handled by useVoteSubmission
+      voteSubmitted(true);
+      progressUpdate();
+    },
+    onError: () => {
+      voteSubmitted(false);
     },
     showToasts: true, // Use built-in real XP toasts instead of fake ones
   });
@@ -90,9 +86,16 @@ function SingleQuestion({
     setSelectedOption(optionId);
     setShowResults(true);
 
+    // Apply optimistic update for immediate feedback
+    applyOptimisticUpdate(optionId);
+
     try {
       // Submit vote to database
       await submitVote(question.id, optionId);
+
+      // Announce to screen readers
+      const optionText = question.options.find((opt) => opt.id === optionId)?.text;
+      announceToScreenReader(`Vote submitted for: ${optionText}`, "polite");
 
       // Notify parent component
       onVote(optionId);
@@ -146,77 +149,131 @@ function SingleQuestion({
       <div className="w-full border-b border-light-gray bg-white px-4 py-md">
         <div className="mx-auto max-w-2xl">
           <ProgressBar current={currentIndex + 1} total={totalQuestions} />
+          {/* Performance indicator (dev mode only) */}
+          {process.env.NODE_ENV === "development" && hasOptimisticUpdates && (
+            <div className="mt-xs flex items-center justify-end gap-xs">
+              <div className="size-1.5 rounded-full bg-green-500"></div>
+              <span className="font-mono text-xs text-green-600">Optimized</span>
+            </div>
+          )}
         </div>
       </div>
 
       {/* Main Question */}
-      <main className="flex flex-1 items-start justify-center px-4 pb-xl pt-lg">
+      <main
+        className="flex flex-1 items-start justify-center px-4 pb-xl pt-lg"
+        id="main-content"
+        role="main"
+        aria-label="Research questions"
+      >
         <div className="w-full max-w-2xl">
           <div className="mb-lg text-center">
             <h1 className="mb-md text-5xl font-bold leading-none text-off-black md:text-6xl">
               {question.title}
             </h1>
             <div className="mx-auto max-w-prose border-l-2 border-light-gray pl-md">
-              <p className="text-sm italic leading-relaxed text-warm-gray">
+              <p
+                id="question-description"
+                className="text-sm italic leading-relaxed text-warm-gray"
+              >
                 {question.description}
               </p>
             </div>
           </div>
 
-          <div className="space-y-md">
-            {question.options.map((option) => {
+          <div
+            className="space-y-md"
+            role="radiogroup"
+            aria-label={`Question: ${question.title}`}
+            aria-describedby="question-description"
+          >
+            {question.options.map((option, index) => {
               const percentage = getVotePercentage(option.id);
+              const voteCount = getVoteCount(option.id);
               const isSelected = selectedOption === option.id;
+              const isVotingThis = isVoting(question.id) && isSelected;
 
               return (
-                <button
-                  key={option.id}
-                  onClick={() => handleVote(option.id)}
-                  disabled={showResults}
-                  className={cn(
-                    "w-full border-2 p-lg text-left transition-all duration-100",
-                    "relative flex min-h-[88px] flex-col justify-center overflow-hidden",
-                    showResults
-                      ? isSelected
-                        ? "border-primary bg-off-white text-off-black"
-                        : "border-light-gray bg-light-gray text-warm-gray"
-                      : "border-light-gray bg-off-white text-off-black hover:border-primary"
-                  )}
-                >
-                  {showResults && (
-                    <>
-                      <div
-                        className="absolute inset-y-0 left-0 bg-primary/5 transition-all duration-500 ease-linear"
-                        style={{ width: `${percentage}%` }}
-                      />
-                      {isSelected && (
-                        <div className="absolute right-2 top-2">
-                          <div className="size-3 rounded-full bg-primary" />
-                        </div>
-                      )}
-                    </>
-                  )}
-                  <div className="relative z-10">
-                    <div className="flex items-start justify-between">
-                      <span className="text-xl font-bold leading-tight">{option.text}</span>
-                      {showResults && (
-                        <div className="ml-md text-right">
-                          <span className="font-mono text-xl font-bold text-primary">
-                            {percentage}%
-                          </span>
-                          <div className="font-mono text-sm text-warm-gray">
-                            {getVoteCount(option.id)} votes
+                <SlideIn key={option.id} delay={shouldReduceMotion ? 0 : index * 100}>
+                  <VoteButtonLoading
+                    isLoading={isVotingThis}
+                    onClick={() => {
+                      buttonClick();
+                      handleVote(option.id);
+                    }}
+                    disabled={showResults}
+                    className={cn(
+                      "w-full border-2 p-lg text-left transition-all",
+                      shouldReduceMotion ? "duration-0" : "duration-200",
+                      "relative flex min-h-[88px] flex-col justify-center overflow-hidden",
+                      !shouldReduceMotion && "hover:scale-[1.01] active:scale-[0.99]",
+                      isKeyboardUser &&
+                        "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+                      showResults
+                        ? isSelected
+                          ? "border-primary bg-off-white text-off-black shadow-lg"
+                          : "border-light-gray bg-light-gray text-warm-gray"
+                        : "border-light-gray bg-off-white text-off-black hover:border-primary hover:shadow-md"
+                    )}
+                    role="radio"
+                    aria-checked={isSelected}
+                    aria-describedby={`option-${option.id}-description`}
+                    aria-label={`${option.text}${showResults ? `, ${percentage}% of votes, ${voteCount} total votes` : ""}`}
+                  >
+                    {showResults && (
+                      <>
+                        <div
+                          className="absolute inset-y-0 left-0 bg-primary/5 transition-all duration-500 ease-linear"
+                          style={{ width: `${percentage}%` }}
+                        />
+                        {isSelected && (
+                          <div className="absolute right-2 top-2">
+                            <div className="size-3 rounded-full bg-primary" />
                           </div>
+                        )}
+                      </>
+                    )}
+                    <div className="relative z-10">
+                      <div className="flex items-start justify-between">
+                        <span className="text-xl font-bold leading-tight">{option.text}</span>
+                        {showResults && (
+                          <div className="ml-md text-right">
+                            <div className="flex items-center gap-sm">
+                              <div>
+                                <AnimatedCounter
+                                  value={percentage}
+                                  suffix="%"
+                                  className="font-mono text-xl font-bold text-primary"
+                                />
+                                <div className="font-mono text-sm text-warm-gray">
+                                  <AnimatedCounter
+                                    value={voteCount}
+                                    suffix={` vote${voteCount !== 1 ? "s" : ""}`}
+                                  />
+                                </div>
+                              </div>
+                              {isSelected && (
+                                <ProgressRing
+                                  progress={percentage}
+                                  size={32}
+                                  className="text-primary"
+                                />
+                              )}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      {option.description && (
+                        <div
+                          id={`option-${option.id}-description`}
+                          className={cn("mt-sm text-base", "text-warm-gray")}
+                        >
+                          {option.description}
                         </div>
                       )}
                     </div>
-                    {option.description && (
-                      <div className={cn("mt-sm text-base", "text-warm-gray")}>
-                        {option.description}
-                      </div>
-                    )}
-                  </div>
-                </button>
+                  </VoteButtonLoading>
+                </SlideIn>
               );
             })}
           </div>
@@ -224,13 +281,21 @@ function SingleQuestion({
           {showResults && (
             <div className="mt-lg space-y-md">
               {/* Vote Summary */}
-              <div className="text-center">
-                <div className="inline-flex items-center gap-sm border-2 border-primary bg-off-white px-lg py-md">
-                  <span className="font-mono text-base font-semibold text-primary">
-                    {totalVotes} Total Votes
-                  </span>
+              <SlideIn delay={200}>
+                <div className="text-center">
+                  <div className="inline-flex items-center gap-sm border-2 border-primary bg-off-white px-lg py-md transition-all duration-300 hover:shadow-lg">
+                    <span className="font-mono text-base font-semibold text-primary">
+                      <AnimatedCounter value={totalVotes} /> Total Vote{totalVotes !== 1 ? "s" : ""}
+                    </span>
+                    {hasOptimisticUpdates && (
+                      <div className="flex items-center gap-xs">
+                        <div className="size-2 animate-pulse rounded-full bg-primary"></div>
+                        <span className="font-mono text-xs text-primary">Live</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
+              </SlideIn>
 
               {/* Next Question Progress */}
               {isProgressing && currentIndex < totalQuestions - 1 && (
@@ -270,23 +335,7 @@ function SingleQuestion({
   );
 }
 
-function processQuestion(dbQuestion: DatabaseQuestion): ProcessedQuestion {
-  const { questionData } = dbQuestion;
-  const options = questionData?.options || [];
-  const optionLabels = questionData?.optionLabels || {};
-  const optionDescriptions = questionData?.optionDescriptions || {};
-
-  return {
-    id: dbQuestion.id,
-    title: dbQuestion.title,
-    description: dbQuestion.description || "",
-    options: options.map((optionId: string) => ({
-      id: optionId,
-      text: optionLabels[optionId] || optionId,
-      description: optionDescriptions[optionId],
-    })),
-  };
-}
+// processQuestion function moved to useResearchPageOptimization hook
 
 function ResearchPageSkeleton() {
   return (
@@ -328,20 +377,8 @@ export function ResearchPage() {
   const [answeredQuestions, setAnsweredQuestions] = useState<Set<number>>(new Set());
   const [userResponses, setUserResponses] = useState<Record<string, string>>({});
 
-  // Fetch research questions from database
-  const {
-    questions: dbQuestions,
-    isLoading,
-    isError,
-    error,
-    refetch,
-  } = useActiveQuestions({
-    category: "research",
-    limit: 10,
-  });
-
-  // Process database questions into component format
-  const questions = dbQuestions ? dbQuestions.map(processQuestion) : [];
+  // Use optimized research page hook for better performance
+  const { questions, isLoading, isError, error, refetch } = useResearchPageOptimization();
 
   const handleVote = (optionId: string) => {
     const currentQuestion = questions[currentQuestionIndex];
@@ -398,58 +435,66 @@ export function ResearchPage() {
   // Loading state
   if (isLoading) {
     return (
-      <XPToastProvider>
-        <ResearchPageSkeleton />
-      </XPToastProvider>
+      <ResearchErrorBoundary>
+        <XPToastProvider>
+          <ResearchPageSkeleton />
+        </XPToastProvider>
+      </ResearchErrorBoundary>
     );
   }
 
   // Error state
   if (isError || !questions || questions.length === 0) {
     return (
-      <XPToastProvider>
-        <div className="flex min-h-screen flex-col bg-off-white">
-          <HomepageNavigation />
-          <main className="flex flex-1 items-center justify-center px-4">
-            <div className="text-center">
-              <h1 className="mb-4 text-2xl font-bold text-off-black">
-                Unable to Load Research Questions
-              </h1>
-              <p className="mb-8 text-warm-gray">
-                {error || "There was an error loading the research questions. Please try again."}
-              </p>
-              <button
-                onClick={() => refetch()}
-                className="border-2 border-primary bg-primary px-6 py-3 font-mono text-white transition-all hover:bg-off-white hover:text-primary"
-              >
-                Try Again
-              </button>
-            </div>
-          </main>
-          <HomepageFooter />
-        </div>
-      </XPToastProvider>
+      <ResearchErrorBoundary>
+        <XPToastProvider>
+          <div className="flex min-h-screen flex-col bg-off-white">
+            <HomepageNavigation />
+            <main className="flex flex-1 items-center justify-center px-4">
+              <div className="text-center">
+                <h1 className="mb-4 text-2xl font-bold text-off-black">
+                  Unable to Load Research Questions
+                </h1>
+                <p className="mb-8 text-warm-gray">
+                  {error || "There was an error loading the research questions. Please try again."}
+                </p>
+                <button
+                  onClick={() => refetch()}
+                  className="border-2 border-primary bg-primary px-6 py-3 font-mono text-white transition-all hover:bg-off-white hover:text-primary"
+                >
+                  Try Again
+                </button>
+              </div>
+            </main>
+            <HomepageFooter />
+          </div>
+        </XPToastProvider>
+      </ResearchErrorBoundary>
     );
   }
 
   const currentQuestion = questions[currentQuestionIndex];
   if (!currentQuestion) {
     return (
-      <XPToastProvider>
-        <ResearchPageSkeleton />
-      </XPToastProvider>
+      <ResearchErrorBoundary>
+        <XPToastProvider>
+          <ResearchPageSkeleton />
+        </XPToastProvider>
+      </ResearchErrorBoundary>
     );
   }
 
   return (
-    <XPToastProvider>
-      <SingleQuestion
-        key={currentQuestionIndex}
-        question={currentQuestion}
-        onVote={handleVote}
-        currentIndex={currentQuestionIndex}
-        totalQuestions={questions.length}
-      />
-    </XPToastProvider>
+    <ResearchErrorBoundary>
+      <XPToastProvider>
+        <SingleQuestion
+          key={currentQuestionIndex}
+          question={currentQuestion}
+          onVote={handleVote}
+          currentIndex={currentQuestionIndex}
+          totalQuestions={questions.length}
+        />
+      </XPToastProvider>
+    </ResearchErrorBoundary>
   );
 }

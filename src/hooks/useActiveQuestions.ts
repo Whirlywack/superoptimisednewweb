@@ -4,7 +4,7 @@ import { api } from "@/lib/trpc/react";
 import { useCallback } from "react";
 
 export interface UseActiveQuestionsOptions {
-  category?: "auth" | "platform" | "general";
+  category?: "auth" | "platform" | "general" | "research";
   limit?: number;
 }
 
