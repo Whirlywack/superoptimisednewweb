@@ -35,16 +35,11 @@ export function JourneyTimeline() {
 
         {/* Timeline Content - Left 8 columns */}
         <div className="col-span-12 md:col-span-8">
-          <JourneyPostsTimeline
-            variant="compact"
-            showUpcoming={true}
-            maxItems={15}
-            className="bg-transparent"
-          />
+          <JourneyPostsTimeline showUpcoming={true} maxItems={50} className="bg-transparent" />
 
           {/* Content Strategy Poll */}
-          <div className="mt-8 rounded-lg border-2 border-light-gray bg-white p-md transition-all duration-200">
-            <div className="mb-md text-base font-semibold text-off-black">
+          <div className="mt-2xl rounded-lg border-2 border-light-gray bg-off-white p-lg transition-all duration-200">
+            <div className="mb-md text-lg font-semibold text-off-black">
               What type of content would be most valuable next?
             </div>
             <div className="mb-md flex flex-wrap gap-sm">
@@ -53,8 +48,8 @@ export function JourneyTimeline() {
                 className={cn(
                   "flex-1 rounded px-md py-sm text-center text-sm font-medium transition-all duration-200",
                   selectedPoll === "technical"
-                    ? "border-2 border-primary bg-primary text-white"
-                    : "border-2 border-transparent bg-light-gray hover:border-primary hover:bg-white"
+                    ? "border-2 border-primary bg-primary text-off-white"
+                    : "border-2 border-light-gray bg-light-gray hover:border-primary hover:bg-off-white"
                 )}
               >
                 Technical Deep-Dives
@@ -64,8 +59,8 @@ export function JourneyTimeline() {
                 className={cn(
                   "flex-1 rounded px-md py-sm text-center text-sm font-medium transition-all duration-200",
                   selectedPoll === "decisions"
-                    ? "border-2 border-primary bg-primary text-white"
-                    : "border-2 border-transparent bg-light-gray hover:border-primary hover:bg-white"
+                    ? "border-2 border-primary bg-primary text-off-white"
+                    : "border-2 border-light-gray bg-light-gray hover:border-primary hover:bg-off-white"
                 )}
               >
                 Decision Breakdowns
@@ -75,14 +70,14 @@ export function JourneyTimeline() {
                 className={cn(
                   "flex-1 rounded px-md py-sm text-center text-sm font-medium transition-all duration-200",
                   selectedPoll === "lessons"
-                    ? "border-2 border-primary bg-primary text-white"
-                    : "border-2 border-transparent bg-light-gray hover:border-primary hover:bg-white"
+                    ? "border-2 border-primary bg-primary text-off-white"
+                    : "border-2 border-light-gray bg-light-gray hover:border-primary hover:bg-off-white"
                 )}
               >
                 Weekly Lessons
               </button>
             </div>
-            <div className="text-center text-xs text-warm-gray">
+            <div className="text-center text-sm text-warm-gray">
               <span className="font-mono">Shape upcoming content</span> •
               <a href="https://x.com/superoptimised" className="ml-1 text-primary hover:underline">
                 Suggest on X
@@ -95,7 +90,7 @@ export function JourneyTimeline() {
         <div className="col-span-12 md:col-span-4">
           <div className="sticky top-lg space-y-lg">
             {/* Journey Stats */}
-            <div className="rounded-lg border-2 border-light-gray bg-white p-md">
+            <div className="rounded-lg border-2 border-light-gray bg-off-white p-lg">
               <h3 className="mb-md text-lg font-semibold text-off-black">Journey Stats</h3>
               <div className="space-y-sm">
                 {timelineData ? (
@@ -108,22 +103,18 @@ export function JourneyTimeline() {
                       ).toString(),
                     },
                     {
-                      label: "Milestones Completed",
+                      label: "Journey Posts",
+                      value: "3", // This will be dynamic based on actual blog posts
+                    },
+                    {
+                      label: "Phases Complete",
                       value: timelineData.events
-                        .filter((e) => e.status === "completed")
+                        .filter((e) => e.type === "phase" && e.status === "completed")
                         .length.toString(),
                     },
                     {
-                      label: "Development Phases",
-                      value: timelineData.events
-                        .filter((e) => e.type === "phase")
-                        .length.toString(),
-                    },
-                    {
-                      label: "Community Milestones",
-                      value: timelineData.events
-                        .filter((e) => e.type === "milestone")
-                        .length.toString(),
+                      label: "Community Votes",
+                      value: "247", // This would come from voting system
                     },
                     {
                       label: "Project Complete",
@@ -135,7 +126,9 @@ export function JourneyTimeline() {
                       className="flex items-center justify-between border-b border-light-gray py-xs last:border-b-0"
                     >
                       <span className="text-sm text-warm-gray">{stat.label}</span>
-                      <span className="font-mono text-sm font-bold text-primary">{stat.value}</span>
+                      <span className="font-mono text-sm font-semibold text-primary">
+                        {stat.value}
+                      </span>
                     </div>
                   ))
                 ) : (
@@ -145,12 +138,12 @@ export function JourneyTimeline() {
             </div>
 
             {/* Recent X Activity */}
-            <div className="rounded-lg border-2 border-light-gray bg-white p-md">
+            <div className="rounded-lg border-2 border-light-gray bg-off-white p-lg">
               <h3 className="mb-md text-lg font-semibold text-off-black">Live from X</h3>
-              <div className="rounded-lg border-2 border-light-gray bg-white p-lg">
+              <div className="rounded-lg border-2 border-light-gray bg-light-gray p-lg">
                 {/* X Header */}
                 <div className="mb-md flex items-center gap-sm">
-                  <div className="flex size-10 items-center justify-center rounded-full bg-primary text-sm font-bold text-white">
+                  <div className="flex size-10 items-center justify-center rounded-full bg-primary text-sm font-bold text-off-white">
                     SO
                   </div>
                   <div>
@@ -160,25 +153,25 @@ export function JourneyTimeline() {
                 </div>
 
                 {/* X Content */}
-                <div className="mb-md text-base text-off-black">
-                  Day 1 of building in public: Community is already shaping technical decisions.
-                  Magic links vs traditional auth poll results coming in. This is exactly why
-                  transparent building works.
+                <div className="mb-md text-base leading-relaxed text-off-black">
+                  Building in public means documenting every decision, sharing every challenge, and
+                  letting community feedback guide the direction. Each phase brings new lessons and
+                  deeper community connections.
                 </div>
 
                 {/* X Stats */}
-                <div className="flex gap-md font-mono text-sm text-warm-gray">
+                <div className="flex gap-lg font-mono text-sm text-warm-gray">
                   <div className="flex items-center gap-1">
                     <Repeat2 className="size-4" />
-                    <span>8</span>
+                    <span>12</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <Heart className="size-4" />
-                    <span>15</span>
+                    <span>28</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <MessageCircle className="size-4" />
-                    <span>5</span>
+                    <span>7</span>
                   </div>
                 </div>
               </div>

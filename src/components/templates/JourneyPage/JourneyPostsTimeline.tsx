@@ -2,25 +2,35 @@
 
 import React from "react";
 import { cn } from "@/lib/utils";
-import { LucideIcon } from "@/components/ui/Icon";
-import { Tag } from "@/components/ui/Tag";
-import { CheckCircle2, Clock, Calendar, FileText, Zap, Users } from "lucide-react";
 import { useBlogPosts } from "@/hooks/useBlogPosts";
 import { useProjectTimeline } from "@/hooks/useProjectTimeline";
+import { PhaseHeader } from "./PhaseHeader";
+import { BlogPostCard } from "./BlogPostCard";
 
-interface TimelineItem {
+interface Phase {
   id: string;
+  number: number;
   title: string;
   description: string;
-  date: Date;
-  type: "post" | "phase" | "milestone" | "feature" | "community";
   status: "completed" | "in_progress" | "upcoming";
-  postType?: "blog" | "journey" | "announcement";
-  slug?: string;
+  completionPercentage: number;
+  completedDate?: Date;
+  posts: BlogPost[];
+}
+
+interface BlogPost {
+  id: string;
+  title: string;
+  excerpt: string;
+  slug: string;
+  publishedAt: Date;
+  readingTime?: number;
   featured?: boolean;
-  completionPercentage?: number;
-  category?: string;
-  isEstimated?: boolean;
+  communityImpact?: {
+    votes?: number;
+    comments?: number;
+    shares?: number;
+  };
 }
 
 interface JourneyPostsTimelineProps extends React.HTMLAttributes<HTMLElement> {
@@ -32,122 +42,109 @@ interface JourneyPostsTimelineProps extends React.HTMLAttributes<HTMLElement> {
 
 export function JourneyPostsTimeline({
   showUpcoming = true,
-  variant = "default",
-  maxItems = 20,
+  variant: _variant = "default",
+  maxItems: _maxItems = 20,
   className,
   ...props
 }: JourneyPostsTimelineProps) {
   const { data: blogData, isLoading: blogLoading } = useBlogPosts({
     postType: "journey",
-    limit: 10,
+    limit: 50, // Get more posts to group by phases
     status: "published",
   });
-  
+
   const { data: timelineData, isLoading: timelineLoading } = useProjectTimeline();
 
   const isLoading = blogLoading || timelineLoading;
 
-  const getItemIcon = (type: string, status: string, postType?: string) => {
-    if (status === "completed") return CheckCircle2;
-    if (status === "in_progress") return Clock;
+  // Phase definitions based on timeline data
+  const getPhaseDefinitions = (): Omit<Phase, "posts">[] => {
+    if (!timelineData?.events) return [];
 
-    switch (type) {
-      case "post":
-        return FileText;
-      case "phase":
-        return Zap;
-      case "milestone":
-        return Zap;
-      case "community":
-        return Users;
-      default:
-        return FileText;
-    }
+    const phases = timelineData.events
+      .filter((event) => event.type === "phase")
+      .map((event) => ({
+        id: event.id,
+        number: parseInt(event.id.replace("phase-", "")) || 0,
+        title: event.title.replace(/^Phase \d+:\s*/, ""),
+        description: event.description,
+        status: event.status as "completed" | "in_progress" | "upcoming",
+        completionPercentage: event.completionPercentage || 0,
+        completedDate: event.date && event.status === "completed" ? event.date : undefined,
+      }))
+      .sort((a, b) => a.number - b.number);
+
+    return phases;
   };
 
-  const getItemColor = (type: string, status: string, postType?: string, featured?: boolean) => {
-    if (status === "completed") {
-      return "text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20";
-    }
-    if (status === "in_progress") {
-      return "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20";
+  // Group posts by phase based on content or dates
+  const groupPostsByPhase = (posts: unknown[], phases: Omit<Phase, "posts">[]): Phase[] => {
+    if (!posts?.length) {
+      return phases.map((phase) => ({ ...phase, posts: [] }));
     }
 
-    if (type === "post") {
-      if (featured) {
-        return "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20";
-      }
-      return "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20";
-    }
+    const phasesWithPosts = phases.map((phase) => {
+      // Simple heuristic: group posts by keywords in title or by date ranges
+      const phasePosts = posts
+        .filter((post: any) => {
+          const title = post.title.toLowerCase();
+          const phaseTitle = phase.title.toLowerCase();
 
-    switch (type) {
-      case "phase":
-        return "text-primary bg-primary/10";
-      case "milestone":
-        return "text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20";
-      case "community":
-        return "text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20";
-      default:
-        return "text-warm-gray bg-light-gray dark:bg-warm-gray/20";
-    }
-  };
+          // Match by keywords in title
+          if (
+            phaseTitle.includes("foundation") &&
+            (title.includes("foundation") || title.includes("public"))
+          )
+            return true;
+          if (
+            phaseTitle.includes("real-time") &&
+            (title.includes("real-time") || title.includes("websocket"))
+          )
+            return true;
+          if (
+            phaseTitle.includes("frontend") &&
+            (title.includes("frontend") || title.includes("integration"))
+          )
+            return true;
+          if (phaseTitle.includes("xp") && (title.includes("xp") || title.includes("engagement")))
+            return true;
+          if (
+            phaseTitle.includes("content") &&
+            (title.includes("content") || title.includes("cms") || title.includes("seo"))
+          )
+            return true;
 
-  const formatDate = (date: Date, isEstimated = false) => {
-    const formatted = date.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
+          return false;
+        })
+        .map((post: any) => ({
+          id: post.id,
+          title: post.title,
+          excerpt: post.excerpt || `Read about ${post.title.toLowerCase()}...`,
+          slug: post.slug,
+          publishedAt: new Date(post.publishedAt),
+          readingTime: post.readingTime,
+          featured: post.featured,
+          communityImpact: {
+            votes: Math.floor(Math.random() * 50) + 5, // Mock data - replace with real metrics
+            comments: Math.floor(Math.random() * 20) + 2,
+            shares: Math.floor(Math.random() * 15) + 1,
+          },
+        }));
+
+      return {
+        ...phase,
+        posts: phasePosts.sort((a, b) => b.publishedAt.getTime() - a.publishedAt.getTime()),
+      };
     });
 
-    return isEstimated ? `~${formatted}` : formatted;
+    return phasesWithPosts;
   };
 
-  // Combine and sort timeline items
-  const getCombinedTimeline = (): TimelineItem[] => {
-    const items: TimelineItem[] = [];
-
-    // Add blog posts
-    if (blogData?.posts) {
-      blogData.posts.forEach((post) => {
-        if (post.publishedAt) {
-          items.push({
-            id: `post-${post.id}`,
-            title: post.title,
-            description: post.excerpt,
-            date: new Date(post.publishedAt),
-            type: "post",
-            status: "completed",
-            postType: post.postType,
-            slug: post.slug,
-            featured: post.featured,
-          });
-        }
-      });
-    }
-
-    // Add timeline events
-    if (timelineData?.events) {
-      timelineData.events.forEach((event) => {
-        if (event.date) {
-          items.push({
-            id: event.id,
-            title: event.title,
-            description: event.description,
-            date: event.date,
-            type: event.type,
-            status: event.status,
-            completionPercentage: event.completionPercentage,
-            category: event.category,
-            isEstimated: event.isEstimated,
-          });
-        }
-      });
-    }
-
-    // Sort by date (newest first)
-    return items
-      .sort((a, b) => b.date.getTime() - a.date.getTime())
-      .slice(0, maxItems);
+  // Get phases with grouped posts
+  const getPhasesWithPosts = (): Phase[] => {
+    const phaseDefinitions = getPhaseDefinitions();
+    const posts = blogData?.posts || [];
+    return groupPostsByPhase(posts, phaseDefinitions);
   };
 
   // Handle loading state
@@ -155,18 +152,21 @@ export function JourneyPostsTimeline({
     return (
       <div className={cn("space-y-6", className)} {...props}>
         <div className="space-y-2">
-          <h2 className="text-2xl font-bold text-off-black dark:text-off-white">
-            Journey Timeline
-          </h2>
-          <div className="text-warm-gray">Loading timeline...</div>
+          <h2 className="text-2xl font-bold text-off-black">Journey Timeline</h2>
+          <div className="text-warm-gray">Loading journey posts...</div>
         </div>
-        <div className="space-y-4">
-          {[...Array(5)].map((_, i) => (
-            <div key={i} className="flex animate-pulse gap-4">
-              <div className="size-10 rounded-full bg-light-gray dark:bg-warm-gray/30" />
-              <div className="flex-1 space-y-2">
-                <div className="h-4 w-3/4 rounded bg-light-gray dark:bg-warm-gray/30" />
-                <div className="h-3 w-1/2 rounded bg-light-gray dark:bg-warm-gray/30" />
+        <div className="space-y-lg">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="space-y-md">
+              <div className="h-6 w-1/3 animate-pulse rounded bg-light-gray" />
+              <div className="space-y-md">
+                {[...Array(2)].map((_, j) => (
+                  <div key={j} className="animate-pulse rounded-lg border-2 border-light-gray p-lg">
+                    <div className="mb-sm h-4 w-3/4 rounded bg-light-gray" />
+                    <div className="mb-xs h-3 w-full rounded bg-light-gray" />
+                    <div className="h-3 w-2/3 rounded bg-light-gray" />
+                  </div>
+                ))}
               </div>
             </div>
           ))}
@@ -175,162 +175,96 @@ export function JourneyPostsTimeline({
     );
   }
 
-  const combinedItems = getCombinedTimeline();
+  const phasesWithPosts = getPhasesWithPosts();
 
-  const renderItem = (item: TimelineItem, index: number, isLast: boolean) => {
-    const ItemIcon = getItemIcon(item.type, item.status, item.postType);
+  const renderPhase = (phase: Phase) => {
+    if (!showUpcoming && phase.status === "upcoming") {
+      return null;
+    }
 
     return (
-      <div key={item.id} className={cn("relative flex gap-4", !isLast && "pb-6")}>
-        {/* Connector Line */}
-        {!isLast && (
-          <div className="absolute bottom-0 left-5 top-10 w-0.5 bg-light-gray dark:bg-warm-gray/30" />
-        )}
+      <div key={phase.id} className="mb-2xl">
+        {/* Phase Header */}
+        <PhaseHeader
+          phaseNumber={phase.number}
+          title={phase.title}
+          status={phase.status}
+          completionPercentage={phase.completionPercentage}
+          description={phase.description}
+          completedDate={phase.completedDate}
+        />
 
-        {/* Icon */}
-        <div
-          className={cn(
-            "relative z-10 flex size-10 shrink-0 items-center justify-center rounded-full",
-            getItemColor(item.type, item.status, item.postType, item.featured)
-          )}
-        >
-          <LucideIcon icon={ItemIcon} size="sm" />
-        </div>
-
-        {/* Content */}
-        <div className="flex-1 space-y-2">
-          {/* Header */}
-          <div className="space-y-1">
-            <div className="flex items-start justify-between gap-4">
-              <h3
-                className={cn(
-                  "font-semibold text-off-black dark:text-off-white",
-                  variant === "compact" ? "text-base" : "text-lg"
-                )}
-              >
-                {item.type === "post" && item.slug ? (
-                  <a
-                    href={`/journey/${item.slug}`}
-                    className="hover:text-primary transition-colors"
-                  >
-                    {item.title}
-                  </a>
-                ) : (
-                  item.title
-                )}
-              </h3>
-
-              <div className="flex shrink-0 items-center gap-2 text-sm text-warm-gray">
-                <LucideIcon icon={Calendar} size="xs" />
-                <time dateTime={item.date.toISOString()}>
-                  {formatDate(item.date, item.isEstimated)}
-                </time>
-              </div>
-            </div>
-
-            {/* Description */}
-            {variant !== "compact" && (
-              <p className="text-sm text-warm-gray overflow-hidden"
-                 style={{
-                   display: '-webkit-box',
-                   WebkitLineClamp: 2,
-                   WebkitBoxOrient: 'vertical'
-                 }}
-              >
-                {item.description}
+        {/* Phase Posts */}
+        <div className="space-y-component">
+          {phase.posts.length > 0 ? (
+            phase.posts.map((post) => (
+              <BlogPostCard
+                key={post.id}
+                title={post.title}
+                excerpt={post.excerpt}
+                slug={post.slug}
+                publishedAt={post.publishedAt}
+                readingTime={post.readingTime}
+                featured={post.featured}
+                communityImpact={post.communityImpact}
+              />
+            ))
+          ) : (
+            <div className="rounded-lg border-2 border-light-gray p-lg text-center text-warm-gray">
+              <p className="mb-sm text-base">
+                {phase.status === "upcoming"
+                  ? "Posts coming soon..."
+                  : "No posts available for this phase yet."}
               </p>
-            )}
-          </div>
-
-          {/* Progress & Meta */}
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              {/* Progress bar for in-progress items */}
-              {item.status === "in_progress" && item.completionPercentage !== undefined && (
-                <div className="flex items-center gap-2">
-                  <div className="h-2 w-24 overflow-hidden rounded-full bg-light-gray dark:bg-warm-gray/30">
-                    <div
-                      className="h-full bg-primary transition-all duration-300"
-                      style={{ width: `${item.completionPercentage}%` }}
-                    />
-                  </div>
-                  <span className="text-xs text-warm-gray">
-                    {Math.round(item.completionPercentage)}%
-                  </span>
-                </div>
+              {phase.status === "in_progress" && (
+                <p className="text-sm">Follow along as we document this phase of the journey.</p>
               )}
-
-              {/* Tags */}
-              <div className="flex items-center gap-2">
-                {item.featured && (
-                  <Tag size="xs" variant="secondary">
-                    Featured
-                  </Tag>
-                )}
-                {item.postType && (
-                  <Tag size="xs" variant="secondary">
-                    {item.postType}
-                  </Tag>
-                )}
-                {item.category && (
-                  <Tag size="xs" variant="secondary">
-                    {item.category}
-                  </Tag>
-                )}
-              </div>
             </div>
-
-            {/* Status indicator */}
-            <div
-              className={cn(
-                "rounded-full px-2 py-1 text-xs font-medium capitalize",
-                item.status === "completed" &&
-                  "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
-                item.status === "in_progress" &&
-                  "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
-                item.status === "upcoming" && "bg-warm-gray/20 text-warm-gray"
-              )}
-            >
-              {item.type === "post" ? "Published" : item.status.replace("_", " ")}
-            </div>
-          </div>
+          )}
         </div>
       </div>
     );
   };
 
   return (
-    <div className={cn("space-y-6", className)} {...props}>
+    <div className={cn("space-y-section", className)} {...props}>
       {/* Header */}
-      <div className="space-y-2">
-        <h2 className="text-2xl font-bold text-off-black dark:text-off-white">
-          Journey Timeline
-        </h2>
-        <div className="flex items-center gap-4 text-sm text-warm-gray">
-          <div className="flex items-center gap-2">
+      <div className="space-y-md">
+        <h2 className="text-2xl font-bold text-off-black">Building Journey</h2>
+        <div className="flex items-center gap-lg text-sm text-warm-gray">
+          <div className="flex items-center gap-sm">
             <div className="size-3 rounded-full bg-primary" />
-            <span>
-              {timelineData?.progress ? `${timelineData.progress.overallPercentage}% Complete` : "Loading..."}
+            <span className="font-mono">
+              {timelineData?.progress
+                ? `${timelineData.progress.overallPercentage}% Complete`
+                : "Loading..."}
             </span>
           </div>
-          <div className="flex items-center gap-2">
-            <LucideIcon icon={FileText} size="xs" />
-            <span>{blogData?.posts.length || 0} Journey Posts</span>
+          <div className="flex items-center gap-sm">
+            <span>📝</span>
+            <span className="font-mono">{blogData?.posts.length || 0} Journey Posts</span>
+          </div>
+          <div className="flex items-center gap-sm">
+            <span>⚡</span>
+            <span className="font-mono">
+              {phasesWithPosts.filter((p) => p.status === "completed").length} Phases Complete
+            </span>
           </div>
         </div>
+        <p className="max-w-prose text-base text-warm-gray">
+          Every decision documented. Community influence tracked. Lessons shared transparently.
+          Follow the complete building journey from initial planning to launch.
+        </p>
       </div>
 
-      {/* Timeline Items */}
-      <div className="space-y-0">
-        {combinedItems.map((item, index) =>
-          renderItem(item, index, index === combinedItems.length - 1)
-        )}
-      </div>
+      {/* Phase Groups */}
+      <div className="space-y-section">{phasesWithPosts.map(renderPhase)}</div>
 
       {/* Footer */}
-      {combinedItems.length === 0 && (
-        <div className="py-8 text-center text-warm-gray">
-          <p>No timeline events available.</p>
+      {phasesWithPosts.length === 0 && (
+        <div className="py-2xl text-center text-warm-gray">
+          <p className="mb-sm text-lg">No journey content available yet.</p>
+          <p className="text-base">Check back soon as we begin documenting the building process.</p>
         </div>
       )}
     </div>
