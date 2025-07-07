@@ -125,6 +125,12 @@ export function ResearchCompletePage() {
     showXPToast("social-share");
   };
 
+  const handleTakeAnotherQuiz = () => {
+    // Clear current responses for fresh start
+    localStorage.removeItem("research-responses");
+    window.location.href = "/";
+  };
+
   return (
     <XPToastProvider>
       <div className="flex min-h-screen flex-col bg-off-white">
@@ -216,25 +222,26 @@ export function ResearchCompletePage() {
               )}
             </div>
 
-            {/* Action Button */}
+            {/* Action Buttons */}
             <div className="mx-auto mb-xl max-w-md">
-              <button
-                onClick={handleShare}
-                className="flex w-full items-center justify-center gap-sm border-2 border-primary bg-primary p-lg font-semibold text-off-white transition-all duration-100 hover:bg-off-black"
-              >
-                <Share className="size-5" />
-                Share Research
-              </button>
-            </div>
+              <div className="grid grid-cols-2 gap-sm">
+                {/* Take Another Quiz Button */}
+                <button
+                  onClick={handleTakeAnotherQuiz}
+                  className="flex items-center justify-center border-2 border-primary bg-primary p-lg font-semibold text-off-white transition-all duration-100 hover:bg-off-black"
+                >
+                  Take Another Quiz
+                </button>
 
-            {/* Back Link */}
-            <div className="text-center">
-              <button
-                onClick={() => (window.location.href = "/")}
-                className="font-mono text-sm text-warm-gray transition-all duration-100 hover:text-primary"
-              >
-                ← Back to Homepage
-              </button>
+                {/* Share Results Button */}
+                <button
+                  onClick={handleShare}
+                  className="flex items-center justify-center gap-sm border-2 border-primary bg-off-white p-lg font-semibold text-primary transition-all duration-100 hover:bg-primary hover:text-off-white"
+                >
+                  <Share className="size-4" />
+                  Share Results
+                </button>
+              </div>
             </div>
           </div>
         </main>
