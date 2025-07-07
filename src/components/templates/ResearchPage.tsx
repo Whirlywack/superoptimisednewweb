@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { cn } from "@/lib/utils";
 import { HomepageNavigation } from "./Homepage/HomepageNavigation";
 import { HomepageFooter } from "./Homepage/HomepageFooter";
 import { XPToastProvider, XPToastContext } from "./Homepage/XPToastProvider";
-import { ChevronRight } from "lucide-react";
 
 interface ResearchQuestion {
   id: string;
@@ -60,16 +59,20 @@ const researchQuestions: ResearchQuestion[] = [
     description: "For prioritizing features and making decisions.",
     options: [
       { id: "ranked-choice", text: "Ranked Choice", description: "Rank options by preference" },
-      { id: "point-system", text: "Point Allocation", description: "Distribute points across options" },
+      {
+        id: "point-system",
+        text: "Point Allocation",
+        description: "Distribute points across options",
+      },
     ],
     votes: { "ranked-choice": 22, "point-system": 25 },
     totalVotes: 47,
-  }
+  },
 ];
 
 function ProgressBar({ current, total }: { current: number; total: number }) {
   const percentage = (current / total) * 100;
-  
+
   return (
     <div className="w-full">
       <div className="mb-sm flex justify-between">
@@ -81,7 +84,7 @@ function ProgressBar({ current, total }: { current: number; total: number }) {
         </span>
       </div>
       <div className="h-1 w-full bg-light-gray">
-        <div 
+        <div
           className="h-1 bg-primary transition-all duration-500 ease-out"
           style={{ width: `${percentage}%` }}
         />
@@ -90,38 +93,47 @@ function ProgressBar({ current, total }: { current: number; total: number }) {
   );
 }
 
-function SingleQuestion({ 
-  question, 
-  onVote, 
-  currentIndex, 
-  totalQuestions 
-}: { 
-  question: ResearchQuestion; 
+function SingleQuestion({
+  question,
+  onVote,
+  currentIndex,
+  totalQuestions,
+}: {
+  question: ResearchQuestion;
   onVote: (optionId: string) => void;
   currentIndex: number;
   totalQuestions: number;
 }) {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [showResults, setShowResults] = useState(false);
-  const [countdown, setCountdown] = useState<number | null>(null);
+  const [progressPercent, setProgressPercent] = useState<number>(0);
+  const [isProgressing, setIsProgressing] = useState(false);
 
   const handleVote = (optionId: string) => {
     setSelectedOption(optionId);
     setShowResults(true);
     onVote(optionId);
 
-    // Start countdown for next question
+    // Start progress bar for next question
     if (currentIndex < totalQuestions - 1) {
-      setCountdown(3);
+      setIsProgressing(true);
+      setProgressPercent(0);
+
+      const duration = 3000; // 3 seconds
+      const interval = 50; // Update every 50ms for smooth animation
+      const increment = (interval / duration) * 100;
+
       const timer = setInterval(() => {
-        setCountdown(prev => {
-          if (prev === null || prev <= 1) {
+        setProgressPercent((prev) => {
+          const next = prev + increment;
+          if (next >= 100) {
             clearInterval(timer);
-            return null;
+            setIsProgressing(false);
+            return 100;
           }
-          return prev - 1;
+          return next;
         });
-      }, 1000);
+      }, interval);
     }
   };
 
@@ -131,25 +143,25 @@ function SingleQuestion({
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-off-white">
+    <div className="flex min-h-screen flex-col bg-off-white">
       {/* Navigation */}
       <HomepageNavigation />
 
       {/* Progress Bar */}
-      <div className="w-full bg-white border-b border-light-gray px-4 py-md">
+      <div className="w-full border-b border-light-gray bg-white px-4 py-md">
         <div className="mx-auto max-w-2xl">
           <ProgressBar current={currentIndex + 1} total={totalQuestions} />
         </div>
       </div>
 
       {/* Main Question */}
-      <main className="flex-1 flex items-center justify-center px-4 py-xl">
+      <main className="flex flex-1 items-start justify-center px-4 pb-xl pt-lg">
         <div className="w-full max-w-2xl">
-          <div className="text-center mb-xl">
-            <h1 className="text-hero font-bold text-off-black mb-lg leading-tight">
+          <div className="mb-lg text-center">
+            <h1 className="mb-md text-5xl font-bold leading-none text-off-black md:text-6xl">
               {question.title}
             </h1>
-            <p className="text-warm-gray text-lg leading-relaxed max-w-prose mx-auto">
+            <p className="mx-auto max-w-prose text-base leading-relaxed text-warm-gray">
               {question.description}
             </p>
           </div>
@@ -158,42 +170,39 @@ function SingleQuestion({
             {question.options.map((option) => {
               const percentage = getVotePercentage(option.id);
               const isSelected = selectedOption === option.id;
-              
+
               return (
                 <button
                   key={option.id}
                   onClick={() => handleVote(option.id)}
                   disabled={showResults}
                   className={cn(
-                    "w-full p-lg border-2 text-left transition-all duration-200",
-                    "min-h-[88px] flex flex-col justify-center relative overflow-hidden",
+                    "w-full border-2 p-lg text-left transition-all duration-100",
+                    "relative flex min-h-[88px] flex-col justify-center overflow-hidden",
                     showResults
                       ? isSelected
-                        ? "border-primary bg-primary text-white"
+                        ? "border-primary bg-off-white text-off-black"
                         : "border-light-gray bg-light-gray text-warm-gray"
-                      : "border-light-gray bg-white text-off-black hover:border-primary active:transform active:scale-98"
+                      : "border-light-gray bg-off-white text-off-black hover:border-primary"
                   )}
                 >
                   {showResults && (
                     <div
-                      className="absolute inset-0 bg-primary/[0.1] transition-all duration-1000 ease-out"
+                      className="absolute inset-y-0 left-0 border-r-2 border-primary transition-all duration-500 ease-linear"
                       style={{ width: `${percentage}%` }}
                     />
                   )}
                   <div className="relative z-10">
                     <div className="flex items-start justify-between">
-                      <span className="font-bold text-xl leading-tight">{option.text}</span>
+                      <span className="text-xl font-bold leading-tight">{option.text}</span>
                       {showResults && (
-                        <span className="font-mono text-lg font-bold ml-md">
+                        <span className="ml-md font-mono text-lg font-bold text-primary">
                           {percentage}%
                         </span>
                       )}
                     </div>
                     {option.description && (
-                      <div className={cn(
-                        "mt-sm text-base",
-                        showResults && isSelected ? "text-white/90" : "text-warm-gray"
-                      )}>
+                      <div className={cn("mt-sm text-base", "text-warm-gray")}>
                         {option.description}
                       </div>
                     )}
@@ -204,26 +213,32 @@ function SingleQuestion({
           </div>
 
           {showResults && (
-            <div className="mt-xl text-center space-y-md">
-              <div className="inline-flex items-center gap-sm bg-white border border-light-gray px-md py-sm">
+            <div className="mt-lg space-y-md text-center">
+              <div className="inline-flex items-center gap-sm border border-light-gray bg-off-white px-md py-sm">
                 <span className="font-mono text-xs font-semibold uppercase tracking-wide text-primary">
                   {question.totalVotes} total votes
                 </span>
               </div>
-              
-              {countdown !== null && currentIndex < totalQuestions - 1 && (
-                <div className="text-warm-gray">
-                  <span className="font-mono text-sm">
-                    Next question in {countdown}s...
-                  </span>
+
+              {isProgressing && currentIndex < totalQuestions - 1 && (
+                <div className="space-y-sm">
+                  <div className="text-warm-gray">
+                    <span className="font-mono text-sm">Next question</span>
+                  </div>
+                  <div className="mx-auto w-full max-w-xs">
+                    <div className="h-0.5 w-full bg-light-gray">
+                      <div
+                        className="h-0.5 bg-primary transition-all duration-75 ease-linear"
+                        style={{ width: `${progressPercent}%` }}
+                      />
+                    </div>
+                  </div>
                 </div>
               )}
-              
+
               {showResults && currentIndex === totalQuestions - 1 && (
                 <div className="text-warm-gray">
-                  <span className="font-mono text-sm">
-                    Almost done! One moment...
-                  </span>
+                  <span className="font-mono text-sm">Processing...</span>
                 </div>
               )}
             </div>
@@ -237,115 +252,54 @@ function SingleQuestion({
   );
 }
 
-function NewsletterSignup() {
-  const [email, setEmail] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { showXPToast } = useContext(XPToastContext);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email || isSubmitting) return;
-
-    setIsSubmitting(true);
-    
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setEmail("");
-      showXPToast("newsletter");
-    } catch (error) {
-      console.error("Newsletter signup failed:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  return (
-    <section className="w-full bg-white border-t border-light-gray px-4 py-xl">
-      <div className="mx-auto max-w-2xl text-center">
-        <h3 className="text-xl font-bold text-off-black mb-sm">
-          Get Decision Updates
-        </h3>
-        <p className="text-warm-gray mb-lg">
-          Be notified when new community decisions need your input.
-        </p>
-        
-        <form onSubmit={handleSubmit} className="flex gap-sm max-w-md mx-auto">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="your@email.com"
-            required
-            disabled={isSubmitting}
-            className={cn(
-              "flex-1 border-2 border-light-gray px-md py-sm",
-              "bg-white text-base",
-              "focus:border-primary focus:outline-none",
-              "disabled:cursor-not-allowed disabled:opacity-50"
-            )}
-          />
-          <button
-            type="submit"
-            disabled={isSubmitting || !email}
-            className={cn(
-              "bg-primary px-lg py-sm text-base font-semibold text-white",
-              "transition-all duration-200",
-              "hover:bg-off-black disabled:cursor-not-allowed disabled:opacity-50"
-            )}
-          >
-            {isSubmitting ? "..." : "Join"}
-          </button>
-        </form>
-      </div>
-    </section>
-  );
-}
-
 export function ResearchPage() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answeredQuestions, setAnsweredQuestions] = useState<Set<number>>(new Set());
-  const [isComplete, setIsComplete] = useState(false);
   const { showXPToast } = useContext(XPToastContext);
 
   // Debug: Log current state
-  console.log('Current question index:', currentQuestionIndex);
-  console.log('Total questions:', researchQuestions.length);
-  console.log('Answered questions:', Array.from(answeredQuestions));
+  console.log("Current question index:", currentQuestionIndex);
+  console.log("Total questions:", researchQuestions.length);
+  console.log("Answered questions:", Array.from(answeredQuestions));
 
   const handleVote = (optionId: string) => {
-    console.log('Vote received for option:', optionId, 'on question:', currentQuestionIndex);
-    
+    console.log("Vote received for option:", optionId, "on question:", currentQuestionIndex);
+
     // Track the vote
     showXPToast("research-vote");
-    
+
     // Mark question as answered
     const newAnswered = new Set(answeredQuestions);
     newAnswered.add(currentQuestionIndex);
     setAnsweredQuestions(newAnswered);
 
-    console.log('Setting timeout for question advancement. Current:', currentQuestionIndex, 'Total:', researchQuestions.length);
+    console.log(
+      "Setting timeout for question advancement. Current:",
+      currentQuestionIndex,
+      "Total:",
+      researchQuestions.length
+    );
 
     // Auto-advance to next question after 3 seconds
     setTimeout(() => {
-      setCurrentQuestionIndex(prevIndex => {
-        console.log('Timeout fired. Previous index:', prevIndex, 'Total questions:', researchQuestions.length);
+      setCurrentQuestionIndex((prevIndex) => {
+        console.log(
+          "Timeout fired. Previous index:",
+          prevIndex,
+          "Total questions:",
+          researchQuestions.length
+        );
         if (prevIndex < researchQuestions.length - 1) {
-          console.log('Advancing to next question:', prevIndex + 1);
+          console.log("Advancing to next question:", prevIndex + 1);
           return prevIndex + 1;
         } else {
-          console.log('All questions complete, redirecting to completion page');
+          console.log("All questions complete, redirecting to completion page");
           // Redirect to completion page instead of showing inline completion
-          window.location.href = '/research/complete';
+          window.location.href = "/research/complete";
           return prevIndex;
         }
       });
     }, 3000);
-  };
-
-  const handleShare = () => {
-    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent("Just voted on key decisions for @superoptimised's building project! Your voice matters - help shape what gets built next:")}&url=${encodeURIComponent(window.location.href)}`;
-    window.open(url, '_blank');
-    showXPToast("social-share");
   };
 
   // No inline completion screen needed - redirects to /research/complete

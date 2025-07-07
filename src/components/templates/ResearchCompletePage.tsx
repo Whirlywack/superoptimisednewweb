@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { HomepageNavigation } from "./Homepage/HomepageNavigation";
 import { HomepageFooter } from "./Homepage/HomepageFooter";
 import { XPToastProvider, XPToastContext } from "./Homepage/XPToastProvider";
-import { Share, ArrowRight, Check } from "lucide-react";
+import { Share } from "lucide-react";
 
 function NewsletterSignup() {
   const [email, setEmail] = useState("");
@@ -17,7 +17,7 @@ function NewsletterSignup() {
     if (!email || isSubmitting) return;
 
     setIsSubmitting(true);
-    
+
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       setEmail("");
@@ -30,16 +30,14 @@ function NewsletterSignup() {
   };
 
   return (
-    <section className="w-full bg-white border-t border-light-gray px-4 py-xl">
+    <section className="w-full border-t border-light-gray bg-white px-4 py-xl">
       <div className="mx-auto max-w-2xl text-center">
-        <h3 className="text-xl font-bold text-off-black mb-sm">
-          Get Decision Updates
-        </h3>
-        <p className="text-warm-gray mb-lg">
+        <h3 className="mb-sm text-xl font-bold text-off-black">Get Decision Updates</h3>
+        <p className="mb-lg text-warm-gray">
           Be the first to know when new community decisions need your input.
         </p>
-        
-        <form onSubmit={handleSubmit} className="flex gap-sm max-w-md mx-auto">
+
+        <form onSubmit={handleSubmit} className="mx-auto flex max-w-md gap-sm">
           <input
             type="email"
             value={email}
@@ -75,107 +73,65 @@ export function ResearchCompletePage() {
   const { showXPToast } = useContext(XPToastContext);
 
   const handleShare = () => {
-    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent("Just completed the community research for @superoptimised's building project! 🗳️ Your voice can shape what gets built next:")}&url=${encodeURIComponent(window.location.origin + '/research')}`;
-    window.open(url, '_blank');
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent("Just voted on @superoptimised's building decisions! 🗳️ Your voice shapes what gets built:")}&url=${encodeURIComponent(window.location.origin + "/research")}`;
+    window.open(url, "_blank");
     showXPToast("social-share");
-  };
-
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(window.location.origin + '/research');
-    showXPToast("link-copy");
   };
 
   return (
     <XPToastProvider>
-      <div className="min-h-screen flex flex-col bg-off-white">
+      <div className="flex min-h-screen flex-col bg-off-white">
         {/* Navigation */}
         <HomepageNavigation />
 
         {/* Main Content */}
-        <main className="flex-1 flex items-center justify-center px-4 py-xl">
+        <main className="flex flex-1 items-center justify-center px-4 py-xl">
           <div className="w-full max-w-2xl text-center">
-            {/* Success Icon */}
+            {/* Success Message */}
             <div className="mb-xl">
-              <div className="w-24 h-24 bg-primary flex items-center justify-center mx-auto mb-lg">
-                <Check className="w-12 h-12 text-white" strokeWidth={3} />
-              </div>
-              <h1 className="text-hero font-bold text-off-black mb-lg leading-tight">
-                Thank You for
-                <br />
-                Your Input!
+              <h1 className="mb-md text-6xl font-bold leading-none text-off-black md:text-8xl">
+                Done!
               </h1>
-              <p className="text-warm-gray text-lg leading-relaxed max-w-prose mx-auto">
-                Your votes help shape the future of this project. The community voice drives every major decision, 
-                and your input is now part of that process.
+              <p className="mb-lg text-xl font-medium leading-tight text-primary md:text-2xl">
+                Thanks for shaping the project
               </p>
             </div>
 
             {/* Stats */}
             <div className="mb-xl">
-              <div className="bg-white border border-light-gray p-lg">
-                <h3 className="font-mono text-xs font-semibold uppercase tracking-wide text-primary mb-md">
-                  Your Impact
-                </h3>
+              <div className="border border-light-gray bg-off-white p-lg">
                 <div className="grid grid-cols-2 gap-lg">
                   <div className="text-center">
-                    <div className="font-mono text-2xl font-bold text-off-black">4</div>
-                    <div className="text-sm text-warm-gray">Questions Answered</div>
+                    <div className="font-mono text-3xl font-bold text-off-black">4</div>
+                    <div className="font-mono text-sm text-warm-gray">Questions</div>
                   </div>
                   <div className="text-center">
-                    <div className="font-mono text-2xl font-bold text-primary">+40</div>
-                    <div className="text-sm text-warm-gray">XP Earned</div>
+                    <div className="font-mono text-3xl font-bold text-primary">+40</div>
+                    <div className="font-mono text-sm text-warm-gray">XP Earned</div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="space-y-md mb-xl max-w-md mx-auto">
+            {/* Action Button */}
+            <div className="mx-auto mb-xl max-w-md">
               <button
                 onClick={handleShare}
-                className="w-full bg-primary text-white p-lg font-semibold transition-all duration-200 hover:bg-off-black flex items-center justify-center gap-sm"
+                className="flex w-full items-center justify-center gap-sm border-2 border-primary bg-primary p-lg font-semibold text-off-white transition-all duration-100 hover:bg-off-black"
               >
-                <Share className="w-5 h-5" />
-                Share on X to get more input
-              </button>
-              
-              <button
-                onClick={handleCopyLink}
-                className="w-full border-2 border-light-gray text-off-black p-lg font-semibold transition-all duration-200 hover:border-primary"
-              >
-                Copy Research Link
-              </button>
-
-              <button
-                onClick={() => window.location.href = '/'}
-                className="w-full border-2 border-light-gray text-off-black p-lg font-semibold transition-all duration-200 hover:border-primary flex items-center justify-center gap-sm"
-              >
-                Back to Homepage
-                <ArrowRight className="w-5 h-5" />
+                <Share className="size-5" />
+                Share Research
               </button>
             </div>
 
-            {/* Community Impact */}
-            <div className="bg-white border-2 border-primary p-lg">
-              <h3 className="font-bold text-off-black mb-sm">What Happens Next?</h3>
-              <div className="text-left space-y-sm text-warm-gray">
-                <div className="flex items-start gap-sm">
-                  <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                  <span className="text-sm">Your votes are analyzed with the community input</span>
-                </div>
-                <div className="flex items-start gap-sm">
-                  <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                  <span className="text-sm">Decisions are made based on majority preference</span>
-                </div>
-                <div className="flex items-start gap-sm">
-                  <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                  <span className="text-sm">Implementation progress is shared transparently</span>
-                </div>
-                <div className="flex items-start gap-sm">
-                  <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
-                  <span className="text-sm">New decisions are posted when input is needed</span>
-                </div>
-              </div>
+            {/* Back Link */}
+            <div className="text-center">
+              <button
+                onClick={() => (window.location.href = "/")}
+                className="font-mono text-sm text-warm-gray transition-all duration-100 hover:text-primary"
+              >
+                ← Back to Homepage
+              </button>
             </div>
           </div>
         </main>
