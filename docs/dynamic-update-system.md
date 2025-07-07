@@ -101,6 +101,66 @@ const calculateOverallProgress = () => {
 };
 ```
 
+### 4. Research Page Integration
+
+**Location**: `src/components/templates/ResearchPage.tsx` and `src/components/templates/ResearchCompletePage.tsx`
+
+**Database Integration**:
+
+The research page has been completely refactored from hard-coded data to production-ready database integration:
+
+```typescript
+// Real questions from database
+const {
+  questions: dbQuestions,
+  isLoading,
+  isError,
+  refetch,
+} = useActiveQuestions({
+  category: "research",
+  limit: 10,
+});
+
+// Real vote submission with XP rewards
+const { submitVote, isVoting } = useVoteSubmission({
+  onSuccess: () => {
+    // Real XP toast notifications
+    // Database vote recording
+    // Real-time stats updates
+  },
+  showToasts: true,
+});
+
+// Real-time vote statistics
+const { totalVotes, breakdown } = useQuestionStats({
+  questionId: question.id,
+  refetchInterval: showResults ? 3000 : 0,
+});
+```
+
+**Key Features**:
+
+- **Database Questions**: Research questions loaded from database via `useActiveQuestions` with category filtering
+- **Real Vote Submission**: Votes submitted to database with progressive XP rewards (5→10→15→20→25→50→100)
+- **Anonymous Tracking**: SHA-256 voter tokens with duplicate vote prevention
+- **Real-time Stats**: Live vote counts update automatically via WebSocket
+- **Completion Page**: Real XP breakdown using `useEngagementStats` and `useUserVoteHistory` hooks
+- **Fallback Support**: localStorage fallback for backward compatibility
+
+**Data Flow**:
+
+1. **Question Loading**: `useActiveQuestions` fetches research category questions from database
+2. **Vote Submission**: Click vote → database submission → XP calculation → real-time stats update
+3. **Progress Display**: Real vote percentages and counts from database, not hard-coded values
+4. **Completion**: Real XP breakdown, database vote history, fallback to localStorage if needed
+
+**Caching Configuration**:
+
+- **Question Data**: 5 minutes stale time, 10 minutes cache time
+- **Vote Statistics**: 2 seconds stale time, real-time updates during voting
+- **Engagement Stats**: 5 minutes stale time for completion page
+- **User Vote History**: 2 minutes stale time for response display
+
 ## Progress Bar Database System
 
 ### Database Schema
