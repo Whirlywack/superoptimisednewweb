@@ -29,56 +29,55 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
 
   return (
     <div className="min-h-screen bg-off-white">
-      {/* Admin Navigation Header */}
-      <header className="border-b-2 border-off-black bg-white">
+      {/* Elevated Brutalism Admin Header */}
+      <header className="bg-off-black">
         <div className="mx-auto max-w-7xl px-4">
-          <div className="flex h-16 items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <h1 className="font-mono text-lg font-bold text-off-black">Admin Dashboard</h1>
-              <div className="flex space-x-1 text-sm text-warm-gray">
-                <span>•</span>
-                <span className="font-mono">{session.user.email}</span>
-              </div>
+          <div className="flex h-20 items-center justify-between">
+            {/* Brand & User Context */}
+            <div className="space-y-1">
+              <h1 className="font-mono text-xl font-bold text-off-white">/admin</h1>
+              <div className="font-mono text-xs text-warm-gray">{session.user.email}</div>
             </div>
 
-            <nav className="flex items-center space-x-6">
+            {/* Minimal Navigation */}
+            <nav className="flex items-center gap-0">
               <a
                 href="/admin"
-                className="font-mono text-sm text-off-black transition-colors hover:text-primary"
+                className="border-r border-warm-gray px-4 py-2 font-mono text-sm text-off-white transition-colors hover:bg-primary hover:text-off-black"
               >
                 Dashboard
               </a>
               <a
                 href="/admin/questions"
-                className="font-mono text-sm text-off-black transition-colors hover:text-primary"
+                className="border-r border-warm-gray px-4 py-2 font-mono text-sm text-off-white transition-colors hover:bg-primary hover:text-off-black"
               >
                 Questions
               </a>
               <a
                 href="/admin/analytics"
-                className="font-mono text-sm text-off-black transition-colors hover:text-primary"
+                className="border-r border-warm-gray px-4 py-2 font-mono text-sm text-off-white transition-colors hover:bg-primary hover:text-off-black"
               >
                 Analytics
               </a>
               <a
                 href="/admin/content"
-                className="font-mono text-sm text-off-black transition-colors hover:text-primary"
+                className="border-r border-warm-gray px-4 py-2 font-mono text-sm text-off-white transition-colors hover:bg-primary hover:text-off-black"
               >
                 Content
               </a>
               <a
                 href="/auth/signout"
-                className="rounded border-2 border-off-black bg-off-black px-3 py-1 font-mono text-sm text-white transition-colors hover:bg-white hover:text-off-black"
+                className="bg-primary px-4 py-2 font-mono text-sm text-off-black transition-colors hover:bg-off-white"
               >
-                Sign Out
+                Exit
               </a>
             </nav>
           </div>
         </div>
       </header>
 
-      {/* Admin Content */}
-      <main className="mx-auto max-w-7xl px-4 py-8">{children}</main>
+      {/* Content with Proper Spacing */}
+      <main className="mx-auto max-w-7xl space-y-12 px-4 py-12">{children}</main>
     </div>
   );
 }
