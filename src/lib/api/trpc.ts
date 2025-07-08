@@ -125,13 +125,49 @@ const loggingMiddleware = t.middleware(async ({ path, type, next }) => {
  * Voter token middleware for anonymous voting
  */
 const voterTokenMiddleware = t.middleware(async ({ ctx, next }) => {
-  // This middleware will be enhanced to handle voter tokens from cookies
-  // For now, we'll add the voter token context structure
+  // Extract voter token from request headers/cookies
+  let voterToken: string | null = null;
+  let voterTokenRecord = null;
+
+  // Try to get voter token from cookie header
+  if (ctx.headers?.get) {
+    const cookieHeader = ctx.headers.get("cookie");
+    if (cookieHeader) {
+      const cookies = cookieHeader.split(";").reduce(
+        (acc, cookie) => {
+          const [key, value] = cookie.trim().split("=");
+          acc[key] = value;
+          return acc;
+        },
+        {} as Record<string, string>
+      );
+
+      voterToken = cookies.voterToken || cookies.voter_token || null;
+    }
+  }
+
+  // If we have a voter token, try to get the record
+  if (voterToken) {
+    try {
+      const { getOrCreateVoterToken } = await import("./voterToken");
+      const { token, voterTokenRecord: record } = await getOrCreateVoterToken(
+        voterToken,
+        ctx.ipAddress
+      );
+      voterToken = token;
+      voterTokenRecord = record;
+    } catch (error) {
+      console.error("[tRPC] Error handling voter token:", error);
+      voterToken = null;
+      voterTokenRecord = null;
+    }
+  }
+
   return next({
     ctx: {
       ...ctx,
-      voterToken: null, // Will be populated from cookies in actual implementation
-      voterTokenRecord: null,
+      voterToken,
+      voterTokenRecord,
     },
   });
 });

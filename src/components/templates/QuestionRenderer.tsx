@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { ProcessedQuestion } from "@/hooks/useResearchPageOptimization";
+import React, { useState } from "react";
+import type { ProcessedQuestion } from "@/hooks/useResearchPageOptimization";
 import { ABTestQuestion } from "@/components/molecules/ABTestQuestion";
 import { RankingQuestion } from "@/components/molecules/RankingQuestion";
 import { MultiChoiceQuestion } from "@/components/molecules/MultiChoiceQuestion";
@@ -15,7 +15,6 @@ interface BinaryQuestionProps {
   className?: string;
 }
 
-
 const BinaryQuestion: React.FC<BinaryQuestionProps> = ({
   question,
   onVote,
@@ -27,23 +26,21 @@ const BinaryQuestion: React.FC<BinaryQuestionProps> = ({
       <div className="space-y-2">
         <h2 className="text-2xl font-bold text-off-black">{question.title}</h2>
         {question.description && (
-          <p className="text-warm-gray text-sm leading-relaxed">
-            {question.description}
-          </p>
+          <p className="text-sm leading-relaxed text-warm-gray">{question.description}</p>
         )}
       </div>
-      
+
       <div className="space-y-4">
         {question.options?.map((option) => (
           <button
             key={option.id}
             onClick={() => onVote({ selectedOption: option.id })}
             disabled={disabled}
-            className="w-full bg-off-white border-2 border-light-gray hover:border-primary p-4 text-left rounded-lg transition-colors disabled:opacity-50"
+            className="w-full rounded-lg border-2 border-light-gray bg-off-white p-4 text-left transition-colors hover:border-primary disabled:opacity-50"
           >
             <div className="font-semibold text-off-black">{option.text}</div>
             {option.description && (
-              <div className="text-warm-gray text-sm mt-1">{option.description}</div>
+              <div className="mt-1 text-sm text-warm-gray">{option.description}</div>
             )}
           </button>
         ))}
@@ -58,16 +55,10 @@ const UnsupportedQuestionType: React.FC<{ type: string; className?: string }> = 
 }) => {
   return (
     <div className={`space-y-6 ${className}`}>
-      <div className="bg-red-50 border-2 border-red-200 p-6 rounded-lg">
-        <h2 className="text-xl font-bold text-red-800 mb-2">
-          Unsupported Question Type
-        </h2>
-        <p className="text-red-600">
-          Question type &quot;{type}&quot; is not supported yet.
-        </p>
-        <p className="text-red-600 text-sm mt-2">
-          Please contact support if you see this message.
-        </p>
+      <div className="rounded-lg border-2 border-red-200 bg-red-50 p-6">
+        <h2 className="mb-2 text-xl font-bold text-red-800">Unsupported Question Type</h2>
+        <p className="text-red-600">Question type &quot;{type}&quot; is not supported yet.</p>
+        <p className="mt-2 text-sm text-red-600">Please contact support if you see this message.</p>
       </div>
     </div>
   );
@@ -75,7 +66,7 @@ const UnsupportedQuestionType: React.FC<{ type: string; className?: string }> = 
 
 export interface QuestionRendererProps {
   question: ProcessedQuestion;
-  onVote: (responseData: any) => void;
+  onVote: (responseData: Record<string, unknown>) => void;
   currentIndex: number;
   totalQuestions: number;
   disabled?: boolean;
@@ -85,22 +76,35 @@ export interface QuestionRendererProps {
 export function QuestionRenderer({
   question,
   onVote,
-  currentIndex,
-  totalQuestions,
+  currentIndex: _currentIndex,
+  totalQuestions: _totalQuestions,
   disabled = false,
   className = "",
 }: QuestionRendererProps) {
-  // Determine question type from question structure
-  const questionType = question.content?.type || 'binary';
+  // State to track selected values for each question type
+  const [selectedValue, setSelectedValue] = useState<string | number | string[] | null>(null);
 
-  console.log('QuestionRenderer:', {
-    questionType,
-    questionId: question.id,
-    currentIndex,
-    totalQuestions,
-    hasOptions: !!question.options,
-    optionsCount: question.options?.length,
-  });
+  // Determine question type from question structure
+  const questionType = question.content?.type || "binary";
+
+  // Handler that updates local state and calls parent onVote
+  const handleSelection = (responseData: Record<string, unknown>) => {
+    // Update local state for visual feedback
+    if (responseData.selectedOption) {
+      setSelectedValue(responseData.selectedOption);
+    } else if (responseData.selectedOptions) {
+      setSelectedValue(responseData.selectedOptions);
+    } else if (responseData.rating) {
+      setSelectedValue(responseData.rating);
+    } else if (responseData.textResponse) {
+      setSelectedValue(responseData.textResponse);
+    } else if (responseData.ranking) {
+      setSelectedValue(responseData.ranking);
+    }
+
+    // Call parent callback
+    onVote(responseData);
+  };
 
   const commonProps = {
     question,
@@ -109,85 +113,78 @@ export function QuestionRenderer({
   };
 
   switch (questionType) {
-    case 'binary':
-      return (
-        <BinaryQuestion
-          {...commonProps}
-          onVote={(data) => onVote(data)}
-        />
-      );
+    case "binary":
+      return <BinaryQuestion {...commonProps} onVote={(data) => handleSelection(data)} />;
 
-    case 'multi-choice':
+    case "multi-choice":
       return (
         <MultiChoiceQuestion
           question={question.title}
           description={question.description}
           options={question.options || []}
           maxSelections={question.content?.maxSelections || 3}
-          onChange={(selectedOptions) => onVote({ selectedOptions })}
+          onChange={(selectedOptions) => handleSelection({ selectedOptions })}
           disabled={disabled}
           className={className}
         />
       );
 
-    case 'rating-scale':
+    case "rating-scale":
       return (
         <RatingQuestion
           question={question.title}
           description={question.description}
           scale={question.content?.scale || 10}
-          variant={question.content?.variant || 'numbers'}
-          onChange={(rating) => onVote({ rating, maxRating: question.content?.scale || 10 })}
+          variant={question.content?.variant || "numbers"}
+          onChange={(rating) =>
+            handleSelection({ rating, maxRating: question.content?.scale || 10 })
+          }
           disabled={disabled}
           className={className}
         />
       );
 
-    case 'text-response':
+    case "text-response":
       return (
         <TextQuestion
           question={question.title}
           description={question.description}
           maxLength={question.content?.maxLength || 500}
-          placeholder={question.content?.placeholder || 'Enter your response...'}
-          onChange={(textResponse) => onVote({ textResponse })}
+          placeholder={question.content?.placeholder || "Enter your response..."}
+          onChange={(textResponse) => handleSelection({ textResponse })}
           disabled={disabled}
           className={className}
         />
       );
 
-    case 'ranking':
+    case "ranking":
       return (
         <RankingQuestion
           question={question.title}
           description={question.description}
           items={question.content?.items || []}
-          onChange={(ranking) => onVote({ ranking })}
+          onChange={(ranking) => handleSelection({ ranking })}
           disabled={disabled}
           className={className}
         />
       );
 
-    case 'ab-test':
+    case "ab-test":
       return (
         <ABTestQuestion
           question={question.title}
           description={question.description}
           optionA={question.content?.optionA}
           optionB={question.content?.optionB}
-          onChange={(selectedOption) => onVote({ selectedOption })}
+          value={selectedValue as string}
+          onChange={(selectedOption) => handleSelection({ selectedOption })}
           disabled={disabled}
           className={className}
         />
       );
 
     default:
-      return (
-        <UnsupportedQuestionType
-          type={questionType}
-          className={className}
-        />
-      );
+      return <UnsupportedQuestionType type={questionType} className={className} />;
   }
 }
 

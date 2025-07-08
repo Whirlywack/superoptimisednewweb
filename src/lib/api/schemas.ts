@@ -2,7 +2,7 @@ import { z } from "zod";
 
 // Question schemas
 export const getQuestionByIdSchema = z.object({
-  id: z.string().cuid(),
+  id: z.string().min(1), // Changed from .cuid() to .min(1) to match database format
 });
 
 export const getActiveQuestionsSchema = z.object({
@@ -11,12 +11,12 @@ export const getActiveQuestionsSchema = z.object({
 });
 
 export const getQuestionResultsSchema = z.object({
-  questionId: z.string().cuid(),
+  questionId: z.string().min(1), // Changed from .cuid() to .min(1) to match database format
 });
 
 // Vote schemas
 export const submitVoteSchema = z.object({
-  questionId: z.string().cuid(),
+  questionId: z.string().min(1), // Changed from .cuid() to .min(1) to match database format
   response: z.union([
     z.string(), // For binary choices, text responses
     z.number(), // For rating scales
@@ -26,7 +26,7 @@ export const submitVoteSchema = z.object({
 });
 
 export const getVoteStatsSchema = z.object({
-  questionId: z.string().cuid(),
+  questionId: z.string().min(1), // Changed from .cuid() to .min(1) to match database format
 });
 
 // Content schemas
@@ -36,7 +36,7 @@ export const getContentBlocksSchema = z.object({
 });
 
 export const updateContentBlockSchema = z.object({
-  id: z.string().cuid(),
+  id: z.string().min(1), // Changed from .cuid() to .min(1) to match database format
   content: z.string(),
 });
 
@@ -61,7 +61,7 @@ export const claimXpSchema = z.object({
 });
 
 export const getEngagementStatsSchema = z.object({
-  voterTokenId: z.string().cuid().optional(),
+  voterTokenId: z.string().min(1).optional(), // Changed from .cuid() to .min(1) to match database format
   includeMilestones: z.boolean().optional(),
 });
 
@@ -88,7 +88,7 @@ export const createQuestionSchema = z.object({
 });
 
 export const updateQuestionSchema = z.object({
-  id: z.string().cuid(),
+  id: z.string().min(1), // Changed from .cuid() to .min(1) to match database format
   title: z.string().min(1).max(500).optional(),
   description: z.string().optional(),
   questionData: z.record(z.unknown()).optional(),
@@ -100,7 +100,7 @@ export const updateQuestionSchema = z.object({
 });
 
 export const deleteQuestionSchema = z.object({
-  id: z.string().cuid(),
+  id: z.string().min(1), // Changed from .cuid() to .min(1) to match database format
 });
 
 // Blog post schemas
@@ -129,7 +129,7 @@ export const createBlogPostSchema = z.object({
 });
 
 export const updateBlogPostSchema = z.object({
-  id: z.string().cuid(),
+  id: z.string().min(1), // Changed from .cuid() to .min(1) to match database format
   slug: z.string().min(1).max(200).optional(),
   title: z.string().min(1).max(500).optional(),
   excerpt: z.string().optional(),
@@ -141,7 +141,7 @@ export const updateBlogPostSchema = z.object({
 });
 
 export const deleteBlogPostSchema = z.object({
-  id: z.string().cuid(),
+  id: z.string().min(1), // Changed from .cuid() to .min(1) to match database format
 });
 
 // Response type helpers

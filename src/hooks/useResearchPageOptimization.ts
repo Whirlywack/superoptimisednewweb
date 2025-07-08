@@ -14,9 +14,9 @@ export interface ProcessedQuestion {
     variant?: string;
     maxLength?: number;
     placeholder?: string;
-    items?: any[];
-    optionA?: any;
-    optionB?: any;
+    items?: Record<string, unknown>[];
+    optionA?: Record<string, unknown>;
+    optionB?: Record<string, unknown>;
   };
   options?: {
     id: string;
@@ -32,7 +32,7 @@ export interface DatabaseQuestion {
   questionType: string;
   questionData: {
     type?: string;
-    options?: any[];
+    options?: Record<string, unknown>[];
     optionLabels?: Record<string, string>;
     optionDescriptions?: Record<string, string>;
     maxSelections?: number;
@@ -40,9 +40,9 @@ export interface DatabaseQuestion {
     variant?: string;
     maxLength?: number;
     placeholder?: string;
-    items?: any[];
-    optionA?: any;
-    optionB?: any;
+    items?: Record<string, unknown>[];
+    optionA?: Record<string, unknown>;
+    optionB?: Record<string, unknown>;
   };
   category: string | null;
   responseCount: number;
@@ -73,7 +73,7 @@ export function useResearchPageOptimization() {
 
     const { questionData, questionType } = dbQuestion;
     const questionDataType = questionData?.type || questionType || "binary";
-    
+
     const processed: ProcessedQuestion = {
       id: dbQuestion.id,
       title: dbQuestion.title,
@@ -91,8 +91,8 @@ export function useResearchPageOptimization() {
         const options = questionData?.options || [];
         const optionLabels = questionData?.optionLabels || {};
         const optionDescriptions = questionData?.optionDescriptions || {};
-        
-        processed.options = options.map((option: any) => {
+
+        processed.options = options.map((option: Record<string, unknown> | string) => {
           // Handle both string arrays and object arrays
           if (typeof option === "string") {
             return {
@@ -128,6 +128,19 @@ export function useResearchPageOptimization() {
       case "ab-test":
         processed.content.optionA = questionData?.optionA;
         processed.content.optionB = questionData?.optionB;
+        // Create options array for compatibility with optimistic updates
+        processed.options = [
+          {
+            id: questionData?.optionA?.id || "variant_a",
+            text: questionData?.optionA?.title || "Option A",
+            description: questionData?.optionA?.description,
+          },
+          {
+            id: questionData?.optionB?.id || "variant_b",
+            text: questionData?.optionB?.title || "Option B",
+            description: questionData?.optionB?.description,
+          },
+        ];
         break;
 
       default:

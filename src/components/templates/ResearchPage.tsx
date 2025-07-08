@@ -9,10 +9,7 @@ import { useQuestionStats } from "@/hooks/useQuestionStats";
 import { useResearchPageOptimization } from "@/hooks/useResearchPageOptimization";
 import { ResearchErrorBoundary } from "@/components/ui/ResearchErrorBoundary";
 import { useAdvancedFeedback } from "@/hooks/useAdvancedFeedback";
-import {
-  AnimatedCounter,
-  SlideIn,
-} from "@/components/ui/EnhancedLoadingStates";
+import { AnimatedCounter, SlideIn } from "@/components/ui/EnhancedLoadingStates";
 import { useAccessibility } from "@/hooks/useAccessibility";
 import { QuestionRenderer } from "./QuestionRenderer";
 
@@ -81,50 +78,53 @@ function SingleQuestion({
     if (isVoting(question.id)) return; // Prevent double voting
 
     // Handle different response formats for optimistic updates
-    const questionType = question.content?.type || 'binary';
+    const questionType = question.content?.type || "binary";
     let optimisticUpdateData;
     let screenReaderText = "";
 
     switch (questionType) {
-      case 'binary':
+      case "binary":
         optimisticUpdateData = responseData.selectedOption;
-        const optionText = question.options?.find((opt) => opt.id === responseData.selectedOption)?.text;
+        const optionText = question.options?.find(
+          (opt) => opt.id === responseData.selectedOption
+        )?.text;
         screenReaderText = `Vote submitted for: ${optionText}`;
         break;
-      case 'multi-choice':
+      case "multi-choice":
         optimisticUpdateData = responseData.selectedOptions[0]; // Use first selection for optimistic update
         screenReaderText = `Vote submitted for ${responseData.selectedOptions.length} options`;
         break;
-      case 'rating-scale':
+      case "rating-scale":
         optimisticUpdateData = `rating-${responseData.rating}`;
         screenReaderText = `Rating of ${responseData.rating} out of ${responseData.maxRating} submitted`;
         break;
-      case 'text-response':
-        optimisticUpdateData = 'text-response';
+      case "text-response":
+        optimisticUpdateData = "text-response";
         screenReaderText = `Text response submitted`;
         break;
-      case 'ranking':
-        optimisticUpdateData = 'ranking-response';
+      case "ranking":
+        optimisticUpdateData = "ranking-response";
         screenReaderText = `Ranking response submitted`;
         break;
-      case 'ab-test':
+      case "ab-test":
         optimisticUpdateData = responseData.selectedOption;
         screenReaderText = `A/B test choice submitted`;
         break;
       default:
-        optimisticUpdateData = 'unknown-response';
+        optimisticUpdateData = "unknown-response";
         screenReaderText = `Response submitted`;
     }
 
     setShowResults(true);
 
     // Apply optimistic update for immediate feedback (for compatible question types)
-    if (questionType === 'binary' || questionType === 'multi-choice') {
+    if (questionType === "binary" || questionType === "multi-choice") {
       applyOptimisticUpdate(optimisticUpdateData);
     }
 
     try {
-      // Submit vote to database with response data
+      // Submit vote to database with the properly formatted response
+      // The server expects the raw response data, not the wrapper object
       await submitVote(question.id, responseData);
 
       // Announce to screen readers
@@ -158,12 +158,11 @@ function SingleQuestion({
       // Reset state on error
       setShowResults(false);
       // Reset optimistic updates if they were applied
-      if (questionType === 'binary' || questionType === 'multi-choice') {
+      if (questionType === "binary" || questionType === "multi-choice") {
         // The useQuestionStats hook should handle automatic cleanup of failed optimistic updates
       }
     }
   };
-
 
   return (
     <div className="flex min-h-screen flex-col bg-off-white">
