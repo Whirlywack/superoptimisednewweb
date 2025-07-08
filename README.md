@@ -9,6 +9,7 @@ Welcome to the **Superoptimised Next.js AI Starter** documentation hub. This fil
 **Phase 3 Complete**: Frontend Integration & localStorage Migration
 **Phase 4 Complete**: XP System & Engagement Tracking with Email Claiming
 **Phase 5 Complete**: Content Management System with Dynamic Content Blocks, Milestone Timeline Integration & SEO Optimization
+**Phase 7 Complete**: Newsletter System Integration with Double Opt-in, Real-time Stats & Email Automation
 **Research Page Refactor Complete**: Production-ready research voting system with advanced features (Phases 1-3 + performance optimizations)
 
 ✅ **Anonymous Voting System**
@@ -104,6 +105,16 @@ Welcome to the **Superoptimised Next.js AI Starter** documentation hub. This fil
 - **Immediate Progression**: Users can proceed to next question while XP calculates in background
 - **Smart Reconciliation**: Completion page shows accurate totals with real-time updates
 - **Horizontal Loading Animation**: Clean, linear loading design replacing circular dots
+
+✅ **Phase 7: Newsletter System Integration (NEW)**
+
+- **Double Opt-in Flow**: Secure email verification with token-based confirmation
+- **Real-time Subscriber Stats**: Live newsletter subscriber counts across all pages
+- **Multi-variant Components**: Flexible signup forms (card, inline, banner) with source tracking
+- **Email Automation**: Automated confirmation emails with professional HTML templates
+- **XP Integration**: Newsletter signups award 5 XP with toast notifications
+- **Advanced Analytics**: Daily analytics tracking and source attribution
+- **Error Handling**: Comprehensive validation, duplicate prevention, and user feedback
 
 ---
 
@@ -566,6 +577,503 @@ await rollbackContentToVersion(
 
 ---
 
+## 📧 Phase 7: Newsletter System Integration
+
+### Architecture Overview
+
+The newsletter system implements a secure, scalable email subscription service with double opt-in verification, real-time statistics, and comprehensive analytics. Built on tRPC with Prisma ORM and Resend email service.
+
+### Database Schema
+
+```typescript
+model NewsletterSubscriber {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  name              String?
+  sourcePage        String?   // Track signup source (homepage, journey, etc.)
+  preferences       Json      @default("{}")
+  status            String    @default("pending") // pending, confirmed, unsubscribed
+  verificationToken String?
+  confirmedAt       DateTime?
+  unsubscribedAt    DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+// Live statistics integration
+model LiveStat {
+  statKey     String   @unique // newsletter_subscribers
+  statValue   Int      // Real-time count
+  lastUpdated DateTime @default(now())
+}
+
+// Daily analytics tracking
+model AnalyticsDaily {
+  date              DateTime @unique @db.Date
+  newsletterSignups Int      @default(0)
+  // ... other analytics fields
+}
+```
+
+### API Endpoints
+
+**Newsletter Router (`/api/trpc/newsletter`):**
+
+```typescript
+// Subscribe to newsletter
+api.newsletter.subscribe.useMutation({
+  email: "user@example.com",
+  name: "John Doe",
+  sourcePage: "homepage",
+  preferences: { weeklyUpdates: true, announcements: true },
+});
+
+// Confirm subscription via email token
+api.newsletter.confirm.useMutation({
+  token: "verification-token-from-email",
+});
+
+// Unsubscribe from newsletter
+api.newsletter.unsubscribe.useMutation({
+  email: "user@example.com",
+});
+
+// Get newsletter statistics
+api.newsletter.getStats.useQuery(); // Returns subscriber counts and sources
+
+// Update subscription preferences
+api.newsletter.updatePreferences.useMutation({
+  email: "user@example.com",
+  preferences: { weeklyUpdates: false },
+});
+```
+
+### Component Architecture
+
+**1. NewsletterSignup Component (`/src/components/molecules/NewsletterSignup.tsx`)**
+
+Multi-variant signup form with three display modes:
+
+```typescript
+// Card variant - standalone signup card
+<NewsletterSignup
+  variant="card"
+  title="Stay Updated"
+  description="Get weekly building insights"
+  sourcePage="homepage"
+/>
+
+// Inline variant - compact horizontal form
+<NewsletterSignup
+  variant="inline"
+  placeholder="your@email.com"
+  buttonText="Subscribe"
+  sourcePage="sidebar"
+/>
+
+// Banner variant - prominent call-to-action
+<NewsletterSignup
+  variant="banner"
+  title="Join 100+ Builders"
+  showIcon={true}
+  sourcePage="journey"
+/>
+```
+
+**Features:**
+
+- Real-time form validation with error handling
+- Loading states with button disable
+- Success state with confirmation message
+- tRPC integration with automatic error handling
+- Responsive design across all variants
+- Source tracking for analytics
+
+**2. NewsletterSection Component (`/src/components/templates/Homepage/NewsletterSection.tsx`)**
+
+Homepage-specific newsletter section with:
+
+```typescript
+// Real-time subscriber count
+const { data: stats } = api.newsletter.getStats.useQuery();
+const builderCount = stats?.confirmedSubscribers || 0;
+
+// XP integration
+const { showXPToast } = useContext(XPToastContext);
+
+// Success handling with XP reward
+onSuccess: () => {
+  showXPToast("+5 XP • Newsletter signup!");
+  setIsSubscribed(true);
+};
+```
+
+**3. MidNewsletterCTA Component (`/src/components/templates/JourneyPage/MidNewsletterCTA.tsx`)**
+
+Journey page mid-content newsletter signup with contextual messaging about decision updates.
+
+**4. Newsletter Confirmation Page (`/src/app/newsletter/confirm/page.tsx`)**
+
+Dedicated confirmation page handling:
+
+```typescript
+// Token verification flow
+const confirmMutation = api.newsletter.confirm.useMutation({
+  onSuccess: (data) => {
+    setConfirmationState("success");
+    setEmail(data.email);
+  },
+  onError: (error) => {
+    setConfirmationState("error");
+    setErrorMessage(error.message);
+  },
+});
+
+// URL token parsing
+const token = useSearchParams().get("token");
+useEffect(() => {
+  if (token) {
+    confirmMutation.mutate({ token });
+  }
+}, [token]);
+```
+
+### Email System Integration
+
+**Confirmation Email Template:**
+
+```typescript
+// Automated email sending
+async function sendConfirmationEmail(email: string, name: string, token: string) {
+  const confirmationUrl = `${process.env.SITE_URL}/newsletter/confirm?token=${token}`;
+
+  await sendEmail({
+    to: email,
+    subject: "Confirm your newsletter subscription",
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Confirm Your Newsletter Subscription</h2>
+        <p>Hi ${name || "there"}!</p>
+        <p>Thank you for subscribing to our newsletter.</p>
+        
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${confirmationUrl}" 
+             style="background-color: #007bff; color: white; padding: 12px 24px; 
+                    text-decoration: none; border-radius: 5px; display: inline-block;">
+            Confirm Subscription
+          </a>
+        </div>
+        
+        <p>If you didn't subscribe, you can safely ignore this email.</p>
+      </div>
+    `,
+  });
+}
+```
+
+**Email Features:**
+
+- Professional HTML templates with responsive design
+- Branded styling consistent with site design
+- Secure token-based verification links
+- Fallback text for accessibility
+- Unsubscribe link in footer
+- Error handling for failed sends
+
+### Real-time Statistics Integration
+
+**Live Stats Updates:**
+
+```typescript
+// Newsletter subscriber count updates
+async function updateNewsletterStats() {
+  const confirmedCount = await prisma.newsletterSubscriber.count({
+    where: { status: "confirmed" },
+  });
+
+  await prisma.liveStat.upsert({
+    where: { statKey: "newsletter_subscribers" },
+    update: {
+      statValue: confirmedCount,
+      lastUpdated: new Date(),
+    },
+    create: {
+      statKey: "newsletter_subscribers",
+      statValue: confirmedCount,
+      lastUpdated: new Date(),
+    },
+  });
+}
+```
+
+**Community Stats Integration:**
+
+```typescript
+// Real-time newsletter subscriber count display
+export function useCommunityStats() {
+  const { data } = api.content.getCommunityStats.useQuery();
+
+  return {
+    newsletterSubscribers: data?.newsletterSubscribers || 0,
+    // ... other stats
+  };
+}
+```
+
+### Analytics & Tracking
+
+**Daily Analytics:**
+
+```typescript
+// Track newsletter signups per day
+async function updateDailyAnalytics() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  await prisma.analyticsDaily.upsert({
+    where: { date: today },
+    update: {
+      newsletterSignups: { increment: 1 },
+    },
+    create: {
+      date: today,
+      newsletterSignups: 1,
+    },
+  });
+}
+```
+
+**Source Attribution:**
+
+```typescript
+// Newsletter signup sources tracking
+const signupSources = await prisma.newsletterSubscriber.groupBy({
+  by: ["sourcePage"],
+  _count: { id: true },
+  where: { status: "confirmed" },
+});
+
+// Returns: [
+//   { source: "homepage", count: 45 },
+//   { source: "journey", count: 23 },
+//   { source: "about", count: 12 }
+// ]
+```
+
+### Error Handling & Validation
+
+**Input Validation:**
+
+```typescript
+// Zod schema validation
+const subscribeSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  name: z.string().optional(),
+  sourcePage: z.string().optional(),
+  preferences: z.record(z.boolean()).optional(),
+});
+```
+
+**Error States:**
+
+```typescript
+// Comprehensive error handling
+try {
+  await subscribeMutation.mutateAsync({ email, sourcePage });
+} catch (error) {
+  if (error.code === "CONFLICT") {
+    setError("Email is already subscribed");
+  } else if (error.code === "INTERNAL_SERVER_ERROR") {
+    setError("Something went wrong. Please try again.");
+  } else {
+    setError(error.message);
+  }
+}
+```
+
+**Duplicate Prevention:**
+
+```typescript
+// Check for existing subscriptions
+const existingSubscriber = await prisma.newsletterSubscriber.findUnique({
+  where: { email },
+});
+
+if (existingSubscriber?.status === "confirmed") {
+  throw new TRPCError({
+    code: "CONFLICT",
+    message: "Email is already subscribed to newsletter",
+  });
+}
+```
+
+### Testing & Verification
+
+**Manual Testing Steps:**
+
+1. **Subscription Flow:**
+
+   ```bash
+   # Test newsletter signup
+   1. Navigate to homepage
+   2. Enter email in newsletter form
+   3. Click "Subscribe"
+   4. Verify success message shows
+   5. Check email for confirmation link
+   6. Click confirmation link
+   7. Verify confirmation page shows success
+   ```
+
+2. **Real-time Stats:**
+
+   ```bash
+   # Verify subscriber count updates
+   1. Note current subscriber count on homepage
+   2. Complete newsletter signup and confirmation
+   3. Refresh homepage - count should increment by 1
+   4. Check /about page - same count should display
+   ```
+
+3. **Error Handling:**
+
+   ```bash
+   # Test duplicate prevention
+   1. Subscribe with email address
+   2. Try to subscribe again with same email
+   3. Should show "Email is already subscribed" error
+   ```
+
+**API Testing:**
+
+```typescript
+// Test newsletter endpoints
+describe("Newsletter API", () => {
+  it("should create pending subscription", async () => {
+    const result = await caller.newsletter.subscribe({
+      email: "test@example.com",
+      name: "Test User",
+      sourcePage: "homepage",
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.message).toBe("Confirmation email sent");
+  });
+
+  it("should confirm subscription with valid token", async () => {
+    const result = await caller.newsletter.confirm({
+      token: "valid-token-123",
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.message).toBe("Newsletter subscription confirmed");
+  });
+});
+```
+
+### Performance Considerations
+
+**Caching Strategy:**
+
+```typescript
+// Newsletter stats caching
+api.newsletter.getStats.useQuery(undefined, {
+  staleTime: 30 * 1000, // 30 seconds
+  cacheTime: 2 * 60 * 1000, // 2 minutes
+  refetchInterval: 60 * 1000, // Refresh every minute
+});
+```
+
+**Database Optimization:**
+
+```sql
+-- Database indexes for performance
+CREATE INDEX idx_newsletter_subscribers_email ON newsletter_subscribers(email);
+CREATE INDEX idx_newsletter_subscribers_status ON newsletter_subscribers(status);
+CREATE INDEX idx_newsletter_subscribers_source ON newsletter_subscribers(source_page);
+CREATE INDEX idx_newsletter_subscribers_created ON newsletter_subscribers(created_at);
+```
+
+### Usage Examples
+
+**Homepage Integration:**
+
+```typescript
+// Newsletter section with real-time stats
+export function NewsletterSection() {
+  const { data: stats } = api.newsletter.getStats.useQuery();
+  const subscriberCount = stats?.confirmedSubscribers || 0;
+
+  return (
+    <section>
+      <h2>Join {subscriberCount} Builders</h2>
+      <NewsletterSignup
+        sourcePage="homepage"
+        variant="card"
+        title="Stay Updated"
+        description="Get weekly building insights"
+      />
+    </section>
+  );
+}
+```
+
+**Journey Page CTA:**
+
+```typescript
+// Mid-content newsletter signup
+export function MidNewsletterCTA() {
+  return (
+    <NewsletterSignup
+      sourcePage="journey"
+      variant="banner"
+      title="Don't Miss the Next Decision"
+      description="Major technical choices happen weekly"
+      buttonText="Get Weekly Updates"
+    />
+  );
+}
+```
+
+**Sidebar Newsletter:**
+
+```typescript
+// Compact inline newsletter form
+export function SidebarNewsletter() {
+  return (
+    <NewsletterSignup
+      sourcePage="sidebar"
+      variant="inline"
+      placeholder="your@email.com"
+      buttonText="Subscribe"
+      showIcon={false}
+    />
+  );
+}
+```
+
+### Security Considerations
+
+**Token Security:**
+
+- Cryptographically secure token generation using `crypto.randomBytes(32)`
+- Tokens expire after single use (set to null after confirmation)
+- No sensitive data in email URLs
+
+**Email Validation:**
+
+- Server-side email format validation
+- Duplicate subscription prevention
+- Rate limiting on subscription attempts
+
+**Data Privacy:**
+
+- Optional name collection
+- Granular subscription preferences
+- Easy unsubscribe process
+- No tracking pixels in emails
+
+---
+
 ## 🏗️ Tech-Stack Snapshot
 
 - **Framework:** Next.js 15.3.4 (App Router, React 19, Turbopack)
@@ -629,10 +1137,12 @@ Once running, you can test the full interactive voting and data system:
 **Progress Bar Testing:**
 
 1. Insert project stats into database to see progress bar update:
+
    ```sql
    INSERT INTO project_stats (stat_key, stat_value, description)
    VALUES ('project_completion_percentage', '50', 'Halfway milestone reached');
    ```
+
 2. Refresh page to see progress bar width change to 50%
 3. Update current phase description to see text change
 
@@ -652,7 +1162,7 @@ Once running, you can test the full interactive voting and data system:
 
 ## 📂 Directory Overview
 
-```
+```plaintext
 app/               → Next.js routes (App Router)
   ├─ api/claim-xp/ → XP claiming API route
   └─ claim-xp/     → XP claim success/error pages
