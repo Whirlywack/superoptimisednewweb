@@ -24,7 +24,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
 
   if (!isAdmin) {
     // Redirect to unauthorized page or home with error
-    redirect("/admin/unauthorized");
+    redirect("/unauthorized");
   }
 
   return (
