@@ -2,6 +2,87 @@
 
 Welcome to the **Superoptimised Next.js AI Starter** documentation hub. This file links out to the living documents inside the `docs` folder and gives newcomers a bird’s-eye view of what each document contains.
 
+## 🔧 Environment Variables
+
+Create a `.env.local` file in the root directory with the following variables:
+
+```bash
+# Database
+DATABASE_URL="postgresql://username:password@localhost:5432/superoptimised"
+DIRECT_URL="postgresql://username:password@localhost:5432/superoptimised"
+
+# NextAuth
+NEXTAUTH_SECRET="your-secret-key-here"
+NEXTAUTH_URL="http://localhost:3000"
+
+# Email Service (Resend)
+RESEND_API_KEY="your-resend-api-key"
+EMAIL_FROM="noreply@yourdomain.com"
+
+# AI Services (Optional)
+OPENAI_API_KEY="your-openai-key"
+GOOGLE_AI_KEY="your-gemini-key"
+GROQ_API_KEY="your-groq-key"
+
+# Supabase (for real-time features)
+NEXT_PUBLIC_SUPABASE_URL="your-supabase-url"
+NEXT_PUBLIC_SUPABASE_ANON_KEY="your-supabase-anon-key"
+
+# Site Configuration
+SITE_URL="http://localhost:3000"
+NEXT_PUBLIC_BASE_URL="http://localhost:3000"
+```
+
+## 🧪 Testing
+
+**Run all tests:**
+
+```bash
+npm test
+```
+
+**Run specific test types:**
+
+```bash
+# Unit tests
+npm run test:unit
+
+# Integration tests
+npm run test:integration
+
+# E2E tests
+npm run test:e2e
+
+# Watch mode for development
+npm run test:watch
+```
+
+**Test coverage:**
+
+```bash
+npm run test:coverage
+```
+
+**Testing the newsletter system:**
+
+```bash
+# Run newsletter API tests
+npm run test src/lib/api/routers/newsletterRouter.test.ts
+
+# Test newsletter components
+npm run test src/components/molecules/NewsletterSignup.test.tsx
+```
+
+**Testing Phase 6 advanced question types:**
+
+```bash
+# Test all question types
+npm run test scripts/test-*.ts
+
+# Test specific question type
+npm run test scripts/test-research-page.ts
+```
+
 ## 🎯 Interactive Database Features
 
 **Phase 1 Complete**: Core tRPC API foundation with anonymous voting system
