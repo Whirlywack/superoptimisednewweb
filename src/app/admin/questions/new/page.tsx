@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { api } from "@/lib/trpc/client";
 
 /**
  * Admin New Question Form
@@ -78,6 +79,17 @@ export default function NewQuestionPage() {
 
   const [isCreating, setIsCreating] = useState(false);
 
+  const createQuestionMutation = api.admin.createQuestion.useMutation({
+    onSuccess: (data) => {
+      console.log("Question created successfully:", data);
+      router.push("/admin/questions");
+    },
+    onError: (error) => {
+      console.error("Failed to create question:", error);
+      setIsCreating(false);
+    },
+  });
+
   // Configure question-specific options based on type
   const updateQuestionConfig = (type: QuestionType) => {
     let defaultConfig: QuestionConfig;
@@ -140,16 +152,18 @@ export default function NewQuestionPage() {
     setIsCreating(true);
 
     try {
-      // This will need to be implemented in the admin router
-      console.log("Creating question:", formData);
-
-      // For now, simulate creation
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      router.push("/admin/questions");
+      await createQuestionMutation.mutateAsync({
+        title: formData.title,
+        description: formData.description || "",
+        questionType: formData.questionType,
+        config: formData.config,
+        category: formData.category,
+        isActive: formData.isActive,
+        displayOrder: 0,
+      });
     } catch (error) {
+      // Error is handled in the mutation's onError callback
       console.error("Failed to create question:", error);
-    } finally {
       setIsCreating(false);
     }
   };
