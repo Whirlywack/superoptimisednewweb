@@ -603,15 +603,18 @@ Stay tuned for the full launch!`,
   console.log("\n👤 Creating admin users...");
 
   // Create admin user accounts for development
+  // Admin email is configurable via environment variable
+  const adminEmail = process.env.ADMIN_EMAIL || "admin@superoptimised.com";
+
   const adminUsers = [
     {
-      email: "admin@superoptimised.com",
+      email: adminEmail,
       name: "Admin User",
       role: "admin" as const,
       isAdmin: true,
     },
     {
-      email: "dev@superoptimised.com",
+      email: "dev@superoptimised.com", // Keep as fallback dev account
       name: "Developer Admin",
       role: "admin" as const,
       isAdmin: true,
