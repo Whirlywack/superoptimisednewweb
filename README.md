@@ -91,6 +91,7 @@ npm run test scripts/test-research-page.ts
 **Phase 4 Complete**: XP System & Engagement Tracking with Email Claiming
 **Phase 5 Complete**: Content Management System with Dynamic Content Blocks, Milestone Timeline Integration & SEO Optimization
 **Phase 7 Complete**: Newsletter System Integration with Double Opt-in, Real-time Stats & Email Automation
+**Phase 8.1 Complete**: Admin Dashboard Authentication & Authorization with Role-based Access Control
 **Research Page Refactor Complete**: Production-ready research voting system with advanced features (Phases 1-3 + performance optimizations)
 
 ✅ **Anonymous Voting System**
@@ -1155,6 +1156,199 @@ export function SidebarNewsletter() {
 
 ---
 
+## 🔐 Phase 8.1: Admin Dashboard System
+
+### Authentication & Authorization
+
+**Secure Admin Access:**
+
+The admin dashboard implements enterprise-grade role-based access control with the following security features:
+
+- **tRPC Admin Middleware**: Server-side role verification with authentication checks
+- **NextAuth Integration**: Leverages existing magic link authentication system
+- **Protected Routes**: All `/admin/*` routes require authentication and admin privileges
+- **Automatic Redirects**: Unauthorized users redirected to sign-in with callback URLs
+
+### Admin User Management
+
+**Development Admin Accounts:**
+
+The database is seeded with admin accounts for development:
+
+```bash
+# Admin accounts created by: npx prisma db seed
+admin@superoptimised.com  # Primary admin account
+dev@superoptimised.com    # Developer admin account
+```
+
+**Role Verification:**
+
+Admin access requires **both** database role and permission flags:
+
+- `User.role = "admin"` **AND** `User.isAdmin = true`
+- Dual verification prevents accidental privilege escalation
+
+### Admin Dashboard Features
+
+**Current Implementation (Phase 8.1):**
+
+```typescript
+// Access the admin dashboard
+http://localhost:3000/admin
+
+// Authentication flow
+1. Unauthenticated → /auth/signin?callbackUrl=/admin
+2. Non-admin user → /admin/unauthorized
+3. Admin user → /admin (dashboard)
+```
+
+**Dashboard Overview:**
+
+- **Statistics Cards**: Total questions, votes, newsletter subscribers, active users
+- **Quick Actions**: Navigate to question management, analytics, content management
+- **System Status**: Real-time operational status indicators
+- **Navigation Header**: Admin context with email display and sign-out
+
+**Security Pages:**
+
+- `/admin/unauthorized` - Clean error page for non-admin users
+- Styled with Elevated Brutalism design system
+- Clear calls-to-action (return home, sign out)
+
+### Testing Admin Access
+
+**Manual Testing Flow:**
+
+1. **Sign in as admin:**
+
+   ```bash
+   # Visit admin dashboard
+   http://localhost:3000/admin
+
+   # You'll be redirected to sign-in
+   # Enter: admin@superoptimised.com
+   # Check email for magic link
+   # Complete sign-in → redirected to /admin
+   ```
+
+2. **Test unauthorized access:**
+
+   ```bash
+   # Sign in with regular email (not admin account)
+   # Visit: http://localhost:3000/admin
+   # Should see: "Access Denied" page
+   ```
+
+3. **Test authentication flow:**
+   ```bash
+   # Visit /admin while not signed in
+   # Should redirect to: /auth/signin?callbackUrl=/admin
+   # After sign-in, should return to /admin
+   ```
+
+### Database Schema
+
+**Admin-related Models:**
+
+```sql
+-- User model with admin fields
+model User {
+  role    UserRole @default(user)  -- "user" | "admin"
+  isAdmin Boolean  @default(false) -- Additional permission flag
+  -- ... other fields
+}
+
+-- Role enumeration
+enum UserRole {
+  user
+  admin
+}
+```
+
+**Admin User Creation:**
+
+```typescript
+// Programmatic admin creation
+await prisma.user.create({
+  data: {
+    email: "admin@example.com",
+    name: "Admin User",
+    role: "admin",
+    isAdmin: true,
+  },
+});
+```
+
+### Architecture Details
+
+**tRPC Admin Procedure:**
+
+```typescript
+// Admin-only tRPC endpoints
+export const adminProcedure = t.procedure
+  .use(loggingMiddleware)
+  .use(adminMiddleware); // Checks role + isAdmin
+
+// Usage in routers
+.mutation(adminProcedure
+  .input(createQuestionSchema)
+  .mutation(async ({ input, ctx }) => {
+    // Only admin users can reach this code
+  }));
+```
+
+**NextAuth Session Enhancement:**
+
+```typescript
+// Session callback includes admin status
+session: {
+  user: {
+    id: string;
+    email: string;
+    role: "admin" | "user";
+    isAdmin: boolean;
+    // ... other fields
+  }
+}
+```
+
+### Future Admin Features (Phase 8.2-8.4)
+
+**Planned Implementations:**
+
+- **Phase 8.2**: Question Management Interface
+  - Create, edit, activate/deactivate questions
+  - Support all question types (binary, multi-choice, rating, text, ranking, A/B test)
+  - Question scheduling and filtering
+
+- **Phase 8.3**: Analytics Dashboard
+  - Real-time voting charts and metrics
+  - Community engagement analytics
+  - CSV export functionality
+
+- **Phase 8.4**: Content Management Interface
+  - Edit content blocks and blog posts
+  - Project stats management
+  - Content preview and publishing workflow
+
+### Security Considerations
+
+**Role-based Security:**
+
+- No client-side role checking (server-side only)
+- Session verification on every admin request
+- Automatic session expiration handling
+- CSRF protection via NextAuth
+
+**Development vs Production:**
+
+- Development: Seeded admin accounts for testing
+- Production: Admin accounts created manually via database
+- Email verification required for all admin sign-ins
+- No default admin passwords (magic link only)
+
+---
+
 ## 🏗️ Tech-Stack Snapshot
 
 - **Framework:** Next.js 15.3.4 (App Router, React 19, Turbopack)
@@ -1214,6 +1408,30 @@ Once running, you can test the full interactive voting and data system:
 2. Verify all statistics are pulling from database (not hardcoded)
 3. Watch progress bar on homepage reflect real project completion
 4. Test stats refresh (30s intervals) and WebSocket real-time updates
+
+**Admin Dashboard Testing:**
+
+1. **Test admin authentication:**
+
+   ```bash
+   # Visit http://localhost:3000/admin
+   # Sign in with: admin@superoptimised.com
+   # Should access admin dashboard successfully
+   ```
+
+2. **Test unauthorized access:**
+
+   ```bash
+   # Sign in with regular email (not admin account)
+   # Visit /admin → should see "Access Denied" page
+   ```
+
+3. **Test admin features:**
+   ```bash
+   # Check statistics cards display "--" (placeholder)
+   # Navigate through quick action links
+   # Test sign-out from admin header
+   ```
 
 **Progress Bar Testing:**
 
