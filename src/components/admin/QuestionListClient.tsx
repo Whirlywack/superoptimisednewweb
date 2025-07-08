@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { api } from "@/lib/trpc/client";
+import { QuestionScheduleModal } from "./QuestionScheduleModal";
 
 interface Question {
   id: string;
@@ -26,6 +27,19 @@ interface QuestionListClientProps {
 export function QuestionListClient({ initialQuestions, userEmail }: QuestionListClientProps) {
   const [questions, setQuestions] = useState(initialQuestions);
   const [isToggling, setIsToggling] = useState<string | null>(null);
+  const [scheduleModal, setScheduleModal] = useState<{
+    isOpen: boolean;
+    questionId: string;
+    questionTitle: string;
+    startDate: Date | null;
+    endDate: Date | null;
+  }>({
+    isOpen: false,
+    questionId: "",
+    questionTitle: "",
+    startDate: null,
+    endDate: null,
+  });
 
   const toggleMutation = api.admin.toggleQuestionStatus.useMutation({
     onMutate: ({ id, isActive }) => {
@@ -53,6 +67,33 @@ export function QuestionListClient({ initialQuestions, userEmail }: QuestionList
   const handleToggleStatus = (questionId: string, currentStatus: boolean) => {
     const newStatus = !currentStatus;
     toggleMutation.mutate({ id: questionId, isActive: newStatus });
+  };
+
+  const handleOpenScheduleModal = (question: Question) => {
+    setScheduleModal({
+      isOpen: true,
+      questionId: question.id,
+      questionTitle: question.title,
+      startDate: question.startDate,
+      endDate: question.endDate,
+    });
+  };
+
+  const handleCloseScheduleModal = () => {
+    setScheduleModal((prev) => ({ ...prev, isOpen: false }));
+  };
+
+  const handleScheduleSuccess = (
+    questionId: string,
+    updatedSchedule: { startDate: Date | null; endDate: Date | null }
+  ) => {
+    setQuestions((prev) =>
+      prev.map((q) =>
+        q.id === questionId
+          ? { ...q, startDate: updatedSchedule.startDate, endDate: updatedSchedule.endDate }
+          : q
+      )
+    );
   };
 
   return (
@@ -188,13 +229,14 @@ export function QuestionListClient({ initialQuestions, userEmail }: QuestionList
             >
               <div className="grid grid-cols-12 gap-4 font-mono text-xs font-bold uppercase tracking-wide text-off-white">
                 <div className="col-span-1">UUID</div>
-                <div className="col-span-3">TITLE_TEXT</div>
-                <div className="col-span-2">Q_TYPE</div>
+                <div className="col-span-2">TITLE_TEXT</div>
+                <div className="col-span-1">Q_TYPE</div>
                 <div className="col-span-1">CATEGORY</div>
                 <div className="col-span-1">STATUS</div>
+                <div className="col-span-1">SCHEDULE</div>
                 <div className="col-span-1">RESP_CNT</div>
                 <div className="col-span-1">CREATED</div>
-                <div className="col-span-2">OPERATIONS</div>
+                <div className="col-span-3">OPERATIONS</div>
               </div>
             </div>
 
@@ -210,7 +252,7 @@ export function QuestionListClient({ initialQuestions, userEmail }: QuestionList
                 <div className="col-span-1 font-mono text-xs text-warm-gray">
                   {question.id.slice(-8)}
                 </div>
-                <div className="col-span-3">
+                <div className="col-span-2">
                   <div
                     className="truncate font-mono text-sm font-bold text-off-black"
                     title={question.title}
@@ -222,11 +264,11 @@ export function QuestionListClient({ initialQuestions, userEmail }: QuestionList
                       className="mt-1 truncate font-mono text-xs text-warm-gray"
                       title={question.description}
                     >
-                      {question.description.slice(0, 50)}...
+                      {question.description.slice(0, 30)}...
                     </div>
                   )}
                 </div>
-                <div className="col-span-2 font-mono text-xs uppercase text-off-black">
+                <div className="col-span-1 font-mono text-xs uppercase text-off-black">
                   {question.questionType.replace("-", "_")}
                 </div>
                 <div className="col-span-1 font-mono text-xs uppercase text-warm-gray">
@@ -241,6 +283,16 @@ export function QuestionListClient({ initialQuestions, userEmail }: QuestionList
                     {question.isActive ? "LIVE" : "STOP"}
                   </span>
                 </div>
+                <div className="col-span-1">
+                  {question.startDate || question.endDate ? (
+                    <div className="font-mono text-xs text-off-black">
+                      <div className="text-green-600">{question.startDate ? "SCHEDULED" : ""}</div>
+                      <div className="text-red-600">{question.endDate ? "EXPIRES" : ""}</div>
+                    </div>
+                  ) : (
+                    <span className="font-mono text-xs text-warm-gray">ALWAYS</span>
+                  )}
+                </div>
                 <div className="col-span-1 font-mono text-xs font-bold text-off-black">
                   {question.responseCount.toString().padStart(3, "0")}
                 </div>
@@ -250,12 +302,19 @@ export function QuestionListClient({ initialQuestions, userEmail }: QuestionList
                     day: "2-digit",
                   })}
                 </div>
-                <div className="col-span-2 flex gap-0">
+                <div className="col-span-3 flex gap-0">
                   <button
                     className="border-2 border-off-black bg-white font-mono text-xs text-off-black transition-all duration-200 hover:bg-off-black hover:text-off-white"
                     style={{ padding: "var(--space-xs) var(--space-sm)" }}
                   >
                     EDIT
+                  </button>
+                  <button
+                    onClick={() => handleOpenScheduleModal(question)}
+                    className="border-2 border-l-0 border-off-black bg-white font-mono text-xs text-off-black transition-all duration-200 hover:bg-primary hover:text-off-white"
+                    style={{ padding: "var(--space-xs) var(--space-sm)" }}
+                  >
+                    SCHEDULE
                   </button>
                   <button
                     onClick={() => handleToggleStatus(question.id, question.isActive)}
@@ -346,6 +405,9 @@ export function QuestionListClient({ initialQuestions, userEmail }: QuestionList
                 configuration
               </div>
               <div>
+                <span className="text-warm-gray">SCHEDULE</span> → Set question start/end dates
+              </div>
+              <div>
                 <span className="text-warm-gray">START/STOP</span> → Toggle question activation
                 state
               </div>
@@ -361,6 +423,19 @@ export function QuestionListClient({ initialQuestions, userEmail }: QuestionList
           </div>
         </div>
       </div>
+
+      {/* Schedule Modal */}
+      <QuestionScheduleModal
+        questionId={scheduleModal.questionId}
+        questionTitle={scheduleModal.questionTitle}
+        currentStartDate={scheduleModal.startDate}
+        currentEndDate={scheduleModal.endDate}
+        isOpen={scheduleModal.isOpen}
+        onClose={handleCloseScheduleModal}
+        onSuccess={(updatedSchedule) => {
+          handleScheduleSuccess(scheduleModal.questionId, updatedSchedule);
+        }}
+      />
     </div>
   );
 }
