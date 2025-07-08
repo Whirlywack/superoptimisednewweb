@@ -3,11 +3,28 @@
 import React, { useState, useContext } from 'react';
 import { cn } from '@/lib/utils';
 import { XPToastContext } from '../Homepage/XPToastProvider';
+import { api } from '@/lib/trpc/react';
 
 export function MidNewsletterCTA() {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [error, setError] = useState('');
   const { showXPToast } = useContext(XPToastContext);
+
+  // Newsletter subscription mutation
+  const subscribeMutation = api.newsletter.subscribe.useMutation({
+    onSuccess: () => {
+      setIsSuccess(true);
+      setEmail('');
+      setError('');
+      showXPToast('+5 XP • Newsletter signup!');
+    },
+    onError: (error) => {
+      setError(error.message);
+      setIsSubmitting(false);
+    },
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -15,19 +32,43 @@ export function MidNewsletterCTA() {
     if (!email || isSubmitting) return;
 
     setIsSubmitting(true);
+    setError('');
 
     try {
-      // Simulate API call - replace with actual newsletter signup
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      setEmail('');
-      showXPToast('newsletter');
+      await subscribeMutation.mutateAsync({
+        email,
+        sourcePage: 'journey',
+      });
     } catch (error) {
+      // Error handling is done in the mutation's onError callback
       console.error('Newsletter signup failed:', error);
-    } finally {
-      setIsSubmitting(false);
     }
   };
+
+  // Success state
+  if (isSuccess) {
+    return (
+      <section className="my-2xl w-full px-4">
+        <div className="mx-auto max-w-4xl">
+          <div 
+            className="rounded-lg border-2 border-green-500 p-lg text-center"
+            style={{ 
+              background: 'rgba(34, 197, 94, 0.05)',
+              margin: '6rem 0'
+            }}
+          >
+            <h3 className="mb-md text-xl font-semibold text-off-black">
+              Check Your Email!
+            </h3>
+            <p className="mx-auto mb-lg max-w-[50ch] text-base leading-relaxed text-warm-gray">
+              We've sent you a confirmation link. Click it to complete your subscription and 
+              stay updated on all the major decisions.
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="my-2xl w-full px-4">
@@ -58,7 +99,8 @@ export function MidNewsletterCTA() {
                 "w-full rounded-sm border-2 border-light-gray px-md py-sm",
                 "bg-white text-base",
                 "focus:border-primary focus:outline-none",
-                "disabled:cursor-not-allowed disabled:opacity-50"
+                "disabled:cursor-not-allowed disabled:opacity-50",
+                error && "border-red-500 focus:border-red-500"
               )}
             />
             <button
@@ -73,6 +115,11 @@ export function MidNewsletterCTA() {
             >
               Get Weekly Updates
             </button>
+            {error && (
+              <div className="text-sm text-red-600 mt-2">
+                {error}
+              </div>
+            )}
           </form>
         </div>
       </div>

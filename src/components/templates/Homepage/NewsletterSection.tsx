@@ -4,13 +4,32 @@ import React, { useState, useContext } from "react";
 import { Mail, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { XPToastContext } from "./XPToastProvider";
+import { api } from "@/lib/trpc/react";
 
 export function NewsletterSection() {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
-  const [builderCount] = useState(0); // This would be fetched from your backend
+  const [error, setError] = useState("");
   const { showXPToast } = useContext(XPToastContext);
+
+  // Get real newsletter subscriber count
+  const { data: stats } = api.newsletter.getStats.useQuery();
+  const builderCount = stats?.confirmedSubscribers || 0;
+
+  // Newsletter subscription mutation
+  const subscribeMutation = api.newsletter.subscribe.useMutation({
+    onSuccess: () => {
+      setIsSubscribed(true);
+      setEmail("");
+      setError("");
+      showXPToast("+5 XP • Newsletter signup!");
+    },
+    onError: (error) => {
+      setError(error.message);
+      setIsSubmitting(false);
+    },
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,18 +37,16 @@ export function NewsletterSection() {
     if (!email || isSubmitting) return;
 
     setIsSubmitting(true);
+    setError("");
 
     try {
-      // Simulate API call - replace with actual newsletter signup
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      setIsSubscribed(true);
-      setEmail("");
-      showXPToast("+25 XP • Newsletter signup!");
+      await subscribeMutation.mutateAsync({
+        email,
+        sourcePage: "homepage",
+      });
     } catch (error) {
+      // Error handling is done in the mutation's onError callback
       console.error("Newsletter signup failed:", error);
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -41,12 +58,12 @@ export function NewsletterSection() {
             <CheckCircle className="size-8 text-primary" />
           </div>
           <h2 className="mb-4 text-xl font-bold text-off-black">
-            Welcome to the Building Journey!
+            Check Your Email!
           </h2>
           <p className="text-body leading-relaxed text-warm-gray">
-            You&apos;re now part of the transparent building process. You&apos;ll receive weekly
-            insights when valuable content is ready, and your early signup helps reach the
-            100-builder goal.
+            We&apos;ve sent you a confirmation email. Please click the link to complete your
+            subscription and join the building journey. You&apos;ll receive weekly insights
+            when valuable content is ready.
           </p>
         </div>
       </section>
@@ -89,7 +106,8 @@ export function NewsletterSection() {
                     "bg-white text-base",
                     "focus:border-primary focus:outline-none",
                     "disabled:cursor-not-allowed disabled:opacity-50",
-                    "h-[44px]"
+                    "h-[44px]",
+                    error && "border-red-500 focus:border-red-500"
                   )}
                 />
               </div>
@@ -109,6 +127,13 @@ export function NewsletterSection() {
               </button>
             </div>
           </form>
+
+          {/* Error Message */}
+          {error && (
+            <div className="mb-md text-sm text-red-600">
+              {error}
+            </div>
+          )}
 
           {/* Meta Text */}
           <p className="text-sm text-warm-gray">

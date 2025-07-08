@@ -5,6 +5,7 @@ import { TextField } from "@/components/ui/Input";
 import { H3, Paragraph } from "@/components/ui/Typography";
 import { LucideIcon } from "@/components/ui/Icon";
 import { Mail, Check } from "lucide-react";
+import { api } from "@/lib/trpc/react";
 
 interface NewsletterSignupProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: "card" | "inline" | "banner";
@@ -15,6 +16,7 @@ interface NewsletterSignupProps extends React.HTMLAttributes<HTMLDivElement> {
   onSubmit?: (email: string) => Promise<void> | void;
   showIcon?: boolean;
   className?: string;
+  sourcePage?: string;
 }
 
 export function NewsletterSignup({
@@ -26,12 +28,27 @@ export function NewsletterSignup({
   onSubmit,
   showIcon = true,
   className,
+  sourcePage = "general",
   ...props
 }: NewsletterSignupProps) {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState("");
+
+  // Newsletter subscription mutation
+  const subscribeMutation = api.newsletter.subscribe.useMutation({
+    onSuccess: () => {
+      setIsSuccess(true);
+      setEmail("");
+      setError("");
+      setIsSubmitting(false);
+    },
+    onError: (error) => {
+      setError(error.message);
+      setIsSubmitting(false);
+    },
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,15 +68,29 @@ export function NewsletterSignup({
     setIsSubmitting(true);
 
     try {
+      // Use custom onSubmit if provided, otherwise use tRPC mutation
       if (onSubmit) {
         await onSubmit(email);
+        setIsSuccess(true);
+        setEmail("");
+      } else {
+        await subscribeMutation.mutateAsync({
+          email,
+          sourcePage,
+        });
+        // Success handling is done in the mutation's onSuccess callback
       }
-      setIsSuccess(true);
-      setEmail("");
     } catch (err) {
-      setError("Something went wrong. Please try again.");
+      if (!onSubmit) {
+        // Error handling is done in the mutation's onError callback
+        console.error("Newsletter signup failed:", err);
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
     } finally {
-      setIsSubmitting(false);
+      if (onSubmit) {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -94,10 +125,10 @@ export function NewsletterSignup({
             />
           </div>
           <H3 className="text-off-black dark:text-off-white">
-            Thanks for subscribing!
+            Check Your Email!
           </H3>
           <Paragraph variant="muted" className="text-center">
-            You'll receive updates on my latest posts and building progress.
+            We've sent you a confirmation link. Click it to complete your subscription.
           </Paragraph>
         </div>
       </div>

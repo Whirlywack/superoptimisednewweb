@@ -5,6 +5,19 @@ import { createElement } from "react";
 
 const resend = new Resend(process.env.RESEND_API_KEY || "");
 
+export async function sendEmail(options: {
+  to: string;
+  subject: string;
+  html: string;
+}) {
+  await resend.emails.send({
+    from: process.env.EMAIL_FROM || "no-reply@yourdomain.com",
+    to: options.to,
+    subject: options.subject,
+    html: options.html,
+  });
+}
+
 export async function sendWelcomeEmail(to: string, name: string) {
   await resend.emails.send({
     from: process.env.EMAIL_FROM || "no-reply@yourdomain.com",
