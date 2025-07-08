@@ -80,8 +80,23 @@ export function ResearchCompletePage() {
 
   // Get voter token and real data from database
   const { voterTokenId } = useVoterToken();
-  const { user: userStats, isLoading: statsLoading } = useEngagementStats({ voterTokenId });
+  const { user: userStats, isLoading: statsLoading } = useEngagementStats({
+    voterTokenId: voterTokenId || undefined,
+  });
   const { votes: userVotes, totalXp, isLoading: votesLoading } = useUserVoteHistory();
+
+  // New optimized XP calculation that handles background processing
+  const { data: finalXp, isLoading: xpLoading } = api.vote.getFinalXpCalculation.useQuery(
+    undefined,
+    {
+      refetchInterval: (data) => {
+        // Keep polling if background processing isn't complete
+        return data?.shouldRefetch ? 2000 : false;
+      },
+      staleTime: 1000, // Fresh data
+    }
+  );
+
   const { questions: allQuestions } = useActiveQuestions({ category: "research", limit: 20 });
 
   // Load user responses from localStorage as fallback
@@ -99,8 +114,24 @@ export function ResearchCompletePage() {
   const researchVotes = userVotes.filter((vote) => vote.category === "research");
   const researchVoteCount = researchVotes.length;
 
-  // Calculate XP breakdown based on real data
+  // Calculate XP breakdown with optimized data handling
   const calculateXpBreakdown = () => {
+    // Use the new optimized XP calculation if available
+    if (finalXp && finalXp.voteCount > 0) {
+      const baseXpPerQuestion = Math.floor(finalXp.totalXp / finalXp.voteCount);
+      return {
+        questionsAnswered: finalXp.voteCount,
+        baseXpPerQuestion,
+        questionXP: finalXp.totalXp,
+        streakBonus: userStats?.currentStreak ? userStats.currentStreak * 5 : 0,
+        engagementBonus: 0,
+        totalEarnedXP: finalXp.totalXp,
+        isEstimated: false,
+        isProcessingComplete: finalXp.isComplete,
+      };
+    }
+
+    // Fallback to legacy calculation
     if (!userStats || researchVoteCount === 0) {
       // Fallback calculation for localStorage data
       const localResponseCount = Object.keys(userResponses).length;
@@ -112,10 +143,11 @@ export function ResearchCompletePage() {
         engagementBonus: 0,
         totalEarnedXP: localResponseCount * 10,
         isEstimated: true,
+        isProcessingComplete: true,
       };
     }
 
-    // Real XP calculation from database
+    // Real XP calculation from database (legacy path)
     const baseXpPerQuestion = Math.floor(
       (userStats.totalXp || 0) / Math.max(userStats.totalVotes || 1, 1)
     );
@@ -127,6 +159,7 @@ export function ResearchCompletePage() {
       engagementBonus: 0,
       totalEarnedXP: totalXp || userStats.totalXp || 0,
       isEstimated: false,
+      isProcessingComplete: true,
     };
   };
 
@@ -170,9 +203,12 @@ export function ResearchCompletePage() {
               <div className="border-2 border-primary bg-off-white p-lg">
                 <h3 className="mb-md font-mono text-sm font-semibold uppercase tracking-wide text-primary">
                   XP Breakdown {xpBreakdown.isEstimated && "(Estimated)"}
+                  {!xpBreakdown.isProcessingComplete && (
+                    <span className="ml-sm text-xs text-warm-gray">Calculating...</span>
+                  )}
                 </h3>
 
-                {statsLoading || votesLoading ? (
+                {statsLoading || votesLoading || xpLoading ? (
                   <div className="space-y-sm">
                     <div className="h-4 w-full animate-pulse bg-light-gray"></div>
                     <div className="h-4 w-3/4 animate-pulse bg-light-gray"></div>

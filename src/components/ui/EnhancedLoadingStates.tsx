@@ -112,6 +112,42 @@ export function ProgressRing({
   );
 }
 
+interface HorizontalLoadingBarProps {
+  className?: string;
+}
+
+export function HorizontalLoadingBar({ className }: HorizontalLoadingBarProps) {
+  return (
+    <div className={cn("relative h-1 w-full overflow-hidden bg-light-gray", className)}>
+      {/* Animated fill bar */}
+      <div
+        className="absolute top-0 h-full bg-primary transition-all duration-300"
+        style={{
+          width: "40%",
+          animation: "fillSlide 2s ease-in-out infinite",
+          background: "linear-gradient(90deg, transparent 0%, currentColor 50%, transparent 100%)",
+        }}
+      />
+
+      {/* Global styles for the animation */}
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+          @keyframes fillSlide {
+            0% {
+              transform: translateX(-100%);
+            }
+            100% {
+              transform: translateX(350%);
+            }
+          }
+        `,
+        }}
+      />
+    </div>
+  );
+}
+
 interface VoteButtonLoadingProps {
   isLoading: boolean;
   children: React.ReactNode;
@@ -132,20 +168,20 @@ export function VoteButtonLoading({
       onClick={onClick}
       disabled={disabled || isLoading}
       className={cn(
-        "relative transition-all duration-200",
+        "relative overflow-hidden transition-all duration-200",
         isLoading && "cursor-not-allowed",
         className
       )}
     >
-      {/* Loading overlay */}
+      {/* Horizontal loading bar at bottom */}
       {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-inherit">
-          <LoadingDots count={3} spacing="sm" color="primary" />
+        <div className="absolute inset-x-0 bottom-0">
+          <HorizontalLoadingBar />
         </div>
       )}
 
       {/* Button content */}
-      <div className={cn("transition-opacity duration-200", isLoading && "opacity-30")}>
+      <div className={cn("transition-opacity duration-200", isLoading && "opacity-70")}>
         {children}
       </div>
     </button>

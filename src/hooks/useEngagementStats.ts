@@ -25,6 +25,7 @@ export function useEngagementStats({
       includeMilestones,
     },
     {
+      enabled: true, // Always enabled since global stats are useful even without voterTokenId
       refetchOnWindowFocus: false,
       refetchInterval,
       staleTime: 5 * 60 * 1000, // 5 minutes

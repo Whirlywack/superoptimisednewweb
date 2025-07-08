@@ -70,14 +70,14 @@ function SingleQuestion({
   const { submitVote, isVoting } = useVoteSubmission({
     onSuccess: () => {
       // Vote successful, stats will update automatically via real-time hook
-      // Real XP toast is already handled by useVoteSubmission
+      // XP calculation happening in background
       voteSubmitted(true);
       progressUpdate();
     },
     onError: () => {
       voteSubmitted(false);
     },
-    showToasts: true, // Use built-in real XP toasts instead of fake ones
+    showToasts: false, // Disable toasts for smoother progression
   });
 
   const handleVote = async (optionId: string) => {

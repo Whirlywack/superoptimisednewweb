@@ -14,23 +14,10 @@ import {
   getVoterRateLimit,
   incrementRateLimit,
 } from "../voterToken";
-import { incrementVoteStats } from "../statsCache";
 import { sendXpClaimEmail } from "../../email/sendEmail";
-import { onVoteSubmitted, onXpClaimed } from "../../progress-automation";
+import { onXpClaimed } from "../../progress-automation";
 
-/**
- * Calculate progressive XP rewards based on vote count
- * Progressive rewards: 5, 10, 15, 20, 25, 50, 100
- */
-function calculateXpForVote(voteNumber: number): number {
-  if (voteNumber <= 5) return 5;
-  if (voteNumber <= 10) return 10;
-  if (voteNumber <= 25) return 15;
-  if (voteNumber <= 50) return 20;
-  if (voteNumber <= 100) return 25;
-  if (voteNumber <= 250) return 50;
-  return 100; // Max XP for votes 250+
-}
+// Note: XP calculation moved to background-jobs.ts
 
 /**
  * Calculate current streak days based on vote dates
@@ -89,7 +76,10 @@ export const voteRouter = createTRPCRouter({
       const { questionId, response } = input;
       const ipAddress = ctx.ipAddress || "127.0.0.1";
 
-      // Check rate limiting first
+      // PHASE 1: FAST CRITICAL PATH (< 500ms)
+      // Only essential operations that must complete before user can proceed
+
+      // Check rate limiting first (should be fast with caching)
       const rateLimit = await getVoterRateLimit(ipAddress);
       if (rateLimit.remaining <= 0) {
         throw new RateLimitError(
@@ -98,7 +88,7 @@ export const voteRouter = createTRPCRouter({
         );
       }
 
-      // Verify question exists and is active
+      // Verify question exists and is active (fast lookup)
       const question = await prisma.question.findFirst({
         where: {
           id: questionId,
@@ -110,25 +100,26 @@ export const voteRouter = createTRPCRouter({
             },
           ],
         },
+        select: { id: true }, // Only select what we need
       });
 
       if (!question) {
         throw new QuestionNotFoundError(questionId);
       }
 
-      // Get or create voter token (this would normally come from cookies)
+      // Get or create voter token (cached when possible)
       const { token, voterTokenRecord } = await getOrCreateVoterToken(ctx.voterToken, ipAddress);
 
-      // Check for duplicate vote
+      // Check for duplicate vote (fast lookup)
       const hasVoted = await hasVoterVoted(voterTokenRecord.id, questionId);
       if (hasVoted) {
         throw new DuplicateVoteError();
       }
 
-      // Increment rate limit counter
+      // Increment rate limit counter (fast operation)
       await incrementRateLimit(ipAddress);
 
-      // Store the vote
+      // CRITICAL: Record the vote immediately (atomic operation)
       const voteResponse = await prisma.questionResponse.create({
         data: {
           questionId,
@@ -138,49 +129,28 @@ export const voteRouter = createTRPCRouter({
         },
       });
 
-      // Update live stats using optimized batch caching
+      // PHASE 2: QUEUE BACKGROUND PROCESSING
+      // Heavy operations that don't block user progression
+      const { queueVoteEnhancement } = await import("../../background-jobs");
+
       const isNewVoter = voterTokenRecord.voteCount === 0;
-      incrementVoteStats(isNewVoter);
 
-      // Calculate progressive XP based on vote count
-      const currentVoteCount = voterTokenRecord.voteCount;
-      const xpAmount = calculateXpForVote(currentVoteCount + 1);
-
-      // Update voter token vote count and record XP
-      const [_updatedVoter, _xpRecord] = await Promise.all([
-        // Increment voter's vote count
-        prisma.voterToken.update({
-          where: { id: voterTokenRecord.id },
-          data: { voteCount: { increment: 1 } },
-        }),
-
-        // Record XP for the vote
-        prisma.xpLedger.create({
-          data: {
-            voterTokenId: voterTokenRecord.id,
-            actionType: "vote",
-            xpAmount,
-            sourceQuestionId: questionId,
-          },
-        }),
-      ]);
-
-      // Get total XP for this voter
-      const totalXp = await prisma.xpLedger.aggregate({
-        where: { voterTokenId: voterTokenRecord.id },
-        _sum: { xpAmount: true },
+      queueVoteEnhancement({
+        voteId: voteResponse.id,
+        voterTokenId: voterTokenRecord.id,
+        questionId,
+        isNewVoter,
+        submittedAt: new Date(),
       });
 
-      // Track progress event for automation
-      await onVoteSubmitted(voterTokenRecord.id, questionId);
-
+      // IMMEDIATE RESPONSE: User can proceed immediately
       return {
         success: true,
         voteId: voteResponse.id,
         voterToken: token, // Return token so it can be set in cookie
-        xpEarned: xpAmount,
-        totalXp: totalXp._sum.xpAmount || 0,
-        message: "Vote submitted successfully!",
+        message: "Vote recorded successfully!",
+        // Note: XP will be calculated in background and available on completion page
+        processingInBackground: true,
       };
     }, "submitVote");
   }),
@@ -254,6 +224,43 @@ export const voteRouter = createTRPCRouter({
     }, "getUserVoteHistory");
   }),
 
+  // New endpoint for completion page XP reconciliation
+  getFinalXpCalculation: votingProcedure.query(async ({ ctx }) => {
+    return safeExecute(async () => {
+      if (!ctx.voterTokenRecord) {
+        return { totalXp: 0, voteCount: 0, isComplete: true };
+      }
+
+      const voterTokenId = ctx.voterTokenRecord.id;
+
+      // Get current XP and vote counts
+      const [xpResult, voteCount] = await Promise.all([
+        prisma.xpLedger.aggregate({
+          where: { voterTokenId },
+          _sum: { xpAmount: true },
+        }),
+        prisma.questionResponse.count({
+          where: { voterTokenId },
+        }),
+      ]);
+
+      const currentXp = xpResult._sum.xpAmount || 0;
+
+      // Check if background processing might still be pending
+      // If vote count doesn't match expected XP, background processing may be ongoing
+      const expectedMinXp = voteCount * 5; // Minimum XP (5 per vote)
+      const processingComplete = currentXp >= expectedMinXp;
+
+      return {
+        totalXp: currentXp,
+        voteCount,
+        isComplete: processingComplete,
+        // If not complete, poll again in a few seconds
+        shouldRefetch: !processingComplete,
+      };
+    }, "getFinalXpCalculation");
+  }),
+
   getEngagementStats: publicProcedure.input(getEngagementStatsSchema).query(async ({ input }) => {
     return safeExecute(async () => {
       const { voterTokenId, includeMilestones = true } = input;
@@ -261,35 +268,41 @@ export const voteRouter = createTRPCRouter({
       // Base stats for all users
       const globalStats = await Promise.all([
         // Total community engagement
-        prisma.xpLedger.aggregate({
-          _sum: { xpAmount: true },
-          _count: { id: true },
-        }),
+        prisma.xpLedger
+          .aggregate({
+            _sum: { xpAmount: true },
+            _count: { id: true },
+          })
+          .catch(() => ({ _sum: { xpAmount: 0 }, _count: { id: 0 } })),
 
         // Vote streaks (simulated - would need daily analytics)
-        prisma.analyticsDaily.findMany({
-          orderBy: { date: "desc" },
-          take: 30, // Last 30 days
-          select: {
-            date: true,
-            totalVotes: true,
-            uniqueVoters: true,
-          },
-        }),
+        prisma.analyticsDaily
+          .findMany({
+            orderBy: { date: "desc" },
+            take: 30, // Last 30 days
+            select: {
+              date: true,
+              totalVotes: true,
+              uniqueVoters: true,
+            },
+          })
+          .catch(() => []), // Return empty array if table doesn't exist or has no data
 
         // Top performers (anonymous)
-        prisma.voterToken.findMany({
-          orderBy: { voteCount: "desc" },
-          take: 10,
-          select: {
-            id: true,
-            voteCount: true,
-            createdAt: true,
-            _count: {
-              select: { xpLedger: true },
+        prisma.voterToken
+          .findMany({
+            orderBy: { voteCount: "desc" },
+            take: 10,
+            select: {
+              id: true,
+              voteCount: true,
+              createdAt: true,
+              _count: {
+                select: { xpLedger: true },
+              },
             },
-          },
-        }),
+          })
+          .catch(() => []), // Return empty array if no voters yet
       ]);
 
       const [totalXpStats, recentActivity, topPerformers] = globalStats;
@@ -298,23 +311,29 @@ export const voteRouter = createTRPCRouter({
       let userStats = null;
       if (voterTokenId) {
         const [userXp, userVotes, userStreak] = await Promise.all([
-          prisma.xpLedger.aggregate({
-            where: { voterTokenId },
-            _sum: { xpAmount: true },
-            _count: { id: true },
-          }),
+          prisma.xpLedger
+            .aggregate({
+              where: { voterTokenId },
+              _sum: { xpAmount: true },
+              _count: { id: true },
+            })
+            .catch(() => ({ _sum: { xpAmount: 0 }, _count: { id: 0 } })),
 
-          prisma.questionResponse.count({
-            where: { voterTokenId },
-          }),
+          prisma.questionResponse
+            .count({
+              where: { voterTokenId },
+            })
+            .catch(() => 0),
 
           // Calculate current streak (simplified)
-          prisma.questionResponse.findMany({
-            where: { voterTokenId },
-            select: { createdAt: true },
-            orderBy: { createdAt: "desc" },
-            take: 30,
-          }),
+          prisma.questionResponse
+            .findMany({
+              where: { voterTokenId },
+              select: { createdAt: true },
+              orderBy: { createdAt: "desc" },
+              take: 30,
+            })
+            .catch(() => []),
         ]);
 
         // Calculate streak days

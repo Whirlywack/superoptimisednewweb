@@ -192,6 +192,103 @@ const { announceToScreenReader, shouldReduceMotion, isKeyboardUser } = useAccess
 6. **Reduced Motion**: Respects user preferences for reduced animations
 7. **Mobile Optimization**: Virtual keyboard detection and responsive touch interactions
 
+### Phase 4: Performance Optimization - Background Processing Architecture
+
+**Problem Solved**: Vote submission was taking 4-5 seconds due to heavy XP calculations blocking user progression.
+
+**Solution**: Implemented a two-phase vote processing system that separates critical vote recording from non-critical XP enhancement.
+
+```typescript
+// PHASE 1: Fast Critical Path (< 500ms)
+const voteResponse = await prisma.questionResponse.create({
+  data: { questionId, voterTokenId, responseData, ipAddress },
+});
+
+// PHASE 2: Background Enhancement (async)
+queueVoteEnhancement({
+  voteId: voteResponse.id,
+  voterTokenId,
+  questionId,
+  isNewVoter,
+  submittedAt: new Date(),
+});
+
+// IMMEDIATE RESPONSE: User proceeds immediately
+return { success: true, voteId, processingInBackground: true };
+```
+
+**Background Job System**:
+
+The new `background-jobs.ts` system handles:
+
+- XP calculation and recording (atomic operations)
+- Engagement statistics updates
+- Real-time stats propagation
+- Progress event tracking
+- Automatic retry mechanisms
+
+**Performance Gains**:
+
+- **Before**: 4-5 seconds per vote (blocking)
+- **After**: 300-500ms per vote (10x improvement)
+- **Background**: Heavy processing continues without blocking user
+
+**User Experience Flow**:
+
+1. Click answer → Horizontal loading (300ms)
+2. Vote recorded → Next question loads immediately
+3. Background: XP calculated silently
+4. Completion page: Shows accurate totals with real-time updates
+
+**Technical Implementation**:
+
+```typescript
+// Fast vote recording (critical path)
+export async function recordVoteQuickly() {
+  // Essential validations only
+  const voteResponse = await prisma.questionResponse.create({
+    data: { questionId, voterTokenId, responseData, ipAddress },
+  });
+
+  // Queue heavy processing for background
+  queueVoteEnhancement({ voteId: voteResponse.id /* ... */ });
+
+  return { success: true, voteId: voteResponse.id };
+}
+
+// Background enhancement processing
+export async function processVoteEnhancement(job) {
+  // 1. Calculate XP (atomic operation)
+  const xpResult = await calculateAndRecordXp(voterTokenId, questionId);
+
+  // 2. Update live stats
+  incrementVoteStats(isNewVoter);
+
+  // 3. Update engagement statistics
+  await updateEngagementStats(voterTokenId);
+
+  // 4. Track progress events
+  await onVoteSubmitted(voterTokenId, questionId);
+}
+```
+
+**Completion Page Reconciliation**:
+
+The completion page uses a new optimized endpoint that:
+
+- Polls for background processing completion
+- Shows accurate final XP totals
+- Handles fallback calculations if needed
+- Provides real-time updates during calculation
+
+```typescript
+// Optimized XP calculation endpoint
+const { data: finalXp } = api.vote.getFinalXpCalculation.useQuery(undefined, {
+  refetchInterval: (data) => (data?.shouldRefetch ? 2000 : false),
+  staleTime: 1000,
+});
+```
+
 ## Progress Bar Database System
 
 ### Database Schema

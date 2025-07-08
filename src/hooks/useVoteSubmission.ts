@@ -5,7 +5,11 @@ import { useCallback, useState } from "react";
 import { toast } from "sonner";
 
 export interface VoteSubmissionOptions {
-  onSuccess?: (data: { xpEarned: number; totalXp: number }) => void;
+  onSuccess?: (data: {
+    success: boolean;
+    voteId: string;
+    processingInBackground?: boolean;
+  }) => void;
   onError?: (error: string) => void;
   showToasts?: boolean;
 }
@@ -19,9 +23,11 @@ export function useVoteSubmission(options: VoteSubmissionOptions = {}) {
   const voteMutation = api.vote.submitVote.useMutation({
     onSuccess: (data) => {
       if (showToasts) {
-        toast.success(`Vote submitted! +${data.xpEarned} XP earned`, {
-          description: `Total XP: ${data.totalXp}`,
-          duration: 3000,
+        // New optimized flow: just confirm vote recorded
+        // XP calculation happens in background
+        toast.success("Vote recorded!", {
+          description: data.processingInBackground ? "XP calculating..." : "Processing complete",
+          duration: 2000,
         });
       }
 

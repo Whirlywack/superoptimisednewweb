@@ -36,7 +36,7 @@ export const questionRouter = createTRPCRouter({
           createdAt: true,
           _count: {
             select: {
-              questionResponses: true,
+              responses: true,
             },
           },
         },
@@ -44,7 +44,7 @@ export const questionRouter = createTRPCRouter({
 
       return questions.map((question) => ({
         ...question,
-        responseCount: question._count.questionResponses,
+        responseCount: question._count.responses,
       }));
     }, "getActiveQuestions");
   }),
@@ -73,7 +73,7 @@ export const questionRouter = createTRPCRouter({
           createdAt: true,
           _count: {
             select: {
-              questionResponses: true,
+              responses: true,
             },
           },
         },
@@ -85,7 +85,7 @@ export const questionRouter = createTRPCRouter({
 
       return {
         ...question,
-        responseCount: question._count.questionResponses,
+        responseCount: question._count.responses,
       };
     }, "getQuestionById");
   }),
@@ -95,7 +95,7 @@ export const questionRouter = createTRPCRouter({
       const question = await prisma.question.findUnique({
         where: { id: input.questionId },
         include: {
-          questionResponses: {
+          responses: {
             select: {
               responseData: true,
               createdAt: true,
@@ -108,7 +108,7 @@ export const questionRouter = createTRPCRouter({
         throw new QuestionNotFoundError(input.questionId);
       }
 
-      const responses = question.questionResponses;
+      const responses = question.responses;
       const totalResponses = responses.length;
 
       // Handle different question types
