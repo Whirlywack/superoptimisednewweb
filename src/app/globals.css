@@ -96,7 +96,39 @@ body {
 
 @layer base {
   :root {
-    /* Superoptimised Design System Colors */
+    /* Elevated Brutalism Design System - Direct CSS Variables */
+    --off-black: #1a1a1a;
+    --off-white: #fafafa;
+    --warm-gray: #6b7280;
+    --light-gray: #f3f4f6;
+    --primary: #64748b;
+    
+    /* Primary Variations for Different States */
+    --primary-light: #94a3b8;
+    --primary-dark: #475569;
+    
+    /* Typography Scale */
+    --text-mega: clamp(4rem, 8vw, 7.5rem);
+    --text-hero: clamp(3rem, 6vw, 5rem);
+    --text-xl: clamp(1.5rem, 3vw, 2.5rem);
+    --text-lg: 1.25rem;
+    --text-base: 1rem;
+    --text-sm: 0.875rem;
+    --text-xs: 0.75rem;
+    
+    /* Spacing Scale */
+    --space-xs: 0.5rem;
+    --space-sm: 1rem;
+    --space-md: 2rem;
+    --space-lg: 3rem;
+    --space-xl: 4rem;
+    --space-2xl: 6rem;
+    
+    /* Layout */
+    --max-width: 1200px;
+    --grid-gap: 24px;
+    
+    /* Superoptimised Design System Colors - Legacy for Tailwind */
     --color-off-black: 26 26 26;
     --color-off-white: 250 250 250;
     --color-warm-gray: 107 114 128;

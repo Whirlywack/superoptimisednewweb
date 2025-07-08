@@ -28,56 +28,142 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-off-white">
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--off-white)' }}>
       {/* Elevated Brutalism Admin Header */}
-      <header className="bg-off-black">
-        <div className="mx-auto max-w-7xl px-4">
-          <div className="flex h-20 items-center justify-between">
-            {/* Brand & User Context */}
-            <div className="space-y-1">
-              <h1 className="font-mono text-xl font-bold text-off-white">/admin</h1>
-              <div className="font-mono text-xs text-warm-gray">{session.user.email}</div>
+      <header style={{ backgroundColor: 'var(--off-black)' }}>
+        <div className="mx-auto max-w-7xl px-6 py-8">
+          <div className="flex items-center justify-between">
+            {/* Brand & Context - Brutalist Typography */}
+            <div>
+              <h1 
+                className="font-bold uppercase tracking-tight"
+                style={{ 
+                  fontSize: 'var(--text-xl)', 
+                  color: 'var(--off-white)',
+                  letterSpacing: '-0.02em'
+                }}
+              >
+                ADMINISTRATION
+              </h1>
+              <div 
+                className="mt-2 font-medium"
+                style={{ 
+                  fontSize: 'var(--text-sm)', 
+                  color: 'var(--warm-gray)' 
+                }}
+              >
+                {session.user.email}
+              </div>
             </div>
 
-            {/* Minimal Navigation */}
-            <nav className="flex items-center gap-0">
+            {/* Brutalist Navigation - Connected Buttons */}
+            <nav className="flex items-center" style={{ gap: '0' }}>
               <a
                 href="/admin"
-                className="border-r border-warm-gray px-4 py-2 font-mono text-sm text-off-white transition-colors hover:bg-primary hover:text-off-black"
+                className="px-6 py-3 font-medium uppercase transition-all duration-200 ease-out"
+                style={{
+                  fontSize: 'var(--text-sm)',
+                  color: 'var(--off-white)',
+                  borderRight: '2px solid var(--warm-gray)',
+                  backgroundColor: 'transparent'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--primary)';
+                  e.currentTarget.style.color = 'var(--off-black)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                  e.currentTarget.style.color = 'var(--off-white)';
+                }}
               >
                 Dashboard
               </a>
               <a
                 href="/admin/questions"
-                className="border-r border-warm-gray px-4 py-2 font-mono text-sm text-off-white transition-colors hover:bg-primary hover:text-off-black"
+                className="px-6 py-3 font-medium uppercase transition-all duration-200 ease-out"
+                style={{
+                  fontSize: 'var(--text-sm)',
+                  color: 'var(--off-white)',
+                  borderRight: '2px solid var(--warm-gray)',
+                  backgroundColor: 'transparent'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--primary)';
+                  e.currentTarget.style.color = 'var(--off-black)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                  e.currentTarget.style.color = 'var(--off-white)';
+                }}
               >
                 Questions
               </a>
               <a
                 href="/admin/analytics"
-                className="border-r border-warm-gray px-4 py-2 font-mono text-sm text-off-white transition-colors hover:bg-primary hover:text-off-black"
+                className="px-6 py-3 font-medium uppercase transition-all duration-200 ease-out"
+                style={{
+                  fontSize: 'var(--text-sm)',
+                  color: 'var(--off-white)',
+                  borderRight: '2px solid var(--warm-gray)',
+                  backgroundColor: 'transparent'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--primary)';
+                  e.currentTarget.style.color = 'var(--off-black)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                  e.currentTarget.style.color = 'var(--off-white)';
+                }}
               >
                 Analytics
               </a>
               <a
                 href="/admin/content"
-                className="border-r border-warm-gray px-4 py-2 font-mono text-sm text-off-white transition-colors hover:bg-primary hover:text-off-black"
+                className="px-6 py-3 font-medium uppercase transition-all duration-200 ease-out"
+                style={{
+                  fontSize: 'var(--text-sm)',
+                  color: 'var(--off-white)',
+                  borderRight: '2px solid var(--warm-gray)',
+                  backgroundColor: 'transparent'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--primary)';
+                  e.currentTarget.style.color = 'var(--off-black)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                  e.currentTarget.style.color = 'var(--off-white)';
+                }}
               >
                 Content
               </a>
               <a
                 href="/auth/signout"
-                className="bg-primary px-4 py-2 font-mono text-sm text-off-black transition-colors hover:bg-off-white"
+                className="px-6 py-3 font-medium uppercase transition-all duration-200 ease-out"
+                style={{
+                  fontSize: 'var(--text-sm)',
+                  color: 'var(--off-black)',
+                  backgroundColor: 'var(--primary)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--off-white)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--primary)';
+                }}
               >
-                Exit
+                Sign Out
               </a>
             </nav>
           </div>
         </div>
       </header>
 
-      {/* Content with Proper Spacing */}
-      <main className="mx-auto max-w-7xl space-y-12 px-4 py-12">{children}</main>
+      {/* Content with Brutalist Spacing */}
+      <main className="mx-auto max-w-7xl px-6" style={{ paddingTop: 'var(--space-xl)', paddingBottom: 'var(--space-xl)' }}>
+        {children}
+      </main>
     </div>
   );
 }
