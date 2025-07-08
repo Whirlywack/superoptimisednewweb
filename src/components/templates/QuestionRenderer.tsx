@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import type { ProcessedQuestion } from "@/hooks/useResearchPageOptimization";
 import { ABTestQuestion } from "@/components/molecules/ABTestQuestion";
 import { RankingQuestion } from "@/components/molecules/RankingQuestion";
@@ -76,35 +76,22 @@ export interface QuestionRendererProps {
 export function QuestionRenderer({
   question,
   onVote,
-  currentIndex: _currentIndex,
-  totalQuestions: _totalQuestions,
+  currentIndex,
+  totalQuestions,
   disabled = false,
   className = "",
 }: QuestionRendererProps) {
-  // State to track selected values for each question type
-  const [selectedValue, setSelectedValue] = useState<string | number | string[] | null>(null);
-
   // Determine question type from question structure
   const questionType = question.content?.type || "binary";
 
-  // Handler that updates local state and calls parent onVote
-  const handleSelection = (responseData: Record<string, unknown>) => {
-    // Update local state for visual feedback
-    if (responseData.selectedOption) {
-      setSelectedValue(responseData.selectedOption);
-    } else if (responseData.selectedOptions) {
-      setSelectedValue(responseData.selectedOptions);
-    } else if (responseData.rating) {
-      setSelectedValue(responseData.rating);
-    } else if (responseData.textResponse) {
-      setSelectedValue(responseData.textResponse);
-    } else if (responseData.ranking) {
-      setSelectedValue(responseData.ranking);
-    }
-
-    // Call parent callback
-    onVote(responseData);
-  };
+  console.log("QuestionRenderer:", {
+    questionType,
+    questionId: question.id,
+    currentIndex,
+    totalQuestions,
+    hasOptions: !!question.options,
+    optionsCount: question.options?.length,
+  });
 
   const commonProps = {
     question,
@@ -114,7 +101,7 @@ export function QuestionRenderer({
 
   switch (questionType) {
     case "binary":
-      return <BinaryQuestion {...commonProps} onVote={(data) => handleSelection(data)} />;
+      return <BinaryQuestion {...commonProps} onVote={(data) => onVote(data)} />;
 
     case "multi-choice":
       return (
@@ -123,7 +110,7 @@ export function QuestionRenderer({
           description={question.description}
           options={question.options || []}
           maxSelections={question.content?.maxSelections || 3}
-          onChange={(selectedOptions) => handleSelection({ selectedOptions })}
+          onChange={(selectedOptions) => onVote({ selectedOptions })}
           disabled={disabled}
           className={className}
         />
@@ -136,9 +123,7 @@ export function QuestionRenderer({
           description={question.description}
           scale={question.content?.scale || 10}
           variant={question.content?.variant || "numbers"}
-          onChange={(rating) =>
-            handleSelection({ rating, maxRating: question.content?.scale || 10 })
-          }
+          onChange={(rating) => onVote({ rating, maxRating: question.content?.scale || 10 })}
           disabled={disabled}
           className={className}
         />
@@ -151,7 +136,7 @@ export function QuestionRenderer({
           description={question.description}
           maxLength={question.content?.maxLength || 500}
           placeholder={question.content?.placeholder || "Enter your response..."}
-          onChange={(textResponse) => handleSelection({ textResponse })}
+          onChange={(textResponse) => onVote({ textResponse })}
           disabled={disabled}
           className={className}
         />
@@ -163,7 +148,7 @@ export function QuestionRenderer({
           question={question.title}
           description={question.description}
           items={question.content?.items || []}
-          onChange={(ranking) => handleSelection({ ranking })}
+          onChange={(ranking) => onVote({ ranking })}
           disabled={disabled}
           className={className}
         />
@@ -176,8 +161,7 @@ export function QuestionRenderer({
           description={question.description}
           optionA={question.content?.optionA}
           optionB={question.content?.optionB}
-          value={selectedValue as string}
-          onChange={(selectedOption) => handleSelection({ selectedOption })}
+          onChange={(selectedOption) => onVote({ selectedOption })}
           disabled={disabled}
           className={className}
         />
