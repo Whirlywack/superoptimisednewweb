@@ -3,7 +3,7 @@
 import React, { Suspense } from "react";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
-import { ArrowLeft, Mail } from "lucide-react";
+// No icons needed - pure terminal aesthetic
 import Link from "next/link";
 
 function SignInContent() {
@@ -19,37 +19,31 @@ function SignInContent() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-off-white to-light-gray dark:from-off-black dark:to-off-black px-4">
-      <Link
-        href="/"
-        className="group absolute left-4 top-4 flex items-center gap-2 rounded-lg px-4 py-2 text-sm text-warm-gray transition-colors hover:text-off-black dark:text-warm-gray dark:hover:text-off-white"
-      >
-        <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-        Back
-      </Link>
-
-      <div className="w-full max-w-md space-y-8">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary dark:from-primary dark:to-primary">
-              Welcome
-            </span>
-          </h1>
-          <p className="mt-3 text-warm-gray dark:text-warm-gray">
-            Enter your email to sign in or create an account
-          </p>
+    <div className="min-h-screen bg-off-white font-mono">
+      {/* Terminal Header */}
+      <div className="border-b-2 border-off-black bg-off-black p-4">
+        <div className="font-mono text-sm text-green-400">$ sudo login --admin</div>
+        <div className="mt-1 font-mono text-sm text-warm-gray">
+          Authentication required for administrative access
         </div>
+      </div>
 
-        <div className="rounded-2xl bg-off-white dark:bg-off-black/50 p-8 shadow-xl">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-warm-gray dark:text-warm-gray"
-              >
-                Email address
-              </label>
-              <div className="mt-2">
+      {/* Main Auth Form */}
+      <div className="mx-auto max-w-2xl p-8">
+        <div className="border-2 border-off-black bg-white">
+          {/* Form Header */}
+          <div className="border-b border-off-black bg-light-gray p-4">
+            <div className="font-mono text-sm text-off-black">ADMIN LOGIN REQUIRED</div>
+            <div className="font-mono text-xs text-warm-gray">
+              {callbackUrl !== "/" ? `Target: ${callbackUrl}` : "Default access"}
+            </div>
+          </div>
+
+          {/* Form Body */}
+          <div className="p-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <div className="mb-2 font-mono text-sm text-off-black">email:</div>
                 <input
                   id="email"
                   name="email"
@@ -58,33 +52,43 @@ function SignInContent() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full rounded-lg border border-light-gray dark:border-warm-gray px-4 py-3 text-off-black dark:text-off-white placeholder-warm-gray dark:placeholder-warm-gray shadow-sm dark:bg-off-black focus:border-primary dark:focus:border-primary focus:ring-primary dark:focus:ring-primary"
-                  placeholder="you@example.com"
+                  className="w-full border-2 border-off-black bg-off-white p-3 font-mono text-sm text-off-black placeholder:text-warm-gray focus:border-primary focus:outline-none"
+                  placeholder="admin@superoptimised.com"
                 />
               </div>
-            </div>
 
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="group relative flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-primary to-primary px-4 py-3 text-off-white shadow-lg shadow-primary/20 transition-all hover:from-primary hover:to-primary hover:shadow-xl hover:shadow-primary/30 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <Mail className="h-5 w-5" />
-              {isLoading ? "Sending link..." : "Sign in with Email"}
-            </button>
-          </form>
-
-          <div className="mt-6">
-            <p className="text-center text-sm text-warm-gray dark:text-warm-gray">
-              By signing in, you agree to our{" "}
-              <Link
-                href="https://example.com/legal"
-                className="font-medium text-primary dark:text-primary hover:text-primary"
-              >
-                Privacy Policy
-              </Link>
-            </p>
+              <div className="border-t border-light-gray pt-4">
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full border-2 border-off-black bg-off-black p-3 font-mono text-sm text-off-white transition-colors hover:bg-primary hover:text-off-black disabled:bg-warm-gray disabled:text-light-gray"
+                >
+                  {isLoading ? "[sending magic link...]" : "AUTHENTICATE"}
+                </button>
+              </div>
+            </form>
           </div>
+
+          {/* Footer */}
+          <div className="border-t border-off-black bg-light-gray p-4">
+            <div className="font-mono text-xs text-warm-gray">
+              • Magic link will be sent to your email
+            </div>
+            <div className="font-mono text-xs text-warm-gray">
+              • Admin access only for authorized users
+            </div>
+            <div className="font-mono text-xs text-warm-gray">• Session expires after 24 hours</div>
+          </div>
+        </div>
+
+        {/* Navigation */}
+        <div className="mt-6">
+          <Link
+            href="/"
+            className="font-mono text-sm text-warm-gray transition-colors hover:text-off-black"
+          >
+            ← back to public site
+          </Link>
         </div>
       </div>
     </div>
