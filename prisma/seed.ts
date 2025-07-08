@@ -75,6 +75,80 @@ const QUESTION_BANK = [
     text: "Feature priority preference?",
     options: ["User experience", "Technical robustness"],
   },
+
+  // Phase 6: Advanced question types for research category
+  {
+    id: "research-1",
+    category: "research",
+    text: "Which features are most important for developer productivity?",
+    type: "multi-choice",
+    description: "Select up to 3 features that matter most to you",
+    options: [
+      { id: "hot-reload", text: "Hot Reload", description: "Instant code updates without losing state" },
+      { id: "type-safety", text: "TypeScript Integration", description: "Full type safety across the stack" },
+      { id: "debugging", text: "Advanced Debugging", description: "Source maps and error tracking" },
+      { id: "performance", text: "Performance Monitoring", description: "Real-time performance metrics" },
+      { id: "testing", text: "Testing Tools", description: "Integrated testing framework" }
+    ],
+    maxSelections: 3,
+  },
+  {
+    id: "research-2",
+    category: "research",
+    text: "How would you rate our documentation quality?",
+    type: "rating-scale",
+    description: "1 = Poor, 10 = Excellent",
+    scale: 10,
+    variant: "numbers",
+  },
+  {
+    id: "research-3",
+    category: "research",
+    text: "What feature would you most like to see added next?",
+    type: "text-response",
+    description: "Describe the feature and why it would be valuable to you",
+    maxLength: 500,
+    placeholder: "e.g., Real-time collaboration features...",
+  },
+  {
+    id: "research-4",
+    category: "research",
+    text: "Rank these development priorities in order of importance",
+    type: "ranking",
+    description: "Drag to reorder from most to least important",
+    items: [
+      { id: "speed", label: "Development Speed", description: "Fast iteration and deployment" },
+      { id: "security", label: "Security", description: "Robust security measures" },
+      { id: "scalability", label: "Scalability", description: "Handle growing user base" },
+      { id: "maintainability", label: "Code Maintainability", description: "Clean, readable codebase" },
+      { id: "user-experience", label: "User Experience", description: "Intuitive and polished UI" }
+    ],
+  },
+  {
+    id: "research-5",
+    category: "research", 
+    text: "Which authentication approach would you prefer?",
+    type: "ab-test",
+    description: "Compare these two authentication methods",
+    optionA: {
+      id: "magic-link",
+      title: "Magic Link Authentication",
+      description: "Passwordless login via email",
+      pros: ["No passwords to remember", "More secure", "Faster login"],
+      cons: ["Requires email access", "May end up in spam"],
+      performance: "Fast (single API call)",
+      maintainability: "Low complexity"
+    },
+    optionB: {
+      id: "oauth",
+      title: "OAuth with Google/GitHub",
+      description: "Social authentication",
+      pros: ["Familiar to users", "Quick setup", "Trusted providers"],
+      cons: ["Third-party dependency", "Privacy concerns"],
+      performance: "Medium (redirect flow)",
+      maintainability: "Medium complexity"
+    },
+  },
 ];
 
 async function main() {
@@ -93,21 +167,73 @@ async function main() {
   // Seed questions from questionBank
   console.log("📋 Seeding questions...");
   for (const questionData of QUESTION_BANK) {
+    // Handle different question types
+    const questionType = questionData.type || "binary";
+    let questionDataContent: Record<string, any> = {};
+    let description = questionData.description || `${questionType} question from ${questionData.category} category`;
+
+    switch (questionType) {
+      case "binary":
+        questionDataContent = {
+          type: "binary",
+          options: questionData.options,
+        };
+        break;
+      case "multi-choice":
+        questionDataContent = {
+          type: "multi-choice",
+          maxSelections: questionData.maxSelections || 3,
+          options: questionData.options,
+        };
+        break;
+      case "rating-scale":
+        questionDataContent = {
+          type: "rating-scale",
+          scale: questionData.scale || 10,
+          variant: questionData.variant || "numbers",
+        };
+        break;
+      case "text-response":
+        questionDataContent = {
+          type: "text-response",
+          maxLength: questionData.maxLength || 500,
+          placeholder: questionData.placeholder || "Enter your response...",
+        };
+        break;
+      case "ranking":
+        questionDataContent = {
+          type: "ranking",
+          items: questionData.items || [],
+        };
+        break;
+      case "ab-test":
+        questionDataContent = {
+          type: "ab-test",
+          optionA: questionData.optionA,
+          optionB: questionData.optionB,
+        };
+        break;
+      default:
+        // Fallback to binary for unknown types
+        questionDataContent = {
+          type: "binary",
+          options: questionData.options || ["Yes", "No"],
+        };
+    }
+
     await prisma.question.create({
       data: {
         id: questionData.id,
         title: questionData.text,
-        description: `Binary choice question from ${questionData.category} category`,
-        questionType: "binary",
-        questionData: {
-          options: questionData.options,
-        },
+        description,
+        questionType: questionType,
+        questionData: questionDataContent,
         category: questionData.category,
         isActive: true,
         displayOrder: 0,
       },
     });
-    console.log(`  ✅ Created question: ${questionData.id}`);
+    console.log(`  ✅ Created ${questionType} question: ${questionData.id}`);
   }
 
   // Seed initial content blocks

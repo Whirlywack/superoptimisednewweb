@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { cn } from "@/lib/utils";
 import { HomepageNavigation } from "./Homepage/HomepageNavigation";
 import { HomepageFooter } from "./Homepage/HomepageFooter";
 import { XPToastProvider } from "./Homepage/XPToastProvider";
@@ -11,12 +10,11 @@ import { useResearchPageOptimization } from "@/hooks/useResearchPageOptimization
 import { ResearchErrorBoundary } from "@/components/ui/ResearchErrorBoundary";
 import { useAdvancedFeedback } from "@/hooks/useAdvancedFeedback";
 import {
-  VoteButtonLoading,
   AnimatedCounter,
   SlideIn,
-  ProgressRing,
 } from "@/components/ui/EnhancedLoadingStates";
 import { useAccessibility } from "@/hooks/useAccessibility";
+import { QuestionRenderer } from "./QuestionRenderer";
 
 // Import types from the optimization hook
 import type { ProcessedQuestion } from "@/hooks/useResearchPageOptimization";
@@ -48,24 +46,23 @@ function SingleQuestion({
   totalQuestions,
 }: {
   question: ProcessedQuestion;
-  onVote: (optionId: string) => void;
+  onVote: (responseData: any) => void;
   currentIndex: number;
   totalQuestions: number;
 }) {
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [showResults, setShowResults] = useState(false);
   const [progressPercent, setProgressPercent] = useState<number>(0);
   const [isProgressing, setIsProgressing] = useState(false);
 
   // Get real-time vote statistics for this question with optimistic updates
-  const { totalVotes, breakdown, applyOptimisticUpdate, hasOptimisticUpdates } = useQuestionStats({
+  const { totalVotes, applyOptimisticUpdate, hasOptimisticUpdates } = useQuestionStats({
     questionId: question.id,
     refetchInterval: showResults ? 2000 : 0, // Faster polling when showing results
     enableOptimistic: true,
   });
 
-  const { voteSubmitted, buttonClick, progressUpdate } = useAdvancedFeedback();
-  const { announceToScreenReader, shouldReduceMotion, isKeyboardUser } = useAccessibility();
+  const { voteSubmitted, progressUpdate } = useAdvancedFeedback();
+  const { announceToScreenReader } = useAccessibility();
 
   const { submitVote, isVoting } = useVoteSubmission({
     onSuccess: () => {
@@ -80,25 +77,61 @@ function SingleQuestion({
     showToasts: false, // Disable toasts for smoother progression
   });
 
-  const handleVote = async (optionId: string) => {
+  const handleVote = async (responseData: any) => {
     if (isVoting(question.id)) return; // Prevent double voting
 
-    setSelectedOption(optionId);
+    // Handle different response formats for optimistic updates
+    const questionType = question.content?.type || 'binary';
+    let optimisticUpdateData;
+    let screenReaderText = "";
+
+    switch (questionType) {
+      case 'binary':
+        optimisticUpdateData = responseData.selectedOption;
+        const optionText = question.options?.find((opt) => opt.id === responseData.selectedOption)?.text;
+        screenReaderText = `Vote submitted for: ${optionText}`;
+        break;
+      case 'multi-choice':
+        optimisticUpdateData = responseData.selectedOptions[0]; // Use first selection for optimistic update
+        screenReaderText = `Vote submitted for ${responseData.selectedOptions.length} options`;
+        break;
+      case 'rating-scale':
+        optimisticUpdateData = `rating-${responseData.rating}`;
+        screenReaderText = `Rating of ${responseData.rating} out of ${responseData.maxRating} submitted`;
+        break;
+      case 'text-response':
+        optimisticUpdateData = 'text-response';
+        screenReaderText = `Text response submitted`;
+        break;
+      case 'ranking':
+        optimisticUpdateData = 'ranking-response';
+        screenReaderText = `Ranking response submitted`;
+        break;
+      case 'ab-test':
+        optimisticUpdateData = responseData.selectedOption;
+        screenReaderText = `A/B test choice submitted`;
+        break;
+      default:
+        optimisticUpdateData = 'unknown-response';
+        screenReaderText = `Response submitted`;
+    }
+
     setShowResults(true);
 
-    // Apply optimistic update for immediate feedback
-    applyOptimisticUpdate(optionId);
+    // Apply optimistic update for immediate feedback (for compatible question types)
+    if (questionType === 'binary' || questionType === 'multi-choice') {
+      applyOptimisticUpdate(optimisticUpdateData);
+    }
 
     try {
-      // Submit vote to database
-      await submitVote(question.id, optionId);
+      // Submit vote to database with response data
+      await submitVote(question.id, responseData);
 
       // Announce to screen readers
-      const optionText = question.options.find((opt) => opt.id === optionId)?.text;
-      announceToScreenReader(`Vote submitted for: ${optionText}`, "polite");
+      announceToScreenReader(screenReaderText, "polite");
 
-      // Notify parent component
-      onVote(optionId);
+      // Notify parent component with full response data
+      onVote(responseData);
 
       // Start progress bar for next question
       if (currentIndex < totalQuestions - 1) {
@@ -123,22 +156,14 @@ function SingleQuestion({
       }
     } catch {
       // Reset state on error
-      setSelectedOption(null);
       setShowResults(false);
+      // Reset optimistic updates if they were applied
+      if (questionType === 'binary' || questionType === 'multi-choice') {
+        // The useQuestionStats hook should handle automatic cleanup of failed optimistic updates
+      }
     }
   };
 
-  const getVotePercentage = (optionId: string) => {
-    if (!breakdown || totalVotes === 0) return 0;
-    const option = breakdown.find((b) => b.option === optionId);
-    return option ? option.percentage : 0;
-  };
-
-  const getVoteCount = (optionId: string) => {
-    if (!breakdown) return 0;
-    const option = breakdown.find((b) => b.option === optionId);
-    return option ? option.count : 0;
-  };
 
   return (
     <div className="flex min-h-screen flex-col bg-off-white">
@@ -167,116 +192,15 @@ function SingleQuestion({
         aria-label="Research questions"
       >
         <div className="w-full max-w-2xl">
-          <div className="mb-lg text-center">
-            <h1 className="mb-md text-5xl font-bold leading-none text-off-black md:text-6xl">
-              {question.title}
-            </h1>
-            <div className="mx-auto max-w-prose border-l-2 border-light-gray pl-md">
-              <p
-                id="question-description"
-                className="text-sm italic leading-relaxed text-warm-gray"
-              >
-                {question.description}
-              </p>
-            </div>
-          </div>
-
-          <div
-            className="space-y-md"
-            role="radiogroup"
-            aria-label={`Question: ${question.title}`}
-            aria-describedby="question-description"
-          >
-            {question.options.map((option, index) => {
-              const percentage = getVotePercentage(option.id);
-              const voteCount = getVoteCount(option.id);
-              const isSelected = selectedOption === option.id;
-              const isVotingThis = isVoting(question.id) && isSelected;
-
-              return (
-                <SlideIn key={option.id} delay={shouldReduceMotion ? 0 : index * 100}>
-                  <VoteButtonLoading
-                    isLoading={isVotingThis}
-                    onClick={() => {
-                      buttonClick();
-                      handleVote(option.id);
-                    }}
-                    disabled={showResults}
-                    className={cn(
-                      "w-full border-2 p-lg text-left transition-all",
-                      shouldReduceMotion ? "duration-0" : "duration-200",
-                      "relative flex min-h-[88px] flex-col justify-center overflow-hidden",
-                      !shouldReduceMotion && "hover:scale-[1.01] active:scale-[0.99]",
-                      isKeyboardUser &&
-                        "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
-                      showResults
-                        ? isSelected
-                          ? "border-primary bg-off-white text-off-black shadow-lg"
-                          : "border-light-gray bg-light-gray text-warm-gray"
-                        : "border-light-gray bg-off-white text-off-black hover:border-primary hover:shadow-md"
-                    )}
-                    role="radio"
-                    aria-checked={isSelected}
-                    aria-describedby={`option-${option.id}-description`}
-                    aria-label={`${option.text}${showResults ? `, ${percentage}% of votes, ${voteCount} total votes` : ""}`}
-                  >
-                    {showResults && (
-                      <>
-                        <div
-                          className="absolute inset-y-0 left-0 bg-primary/5 transition-all duration-500 ease-linear"
-                          style={{ width: `${percentage}%` }}
-                        />
-                        {isSelected && (
-                          <div className="absolute right-2 top-2">
-                            <div className="size-3 rounded-full bg-primary" />
-                          </div>
-                        )}
-                      </>
-                    )}
-                    <div className="relative z-10">
-                      <div className="flex items-start justify-between">
-                        <span className="text-xl font-bold leading-tight">{option.text}</span>
-                        {showResults && (
-                          <div className="ml-md text-right">
-                            <div className="flex items-center gap-sm">
-                              <div>
-                                <AnimatedCounter
-                                  value={percentage}
-                                  suffix="%"
-                                  className="font-mono text-xl font-bold text-primary"
-                                />
-                                <div className="font-mono text-sm text-warm-gray">
-                                  <AnimatedCounter
-                                    value={voteCount}
-                                    suffix={` vote${voteCount !== 1 ? "s" : ""}`}
-                                  />
-                                </div>
-                              </div>
-                              {isSelected && (
-                                <ProgressRing
-                                  progress={percentage}
-                                  size={32}
-                                  className="text-primary"
-                                />
-                              )}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                      {option.description && (
-                        <div
-                          id={`option-${option.id}-description`}
-                          className={cn("mt-sm text-base", "text-warm-gray")}
-                        >
-                          {option.description}
-                        </div>
-                      )}
-                    </div>
-                  </VoteButtonLoading>
-                </SlideIn>
-              );
-            })}
-          </div>
+          {/* Use QuestionRenderer for all question types */}
+          <QuestionRenderer
+            question={question}
+            onVote={handleVote}
+            currentIndex={currentIndex}
+            totalQuestions={totalQuestions}
+            disabled={showResults || isVoting(question.id)}
+            className="mb-lg"
+          />
 
           {showResults && (
             <div className="mt-lg space-y-md">
@@ -380,11 +304,11 @@ export function ResearchPage() {
   // Use optimized research page hook for better performance
   const { questions, isLoading, isError, error, refetch } = useResearchPageOptimization();
 
-  const handleVote = (optionId: string) => {
+  const handleVote = (responseData: any) => {
     const currentQuestion = questions[currentQuestionIndex];
     if (!currentQuestion) return;
 
-    console.log("Vote received for option:", optionId, "on question:", currentQuestion.id);
+    console.log("Vote received with data:", responseData, "on question:", currentQuestion.id);
 
     // XP toast is now handled by the SingleQuestion component with real XP values
 
@@ -393,9 +317,9 @@ export function ResearchPage() {
     newAnswered.add(currentQuestionIndex);
     setAnsweredQuestions(newAnswered);
 
-    // Store user response by question ID (not index)
+    // Store user response by question ID (not index) - now supports different response formats
     const newResponses = { ...userResponses };
-    newResponses[currentQuestion.id] = optionId;
+    newResponses[currentQuestion.id] = responseData;
     setUserResponses(newResponses);
 
     // Store responses in localStorage for completion page

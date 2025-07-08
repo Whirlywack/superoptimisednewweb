@@ -7,7 +7,18 @@ export interface ProcessedQuestion {
   id: string;
   title: string;
   description: string;
-  options: {
+  content?: {
+    type: string;
+    maxSelections?: number;
+    scale?: number;
+    variant?: string;
+    maxLength?: number;
+    placeholder?: string;
+    items?: any[];
+    optionA?: any;
+    optionB?: any;
+  };
+  options?: {
     id: string;
     text: string;
     description?: string;
@@ -20,9 +31,18 @@ export interface DatabaseQuestion {
   description: string | null;
   questionType: string;
   questionData: {
-    options?: string[];
+    type?: string;
+    options?: any[];
     optionLabels?: Record<string, string>;
     optionDescriptions?: Record<string, string>;
+    maxSelections?: number;
+    scale?: number;
+    variant?: string;
+    maxLength?: number;
+    placeholder?: string;
+    items?: any[];
+    optionA?: any;
+    optionB?: any;
   };
   category: string | null;
   responseCount: number;
@@ -51,21 +71,73 @@ export function useResearchPageOptimization() {
       return cached;
     }
 
-    const { questionData } = dbQuestion;
-    const options = questionData?.options || [];
-    const optionLabels = questionData?.optionLabels || {};
-    const optionDescriptions = questionData?.optionDescriptions || {};
-
+    const { questionData, questionType } = dbQuestion;
+    const questionDataType = questionData?.type || questionType || "binary";
+    
     const processed: ProcessedQuestion = {
       id: dbQuestion.id,
       title: dbQuestion.title,
       description: dbQuestion.description || "",
-      options: options.map((optionId: string) => ({
-        id: optionId,
-        text: optionLabels[optionId] || optionId,
-        description: optionDescriptions[optionId],
-      })),
+      content: {
+        type: questionDataType,
+        ...questionData,
+      },
     };
+
+    // Process options differently based on question type
+    switch (questionDataType) {
+      case "binary":
+      case "multi-choice":
+        const options = questionData?.options || [];
+        const optionLabels = questionData?.optionLabels || {};
+        const optionDescriptions = questionData?.optionDescriptions || {};
+        
+        processed.options = options.map((option: any) => {
+          // Handle both string arrays and object arrays
+          if (typeof option === "string") {
+            return {
+              id: option,
+              text: optionLabels[option] || option,
+              description: optionDescriptions[option],
+            };
+          } else if (typeof option === "object" && option.id) {
+            return {
+              id: option.id,
+              text: option.text || option.id,
+              description: option.description,
+            };
+          }
+          return { id: option, text: option };
+        });
+        break;
+
+      case "rating-scale":
+        processed.content.scale = questionData?.scale || 10;
+        processed.content.variant = questionData?.variant || "numbers";
+        break;
+
+      case "text-response":
+        processed.content.maxLength = questionData?.maxLength || 500;
+        processed.content.placeholder = questionData?.placeholder || "Enter your response...";
+        break;
+
+      case "ranking":
+        processed.content.items = questionData?.items || [];
+        break;
+
+      case "ab-test":
+        processed.content.optionA = questionData?.optionA;
+        processed.content.optionB = questionData?.optionB;
+        break;
+
+      default:
+        // Fallback to binary for unknown types
+        processed.content.type = "binary";
+        processed.options = [
+          { id: "option1", text: "Option 1" },
+          { id: "option2", text: "Option 2" },
+        ];
+    }
 
     // Cache the processed question
     processedQuestionsCache.current.set(dbQuestion.id, processed);
