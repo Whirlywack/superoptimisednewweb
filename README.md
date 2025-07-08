@@ -1198,22 +1198,35 @@ http://localhost:3000/admin
 
 // Authentication flow
 1. Unauthenticated → /auth/signin?callbackUrl=/admin
-2. Non-admin user → /admin/unauthorized
+2. Non-admin user → /unauthorized
 3. Admin user → /admin (dashboard)
 ```
 
-**Dashboard Overview:**
+**Elevated Brutalism Design System Implementation:**
 
-- **Statistics Cards**: Total questions, votes, newsletter subscribers, active users
-- **Quick Actions**: Navigate to question management, analytics, content management
-- **System Status**: Real-time operational status indicators
-- **Navigation Header**: Admin context with email display and sign-out
+**Admin Dashboard:**
 
-**Security Pages:**
+- **Terminal-style Interface**: Command-line aesthetic with `$ whoami`, `$ ls -la`, `$ status` commands
+- **Raw Directory Listing**: File system navigation instead of typical admin cards
+- **System Status**: Real-time operational status in terminal format
+- **Authentic Typography**: Pure monospace (JetBrains Mono) throughout
+- **Developer Notes**: Honest commentary about design philosophy
+- **Function over Form**: Direct access to tools without unnecessary visual polish
 
-- `/admin/unauthorized` - Clean error page for non-admin users
-- Styled with Elevated Brutalism design system
-- Clear calls-to-action (return home, sign out)
+**Admin Sign-in Page:**
+
+- **Terminal Authentication**: `$ sudo login --admin` command prompt styling
+- **Raw Form Design**: 2px borders, no gradients, shadows, or rounded corners
+- **Technical Details**: Shows target URLs, system messages, session expiration info
+- **Honest Loading States**: "[sending magic link...]" instead of generic spinners
+- **Security Context**: Clear admin-only messaging and requirements
+
+**Design Differentiation Achieved:**
+
+- Completely avoids generic admin dashboard patterns
+- No typical stat cards, widgets, or decorative icons
+- Terminal aesthetic creates memorable, distinctive interface
+- Follows authentic transparency and honest communication principles
 
 ### Testing Admin Access
 
