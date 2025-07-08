@@ -84,11 +84,27 @@ const QUESTION_BANK = [
     type: "multi-choice",
     description: "Select up to 3 features that matter most to you",
     options: [
-      { id: "hot-reload", text: "Hot Reload", description: "Instant code updates without losing state" },
-      { id: "type-safety", text: "TypeScript Integration", description: "Full type safety across the stack" },
-      { id: "debugging", text: "Advanced Debugging", description: "Source maps and error tracking" },
-      { id: "performance", text: "Performance Monitoring", description: "Real-time performance metrics" },
-      { id: "testing", text: "Testing Tools", description: "Integrated testing framework" }
+      {
+        id: "hot-reload",
+        text: "Hot Reload",
+        description: "Instant code updates without losing state",
+      },
+      {
+        id: "type-safety",
+        text: "TypeScript Integration",
+        description: "Full type safety across the stack",
+      },
+      {
+        id: "debugging",
+        text: "Advanced Debugging",
+        description: "Source maps and error tracking",
+      },
+      {
+        id: "performance",
+        text: "Performance Monitoring",
+        description: "Real-time performance metrics",
+      },
+      { id: "testing", text: "Testing Tools", description: "Integrated testing framework" },
     ],
     maxSelections: 3,
   },
@@ -120,13 +136,17 @@ const QUESTION_BANK = [
       { id: "speed", label: "Development Speed", description: "Fast iteration and deployment" },
       { id: "security", label: "Security", description: "Robust security measures" },
       { id: "scalability", label: "Scalability", description: "Handle growing user base" },
-      { id: "maintainability", label: "Code Maintainability", description: "Clean, readable codebase" },
-      { id: "user-experience", label: "User Experience", description: "Intuitive and polished UI" }
+      {
+        id: "maintainability",
+        label: "Code Maintainability",
+        description: "Clean, readable codebase",
+      },
+      { id: "user-experience", label: "User Experience", description: "Intuitive and polished UI" },
     ],
   },
   {
     id: "research-5",
-    category: "research", 
+    category: "research",
     text: "Which authentication approach would you prefer?",
     type: "ab-test",
     description: "Compare these two authentication methods",
@@ -137,7 +157,7 @@ const QUESTION_BANK = [
       pros: ["No passwords to remember", "More secure", "Faster login"],
       cons: ["Requires email access", "May end up in spam"],
       performance: "Fast (single API call)",
-      maintainability: "Low complexity"
+      maintainability: "Low complexity",
     },
     optionB: {
       id: "oauth",
@@ -146,7 +166,7 @@ const QUESTION_BANK = [
       pros: ["Familiar to users", "Quick setup", "Trusted providers"],
       cons: ["Third-party dependency", "Privacy concerns"],
       performance: "Medium (redirect flow)",
-      maintainability: "Medium complexity"
+      maintainability: "Medium complexity",
     },
   },
 ];
@@ -170,7 +190,8 @@ async function main() {
     // Handle different question types
     const questionType = questionData.type || "binary";
     let questionDataContent: Record<string, any> = {};
-    let description = questionData.description || `${questionType} question from ${questionData.category} category`;
+    const description =
+      questionData.description || `${questionType} question from ${questionData.category} category`;
 
     switch (questionType) {
       case "binary":
@@ -575,6 +596,40 @@ Stay tuned for the full launch!`,
     console.log(`  ✅ Created/updated post: ${postData.title}`);
   }
 
+  // ============================================================================
+  // ADMIN USER SEEDING (Phase 8.1.3)
+  // ============================================================================
+
+  console.log("\n👤 Creating admin users...");
+
+  // Create admin user accounts for development
+  const adminUsers = [
+    {
+      email: "admin@superoptimised.com",
+      name: "Admin User",
+      role: "admin" as const,
+      isAdmin: true,
+    },
+    {
+      email: "dev@superoptimised.com",
+      name: "Developer Admin",
+      role: "admin" as const,
+      isAdmin: true,
+    },
+  ];
+
+  for (const userData of adminUsers) {
+    await prisma.user.upsert({
+      where: { email: userData.email },
+      update: {
+        role: userData.role,
+        isAdmin: userData.isAdmin,
+      },
+      create: userData,
+    });
+    console.log(`  ✅ Created/updated admin user: ${userData.email}`);
+  }
+
   console.log("\n🎉 Database seeded successfully!");
   console.log(`📊 Summary:`);
   console.log(`  - ${QUESTION_BANK.length} questions created`);
@@ -582,6 +637,7 @@ Stay tuned for the full launch!`,
   console.log(`  - ${projectStats.length} project stats created`);
   console.log(`  - ${liveStats.length} live stats created`);
   console.log(`  - ${samplePosts.length} sample blog posts created`);
+  console.log(`  - ${adminUsers.length} admin users created`);
 }
 
 main()
