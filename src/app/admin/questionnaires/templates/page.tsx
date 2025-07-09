@@ -114,12 +114,14 @@ function TemplatePreviewModal({
 
             {/* Questions Preview */}
             <div>
-              <h3
-                className="mb-4 font-mono text-sm font-medium"
-                style={{ color: "var(--off-black)" }}
-              >
-                QUESTIONS_PREVIEW ({template.questions.length})
-              </h3>
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="font-mono text-sm font-medium" style={{ color: "var(--off-black)" }}>
+                  QUESTIONS_PREVIEW ({template.questions.length})
+                </h3>
+                <div className="font-mono text-xs" style={{ color: "var(--warm-gray)" }}>
+                  Click &quot;USE_TEMPLATE&quot; to customize these questions
+                </div>
+              </div>
               <div className="space-y-4">
                 {template.questions.map((question, index) => (
                   <div
@@ -200,29 +202,34 @@ function TemplatePreviewModal({
             backgroundColor: "var(--light-gray)",
           }}
         >
-          <div className="flex justify-end space-x-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-6 py-3 font-mono text-sm font-medium transition-colors hover:opacity-75"
-              style={{
-                backgroundColor: "var(--warm-gray)",
-                color: "var(--off-white)",
-              }}
-            >
-              CLOSE
-            </button>
-            <button
-              type="button"
-              onClick={() => onUseTemplate(template)}
-              className="px-6 py-3 font-mono text-sm font-medium transition-colors hover:opacity-90"
-              style={{
-                backgroundColor: "var(--primary)",
-                color: "var(--off-white)",
-              }}
-            >
-              USE_TEMPLATE
-            </button>
+          <div className="flex justify-between">
+            <div className="font-mono text-sm" style={{ color: "var(--warm-gray)" }}>
+              Ready to use this template?
+            </div>
+            <div className="flex space-x-4">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-6 py-3 font-mono text-sm font-medium transition-colors hover:opacity-75"
+                style={{
+                  backgroundColor: "var(--warm-gray)",
+                  color: "var(--off-white)",
+                }}
+              >
+                CLOSE
+              </button>
+              <button
+                type="button"
+                onClick={() => onUseTemplate(template)}
+                className="px-8 py-3 font-mono text-sm font-medium transition-colors hover:opacity-90"
+                style={{
+                  backgroundColor: "var(--primary)",
+                  color: "var(--off-white)",
+                }}
+              >
+                USE_TEMPLATE
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -491,24 +498,29 @@ export default function TemplateGalleryPage() {
 
                 {/* Card Actions */}
                 <div
-                  className="flex items-center justify-between px-6 py-4"
+                  className="flex items-center justify-between gap-3 px-6 py-4"
                   style={{ backgroundColor: "var(--light-gray)" }}
                 >
                   <button
                     type="button"
                     onClick={() => handlePreviewTemplate(template)}
-                    className="text-sm transition-colors hover:opacity-75"
-                    style={{ color: "var(--warm-gray)" }}
+                    className="flex-1 px-4 py-2 text-sm font-medium transition-colors hover:opacity-75"
+                    style={{
+                      backgroundColor: "var(--off-white)",
+                      color: "var(--warm-gray)",
+                      border: "1px solid var(--warm-gray)",
+                    }}
                   >
                     Preview
                   </button>
                   <button
                     type="button"
                     onClick={() => handleUseTemplate(template)}
-                    className="px-4 py-2 text-sm font-medium transition-colors hover:opacity-90"
+                    className="flex-1 px-4 py-2 text-sm font-medium transition-colors hover:opacity-90"
                     style={{
                       backgroundColor: "var(--primary)",
                       color: "var(--off-white)",
+                      border: "1px solid var(--primary)",
                     }}
                   >
                     Use Template
