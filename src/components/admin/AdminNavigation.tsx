@@ -19,12 +19,12 @@ export function AdminNavigation({ userEmail }: AdminNavigationProps) {
           transition: all 0.2s ease-out;
           text-decoration: none;
         }
-        
+
         .admin-nav-link:hover {
           background-color: var(--primary);
           color: var(--off-black);
         }
-        
+
         .admin-nav-signout {
           font-size: var(--text-sm);
           color: var(--off-black);
@@ -35,32 +35,32 @@ export function AdminNavigation({ userEmail }: AdminNavigationProps) {
           transition: all 0.2s ease-out;
           text-decoration: none;
         }
-        
+
         .admin-nav-signout:hover {
           background-color: var(--off-white);
         }
       `}</style>
-      
-      <header style={{ backgroundColor: 'var(--off-black)' }}>
+
+      <header style={{ backgroundColor: "var(--off-black)" }}>
         <div className="mx-auto max-w-7xl px-6 py-8">
           <div className="flex items-center justify-between">
             {/* Brand & Context - Brutalist Typography */}
             <div>
-              <h1 
+              <h1
                 className="font-bold uppercase tracking-tight"
-                style={{ 
-                  fontSize: 'var(--text-xl)', 
-                  color: 'var(--off-white)',
-                  letterSpacing: '-0.02em'
+                style={{
+                  fontSize: "var(--text-xl)",
+                  color: "var(--off-white)",
+                  letterSpacing: "-0.02em",
                 }}
               >
                 ADMINISTRATION
               </h1>
-              <div 
+              <div
                 className="mt-2 font-medium"
-                style={{ 
-                  fontSize: 'var(--text-sm)', 
-                  color: 'var(--warm-gray)' 
+                style={{
+                  fontSize: "var(--text-sm)",
+                  color: "var(--warm-gray)",
                 }}
               >
                 {userEmail}
@@ -68,12 +68,12 @@ export function AdminNavigation({ userEmail }: AdminNavigationProps) {
             </div>
 
             {/* Brutalist Navigation - Connected Buttons */}
-            <nav className="flex items-center" style={{ gap: '0' }}>
+            <nav className="flex items-center" style={{ gap: "0" }}>
               <a href="/admin" className="admin-nav-link">
                 Dashboard
               </a>
-              <a href="/admin/questions" className="admin-nav-link">
-                Questions
+              <a href="/admin/questionnaires" className="admin-nav-link">
+                Questionnaires
               </a>
               <a href="/admin/analytics" className="admin-nav-link">
                 Analytics
