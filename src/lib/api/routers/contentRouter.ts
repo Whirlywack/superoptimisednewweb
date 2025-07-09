@@ -545,4 +545,63 @@ export const contentRouter = createTRPCRouter({
         return template;
       }, "useContentTemplate");
     }),
+
+  // Project Stats CRUD operations
+  createProjectStat: publicProcedure
+    .input(
+      z.object({
+        statKey: z.string().min(1).max(100),
+        statValue: z.string().min(1).max(500),
+        description: z.string().optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      return safeExecute(async () => {
+        const stat = await prisma.projectStat.create({
+          data: {
+            statKey: input.statKey,
+            statValue: input.statValue,
+            description: input.description,
+          },
+        });
+
+        return stat;
+      }, "createProjectStat");
+    }),
+
+  updateProjectStat: publicProcedure
+    .input(
+      z.object({
+        statKey: z.string(),
+        statValue: z.string().min(1).max(500).optional(),
+        description: z.string().optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      return safeExecute(async () => {
+        const { statKey, ...updateData } = input;
+
+        const stat = await prisma.projectStat.update({
+          where: { statKey },
+          data: {
+            ...updateData,
+            lastUpdated: new Date(),
+          },
+        });
+
+        return stat;
+      }, "updateProjectStat");
+    }),
+
+  deleteProjectStat: publicProcedure
+    .input(z.object({ statKey: z.string() }))
+    .mutation(async ({ input }) => {
+      return safeExecute(async () => {
+        await prisma.projectStat.delete({
+          where: { statKey: input.statKey },
+        });
+
+        return { success: true };
+      }, "deleteProjectStat");
+    }),
 });

@@ -81,6 +81,12 @@ export function AdminNavigation({ userEmail }: AdminNavigationProps) {
               <a href="/admin/content" className="admin-nav-link">
                 Content
               </a>
+              <a href="/admin/content-preview" className="admin-nav-link">
+                Preview
+              </a>
+              <a href="/admin/stats" className="admin-nav-link">
+                Stats
+              </a>
               <a href="/auth/signout" className="admin-nav-signout">
                 Sign Out
               </a>

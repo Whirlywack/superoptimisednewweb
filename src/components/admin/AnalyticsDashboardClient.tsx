@@ -48,6 +48,7 @@ interface AnalyticsDashboardClientProps {
 
 export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDashboardClientProps) {
   const [selectedTimeRange, setSelectedTimeRange] = useState("7d");
+  const isDevelopment = process.env.NODE_ENV === "development";
 
   // Real analytics data from tRPC
   const { data: websiteStats } = api.analytics.getWebsiteStats.useQuery();
@@ -435,7 +436,7 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                               marginBottom: "2px",
                             }}
                           >
-                            {page.page || (page as any).path}
+                            {page.page || (page as { path?: string }).path}
                           </h3>
                           <div
                             style={{
@@ -614,7 +615,9 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                               color: "var(--warm-gray)",
                             }}
                           >
-                            {questionnaire.submissions || (questionnaire as any).responses || 0}{" "}
+                            {questionnaire.submissions ||
+                              (questionnaire as { responses?: number }).responses ||
+                              0}{" "}
                             {questionnaire.submissions ? "submissions" : "responses"}
                           </div>
                         </div>
@@ -629,7 +632,7 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                         >
                           {questionnaire.completionRate
                             ? `${questionnaire.completionRate}%`
-                            : (questionnaire as any).completion || "N/A"}
+                            : (questionnaire as { completion?: string }).completion || "N/A"}
                         </div>
                       </div>
                     </div>
