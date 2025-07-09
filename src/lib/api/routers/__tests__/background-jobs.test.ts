@@ -41,7 +41,7 @@ jest.mock("../../background-jobs", () => ({
   cleanupStaleData: jest.fn(),
 }));
 
-jest.mock("../../email/sendEmail", () => ({
+jest.mock("../../../lib/email/sendEmail", () => ({
   sendMilestoneEmail: jest.fn(),
   sendStreakEmail: jest.fn(),
 }));
@@ -55,16 +55,24 @@ import {
   updateLiveStats,
   sendMilestoneNotification,
   cleanupStaleData,
-} from "../../background-jobs";
-import { sendMilestoneEmail, sendStreakEmail } from "../../email/sendEmail";
+} from "../../../background-jobs";
+import { sendMilestoneEmail, sendStreakEmail } from "../../../lib/email/sendEmail";
 
 const mockPrisma = prisma as jest.Mocked<typeof prisma>;
-const mockQueueVoteEnhancement = queueVoteEnhancement as jest.MockedFunction<typeof queueVoteEnhancement>;
-const mockProcessVoteEnhancement = processVoteEnhancement as jest.MockedFunction<typeof processVoteEnhancement>;
+const mockQueueVoteEnhancement = queueVoteEnhancement as jest.MockedFunction<
+  typeof queueVoteEnhancement
+>;
+const mockProcessVoteEnhancement = processVoteEnhancement as jest.MockedFunction<
+  typeof processVoteEnhancement
+>;
 const mockCalculateXpForVote = calculateXpForVote as jest.MockedFunction<typeof calculateXpForVote>;
-const mockUpdateEngagementStats = updateEngagementStats as jest.MockedFunction<typeof updateEngagementStats>;
+const mockUpdateEngagementStats = updateEngagementStats as jest.MockedFunction<
+  typeof updateEngagementStats
+>;
 const mockUpdateLiveStats = updateLiveStats as jest.MockedFunction<typeof updateLiveStats>;
-const mockSendMilestoneNotification = sendMilestoneNotification as jest.MockedFunction<typeof sendMilestoneNotification>;
+const mockSendMilestoneNotification = sendMilestoneNotification as jest.MockedFunction<
+  typeof sendMilestoneNotification
+>;
 const mockCleanupStaleData = cleanupStaleData as jest.MockedFunction<typeof cleanupStaleData>;
 const mockSendMilestoneEmail = sendMilestoneEmail as jest.MockedFunction<typeof sendMilestoneEmail>;
 const mockSendStreakEmail = sendStreakEmail as jest.MockedFunction<typeof sendStreakEmail>;
@@ -180,7 +188,7 @@ describe("Background Job Processing", () => {
     });
 
     it("should handle XP calculation during processing", async () => {
-      const mockJobData = {
+      const _mockJobData = {
         voteId: "vote-1",
         voterTokenId: "voter-1",
         questionId: "question-1",
@@ -358,10 +366,12 @@ describe("Background Job Processing", () => {
     });
 
     it("should handle concurrent live stat updates", async () => {
-      const mockConcurrentUpdates = Array(10).fill(null).map((_, i) => ({
-        statKey: "total_votes",
-        statValue: 1000 + i,
-      }));
+      const mockConcurrentUpdates = Array(10)
+        .fill(null)
+        .map((_, i) => ({
+          statKey: "total_votes",
+          statValue: 1000 + i,
+        }));
 
       mockPrisma.liveStat.upsert.mockImplementation(async (args) => ({
         id: "stat-1",
@@ -370,7 +380,7 @@ describe("Background Job Processing", () => {
         lastUpdated: new Date(),
       }));
 
-      const promises = mockConcurrentUpdates.map(update =>
+      const promises = mockConcurrentUpdates.map((update) =>
         mockPrisma.liveStat.upsert({
           where: { statKey: update.statKey },
           create: update,
@@ -453,7 +463,7 @@ describe("Background Job Processing", () => {
 
   describe("Data Cleanup Jobs", () => {
     it("should cleanup stale vote enhancement jobs", async () => {
-      const mockStaleJobs = [
+      const _mockStaleJobs = [
         { id: "job-1", createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000) },
         { id: "job-2", createdAt: new Date(Date.now() - 72 * 60 * 60 * 1000) },
       ];
@@ -531,7 +541,7 @@ describe("Background Job Processing", () => {
       });
 
       const startTime = Date.now();
-      
+
       mockProcessVoteEnhancement.mockResolvedValue({
         success: true,
         xpAwarded: 10,
@@ -540,7 +550,7 @@ describe("Background Job Processing", () => {
       });
 
       await processVoteEnhancement(mockJobData);
-      
+
       const endTime = Date.now();
       const processingTime = endTime - startTime;
 
@@ -549,13 +559,15 @@ describe("Background Job Processing", () => {
     });
 
     it("should handle high-volume job processing", async () => {
-      const mockJobs = Array(100).fill(null).map((_, i) => ({
-        voteId: `vote-${i}`,
-        voterTokenId: `voter-${i}`,
-        questionId: "question-1",
-        isNewVoter: false,
-        submittedAt: new Date(),
-      }));
+      const mockJobs = Array(100)
+        .fill(null)
+        .map((_, i) => ({
+          voteId: `vote-${i}`,
+          voterTokenId: `voter-${i}`,
+          questionId: "question-1",
+          isNewVoter: false,
+          submittedAt: new Date(),
+        }));
 
       mockProcessVoteEnhancement.mockResolvedValue({
         success: true,
@@ -565,18 +577,18 @@ describe("Background Job Processing", () => {
       });
 
       const startTime = Date.now();
-      
+
       // Process jobs in batches
       const batchSize = 10;
       const batches = [];
-      
+
       for (let i = 0; i < mockJobs.length; i += batchSize) {
         const batch = mockJobs.slice(i, i + batchSize);
-        batches.push(Promise.all(batch.map(job => processVoteEnhancement(job))));
+        batches.push(Promise.all(batch.map((job) => processVoteEnhancement(job))));
       }
 
       await Promise.all(batches);
-      
+
       const endTime = Date.now();
       const totalTime = endTime - startTime;
 
@@ -609,7 +621,7 @@ describe("Background Job Processing", () => {
       // Simulate retry logic
       let attempts = 0;
       let result;
-      
+
       while (attempts < 3) {
         try {
           result = await processVoteEnhancement(mockJobData);
@@ -642,7 +654,7 @@ describe("Background Job Processing", () => {
   describe("Job Monitoring and Logging", () => {
     it("should log job processing metrics", async () => {
       const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
-      
+
       const mockJobData = {
         voteId: "vote-1",
         voterTokenId: "voter-1",

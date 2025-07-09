@@ -11,26 +11,11 @@ interface TagProps extends React.HTMLAttributes<HTMLSpanElement> {
 }
 
 const tagVariants = {
-  default: [
-    "bg-primary/10 text-primary",
-    "border-primary/20",
-  ],
-  secondary: [
-    "bg-light-gray text-warm-gray",
-    "border-light-gray",
-  ],
-  success: [
-    "bg-light-gray text-primary",
-    "border-primary",
-  ],
-  warning: [
-    "bg-light-gray text-warm-gray",
-    "border-warm-gray",
-  ],
-  danger: [
-    "bg-light-gray text-warm-gray",
-    "border-warm-gray",
-  ],
+  default: ["bg-primary/10 text-primary", "border-primary/20"],
+  secondary: ["bg-light-gray text-warm-gray", "border-light-gray"],
+  success: ["bg-light-gray text-primary", "border-primary"],
+  warning: ["bg-light-gray text-warm-gray", "border-warm-gray"],
+  danger: ["bg-light-gray text-warm-gray", "border-warm-gray"],
 };
 
 const tagSizes = {
@@ -59,6 +44,7 @@ export function Tag({
         tagVariants[variant],
         className
       )}
+      data-testid="tag"
       {...props}
     >
       {children}
@@ -69,12 +55,13 @@ export function Tag({
           className={cn(
             "inline-flex items-center justify-center",
             "rounded-full",
-            "hover:bg-current hover:bg-opacity-20",
+            "hover:bg-current/20",
             "transition-colors",
             "focus:outline-none focus:ring-1 focus:ring-current",
             size === "sm" ? "size-3" : size === "md" ? "size-4" : "size-5"
           )}
           aria-label="Remove tag"
+          data-testid="remove-tag"
         >
           <X className={size === "sm" ? "size-2" : size === "md" ? "size-2.5" : "size-3"} />
         </button>
@@ -92,7 +79,8 @@ interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 const badgeVariants = {
   default: "bg-primary text-off-white",
   secondary: "bg-light-gray text-warm-gray",
-  outline: "border border-light-gray bg-off-white dark:bg-off-black text-off-black dark:text-off-white",
+  outline:
+    "border border-light-gray bg-off-white dark:bg-off-black text-off-black dark:text-off-white",
   success: "bg-primary text-off-white",
   warning: "bg-warm-gray text-off-white",
   danger: "bg-warm-gray text-off-white",
