@@ -223,7 +223,7 @@ function TemplatePreviewModal({
                 onClick={() => onUseTemplate(template)}
                 className="px-8 py-3 font-mono text-sm font-medium transition-colors hover:opacity-90"
                 style={{
-                  backgroundColor: "var(--primary)",
+                  backgroundColor: "var(--off-black)",
                   color: "var(--off-white)",
                 }}
               >
@@ -507,8 +507,8 @@ export default function TemplateGalleryPage() {
                     className="flex-1 px-4 py-2 text-sm font-medium transition-colors hover:opacity-75"
                     style={{
                       backgroundColor: "var(--off-white)",
-                      color: "var(--warm-gray)",
-                      border: "1px solid var(--warm-gray)",
+                      color: "var(--off-black)",
+                      border: "2px solid var(--off-black)",
                     }}
                   >
                     Preview
@@ -518,9 +518,9 @@ export default function TemplateGalleryPage() {
                     onClick={() => handleUseTemplate(template)}
                     className="flex-1 px-4 py-2 text-sm font-medium transition-colors hover:opacity-90"
                     style={{
-                      backgroundColor: "var(--primary)",
+                      backgroundColor: "var(--off-black)",
                       color: "var(--off-white)",
-                      border: "1px solid var(--primary)",
+                      border: "2px solid var(--off-black)",
                     }}
                   >
                     Use Template

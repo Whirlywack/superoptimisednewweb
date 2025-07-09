@@ -676,10 +676,10 @@ function QuestionTypeSelector({
                 </div>
 
                 <div
-                  className="px-6 py-3 text-center"
-                  style={{ backgroundColor: "var(--light-gray)" }}
+                  className="px-6 py-3 text-center transition-colors hover:opacity-90"
+                  style={{ backgroundColor: "var(--off-black)" }}
                 >
-                  <span className="text-sm font-medium" style={{ color: "var(--primary)" }}>
+                  <span className="text-sm font-medium" style={{ color: "var(--off-white)" }}>
                     Select
                   </span>
                 </div>
@@ -930,7 +930,7 @@ export default function NewQuestionnairePage() {
                 href="/admin/questionnaires/templates"
                 className="inline-flex items-center px-4 py-2 font-mono text-sm font-medium transition-colors hover:opacity-90"
                 style={{
-                  backgroundColor: "var(--primary)",
+                  backgroundColor: "var(--off-black)",
                   color: "var(--off-white)",
                 }}
               >
@@ -953,7 +953,7 @@ export default function NewQuestionnairePage() {
                 type="button"
                 className="px-4 py-2 font-mono text-sm font-medium transition-colors hover:opacity-90"
                 style={{
-                  backgroundColor: "var(--primary)",
+                  backgroundColor: "var(--off-black)",
                   color: "var(--off-white)",
                 }}
                 onClick={() => {
@@ -1092,7 +1092,7 @@ export default function NewQuestionnairePage() {
                     onClick={startNewQuestion}
                     className="px-4 py-2 font-mono text-sm font-medium transition-colors hover:opacity-90"
                     style={{
-                      backgroundColor: "var(--primary)",
+                      backgroundColor: "var(--off-black)",
                       color: "var(--off-white)",
                     }}
                   >
@@ -1117,7 +1117,7 @@ export default function NewQuestionnairePage() {
                       onClick={startNewQuestion}
                       className="px-6 py-3 font-mono text-sm font-medium transition-colors hover:opacity-90"
                       style={{
-                        backgroundColor: "var(--primary)",
+                        backgroundColor: "var(--off-black)",
                         color: "var(--off-white)",
                       }}
                     >
@@ -1246,7 +1246,7 @@ export default function NewQuestionnairePage() {
                                 }}
                                 className="px-3 py-1 text-xs font-medium transition-colors hover:opacity-90"
                                 style={{
-                                  backgroundColor: "var(--primary)",
+                                  backgroundColor: "var(--off-black)",
                                   color: "var(--off-white)",
                                 }}
                                 title="Edit question"
