@@ -99,7 +99,7 @@ export function ProjectProgress({
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           <H4 className={cn(sizeClasses[size].title, "mb-1")}>
             {title}
           </H4>
@@ -113,7 +113,7 @@ export function ProjectProgress({
 
         {/* Status Badge */}
         <div className={cn(
-          "flex items-center gap-1.5 px-2.5 py-1 rounded-full",
+          "flex items-center gap-1.5 rounded-full px-2.5 py-1",
           config.bgColor
         )}>
           <LucideIcon

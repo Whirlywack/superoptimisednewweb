@@ -111,7 +111,7 @@ export function NotificationBanner({
         variantClasses[variant],
         sizeClasses[size].container,
         sizeClasses[size].spacing,
-        variant === "banner" && "border-l-4 border-l-current border-r-0 border-t-0 border-b-0",
+        variant === "banner" && "border-y-0 border-l-4 border-r-0 border-l-current",
         variant !== "banner" && "border",
         className
       )}
@@ -122,13 +122,13 @@ export function NotificationBanner({
       <LucideIcon
         icon={IconComponent}
         size={sizeClasses[size].icon}
-        className={cn(config.iconColor, "flex-shrink-0 mt-0.5")}
+        className={cn(config.iconColor, "mt-0.5 shrink-0")}
       />
 
       {/* Content */}
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         {title && (
-          <div className={cn("font-semibold mb-1", config.textColor, sizeClasses[size].text)}>
+          <div className={cn("mb-1 font-semibold", config.textColor, sizeClasses[size].text)}>
             {title}
           </div>
         )}
@@ -148,7 +148,7 @@ export function NotificationBanner({
           <button
             onClick={action.onClick}
             className={cn(
-              "mt-3 px-3 py-1.5 text-sm font-medium rounded-md",
+              "mt-3 rounded-md px-3 py-1.5 text-sm font-medium",
               "border border-current",
               "hover:bg-current hover:bg-opacity-10",
               "transition-colors duration-200",
@@ -169,7 +169,7 @@ export function NotificationBanner({
           size="sm"
           aria-label="Dismiss notification"
           className={cn(
-            "flex-shrink-0 ml-2",
+            "ml-2 shrink-0",
             config.textColor,
             "hover:bg-current hover:bg-opacity-20"
           )}

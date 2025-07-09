@@ -99,7 +99,7 @@ export function TechDebtTolerance({
       level: 'low',
       label: 'Low Tolerance',
       description: 'Prefer to address technical debt immediately, even if it slows down feature development',
-      icon: <Shield className="w-5 h-5" />,
+      icon: <Shield className="size-5" />,
       color: 'text-red-500',
       traits: ['Quality-focused', 'Risk-averse', 'Long-term thinking', 'Process-oriented']
     },
@@ -107,7 +107,7 @@ export function TechDebtTolerance({
       level: 'medium',
       label: 'Balanced Approach',
       description: 'Accept some technical debt for short-term gains, but regularly prioritize cleanup',
-      icon: <Balance className="w-5 h-5" />,
+      icon: <Balance className="size-5" />,
       color: 'text-yellow-500',
       traits: ['Pragmatic', 'Context-aware', 'Strategic', 'Balanced perspective']
     },
@@ -115,7 +115,7 @@ export function TechDebtTolerance({
       level: 'high',
       label: 'High Tolerance',
       description: 'Accept significant technical debt to move fast, address it only when it becomes critical',
-      icon: <Zap className="w-5 h-5" />,
+      icon: <Zap className="size-5" />,
       color: 'text-green-500',
       traits: ['Speed-focused', 'Adaptable', 'Result-oriented', 'High-pressure tolerance']
     }
@@ -132,26 +132,26 @@ export function TechDebtTolerance({
 
   const getImpactIcon = (level: 'low' | 'medium' | 'high') => {
     const icons = {
-      low: <CheckCircle className="w-4 h-4" />,
-      medium: <AlertTriangle className="w-4 h-4" />,
-      high: <XCircle className="w-4 h-4" />
+      low: <CheckCircle className="size-4" />,
+      medium: <AlertTriangle className="size-4" />,
+      high: <XCircle className="size-4" />
     };
     return icons[level];
   };
 
   const renderScaleVariant = () => (
     <div className="space-y-4">
-      <div className="flex items-center justify-between text-sm text-warm-gray mb-4">
+      <div className="mb-4 flex items-center justify-between text-sm text-warm-gray">
         <span className="flex items-center gap-2">
-          <Shield className="w-4 h-4" />
+          <Shield className="size-4" />
           Low Tolerance
         </span>
         <span className="flex items-center gap-2">
-          <Balance className="w-4 h-4" />
+          <Balance className="size-4" />
           Balanced
         </span>
         <span className="flex items-center gap-2">
-          <Zap className="w-4 h-4" />
+          <Zap className="size-4" />
           High Tolerance
         </span>
       </div>
@@ -169,17 +169,17 @@ export function TechDebtTolerance({
           }}
           disabled={disabled}
           className={cn(
-            "w-full h-3 bg-light-gray rounded-lg appearance-none cursor-pointer",
+            "h-3 w-full cursor-pointer appearance-none rounded-lg bg-light-gray",
             "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
-            disabled && "opacity-50 cursor-not-allowed"
+            disabled && "cursor-not-allowed opacity-50"
           )}
         />
-        <div className="flex justify-between mt-2">
+        <div className="mt-2 flex justify-between">
           {toleranceOptions.map((option) => (
             <div
               key={option.level}
               className={cn(
-                "text-center px-2",
+                "px-2 text-center",
                 selectedTolerance === option.level ? option.color : 'text-warm-gray'
               )}
             >
@@ -191,8 +191,8 @@ export function TechDebtTolerance({
       </div>
       
       {selectedTolerance && (
-        <div className="mt-4 p-4 bg-light-gray/30 rounded-lg">
-          <div className="font-medium text-off-black dark:text-off-white mb-2">
+        <div className="mt-4 rounded-lg bg-light-gray/30 p-4">
+          <div className="mb-2 font-medium text-off-black dark:text-off-white">
             {toleranceOptions.find(opt => opt.level === selectedTolerance)?.label}
           </div>
           <p className="text-sm text-warm-gray">
@@ -204,7 +204,7 @@ export function TechDebtTolerance({
   );
 
   const renderCardsVariant = () => (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
       {toleranceOptions.map((option) => {
         const isSelected = selectedTolerance === option.level;
         
@@ -213,17 +213,17 @@ export function TechDebtTolerance({
             key={option.level}
             type="button"
             className={cn(
-              "p-6 rounded-lg border-2 transition-all duration-200 text-left",
+              "rounded-lg border-2 p-6 text-left transition-all duration-200",
               "hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
               isSelected
                 ? "border-primary bg-primary/10"
                 : "border-light-gray dark:border-warm-gray/30",
-              disabled && "opacity-50 cursor-not-allowed"
+              disabled && "cursor-not-allowed opacity-50"
             )}
             onClick={() => !disabled && handleSelect(option.level)}
             disabled={disabled}
           >
-            <div className="flex items-center space-x-3 mb-4">
+            <div className="mb-4 flex items-center space-x-3">
               <div className={cn("transition-colors", isSelected ? option.color : 'text-warm-gray')}>
                 {option.icon}
               </div>
@@ -232,7 +232,7 @@ export function TechDebtTolerance({
               </h3>
             </div>
             
-            <p className="text-sm text-warm-gray mb-4 leading-relaxed">
+            <p className="mb-4 text-sm leading-relaxed text-warm-gray">
               {option.description}
             </p>
             
@@ -245,7 +245,7 @@ export function TechDebtTolerance({
                   {option.traits.map((trait, index) => (
                     <span
                       key={index}
-                      className="px-2 py-1 text-xs bg-warm-gray/10 text-warm-gray rounded"
+                      className="rounded bg-warm-gray/10 px-2 py-1 text-xs text-warm-gray"
                     >
                       {trait}
                     </span>
@@ -265,31 +265,31 @@ export function TechDebtTolerance({
     return (
       <div className="space-y-6">
         {/* Scenario Description */}
-        <div className="p-6 bg-light-gray/30 rounded-lg">
-          <h3 className="font-medium text-off-black dark:text-off-white mb-3">
+        <div className="rounded-lg bg-light-gray/30 p-6">
+          <h3 className="mb-3 font-medium text-off-black dark:text-off-white">
             Scenario: {scenario.title}
           </h3>
-          <p className="text-sm text-warm-gray mb-4 leading-relaxed">
+          <p className="mb-4 text-sm leading-relaxed text-warm-gray">
             {scenario.description}
           </p>
           
           {/* Scenario Metrics */}
           <div className="grid grid-cols-3 gap-4">
             <div className="text-center">
-              <div className={cn("inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium", getImpactColor(scenario.impact))}>
+              <div className={cn("inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium", getImpactColor(scenario.impact))}>
                 {getImpactIcon(scenario.impact)}
                 Impact: {scenario.impact}
               </div>
             </div>
             <div className="text-center">
-              <div className={cn("inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium", getImpactColor(scenario.urgency))}>
-                <Clock className="w-4 h-4" />
+              <div className={cn("inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium", getImpactColor(scenario.urgency))}>
+                <Clock className="size-4" />
                 Urgency: {scenario.urgency}
               </div>
             </div>
             <div className="text-center">
-              <div className={cn("inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium", getImpactColor(scenario.effort))}>
-                <TrendingUp className="w-4 h-4" />
+              <div className={cn("inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium", getImpactColor(scenario.effort))}>
+                <TrendingUp className="size-4" />
                 Effort: {scenario.effort}
               </div>
             </div>
@@ -297,7 +297,7 @@ export function TechDebtTolerance({
           
           {/* Trade-offs */}
           {showTradeoffs && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="space-y-2">
                 <h4 className="text-sm font-medium text-green-600 dark:text-green-400">
                   Short-term benefits:
@@ -344,7 +344,7 @@ export function TechDebtTolerance({
           {question}
         </QuestionLabel>
         {description && (
-          <p className="text-warm-gray text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-warm-gray">
             {description}
           </p>
         )}
@@ -354,8 +354,8 @@ export function TechDebtTolerance({
       {renderVariant()}
 
       {/* Context Information */}
-      <div className="flex items-start space-x-2 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-        <AlertTriangle className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+      <div className="flex items-start space-x-2 rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
+        <AlertTriangle className="mt-0.5 size-5 shrink-0 text-blue-600 dark:text-blue-400" />
         <div className="text-sm text-blue-800 dark:text-blue-300">
           <strong>Consider:</strong> Team experience, project timeline, business priorities, 
           and long-term maintenance when evaluating technical debt tolerance.

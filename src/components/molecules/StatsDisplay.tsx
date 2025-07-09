@@ -170,7 +170,7 @@ export function StatsDisplay({
             )}
           >
             <div className="flex items-start justify-between">
-              <div className="flex-1 min-w-0">
+              <div className="min-w-0 flex-1">
                 <div className={cn("font-bold text-off-black dark:text-off-white", sizeClasses[size].value)}>
                   {formatValue(stat.value)}
                 </div>
@@ -183,13 +183,13 @@ export function StatsDisplay({
                 <LucideIcon
                   icon={IconComponent}
                   size={sizeClasses[size].icon}
-                  className="text-primary flex-shrink-0"
+                  className="shrink-0 text-primary"
                 />
               )}
             </div>
 
             {showChanges && stat.change && (
-              <div className={cn("flex items-center gap-1 mt-2", trendColors[stat.change.type])}>
+              <div className={cn("mt-2 flex items-center gap-1", trendColors[stat.change.type])}>
                 <LucideIcon
                   icon={trendIcons[stat.change.type]}
                   size="xs"

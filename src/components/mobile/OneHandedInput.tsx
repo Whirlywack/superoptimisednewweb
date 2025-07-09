@@ -347,14 +347,14 @@ export function OneHandedInput({
     <div className={cn(getPositionStyles(), className)}>
       <div 
         className={cn(
-          "bg-white dark:bg-gray-900 border-t border-light-gray dark:border-gray-700 shadow-lg",
+          "border-t border-light-gray bg-white shadow-lg dark:border-gray-700 dark:bg-gray-900",
           sizeStyles.container
         )}
       >
         {/* Validation Message */}
         {validationMessage && (
           <div className={cn(
-            "px-4 py-2 text-sm mb-3 rounded-lg",
+            "mb-3 rounded-lg px-4 py-2 text-sm",
             {
               'bg-primary/10 text-primary dark:bg-primary/10 dark:text-primary': validationState === 'success',
               'bg-light-gray text-warm-gray dark:bg-gray-800 dark:text-warm-gray': validationState === 'warning',
@@ -368,7 +368,7 @@ export function OneHandedInput({
         {/* Input Container */}
         <div className="relative">
           <div className={cn(
-            "flex items-end gap-3 bg-light-gray dark:bg-gray-800 rounded-xl border-2 transition-colors",
+            "flex items-end gap-3 rounded-xl border-2 bg-light-gray transition-colors dark:bg-gray-800",
             getValidationStyles(),
             {
               'ring-2 ring-offset-2 ring-offset-white dark:ring-offset-gray-900': isFocused,
@@ -404,7 +404,7 @@ export function OneHandedInput({
             )}
             
             {/* Input Field */}
-            <div className="flex-1 min-w-0">
+            <div className="min-w-0 flex-1">
               {isTextarea ? (
                 <textarea
                   ref={inputRef as React.RefObject<HTMLTextAreaElement>}
@@ -418,7 +418,7 @@ export function OneHandedInput({
                   rows={minRows}
                   disabled={disabled}
                   className={cn(
-                    "w-full bg-transparent border-none outline-none resize-none placeholder-warm-gray text-off-black dark:text-off-white",
+                    "w-full resize-none border-none bg-transparent text-off-black outline-none placeholder:text-warm-gray dark:text-off-white",
                     sizeStyles.input
                   )}
                   style={{ height: autoResize ? textareaHeight : 'auto' }}
@@ -436,7 +436,7 @@ export function OneHandedInput({
                   maxLength={maxLength}
                   disabled={disabled}
                   className={cn(
-                    "w-full bg-transparent border-none outline-none placeholder-warm-gray text-off-black dark:text-off-white",
+                    "w-full border-none bg-transparent text-off-black outline-none placeholder:text-warm-gray dark:text-off-white",
                     sizeStyles.input
                   )}
                 />
@@ -451,8 +451,8 @@ export function OneHandedInput({
                   onClick={handleClear}
                   disabled={disabled}
                   className={cn(
-                    "flex items-center justify-center rounded-full text-warm-gray hover:text-primary transition-colors",
-                    "w-8 h-8"
+                    "flex items-center justify-center rounded-full text-warm-gray transition-colors hover:text-primary",
+                    "size-8"
                   )}
                   title="Clear input"
                 >
@@ -488,7 +488,7 @@ export function OneHandedInput({
         
         {/* Footer Info */}
         {(showCounter || showWordCounter) && (
-          <div className="flex justify-between items-center mt-2 px-2 text-xs text-warm-gray">
+          <div className="mt-2 flex items-center justify-between px-2 text-xs text-warm-gray">
             <div className="flex gap-4">
               {showWordCounter && isTextarea && (
                 <span>

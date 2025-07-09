@@ -93,7 +93,7 @@ export function Focusable({
   return (
     <Component
       className={cn(
-        "focus:outline-none transition-all duration-200",
+        "transition-all duration-200 focus:outline-none",
         !disabled && [
           "focus-visible:ring-opacity-50",
           focusVariants[variant],
@@ -101,7 +101,7 @@ export function Focusable({
           focusOffsets[offset],
           focusShapes[shape],
         ],
-        disabled && "opacity-50 cursor-not-allowed",
+        disabled && "cursor-not-allowed opacity-50",
         className
       )}
       tabIndex={disabled ? -1 : 0}
@@ -228,9 +228,9 @@ export function SkipLink({
       href={href}
       className={cn(
         "absolute left-0 top-0 z-50",
-        "px-4 py-2 bg-primary text-primary-foreground",
-        "font-medium text-sm",
-        "transform -translate-y-full",
+        "bg-primary px-4 py-2 text-primary-foreground",
+        "text-sm font-medium",
+        "-translate-y-full",
         "focus:translate-y-0 focus:outline-none",
         "transition-transform duration-200",
         focusVariants.primary,

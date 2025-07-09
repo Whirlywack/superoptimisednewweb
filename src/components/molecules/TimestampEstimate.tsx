@@ -151,7 +151,7 @@ export function TimestampEstimate({
           {question}
         </QuestionLabel>
         {description && (
-          <p className="text-warm-gray text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-warm-gray">
             {description}
           </p>
         )}
@@ -169,13 +169,13 @@ export function TimestampEstimate({
                 key={index}
                 type="button"
                 className={cn(
-                  "px-3 py-2 text-sm rounded-lg border transition-colors",
+                  "rounded-lg border px-3 py-2 text-sm transition-colors",
                   "hover:border-primary hover:bg-primary/5",
                   "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
                   estimate.value === preset.value.value && estimate.unit === preset.value.unit
                     ? "border-primary bg-primary/10 text-primary"
                     : "border-light-gray text-warm-gray",
-                  disabled && "opacity-50 cursor-not-allowed"
+                  disabled && "cursor-not-allowed opacity-50"
                 )}
                 onClick={() => !disabled && handlePresetSelect(preset.value)}
                 disabled={disabled}
@@ -207,11 +207,11 @@ export function TimestampEstimate({
               onChange={(e) => handleValueChange(parseInt(e.target.value) || 1)}
               disabled={disabled}
               className={cn(
-                "w-full px-4 py-3 border border-light-gray rounded-lg",
-                "focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent",
-                "text-lg font-semibold text-center",
-                "bg-off-white dark:bg-off-black text-off-black dark:text-off-white",
-                disabled && "opacity-50 cursor-not-allowed",
+                "w-full rounded-lg border border-light-gray px-4 py-3",
+                "focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary",
+                "text-center text-lg font-semibold",
+                "bg-off-white text-off-black dark:bg-off-black dark:text-off-white",
+                disabled && "cursor-not-allowed opacity-50",
                 error && "border-red-500"
               )}
             />
@@ -227,10 +227,10 @@ export function TimestampEstimate({
               onChange={(e) => handleUnitChange(e.target.value as TimeUnit['unit'])}
               disabled={disabled}
               className={cn(
-                "w-full px-4 py-3 border border-light-gray rounded-lg",
-                "focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent",
-                "text-lg bg-off-white dark:bg-off-black text-off-black dark:text-off-white",
-                disabled && "opacity-50 cursor-not-allowed",
+                "w-full rounded-lg border border-light-gray px-4 py-3",
+                "focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary",
+                "bg-off-white text-lg text-off-black dark:bg-off-black dark:text-off-white",
+                disabled && "cursor-not-allowed opacity-50",
                 error && "border-red-500"
               )}
             >
@@ -244,15 +244,15 @@ export function TimestampEstimate({
         </div>
 
         {/* Estimate Summary */}
-        <div className="flex items-center justify-between p-4 bg-light-gray/30 rounded-lg">
+        <div className="flex items-center justify-between rounded-lg bg-light-gray/30 p-4">
           <div className="flex items-center space-x-2">
-            <Clock className="w-5 h-5 text-primary" />
+            <Clock className="size-5 text-primary" />
             <span className="font-medium text-off-black dark:text-off-white">
               Estimate: {formatEstimate(estimate)}
             </span>
           </div>
           <div className="flex items-center space-x-2 text-sm text-warm-gray">
-            <Calendar className="w-4 h-4" />
+            <Calendar className="size-4" />
             <span>≈ {getEstimateInHours(estimate)} work hours</span>
           </div>
         </div>
@@ -269,7 +269,7 @@ export function TimestampEstimate({
               Confidence level:
             </label>
             <span className={cn(
-              "px-2 py-1 rounded-full text-xs font-medium",
+              "rounded-full px-2 py-1 text-xs font-medium",
               getConfidenceColor(currentConfidence)
             )}>
               {currentConfidence}% - {getConfidenceLabel(currentConfidence)}
@@ -286,9 +286,9 @@ export function TimestampEstimate({
             onChange={(e) => handleConfidenceChange(parseInt(e.target.value))}
             disabled={disabled}
             className={cn(
-              "w-full h-2 bg-light-gray rounded-lg appearance-none cursor-pointer",
+              "h-2 w-full cursor-pointer appearance-none rounded-lg bg-light-gray",
               "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
-              disabled && "opacity-50 cursor-not-allowed"
+              disabled && "cursor-not-allowed opacity-50"
             )}
           />
           
@@ -300,8 +300,8 @@ export function TimestampEstimate({
       )}
 
       {/* Estimation Tips */}
-      <div className="flex items-start space-x-2 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-        <AlertCircle className="w-5 h-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+      <div className="flex items-start space-x-2 rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
+        <AlertCircle className="mt-0.5 size-5 shrink-0 text-blue-600 dark:text-blue-400" />
         <div className="text-sm text-blue-800 dark:text-blue-300">
           <strong>Tip:</strong> Consider breaking down complex tasks into smaller parts. 
           Most developers underestimate by 25-50%, so add buffer time for testing and debugging.

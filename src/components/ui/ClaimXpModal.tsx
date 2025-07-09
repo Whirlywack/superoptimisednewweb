@@ -98,7 +98,7 @@ export function ClaimXpModal({ isOpen, onClose, currentXp, voterTokenHash }: Cla
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-off-black mb-2">
+                <label htmlFor="email" className="mb-2 block text-sm font-medium text-off-black">
                   Email Address
                 </label>
                 <div className="relative">
@@ -112,7 +112,7 @@ export function ClaimXpModal({ isOpen, onClose, currentXp, voterTokenHash }: Cla
                     required
                     disabled={isSubmitting}
                     className={cn(
-                      "w-full rounded-sm border-2 border-light-gray bg-white pl-10 pr-4 py-3",
+                      "w-full rounded-sm border-2 border-light-gray bg-white py-3 pl-10 pr-4",
                       "text-base text-off-black placeholder:text-warm-gray",
                       "focus:border-primary focus:outline-none",
                       "disabled:cursor-not-allowed disabled:opacity-50"

@@ -115,7 +115,7 @@ export function ValidationMessage({
     return (
       <div className={containerClasses} role="alert" {...props}>
         {showIcon && (
-          <IconComponent className={cn(sizeConfig.icon, typeConfig.iconColor, "flex-shrink-0 mt-0.5")} />
+          <IconComponent className={cn(sizeConfig.icon, typeConfig.iconColor, "mt-0.5 shrink-0")} />
         )}
         <span className={cn("flex-1", typeConfig.colors.inline)}>
           {message}
@@ -127,10 +127,10 @@ export function ValidationMessage({
   return (
     <div className={containerClasses} role="alert" {...props}>
       {showIcon && (
-        <IconComponent className={cn(sizeConfig.icon, typeConfig.iconColor, "flex-shrink-0 mt-0.5")} />
+        <IconComponent className={cn(sizeConfig.icon, typeConfig.iconColor, "mt-0.5 shrink-0")} />
       )}
       
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <p className="leading-relaxed">{message}</p>
       </div>
       
@@ -139,7 +139,7 @@ export function ValidationMessage({
           type="button"
           onClick={handleDismiss}
           className={cn(
-            "flex-shrink-0 rounded-md p-1 transition-colors",
+            "shrink-0 rounded-md p-1 transition-colors",
             "hover:bg-black/10 dark:hover:bg-white/10",
             "focus:outline-none focus:ring-2 focus:ring-current focus:ring-offset-2"
           )}
@@ -181,7 +181,7 @@ export function ValidationSummary({
   return (
     <div
       className={cn(
-        "border border-warm-gray bg-light-gray rounded-lg p-4 space-y-3",
+        "space-y-3 rounded-lg border border-warm-gray bg-light-gray p-4",
         className
       )}
       role="alert"
@@ -189,8 +189,8 @@ export function ValidationSummary({
     >
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="font-medium text-off-black flex items-center gap-2">
-          <AlertCircle className="w-5 h-5" />
+        <h3 className="flex items-center gap-2 font-medium text-off-black">
+          <AlertCircle className="size-5" />
           {title}
         </h3>
         
@@ -198,7 +198,7 @@ export function ValidationSummary({
           <button
             type="button"
             onClick={() => setIsExpanded(!isExpanded)}
-            className="text-warm-gray hover:text-off-black text-sm font-medium"
+            className="text-sm font-medium text-warm-gray hover:text-off-black"
           >
             {isExpanded ? "Show less" : `Show all (${totalIssues})`}
           </button>

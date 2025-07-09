@@ -102,6 +102,29 @@ export const authOptions: NextAuthOptions = {
         return false;
       }
     },
+    async redirect({ url, baseUrl }) {
+      // Handle magic link redirects with callbackUrl
+      if (url.startsWith(baseUrl)) {
+        const urlObj = new URL(url);
+        
+        // First check for callbackUrl in the current URL
+        let callbackUrl = urlObj.searchParams.get('callbackUrl');
+        
+        // If no callbackUrl, check if this is a magic link callback
+        if (!callbackUrl && urlObj.pathname.includes('/api/auth/callback/email')) {
+          // For magic links, default to /admin if no specific callback
+          callbackUrl = '/admin';
+        }
+        
+        if (callbackUrl && callbackUrl.startsWith('/')) {
+          return `${baseUrl}${callbackUrl}`;
+        }
+        return url;
+      }
+      
+      // Default to admin for authenticated users
+      return `${baseUrl}/admin`;
+    },
     async session({ session, user }) {
       try {
         return {

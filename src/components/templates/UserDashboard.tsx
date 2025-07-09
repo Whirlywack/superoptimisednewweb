@@ -237,22 +237,22 @@ export function UserDashboard({
   };
 
   const renderProfileSection = () => (
-    <div className="bg-off-white dark:bg-off-black border border-light-gray dark:border-warm-gray/30 rounded-lg p-6">
+    <div className="rounded-lg border border-light-gray bg-off-white p-6 dark:border-warm-gray/30 dark:bg-off-black">
       <div className="flex items-start gap-6">
-        <div className="relative flex-shrink-0">
+        <div className="relative shrink-0">
           {user.avatar ? (
             <img
               src={user.avatar}
               alt={user.name}
-              className="w-20 h-20 rounded-full object-cover"
+              className="size-20 rounded-full object-cover"
             />
           ) : (
-            <div className="w-20 h-20 bg-light-gray dark:bg-warm-gray/20 rounded-full flex items-center justify-center">
+            <div className="flex size-20 items-center justify-center rounded-full bg-light-gray dark:bg-warm-gray/20">
               <LucideIcon icon={User} size="xl" className="text-warm-gray" />
             </div>
           )}
           {user.isVerified && (
-            <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+            <div className="absolute -bottom-1 -right-1 flex size-6 items-center justify-center rounded-full bg-primary">
               <LucideIcon icon={CheckCircle} size="xs" className="text-off-white" />
             </div>
           )}
@@ -265,7 +265,7 @@ export function UserDashboard({
                 {user.name}
               </h1>
               {user.role && (
-                <p className="text-sm text-primary font-medium">{user.role}</p>
+                <p className="text-sm font-medium text-primary">{user.role}</p>
               )}
               <p className="text-warm-gray">{user.email}</p>
             </div>
@@ -274,7 +274,7 @@ export function UserDashboard({
               variant="outline"
               size="sm"
               onClick={onEditProfile}
-              className="flex-shrink-0"
+              className="shrink-0"
             >
               <LucideIcon icon={Edit} size="xs" className="mr-2" />
               Edit Profile
@@ -282,7 +282,7 @@ export function UserDashboard({
           </div>
 
           {user.bio && (
-            <p className="text-warm-gray leading-relaxed">{user.bio}</p>
+            <p className="leading-relaxed text-warm-gray">{user.bio}</p>
           )}
 
           <div className="flex items-center gap-4 text-sm text-warm-gray">
@@ -332,7 +332,7 @@ export function UserDashboard({
   );
 
   const renderStatsSection = () => (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
       {[
         { icon: Eye, label: "Total Views", value: stats.totalViews.toLocaleString() },
         { icon: Heart, label: "Total Likes", value: stats.totalLikes.toLocaleString() },
@@ -341,7 +341,7 @@ export function UserDashboard({
       ].map((stat, index) => (
         <div
           key={index}
-          className="bg-off-white dark:bg-off-black border border-light-gray dark:border-warm-gray/30 rounded-lg p-4"
+          className="rounded-lg border border-light-gray bg-off-white p-4 dark:border-warm-gray/30 dark:bg-off-black"
         >
           <div className="flex items-center justify-between">
             <div>
@@ -358,11 +358,11 @@ export function UserDashboard({
   );
 
   const renderQuickActions = () => (
-    <div className="bg-off-white dark:bg-off-black border border-light-gray dark:border-warm-gray/30 rounded-lg p-6">
-      <h2 className="text-lg font-semibold text-off-black dark:text-off-white mb-4">
+    <div className="rounded-lg border border-light-gray bg-off-white p-6 dark:border-warm-gray/30 dark:bg-off-black">
+      <h2 className="mb-4 text-lg font-semibold text-off-black dark:text-off-white">
         Quick Actions
       </h2>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {[
           { icon: Plus, label: "New Post", action: () => onCreateContent?.("post") },
           { icon: Code, label: "New Project", action: () => onCreateContent?.("project") },
@@ -374,7 +374,7 @@ export function UserDashboard({
             variant="outline"
             size="sm"
             onClick={action.action}
-            className="flex flex-col items-center gap-2 h-auto py-3"
+            className="flex h-auto flex-col items-center gap-2 py-3"
           >
             <LucideIcon icon={action.icon} size="lg" />
             <span className="text-xs">{action.label}</span>
@@ -385,8 +385,8 @@ export function UserDashboard({
   );
 
   const renderContentSection = () => (
-    <div className="bg-off-white dark:bg-off-black border border-light-gray dark:border-warm-gray/30 rounded-lg p-6">
-      <div className="flex items-center justify-between mb-6">
+    <div className="rounded-lg border border-light-gray bg-off-white p-6 dark:border-warm-gray/30 dark:bg-off-black">
+      <div className="mb-6 flex items-center justify-between">
         <h2 className="text-lg font-semibold text-off-black dark:text-off-white">
           Recent Content
         </h2>
@@ -426,16 +426,16 @@ export function UserDashboard({
               <div
                 key={item.id}
                 className={cn(
-                  "border border-light-gray dark:border-warm-gray/30 rounded-lg p-4 hover:border-primary/50 transition-colors",
+                  "rounded-lg border border-light-gray p-4 transition-colors hover:border-primary/50 dark:border-warm-gray/30",
                   currentContentView === "list" && "flex items-center gap-4"
                 )}
               >
                 {item.thumbnail && currentContentView === "grid" && (
-                  <div className="w-full h-32 bg-light-gray dark:bg-warm-gray/20 rounded-lg mb-3 overflow-hidden">
+                  <div className="mb-3 h-32 w-full overflow-hidden rounded-lg bg-light-gray dark:bg-warm-gray/20">
                     <img
                       src={item.thumbnail}
                       alt={item.title}
-                      className="w-full h-full object-cover"
+                      className="size-full object-cover"
                     />
                   </div>
                 )}
@@ -446,20 +446,20 @@ export function UserDashboard({
                       <div className="flex items-center gap-2">
                         <LucideIcon icon={ContentIcon} size="xs" className="text-warm-gray" />
                         <span className={cn(
-                          "text-xs px-2 py-1 rounded capitalize",
+                          "rounded px-2 py-1 text-xs capitalize",
                           getStatusColor(item.status)
                         )}>
                           {item.status}
                         </span>
                       </div>
-                      <h3 className="font-medium text-off-black dark:text-off-white leading-snug">
+                      <h3 className="font-medium leading-snug text-off-black dark:text-off-white">
                         {item.title}
                       </h3>
                     </div>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="p-1 h-8 w-8 flex-shrink-0"
+                      className="size-8 shrink-0 p-1"
                     >
                       <LucideIcon icon={MoreHorizontal} size="xs" />
                     </Button>
@@ -488,7 +488,7 @@ export function UserDashboard({
           })}
         </div>
       ) : (
-        <div className="text-center py-8 text-warm-gray">
+        <div className="py-8 text-center text-warm-gray">
           <LucideIcon icon={FileText} size="xl" className="mx-auto mb-4 opacity-50" />
           <p>No content yet. Create your first post!</p>
           <Button
@@ -506,8 +506,8 @@ export function UserDashboard({
   );
 
   const renderAchievementsSection = () => (
-    <div className="bg-off-white dark:bg-off-black border border-light-gray dark:border-warm-gray/30 rounded-lg p-6">
-      <div className="flex items-center justify-between mb-6">
+    <div className="rounded-lg border border-light-gray bg-off-white p-6 dark:border-warm-gray/30 dark:bg-off-black">
+      <div className="mb-6 flex items-center justify-between">
         <h2 className="text-lg font-semibold text-off-black dark:text-off-white">
           Recent Achievements
         </h2>
@@ -521,24 +521,24 @@ export function UserDashboard({
       </div>
 
       {achievements.length > 0 ? (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           {achievements.slice(0, 4).map((achievement) => (
             <div
               key={achievement.id}
               className={cn(
-                "border-2 rounded-lg p-4",
+                "rounded-lg border-2 p-4",
                 getRarityColor(achievement.rarity)
               )}
             >
               <div className="flex items-start gap-3">
-                <div className="p-2 bg-primary/10 rounded-lg flex-shrink-0">
+                <div className="shrink-0 rounded-lg bg-primary/10 p-2">
                   <LucideIcon icon={achievement.icon} size="lg" className="text-primary" />
                 </div>
                 <div className="space-y-1">
                   <h4 className="font-medium text-off-black dark:text-off-white">
                     {achievement.title}
                   </h4>
-                  <p className="text-sm text-warm-gray leading-relaxed">
+                  <p className="text-sm leading-relaxed text-warm-gray">
                     {achievement.description}
                   </p>
                   <p className="text-xs text-warm-gray">
@@ -550,7 +550,7 @@ export function UserDashboard({
           ))}
         </div>
       ) : (
-        <div className="text-center py-8 text-warm-gray">
+        <div className="py-8 text-center text-warm-gray">
           <LucideIcon icon={Award} size="xl" className="mx-auto mb-4 opacity-50" />
           <p>No achievements yet. Keep creating to unlock rewards!</p>
         </div>
@@ -559,8 +559,8 @@ export function UserDashboard({
   );
 
   const renderActivitySection = () => (
-    <div className="bg-off-white dark:bg-off-black border border-light-gray dark:border-warm-gray/30 rounded-lg p-6">
-      <div className="flex items-center justify-between mb-6">
+    <div className="rounded-lg border border-light-gray bg-off-white p-6 dark:border-warm-gray/30 dark:bg-off-black">
+      <div className="mb-6 flex items-center justify-between">
         <h2 className="text-lg font-semibold text-off-black dark:text-off-white">
           Recent Activity
         </h2>
@@ -577,7 +577,7 @@ export function UserDashboard({
         <div className="space-y-4">
           {recentActivity.slice(0, 5).map((activity) => (
             <div key={activity.id} className="flex items-start gap-3">
-              <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+              <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10">
                 <LucideIcon 
                   icon={activity.type === "like" ? Heart : 
                         activity.type === "comment" ? MessageCircle :
@@ -603,7 +603,7 @@ export function UserDashboard({
           ))}
         </div>
       ) : (
-        <div className="text-center py-8 text-warm-gray">
+        <div className="py-8 text-center text-warm-gray">
           <LucideIcon icon={Activity} size="xl" className="mx-auto mb-4 opacity-50" />
           <p>No recent activity to show.</p>
         </div>
@@ -612,8 +612,8 @@ export function UserDashboard({
   );
 
   return (
-    <div className={cn("min-h-screen bg-light-gray/30 dark:bg-warm-gray/5 py-8", className)} {...props}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+    <div className={cn("min-h-screen bg-light-gray/30 py-8 dark:bg-warm-gray/5", className)} {...props}>
+      <div className="mx-auto max-w-7xl space-y-8 px-4 sm:px-6 lg:px-8">
         {/* Profile Section */}
         {showProfile && renderProfileSection()}
 
@@ -624,9 +624,9 @@ export function UserDashboard({
         {showQuickActions && renderQuickActions()}
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* Left Column */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="space-y-8 lg:col-span-2">
             {showContent && renderContentSection()}
             {showAchievements && renderAchievementsSection()}
           </div>

@@ -39,10 +39,10 @@ export function RankingControl({
   return (
     <div
       className={cn(
-        "relative flex items-center gap-3 p-3 border rounded-lg transition-all duration-200",
+        "relative flex items-center gap-3 rounded-lg border p-3 transition-all duration-200",
         "bg-background hover:bg-muted/50",
         selected && "border-primary bg-primary/5",
-        dragging && "shadow-lg scale-[1.02] bg-background border-primary",
+        dragging && "scale-[1.02] border-primary bg-background shadow-lg",
         variant === "compact" && "p-2",
         variant === "detailed" && "p-4",
         className
@@ -52,9 +52,9 @@ export function RankingControl({
       {/* Rank Number */}
       {showRankNumber && (
         <div className={cn(
-          "flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground",
-          "flex items-center justify-center font-bold text-sm",
-          variant === "compact" && "w-6 h-6 text-xs"
+          "size-8 shrink-0 rounded-full bg-primary text-primary-foreground",
+          "flex items-center justify-center text-sm font-bold",
+          variant === "compact" && "size-6 text-xs"
         )}>
           {rank}
         </div>
@@ -62,60 +62,60 @@ export function RankingControl({
 
       {/* Drag Handle */}
       <div className={cn(
-        "flex-shrink-0 cursor-grab active:cursor-grabbing",
-        "p-1 rounded hover:bg-muted transition-colors",
+        "shrink-0 cursor-grab active:cursor-grabbing",
+        "rounded p-1 transition-colors hover:bg-muted",
         dragging && "cursor-grabbing"
       )}>
         <GripVertical className={cn(
-          "w-5 h-5 text-muted-foreground",
-          variant === "compact" && "w-4 h-4"
+          "size-5 text-muted-foreground",
+          variant === "compact" && "size-4"
         )} />
       </div>
 
       {/* Content */}
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <h3 className={cn(
-          "font-medium text-foreground truncate",
+          "truncate font-medium text-foreground",
           variant === "compact" ? "text-sm" : "text-base"
         )}>
           {label}
         </h3>
         {description && variant !== "compact" && (
-          <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+          <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
             {description}
           </p>
         )}
       </div>
 
       {/* Controls */}
-      <div className="flex-shrink-0 flex items-center gap-1">
+      <div className="flex shrink-0 items-center gap-1">
         {/* Move Up/Down Buttons */}
-        <div className="hidden sm:flex flex-col gap-1">
+        <div className="hidden flex-col gap-1 sm:flex">
           <button
             type="button"
             onClick={onMoveUp}
             disabled={!canMoveUp}
             className={cn(
-              "p-1 rounded hover:bg-muted transition-colors",
+              "rounded p-1 transition-colors hover:bg-muted",
               "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
-              !canMoveUp && "opacity-30 cursor-not-allowed"
+              !canMoveUp && "cursor-not-allowed opacity-30"
             )}
             aria-label="Move up"
           >
-            <ArrowUp className="w-3 h-3" />
+            <ArrowUp className="size-3" />
           </button>
           <button
             type="button"
             onClick={onMoveDown}
             disabled={!canMoveDown}
             className={cn(
-              "p-1 rounded hover:bg-muted transition-colors",
+              "rounded p-1 transition-colors hover:bg-muted",
               "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
-              !canMoveDown && "opacity-30 cursor-not-allowed"
+              !canMoveDown && "cursor-not-allowed opacity-30"
             )}
             aria-label="Move down"
           >
-            <ArrowDown className="w-3 h-3" />
+            <ArrowDown className="size-3" />
           </button>
         </div>
 
@@ -125,12 +125,12 @@ export function RankingControl({
             type="button"
             onClick={onRemove}
             className={cn(
-              "p-1 rounded hover:bg-destructive hover:text-destructive-foreground transition-colors",
-              "focus:outline-none focus:ring-2 focus:ring-destructive focus:ring-offset-2"
+              "hover:bg-destructive hover:text-destructive-foreground rounded p-1 transition-colors",
+              "focus:ring-destructive focus:outline-none focus:ring-2 focus:ring-offset-2"
             )}
             aria-label="Remove item"
           >
-            <X className="w-4 h-4" />
+            <X className="size-4" />
           </button>
         )}
       </div>
@@ -240,7 +240,7 @@ export function RankingList({
     <div className={cn("space-y-4", className)} {...props}>
       {/* Instructions */}
       {showInstructions && (
-        <div className="text-sm text-muted-foreground space-y-1">
+        <div className="space-y-1 text-sm text-muted-foreground">
           <p>Drag items to reorder them, or use the arrow buttons.</p>
           {maxItems && (
             <p>Rank your top {maxItems} choices in order of preference.</p>
@@ -278,7 +278,7 @@ export function RankingList({
       </div>
 
       {/* Items Count */}
-      <div className="text-xs text-muted-foreground text-center">
+      <div className="text-center text-xs text-muted-foreground">
         {items.length} item{items.length !== 1 ? 's' : ''} ranked
         {maxItems && ` (${maxItems} max)`}
       </div>
@@ -329,7 +329,7 @@ export function SimpleDragDrop({
   return (
     <div
       className={cn(
-        "min-h-[120px] p-4 border-2 border-dashed rounded-lg transition-colors",
+        "min-h-[120px] rounded-lg border-2 border-dashed p-4 transition-colors",
         draggedOver ? "border-primary bg-primary/5" : "border-border",
         disabled && "opacity-50",
         className
@@ -343,7 +343,7 @@ export function SimpleDragDrop({
         <div className="space-y-2">
           {items.map((item, index) => (
             <div key={item.id} className="flex items-center gap-2">
-              <span className="text-sm font-mono text-muted-foreground">
+              <span className="font-mono text-sm text-muted-foreground">
                 {index + 1}.
               </span>
               <div className="flex-1">{item.content}</div>
@@ -351,7 +351,7 @@ export function SimpleDragDrop({
           ))}
         </div>
       ) : (
-        <div className="flex items-center justify-center h-full text-muted-foreground">
+        <div className="flex h-full items-center justify-center text-muted-foreground">
           {placeholder}
         </div>
       )}

@@ -137,8 +137,8 @@ export function TouchArea({
   return (
     <div
       className={cn(
-        'w-full flex items-start',
-        interactive && 'cursor-pointer hover:bg-light-gray transition-colors duration-200',
+        'flex w-full items-start',
+        interactive && 'cursor-pointer transition-colors duration-200 hover:bg-light-gray',
         className
       )}
       style={{ minHeight }}

@@ -143,18 +143,18 @@ export function JourneyTimeline({
       return (
         <div
           key={post.id}
-          className="group flex items-start gap-3 cursor-pointer"
+          className="group flex cursor-pointer items-start gap-3"
           onClick={() => onPostClick?.(post)}
         >
           <div className={cn(
-            "w-2 h-2 rounded-full mt-2 flex-shrink-0",
+            "mt-2 size-2 shrink-0 rounded-full",
             post.featured ? "bg-primary" : "bg-warm-gray"
           )} />
           
           <div className="flex-1 space-y-1">
             <Link
               href={`/journey/${post.slug}`}
-              className="block no-underline group-hover:text-primary transition-colors"
+              className="block no-underline transition-colors group-hover:text-primary"
             >
               <h4 className="font-medium text-off-black dark:text-off-white">
                 {post.title}
@@ -179,17 +179,17 @@ export function JourneyTimeline({
       >
         {/* Connector Line */}
         {showConnector && (
-          <div className="absolute left-5 top-10 bottom-0 w-0.5 bg-light-gray dark:bg-warm-gray/30" />
+          <div className="absolute bottom-0 left-5 top-10 w-0.5 bg-light-gray dark:bg-warm-gray/30" />
         )}
 
         {/* Icon */}
         <div className={cn(
-          "relative z-10 w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0",
+          "relative z-10 flex size-10 shrink-0 items-center justify-center rounded-full",
           getTypeColor(post.type)
         )}>
           <LucideIcon icon={TypeIcon} size="sm" />
           {post.featured && (
-            <div className="absolute -top-1 -right-1 w-4 h-4 bg-primary rounded-full flex items-center justify-center">
+            <div className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-primary">
               <LucideIcon icon={Star} size="xs" className="text-off-white" />
             </div>
           )}
@@ -198,8 +198,8 @@ export function JourneyTimeline({
         {/* Content */}
         <div
           className={cn(
-            "flex-1 group cursor-pointer",
-            variant === "detailed" && "bg-off-white dark:bg-off-black border border-light-gray dark:border-warm-gray/30 rounded-lg p-4",
+            "group flex-1 cursor-pointer",
+            variant === "detailed" && "rounded-lg border border-light-gray bg-off-white p-4 dark:border-warm-gray/30 dark:bg-off-black",
             variant === "compact" && "pb-2"
           )}
           onClick={() => onPostClick?.(post)}
@@ -211,7 +211,7 @@ export function JourneyTimeline({
               className="block no-underline"
             >
               <h3 className={cn(
-                "font-semibold text-off-black dark:text-off-white group-hover:text-primary transition-colors",
+                "font-semibold text-off-black transition-colors group-hover:text-primary dark:text-off-white",
                 variant === "compact" ? "text-base" : "text-lg"
               )}>
                 {post.title}
@@ -246,7 +246,7 @@ export function JourneyTimeline({
           {/* Excerpt */}
           {showExcerpt && variant !== "compact" && (
             <p className={cn(
-              "text-warm-gray mt-2",
+              "mt-2 text-warm-gray",
               variant === "detailed" ? "line-clamp-3" : "line-clamp-2"
             )}>
               {post.excerpt}
@@ -255,7 +255,7 @@ export function JourneyTimeline({
 
           {/* Footer */}
           {(showTags || showEngagement) && (
-            <div className="flex items-end justify-between gap-4 mt-3">
+            <div className="mt-3 flex items-end justify-between gap-4">
               {/* Tags */}
               {showTags && post.tags && post.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2">
@@ -294,10 +294,10 @@ export function JourneyTimeline({
 
           {/* Read More Link */}
           {variant === "detailed" && (
-            <div className="mt-3 pt-3 border-t border-light-gray dark:border-warm-gray/30">
+            <div className="mt-3 border-t border-light-gray pt-3 dark:border-warm-gray/30">
               <Link
                 href={`/journey/${post.slug}`}
-                className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors no-underline font-medium"
+                className="inline-flex items-center gap-2 text-sm font-medium text-primary no-underline transition-colors hover:text-primary/80"
               >
                 Read full post
                 <LucideIcon icon={ArrowRight} size="xs" />
@@ -335,7 +335,7 @@ export function JourneyTimeline({
             <div className="pl-14">
               <Link
                 href="/journey"
-                className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors font-medium"
+                className="inline-flex items-center gap-2 text-sm font-medium text-primary transition-colors hover:text-primary/80"
               >
                 View all posts in {group.label}
                 <LucideIcon icon={ArrowRight} size="xs" />
@@ -347,7 +347,7 @@ export function JourneyTimeline({
 
       {/* Load More */}
       {posts.length === 0 && (
-        <div className="text-center py-8 text-warm-gray">
+        <div className="py-8 text-center text-warm-gray">
           <p>No posts yet. The journey begins soon!</p>
         </div>
       )}

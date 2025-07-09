@@ -139,7 +139,7 @@ export function LikertScale({
           {question}
         </QuestionLabel>
         {description && (
-          <p className="text-warm-gray text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-warm-gray">
             {description}
           </p>
         )}
@@ -147,7 +147,7 @@ export function LikertScale({
 
       {/* Scale Instructions */}
       {layout === 'horizontal' && (
-        <div className="text-sm text-warm-gray text-center">
+        <div className="text-center text-sm text-warm-gray">
           <p>Select your level of {scaleType === 'custom' ? 'response' : scaleType}</p>
         </div>
       )}
@@ -172,7 +172,7 @@ export function LikertScale({
 
       {/* Current Selection Display */}
       {value !== undefined && (
-        <div className="text-center p-3 bg-light-gray rounded-lg">
+        <div className="rounded-lg bg-light-gray p-3 text-center">
           <span className="text-sm text-warm-gray">
             Selected: <span className="font-medium text-off-black">
               {getSelectedOption()?.label}
@@ -183,7 +183,7 @@ export function LikertScale({
 
       {/* Scale Endpoints (for horizontal layout) */}
       {layout === 'horizontal' && options.length > 0 && (
-        <div className="flex justify-between text-xs text-warm-gray px-2">
+        <div className="flex justify-between px-2 text-xs text-warm-gray">
           <span>{options[0].shortLabel || options[0].label}</span>
           <span>{options[options.length - 1].shortLabel || options[options.length - 1].label}</span>
         </div>

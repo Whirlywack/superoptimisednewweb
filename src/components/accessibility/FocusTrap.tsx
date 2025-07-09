@@ -184,7 +184,7 @@ export function FocusTrapModal({
         <FocusTrap active={isOpen} onEscape={onClose}>
           <div
             className={cn(
-              'bg-off-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-auto',
+              'max-h-[90vh] w-full max-w-md overflow-auto rounded-lg bg-off-white shadow-xl',
               'focus:outline-none',
               contentClassName
             )}
@@ -194,7 +194,7 @@ export function FocusTrapModal({
             aria-describedby={description ? 'modal-description' : undefined}
           >
             {title && (
-              <div className="px-6 py-4 border-b border-light-gray">
+              <div className="border-b border-light-gray px-6 py-4">
                 <h2 id="modal-title" className="text-h3 font-semibold text-off-black">
                   {title}
                 </h2>
@@ -210,16 +210,16 @@ export function FocusTrapModal({
               {children}
             </div>
 
-            <div className="px-6 py-4 border-t border-light-gray flex justify-end gap-3">
+            <div className="flex justify-end gap-3 border-t border-light-gray px-6 py-4">
               <button
                 onClick={onClose}
-                className="px-4 py-2 text-warm-gray hover:text-off-black focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg transition-colors"
+                className="rounded-lg px-4 py-2 text-warm-gray transition-colors hover:text-off-black focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
               >
                 Cancel
               </button>
               <button
                 onClick={onClose}
-                className="px-4 py-2 bg-primary text-off-white hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg transition-colors"
+                className="rounded-lg bg-primary px-4 py-2 text-off-white transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
               >
                 Confirm
               </button>
@@ -291,7 +291,7 @@ export function FocusTrapDropdown({
           <div
             ref={contentRef}
             className={cn(
-              'absolute z-50 bg-off-white border border-light-gray rounded-lg shadow-lg py-1',
+              'absolute z-50 rounded-lg border border-light-gray bg-off-white py-1 shadow-lg',
               'min-w-[200px] max-w-sm',
               placementClasses[placement],
               contentClassName
@@ -368,7 +368,7 @@ export function FocusTrapPanel({
         <div
           className={cn(
             'fixed inset-y-0 w-full max-w-sm bg-off-white shadow-xl',
-            'transform transition-transform duration-300 ease-in-out',
+            'transition-transform duration-300 ease-in-out',
             positionClass,
             isOpen ? 'translate-x-0' : translateClass,
             contentClassName

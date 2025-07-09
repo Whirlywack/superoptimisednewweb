@@ -116,8 +116,8 @@ export function NewsletterSignup({
         className={cn(variantStyles[variant], className)}
         {...props}
       >
-        <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full">
+        <div className="space-y-2 text-center">
+          <div className="inline-flex size-12 items-center justify-center rounded-full bg-primary/10">
             <LucideIcon 
               icon={Check} 
               size="lg" 

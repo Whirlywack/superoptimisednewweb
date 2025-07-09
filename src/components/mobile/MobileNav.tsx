@@ -71,7 +71,7 @@ export function MobileNav({
       <div
         className={cn(
           'fixed inset-y-0 left-0 z-50 w-3/4 max-w-sm bg-off-white shadow-xl transition-transform duration-300 ease-in-out',
-          'transform',
+          '',
           isOpen ? 'translate-x-0' : '-translate-x-full',
           drawerClassName
         )}
@@ -80,19 +80,19 @@ export function MobileNav({
         aria-label={ariaLabel}
       >
         <div className="flex h-full flex-col">
-          <div className="flex items-center justify-between p-4 border-b border-light-gray">
+          <div className="flex items-center justify-between border-b border-light-gray p-4">
             <h2 className="text-h4 font-medium text-off-black">Menu</h2>
             <button
               onClick={() => setIsOpen(false)}
               className={cn(
-                'inline-flex h-11 w-11 items-center justify-center rounded-lg',
+                'inline-flex size-11 items-center justify-center rounded-lg',
                 'text-warm-gray hover:bg-light-gray hover:text-off-black',
                 'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
                 'transition-colors duration-200'
               )}
               aria-label="Close navigation menu"
             >
-              <X className="h-5 w-5" />
+              <X className="size-5" />
             </button>
           </div>
           
@@ -115,7 +115,7 @@ export function MobileNav({
       <button
         onClick={toggleNav}
         className={cn(
-          'inline-flex h-11 w-11 items-center justify-center rounded-lg lg:hidden',
+          'inline-flex size-11 items-center justify-center rounded-lg lg:hidden',
           'text-warm-gray hover:bg-light-gray hover:text-off-black',
           'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
           'transition-colors duration-200',
@@ -125,7 +125,7 @@ export function MobileNav({
         aria-expanded={isOpen}
         {...props}
       >
-        <Menu className="h-5 w-5" />
+        <Menu className="size-5" />
       </button>
 
       {mounted && createPortal(drawer, document.body)}
@@ -147,7 +147,7 @@ export function MobileNavItem({
   return (
     <a
       className={cn(
-        'block py-3 px-4 text-base font-medium rounded-lg transition-colors duration-200',
+        'block rounded-lg px-4 py-3 text-base font-medium transition-colors duration-200',
         'hover:bg-light-gray hover:text-off-black',
         'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
         active 
@@ -171,7 +171,7 @@ export interface MobileNavGroupProps {
 export function MobileNavGroup({ title, children, className }: MobileNavGroupProps) {
   return (
     <div className={cn('mb-6', className)}>
-      <h3 className="px-4 py-2 text-small font-semibold text-off-black uppercase tracking-wider">
+      <h3 className="px-4 py-2 text-small font-semibold uppercase tracking-wider text-off-black">
         {title}
       </h3>
       <div className="space-y-1">

@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/db";
 import { QuestionListClient } from "@/components/admin/QuestionListClient";
 
 /**
@@ -18,7 +18,7 @@ export default async function AdminQuestionsPage() {
   }
 
   // Fetch all questions with stats
-  const questions = await db.question.findMany({
+  const questions = await prisma.question.findMany({
     select: {
       id: true,
       title: true,

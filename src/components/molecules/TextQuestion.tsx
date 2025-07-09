@@ -94,11 +94,11 @@ export function TextQuestion({
   };
 
   const commonInputClasses = cn(
-    "w-full px-4 py-3 border-2 rounded-lg transition-all duration-200",
+    "w-full rounded-lg border-2 px-4 py-3 transition-all duration-200",
     "focus:outline-none focus:ring-2 focus:ring-primary/20",
     isFocused ? "border-primary" : "border-light-gray",
-    disabled ? "bg-light-gray cursor-not-allowed opacity-50" : "bg-off-white",
-    "text-off-black placeholder-warm-gray",
+    disabled ? "cursor-not-allowed bg-light-gray opacity-50" : "bg-off-white",
+    "text-off-black placeholder:text-warm-gray",
     "resize-none" // Prevent manual resize for textarea
   );
 
@@ -110,7 +110,7 @@ export function TextQuestion({
           {question}
         </QuestionLabel>
         {description && (
-          <p className="text-warm-gray text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-warm-gray">
             {description}
           </p>
         )}
@@ -153,13 +153,13 @@ export function TextQuestion({
         )}
 
         {/* Input Status Icon */}
-        <div className="absolute right-3 top-3 pointer-events-none">
+        <div className="pointer-events-none absolute right-3 top-3">
           {text.length > 0 && (
             <>
               {isValid ? (
-                <CheckCircle className="w-5 h-5 text-green-500" />
+                <CheckCircle className="size-5 text-green-500" />
               ) : (
-                <MessageCircle className="w-5 h-5 text-warm-gray" />
+                <MessageCircle className="size-5 text-warm-gray" />
               )}
             </>
           )}
@@ -171,7 +171,7 @@ export function TextQuestion({
         <div className="flex items-center gap-2">
           {meetsMinimum ? (
             <span className="flex items-center gap-1 text-green-600">
-              <CheckCircle className="w-4 h-4" />
+              <CheckCircle className="size-4" />
               Minimum requirement met
             </span>
           ) : minLength > 0 ? (
@@ -197,12 +197,12 @@ export function TextQuestion({
 
       {/* Text Preview */}
       {text.length > 0 && (
-        <div className="bg-light-gray p-4 rounded-lg">
-          <h4 className="font-medium text-off-black mb-2 flex items-center gap-2">
-            <MessageCircle className="w-4 h-4" />
+        <div className="rounded-lg bg-light-gray p-4">
+          <h4 className="mb-2 flex items-center gap-2 font-medium text-off-black">
+            <MessageCircle className="size-4" />
             Your Response Preview:
           </h4>
-          <div className="text-sm text-warm-gray bg-off-white p-3 rounded border italic">
+          <div className="rounded border bg-off-white p-3 text-sm italic text-warm-gray">
             &quot;{text}&quot;
           </div>
         </div>
@@ -210,9 +210,9 @@ export function TextQuestion({
 
       {/* Writing Tips */}
       {isFocused && text.length === 0 && (
-        <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
-          <h4 className="font-medium text-blue-800 mb-2">💡 Writing Tips:</h4>
-          <ul className="text-sm text-blue-600 space-y-1">
+        <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+          <h4 className="mb-2 font-medium text-blue-800">💡 Writing Tips:</h4>
+          <ul className="space-y-1 text-sm text-blue-600">
             <li>• Be specific and detailed in your response</li>
             <li>• Share your personal experience or perspective</li>
             <li>• Use examples to illustrate your points</li>

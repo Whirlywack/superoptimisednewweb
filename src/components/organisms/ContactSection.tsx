@@ -3,8 +3,9 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { LucideIcon } from "@/components/ui/Icon";
 import { Link } from "@/components/ui/Typography";
+import type { 
+  Mail} from "lucide-react";
 import { 
-  Mail, 
   MessageCircle, 
   Github, 
   Twitter, 
@@ -129,7 +130,7 @@ export function ContactSection({
   const renderContactMethod = (method: ContactMethod) => (
     <div key={method.type + method.value} className="space-y-3">
       <div className="flex items-start gap-4">
-        <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+        <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-primary/10">
           <LucideIcon icon={method.icon} size="md" className="text-primary" />
         </div>
         
@@ -142,7 +143,7 @@ export function ContactSection({
             <Link 
               href={method.href} 
               external={method.type === "social"}
-              className="text-warm-gray hover:text-primary transition-colors"
+              className="text-warm-gray transition-colors hover:text-primary"
             >
               {method.value}
             </Link>
@@ -186,7 +187,7 @@ export function ContactSection({
               className="block text-sm font-medium text-off-black dark:text-off-white"
             >
               {field.label}
-              {field.required && <span className="text-red-500 ml-1">*</span>}
+              {field.required && <span className="ml-1 text-red-500">*</span>}
             </label>
             
             {field.type === "textarea" ? (
@@ -198,11 +199,11 @@ export function ContactSection({
                 placeholder={field.placeholder}
                 rows={4}
                 className={cn(
-                  "w-full px-3 py-2 border border-light-gray dark:border-warm-gray/30 rounded-lg",
-                  "bg-off-white dark:bg-off-black text-off-black dark:text-off-white",
+                  "w-full rounded-lg border border-light-gray px-3 py-2 dark:border-warm-gray/30",
+                  "bg-off-white text-off-black dark:bg-off-black dark:text-off-white",
                   "placeholder:text-warm-gray",
-                  "focus:ring-2 focus:ring-primary/20 focus:border-primary",
-                  "transition-colors resize-y"
+                  "focus:border-primary focus:ring-2 focus:ring-primary/20",
+                  "resize-y transition-colors"
                 )}
               />
             ) : (
@@ -214,10 +215,10 @@ export function ContactSection({
                 onChange={(e) => handleInputChange(field.name, e.target.value)}
                 placeholder={field.placeholder}
                 className={cn(
-                  "w-full px-3 py-2 border border-light-gray dark:border-warm-gray/30 rounded-lg",
-                  "bg-off-white dark:bg-off-black text-off-black dark:text-off-white",
+                  "w-full rounded-lg border border-light-gray px-3 py-2 dark:border-warm-gray/30",
+                  "bg-off-white text-off-black dark:bg-off-black dark:text-off-white",
                   "placeholder:text-warm-gray",
-                  "focus:ring-2 focus:ring-primary/20 focus:border-primary",
+                  "focus:border-primary focus:ring-2 focus:ring-primary/20",
                   "transition-colors"
                 )}
               />
@@ -247,14 +248,14 @@ export function ContactSection({
 
         {/* Status Messages */}
         {submitStatus === "success" && (
-          <div className="flex items-center gap-2 text-green-600 dark:text-green-400 text-sm">
+          <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
             <LucideIcon icon={CheckCircle} size="sm" />
             <span>Message sent successfully! We'll get back to you soon.</span>
           </div>
         )}
         
         {submitStatus === "error" && (
-          <div className="flex items-center gap-2 text-red-600 dark:text-red-400 text-sm">
+          <div className="flex items-center gap-2 text-sm text-red-600 dark:text-red-400">
             <LucideIcon icon={AlertCircle} size="sm" />
             <span>Please fill in all required fields and try again.</span>
           </div>
@@ -266,9 +267,9 @@ export function ContactSection({
   if (variant === "form-only") {
     return (
       <div className={cn(sizeClasses[size], className)} {...props}>
-        <div className="max-w-2xl mx-auto">
+        <div className="mx-auto max-w-2xl">
           {title && (
-            <div className="text-center space-y-4 mb-8">
+            <div className="mb-8 space-y-4 text-center">
               <h2 className={cn(
                 titleSizes[size],
                 "font-bold text-off-black dark:text-off-white"
@@ -276,7 +277,7 @@ export function ContactSection({
                 {title}
               </h2>
               {description && (
-                <p className="text-warm-gray leading-relaxed">
+                <p className="leading-relaxed text-warm-gray">
                   {description}
                 </p>
               )}
@@ -291,9 +292,9 @@ export function ContactSection({
   if (variant === "contact-only") {
     return (
       <div className={cn(sizeClasses[size], className)} {...props}>
-        <div className="max-w-2xl mx-auto space-y-8">
+        <div className="mx-auto max-w-2xl space-y-8">
           {title && (
-            <div className="text-center space-y-4">
+            <div className="space-y-4 text-center">
               <h2 className={cn(
                 titleSizes[size],
                 "font-bold text-off-black dark:text-off-white"
@@ -301,7 +302,7 @@ export function ContactSection({
                 {title}
               </h2>
               {description && (
-                <p className="text-warm-gray leading-relaxed">
+                <p className="leading-relaxed text-warm-gray">
                   {description}
                 </p>
               )}
@@ -318,9 +319,9 @@ export function ContactSection({
 
   return (
     <div className={cn(sizeClasses[size], className)} {...props}>
-      <div className="max-w-6xl mx-auto space-y-8">
+      <div className="mx-auto max-w-6xl space-y-8">
         {/* Header */}
-        <div className="text-center space-y-4">
+        <div className="space-y-4 text-center">
           <h2 className={cn(
             titleSizes[size],
             "font-bold text-off-black dark:text-off-white"
@@ -329,7 +330,7 @@ export function ContactSection({
           </h2>
           {description && (
             <p className={cn(
-              "text-warm-gray leading-relaxed max-w-3xl mx-auto",
+              "mx-auto max-w-3xl leading-relaxed text-warm-gray",
               size === "lg" ? "text-lg" : "text-base"
             )}>
               {description}

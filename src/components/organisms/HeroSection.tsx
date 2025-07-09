@@ -133,11 +133,11 @@ export function HeroSection({
     if (!features || features.length === 0) return null;
 
     return (
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {features.map((feature, index) => (
           <div key={index} className="flex items-start gap-3">
             {feature.icon && (
-              <div className="flex-shrink-0 mt-1">
+              <div className="mt-1 shrink-0">
                 <LucideIcon
                   icon={feature.icon}
                   size="md"
@@ -166,7 +166,7 @@ export function HeroSection({
       <div className="flex flex-wrap items-center gap-8">
         {metrics.map((metric, index) => (
           <div key={index} className="text-center">
-            <div className="text-2xl lg:text-3xl font-bold text-off-black dark:text-off-white">
+            <div className="text-2xl font-bold text-off-black dark:text-off-white lg:text-3xl">
               {metric.value}
             </div>
             <div className="text-sm text-warm-gray">
@@ -187,7 +187,7 @@ export function HeroSection({
             muted
             loop
             playsInline
-            className="w-full h-full object-cover"
+            className="size-full object-cover"
           >
             <source src={backgroundVideo} type="video/mp4" />
           </video>
@@ -238,8 +238,8 @@ export function HeroSection({
       >
         {renderBackgroundMedia()}
         
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="container relative z-10 mx-auto px-4">
+          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
             {/* Content */}
             <div className="space-y-6">
               {subtitle && (
@@ -262,7 +262,7 @@ export function HeroSection({
               {description && (
                 <p className={cn(
                   descriptionSizes[size],
-                  "text-warm-gray leading-relaxed max-w-2xl",
+                  "max-w-2xl leading-relaxed text-warm-gray",
                   hasBackgroundMedia && "text-off-white/90"
                 )}>
                   {description}
@@ -286,11 +286,11 @@ export function HeroSection({
                 "border border-light-gray dark:border-warm-gray/30",
                 "flex items-center justify-center"
               )}>
-                <div className="text-center space-y-4">
+                <div className="space-y-4 text-center">
                   <LucideIcon 
                     icon={Star} 
                     size="xl" 
-                    className="text-primary mx-auto" 
+                    className="mx-auto text-primary" 
                   />
                   <p className="text-sm text-warm-gray">
                     Visual content area
@@ -316,7 +316,7 @@ export function HeroSection({
     >
       {renderBackgroundMedia()}
       
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container relative z-10 mx-auto px-4">
         <div className={cn(contentMaxWidth, contentAlignment)}>
           <div className="space-y-6">
             {subtitle && (
@@ -339,7 +339,7 @@ export function HeroSection({
             {description && (
               <p className={cn(
                 descriptionSizes[size],
-                "text-warm-gray leading-relaxed",
+                "leading-relaxed text-warm-gray",
                 variant === "centered" ? "mx-auto max-w-3xl" : "max-w-3xl",
                 hasBackgroundMedia && "text-off-white/90"
               )}>

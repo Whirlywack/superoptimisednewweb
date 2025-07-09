@@ -101,7 +101,7 @@ export function YesNoQuestion({
           {question}
         </QuestionLabel>
         {description && (
-          <p className="text-warm-gray text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-warm-gray">
             {description}
           </p>
         )}
@@ -117,7 +117,7 @@ export function YesNoQuestion({
           size={size}
           disabled={disabled}
           onClick={() => handleSelect('yes')}
-          icon={<Check className="w-5 h-5" />}
+          icon={<Check className="size-5" />}
           className={getButtonClasses()}
           aria-pressed={value === 'yes'}
         />
@@ -130,7 +130,7 @@ export function YesNoQuestion({
           size={size}
           disabled={disabled}
           onClick={() => handleSelect('no')}
-          icon={<X className="w-5 h-5" />}
+          icon={<X className="size-5" />}
           className={getButtonClasses()}
           aria-pressed={value === 'no'}
         />
@@ -144,7 +144,7 @@ export function YesNoQuestion({
             size={size}
             disabled={disabled}
             onClick={() => handleSelect('unsure')}
-            icon={<HelpCircle className="w-5 h-5" />}
+            icon={<HelpCircle className="size-5" />}
             className={getButtonClasses()}
             aria-pressed={value === 'unsure'}
           />

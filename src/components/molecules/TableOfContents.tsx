@@ -73,14 +73,14 @@ export function TableOfContents({
       return (
         <li key={item.id} className="space-y-1">
           <div
-            className="flex items-center gap-1 group"
+            className="group flex items-center gap-1"
             style={{ paddingLeft: `${indentLevel}px` }}
           >
             {/* Expand/Collapse Button */}
             {hasChildren && collapsible && (
               <button
                 onClick={() => toggleExpanded(item.id)}
-                className="p-0.5 hover:bg-light-gray dark:hover:bg-warm-gray/20 rounded transition-colors"
+                className="rounded p-0.5 transition-colors hover:bg-light-gray dark:hover:bg-warm-gray/20"
                 aria-label={isExpanded ? "Collapse" : "Expand"}
               >
                 <LucideIcon
@@ -102,10 +102,10 @@ export function TableOfContents({
                 handleItemClick(item.id);
               }}
               className={cn(
-                "flex-1 text-sm py-1 px-2 rounded transition-colors no-underline",
+                "flex-1 rounded px-2 py-1 text-sm no-underline transition-colors",
                 "hover:bg-light-gray dark:hover:bg-warm-gray/20",
                 isActive
-                  ? "bg-primary/10 text-primary font-medium"
+                  ? "bg-primary/10 font-medium text-primary"
                   : "text-warm-gray hover:text-off-black dark:hover:text-off-white"
               )}
             >
@@ -150,8 +150,8 @@ export function TableOfContents({
         className={cn(
           "fixed bottom-4 right-4 z-50",
           "bg-primary text-primary-foreground",
-          "p-3 rounded-full shadow-lg",
-          "hover:bg-primary/90 transition-colors",
+          "rounded-full p-3 shadow-lg",
+          "transition-colors hover:bg-primary/90",
           className
         )}
         aria-label="Show table of contents"
@@ -168,7 +168,7 @@ export function TableOfContents({
       {...props}
     >
       {/* Header */}
-      <div className="flex items-center justify-between mb-3">
+      <div className="mb-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <LucideIcon icon={Bookmark} size="sm" className="text-primary" />
           <span className="font-medium text-off-black dark:text-off-white">
@@ -179,7 +179,7 @@ export function TableOfContents({
         {variant === "floating" && (
           <button
             onClick={() => setCollapsed(true)}
-            className="p-1 hover:bg-light-gray dark:hover:bg-warm-gray/20 rounded transition-colors"
+            className="rounded p-1 transition-colors hover:bg-light-gray dark:hover:bg-warm-gray/20"
             aria-label="Hide table of contents"
           >
             <LucideIcon icon={List} size="xs" className="text-warm-gray" />

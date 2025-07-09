@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { api } from "@/lib/trpc/client";
+import { api } from "@/lib/trpc/react";
 import { QuestionScheduleModal } from "./QuestionScheduleModal";
 
 interface Question {

@@ -191,15 +191,15 @@ export function ResponseSummary({
 
   const getResponseIcon = (response: ResponseData) => {
     if (response.hasError) {
-      return <AlertTriangle className="w-4 h-4 text-warm-gray" />;
+      return <AlertTriangle className="size-4 text-warm-gray" />;
     }
     if (response.isSkipped) {
-      return <Clock className="w-4 h-4 text-warm-gray" />;
+      return <Clock className="size-4 text-warm-gray" />;
     }
     if (response.isCompleted) {
-      return <CheckCircle className="w-4 h-4 text-primary" />;
+      return <CheckCircle className="size-4 text-primary" />;
     }
-    return <div className="w-4 h-4 rounded-full border-2 border-warm-gray" />;
+    return <div className="size-4 rounded-full border-2 border-warm-gray" />;
   };
 
   const getConfidenceColor = (confidence: number) => {
@@ -240,48 +240,48 @@ export function ResponseSummary({
   };
 
   return (
-    <div className={cn("w-full max-w-6xl mx-auto space-y-6", className)}>
+    <div className={cn("mx-auto w-full max-w-6xl space-y-6", className)}>
       {/* Header */}
-      <div className="text-center space-y-3">
-        <h1 className="text-2xl sm:text-3xl font-semibold text-off-black dark:text-off-white">
+      <div className="space-y-3 text-center">
+        <h1 className="text-2xl font-semibold text-off-black dark:text-off-white sm:text-3xl">
           {title}
         </h1>
         {subtitle && (
-          <p className="text-warm-gray text-base leading-relaxed max-w-2xl mx-auto">
+          <p className="mx-auto max-w-2xl text-base leading-relaxed text-warm-gray">
             {subtitle}
           </p>
         )}
       </div>
 
       {/* Summary Statistics */}
-      <div className="bg-off-white dark:bg-off-black border border-light-gray dark:border-warm-gray/30 rounded-lg p-6">
-        <h2 className="text-lg font-medium text-off-black dark:text-off-white mb-4">
+      <div className="rounded-lg border border-light-gray bg-off-white p-6 dark:border-warm-gray/30 dark:bg-off-black">
+        <h2 className="mb-4 text-lg font-medium text-off-black dark:text-off-white">
           Overview
         </h2>
         
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div className="text-center space-y-1">
+        <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-4">
+          <div className="space-y-1 text-center">
             <div className="text-2xl font-bold text-primary">
               {stats.completedQuestions}
             </div>
             <div className="text-sm text-warm-gray">Completed</div>
           </div>
           
-          <div className="text-center space-y-1">
+          <div className="space-y-1 text-center">
             <div className="text-2xl font-bold text-warm-gray">
               {stats.skippedQuestions}
             </div>
             <div className="text-sm text-warm-gray">Skipped</div>
           </div>
           
-          <div className="text-center space-y-1">
+          <div className="space-y-1 text-center">
             <div className="text-2xl font-bold text-warm-gray">
               {stats.questionsWithErrors}
             </div>
             <div className="text-sm text-warm-gray">Errors</div>
           </div>
           
-          <div className="text-center space-y-1">
+          <div className="space-y-1 text-center">
             <div className="text-2xl font-bold text-primary">
               {stats.flaggedQuestions}
             </div>
@@ -305,9 +305,9 @@ export function ResponseSummary({
         </div>
 
         {/* Additional Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 pt-6 border-t border-light-gray dark:border-warm-gray/30 text-sm">
+        <div className="mt-6 grid grid-cols-1 gap-4 border-t border-light-gray pt-6 text-sm dark:border-warm-gray/30 md:grid-cols-3">
           <div className="flex items-center space-x-2">
-            <Clock className="w-4 h-4 text-warm-gray" />
+            <Clock className="size-4 text-warm-gray" />
             <span className="text-warm-gray">
               Total time: {formatTimeSpent(stats.totalTimeSpent)}
             </span>
@@ -315,7 +315,7 @@ export function ResponseSummary({
           
           {stats.averageConfidence && (
             <div className="flex items-center space-x-2">
-              <User className="w-4 h-4 text-warm-gray" />
+              <User className="size-4 text-warm-gray" />
               <span className="text-warm-gray">
                 Avg confidence: {Math.round(stats.averageConfidence)}%
               </span>
@@ -323,7 +323,7 @@ export function ResponseSummary({
           )}
           
           <div className="flex items-center space-x-2">
-            <FileText className="w-4 h-4 text-warm-gray" />
+            <FileText className="size-4 text-warm-gray" />
             <span className="text-warm-gray">
               {stats.totalQuestions} total questions
             </span>
@@ -332,7 +332,7 @@ export function ResponseSummary({
       </div>
 
       {/* Controls */}
-      <div className="flex flex-wrap items-center justify-between gap-4 p-4 bg-light-gray/30 rounded-lg">
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg bg-light-gray/30 p-4">
         <div className="flex items-center space-x-4">
           {showPrivacyControls && (
             <button
@@ -340,7 +340,7 @@ export function ResponseSummary({
               onClick={handlePrivacyToggle}
               className="flex items-center space-x-2 text-sm text-warm-gray hover:text-off-black dark:hover:text-off-white"
             >
-              {isPrivate ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              {isPrivate ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
               <span>{isPrivate ? 'Private' : 'Public'}</span>
             </button>
           )}
@@ -350,14 +350,14 @@ export function ResponseSummary({
               <select
                 value={selectedExportFormat}
                 onChange={(e) => setSelectedExportFormat(e.target.value as any)}
-                className="text-sm border border-light-gray rounded px-2 py-1"
+                className="rounded border border-light-gray px-2 py-1 text-sm"
               >
                 <option value="json">JSON</option>
                 <option value="csv">CSV</option>
                 <option value="pdf">PDF</option>
               </select>
               <Button variant="outline" size="sm" onClick={handleExport}>
-                <Download className="w-4 h-4 mr-1" />
+                <Download className="mr-1 size-4" />
                 Export
               </Button>
             </div>
@@ -365,7 +365,7 @@ export function ResponseSummary({
           
           {onShare && (
             <Button variant="outline" size="sm" onClick={onShare}>
-              <Share className="w-4 h-4 mr-1" />
+              <Share className="mr-1 size-4" />
               Share
             </Button>
           )}
@@ -395,16 +395,16 @@ export function ResponseSummary({
           return (
             <div
               key={groupName}
-              className="bg-off-white dark:bg-off-black border border-light-gray dark:border-warm-gray/30 rounded-lg overflow-hidden"
+              className="overflow-hidden rounded-lg border border-light-gray bg-off-white dark:border-warm-gray/30 dark:bg-off-black"
             >
               {/* Group Header */}
               <button
                 type="button"
                 onClick={() => toggleSection(groupName)}
-                className="w-full flex items-center justify-between p-4 text-left hover:bg-light-gray/30 focus:outline-none focus:bg-light-gray/30"
+                className="flex w-full items-center justify-between p-4 text-left hover:bg-light-gray/30 focus:bg-light-gray/30 focus:outline-none"
               >
                 <div className="flex items-center space-x-3">
-                  <h3 className="font-medium text-off-black dark:text-off-white capitalize">
+                  <h3 className="font-medium capitalize text-off-black dark:text-off-white">
                     {groupName} ({groupResponses.length})
                   </h3>
                   {groupName === 'errors' && groupResponses.length > 0 && (
@@ -415,9 +415,9 @@ export function ResponseSummary({
                   )}
                 </div>
                 {isExpanded ? (
-                  <ChevronUp className="w-5 h-5 text-warm-gray" />
+                  <ChevronUp className="size-5 text-warm-gray" />
                 ) : (
-                  <ChevronDown className="w-5 h-5 text-warm-gray" />
+                  <ChevronDown className="size-5 text-warm-gray" />
                 )}
               </button>
 
@@ -428,17 +428,17 @@ export function ResponseSummary({
                     <div
                       key={response.questionId}
                       className={cn(
-                        "p-4 border-b border-light-gray dark:border-warm-gray/30 last:border-b-0",
+                        "border-b border-light-gray p-4 last:border-b-0 dark:border-warm-gray/30",
                         response.hasError && "bg-light-gray dark:bg-gray-700"
                       )}
                     >
                       <div className="flex items-start justify-between space-x-4">
-                        <div className="flex-1 min-w-0">
+                        <div className="min-w-0 flex-1">
                           {/* Question */}
-                          <div className="flex items-start space-x-3 mb-2">
+                          <div className="mb-2 flex items-start space-x-3">
                             {getResponseIcon(response)}
                             <div className="flex-1">
-                              <div className="flex items-center space-x-2 mb-1">
+                              <div className="mb-1 flex items-center space-x-2">
                                 {showQuestionNumbers && (
                                   <span className="text-xs font-medium text-warm-gray">
                                     Q{index + 1}
@@ -448,12 +448,12 @@ export function ResponseSummary({
                                   {response.questionText}
                                 </h4>
                                 {response.isRequired && (
-                                  <span className="text-warm-gray text-sm">*</span>
+                                  <span className="text-sm text-warm-gray">*</span>
                                 )}
                               </div>
                               
                               {/* Answer */}
-                              <div className="text-sm text-warm-gray mb-2">
+                              <div className="mb-2 text-sm text-warm-gray">
                                 <span className="font-medium">Answer: </span>
                                 <span className={cn(
                                   response.isSkipped && "italic",
@@ -465,8 +465,8 @@ export function ResponseSummary({
 
                               {/* Error Message */}
                               {response.hasError && response.errorMessage && showErrors && (
-                                <div className="text-sm text-warm-gray mb-2">
-                                  <AlertTriangle className="w-3 h-3 inline mr-1" />
+                                <div className="mb-2 text-sm text-warm-gray">
+                                  <AlertTriangle className="mr-1 inline size-3" />
                                   {response.errorMessage}
                                 </div>
                               )}
@@ -478,7 +478,7 @@ export function ResponseSummary({
                                 )}
                                 {showConfidence && response.confidence && (
                                   <span className={cn(
-                                    "px-2 py-1 rounded-full",
+                                    "rounded-full px-2 py-1",
                                     getConfidenceColor(response.confidence)
                                   )}>
                                     {response.confidence}% confident
@@ -502,12 +502,12 @@ export function ResponseSummary({
                                 type="button"
                                 onClick={() => onFlag?.(response.questionId, !response.isFlagged)}
                                 className={cn(
-                                  "p-1 rounded hover:bg-light-gray",
+                                  "rounded p-1 hover:bg-light-gray",
                                   response.isFlagged ? "text-primary" : "text-warm-gray"
                                 )}
                                 aria-label={response.isFlagged ? "Remove flag" : "Flag for review"}
                               >
-                                <Flag className="w-4 h-4" />
+                                <Flag className="size-4" />
                               </button>
                             )}
                             
@@ -515,10 +515,10 @@ export function ResponseSummary({
                               <button
                                 type="button"
                                 onClick={() => onEdit(response.questionId)}
-                                className="p-1 rounded hover:bg-light-gray text-warm-gray hover:text-primary"
+                                className="rounded p-1 text-warm-gray hover:bg-light-gray hover:text-primary"
                                 aria-label="Edit response"
                               >
-                                <Edit className="w-4 h-4" />
+                                <Edit className="size-4" />
                               </button>
                             )}
                           </div>

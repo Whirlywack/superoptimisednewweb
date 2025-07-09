@@ -72,7 +72,7 @@ export function ChoiceButton({
       className={cn(
         "w-full text-left font-medium",
         "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
-        "disabled:opacity-50 disabled:cursor-not-allowed",
+        "disabled:cursor-not-allowed disabled:opacity-50",
         "touch-manipulation", // Optimize for touch
         variantConfig.base,
         sizeConfig.container,
@@ -84,32 +84,32 @@ export function ChoiceButton({
       aria-checked={selected}
       {...props}
     >
-      <div className="flex items-center gap-3 w-full">
+      <div className="flex w-full items-center gap-3">
         {/* Selection Indicator */}
         <div className={cn(
-          "flex-shrink-0 flex items-center justify-center",
-          "w-5 h-5 rounded border-2 transition-colors",
+          "flex shrink-0 items-center justify-center",
+          "size-5 rounded border-2 transition-colors",
           multiSelect ? "rounded-sm" : "rounded-full",
           selected 
             ? "border-primary bg-primary text-off-white"
             : "border-warm-gray bg-off-white dark:bg-off-black"
         )}>
-          {selected && <Check className="w-3 h-3" />}
+          {selected && <Check className="size-3" />}
         </div>
 
         {/* Icon */}
         {icon && (
-          <div className="flex-shrink-0 text-warm-gray">
+          <div className="shrink-0 text-warm-gray">
             {icon}
           </div>
         )}
 
         {/* Content */}
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           <div className="flex items-center justify-between">
-            <span className="font-medium truncate">{label}</span>
+            <span className="truncate font-medium">{label}</span>
             {shortcut && (
-              <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 border border-light-gray rounded text-xs font-mono bg-light-gray text-warm-gray">
+              <kbd className="hidden items-center rounded border border-light-gray bg-light-gray px-1.5 py-0.5 font-mono text-xs text-warm-gray sm:inline-flex">
                 {shortcut}
               </kbd>
             )}
@@ -117,7 +117,7 @@ export function ChoiceButton({
           
           {description && (
             <p className={cn(
-              "text-warm-gray mt-1 leading-tight",
+              "mt-1 leading-tight text-warm-gray",
               sizeConfig.description
             )}>
               {description}
@@ -192,13 +192,13 @@ export function LargeButtonChoice({
     <button
       type="button"
       className={cn(
-        "relative w-full min-h-[80px] p-4",
-        "border-2 rounded-xl transition-all duration-200",
+        "relative min-h-[80px] w-full p-4",
+        "rounded-xl border-2 transition-all duration-200",
         "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
         "touch-manipulation",
         selected
           ? "border-primary bg-primary/5 text-off-black dark:text-off-white"
-          : "border-light-gray bg-off-white dark:bg-off-black hover:border-primary/50 hover:bg-light-gray/50",
+          : "border-light-gray bg-off-white hover:border-primary/50 hover:bg-light-gray/50 dark:bg-off-black",
         "active:scale-[0.98]",
         className
       )}
@@ -207,33 +207,33 @@ export function LargeButtonChoice({
     >
       <div className="flex items-center gap-4">
         {emoji && (
-          <span className="text-2xl flex-shrink-0" role="img">
+          <span className="shrink-0 text-2xl" role="img">
             {emoji}
           </span>
         )}
         
         <div className="flex-1 text-left">
-          <h3 className="font-semibold text-lg leading-tight">
+          <h3 className="text-lg font-semibold leading-tight">
             {title}
           </h3>
           {subtitle && (
-            <p className="text-sm text-warm-gray mt-1">
+            <p className="mt-1 text-sm text-warm-gray">
               {subtitle}
             </p>
           )}
         </div>
 
         {badge && (
-          <span className="flex-shrink-0 px-2 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full">
+          <span className="shrink-0 rounded-full bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
             {badge}
           </span>
         )}
       </div>
 
       {selected && (
-        <div className="absolute top-2 right-2">
-          <div className="w-5 h-5 bg-primary rounded-full flex items-center justify-center">
-            <Check className="w-3 h-3 text-off-white" />
+        <div className="absolute right-2 top-2">
+          <div className="flex size-5 items-center justify-center rounded-full bg-primary">
+            <Check className="size-3 text-off-white" />
           </div>
         </div>
       )}

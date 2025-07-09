@@ -80,8 +80,8 @@ export function Avatar({
   return (
     <div
       className={cn(
-        "relative inline-flex items-center justify-center flex-shrink-0",
-        "bg-muted text-muted-foreground font-medium",
+        "relative inline-flex shrink-0 items-center justify-center",
+        "bg-muted font-medium text-muted-foreground",
         "overflow-hidden",
         avatarSizes[size],
         shape === "circle" ? "rounded-full" : "rounded-lg",
@@ -96,7 +96,7 @@ export function Avatar({
           onError={handleImageError}
           onLoad={handleImageLoad}
           className={cn(
-            "h-full w-full object-cover transition-opacity duration-300",
+            "size-full object-cover transition-opacity duration-300",
             imageLoaded ? "opacity-100" : "opacity-0"
           )}
         />
@@ -107,7 +107,7 @@ export function Avatar({
           {initials ? (
             <span className="select-none">{initials}</span>
           ) : (
-            <User className="h-1/2 w-1/2" />
+            <User className="size-1/2" />
           )}
         </>
       )}
@@ -160,7 +160,7 @@ export function AvatarGroup({
         <div
           key={index}
           className={cn(
-            "relative border-2 border-background rounded-full",
+            "relative rounded-full border-2 border-background",
             index > 0 && spacingOffsets[spacing]
           )}
           style={{ zIndex: displayChildren.length - index }}
@@ -177,9 +177,9 @@ export function AvatarGroup({
       {remainingCount > 0 && (
         <div
           className={cn(
-            "relative inline-flex items-center justify-center flex-shrink-0",
-            "bg-muted text-muted-foreground font-medium text-xs",
-            "border-2 border-background rounded-full",
+            "relative inline-flex shrink-0 items-center justify-center",
+            "bg-muted text-xs font-medium text-muted-foreground",
+            "rounded-full border-2 border-background",
             avatarSizes[size],
             spacingOffsets[spacing]
           )}
@@ -231,12 +231,12 @@ export function AvatarWithInfo({
         showStatus={showStatus}
       />
       
-      <div className="flex-1 min-w-0">
-        <div className={cn("font-medium truncate", textSize)}>
+      <div className="min-w-0 flex-1">
+        <div className={cn("truncate font-medium", textSize)}>
           {name}
         </div>
         {description && (
-          <div className={cn("text-muted-foreground truncate", descriptionSize)}>
+          <div className={cn("truncate text-muted-foreground", descriptionSize)}>
             {description}
           </div>
         )}

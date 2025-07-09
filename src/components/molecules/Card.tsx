@@ -77,7 +77,7 @@ interface CardDescriptionProps extends React.HTMLAttributes<HTMLParagraphElement
 
 export function CardDescription({ className, children, ...props }: CardDescriptionProps) {
   return (
-    <p className={cn("text-sm text-muted-foreground mt-1.5", className)} {...props}>
+    <p className={cn("mt-1.5 text-sm text-muted-foreground", className)} {...props}>
       {children}
     </p>
   );
@@ -141,7 +141,7 @@ export function ImageCard({
           src={src}
           alt={alt}
           className={cn(
-            "object-cover w-full h-full transition-transform duration-300 hover:scale-105",
+            "size-full object-cover transition-transform duration-300 hover:scale-105",
             imageClassName
           )}
         />
@@ -202,14 +202,14 @@ export function StatCard({
     <Card className={cn("", className)} {...props}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
-        {icon && <div className="h-4 w-4 text-muted-foreground">{icon}</div>}
+        {icon && <div className="size-4 text-muted-foreground">{icon}</div>}
       </CardHeader>
       
       <CardContent>
         <div className="text-2xl font-bold">{value}</div>
         
         {(description || trend) && (
-          <div className="flex items-center gap-2 mt-1">
+          <div className="mt-1 flex items-center gap-2">
             {trend && (
               <span className={cn("text-xs font-medium", trendColors[trend.direction])}>
                 {trendSymbols[trend.direction]} {Math.abs(trend.value)}%
@@ -252,7 +252,7 @@ export function ActionCard({
         <div className="flex items-start justify-between">
           <div className="flex items-start gap-3">
             {icon && (
-              <div className="flex-shrink-0 h-10 w-10 bg-primary/10 rounded-lg flex items-center justify-center">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
                 {icon}
               </div>
             )}

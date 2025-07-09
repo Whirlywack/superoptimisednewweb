@@ -87,7 +87,7 @@ export function EngagementMetrics({
             <LucideIcon 
               icon={IconComponent} 
               size={iconSizes[size]}
-              className="text-warm-gray hover:text-primary transition-colors duration-200" 
+              className="text-warm-gray transition-colors duration-200 hover:text-primary" 
             />
             <MonoText variant="muted" className="text-warm-gray">
               {formatCount(metric.count)}

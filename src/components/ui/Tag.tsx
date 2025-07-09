@@ -72,11 +72,11 @@ export function Tag({
             "hover:bg-current hover:bg-opacity-20",
             "transition-colors",
             "focus:outline-none focus:ring-1 focus:ring-current",
-            size === "sm" ? "h-3 w-3" : size === "md" ? "h-4 w-4" : "h-5 w-5"
+            size === "sm" ? "size-3" : size === "md" ? "size-4" : "size-5"
           )}
           aria-label="Remove tag"
         >
-          <X className={size === "sm" ? "h-2 w-2" : size === "md" ? "h-2.5 w-2.5" : "h-3 w-3"} />
+          <X className={size === "sm" ? "size-2" : size === "md" ? "size-2.5" : "size-3"} />
         </button>
       )}
     </span>

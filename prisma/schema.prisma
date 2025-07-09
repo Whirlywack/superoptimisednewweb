@@ -24,10 +24,11 @@ model User {
   sessions       Session[]
 
   // Interactive features relationships
-  questionResponses QuestionResponse[]
-  xpLedger          XpLedger[]
-  engagementStats   EngagementStats[]
-  posts             Post[]
+  questionResponses       QuestionResponse[]
+  questionnaireResponses  QuestionnaireResponse[]
+  xpLedger                XpLedger[]
+  engagementStats         EngagementStats[]
+  posts                   Post[]
 }
 
 model Account {
@@ -90,12 +91,50 @@ model VoterToken {
   voteCount  Int      @default(0) @map("vote_count")
 
   // Relationships
-  questionResponses QuestionResponse[]
-  xpLedger          XpLedger[]
-  engagementStats   EngagementStats[]
-  xpClaims          XpClaim[]
+  questionResponses       QuestionResponse[]
+  questionnaireResponses  QuestionnaireResponse[]
+  xpLedger                XpLedger[]
+  engagementStats         EngagementStats[]
+  xpClaims                XpClaim[]
 
   @@map("voter_tokens")
+}
+
+// Questionnaires - collections of questions
+model Questionnaire {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  category    String? // 'research', 'feedback', 'survey', 'poll'
+  status      String    @default("draft") // 'draft', 'active', 'closed'
+  startDate   DateTime? @map("start_date")
+  endDate     DateTime? @map("end_date")
+  settings    Json      @default("{}") // Configuration like randomize questions, show progress, etc.
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  // Relationships
+  questions         QuestionnaireQuestion[]
+  responses         QuestionnaireResponse[]
+
+  @@map("questionnaires")
+}
+
+// Junction table for questionnaire-question relationships with ordering
+model QuestionnaireQuestion {
+  id               String   @id @default(cuid())
+  questionnaireId  String   @map("questionnaire_id")
+  questionId       String   @map("question_id")
+  displayOrder     Int      @map("display_order")
+  isRequired       Boolean  @default(true) @map("is_required")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  // Relationships
+  questionnaire Questionnaire @relation(fields: [questionnaireId], references: [id], onDelete: Cascade)
+  question      Question      @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([questionnaireId, questionId])
+  @@map("questionnaire_questions")
 }
 
 // Core questions supporting all types
@@ -114,27 +153,51 @@ model Question {
   updatedAt    DateTime  @updatedAt @map("updated_at")
 
   // Relationships
-  responses QuestionResponse[]
-  xpLedger  XpLedger[]
+  responses             QuestionResponse[]
+  xpLedger              XpLedger[]
+  questionnaireQuestions QuestionnaireQuestion[]
 
   @@map("questions")
 }
 
-// User responses to questions
-model QuestionResponse {
-  id           String   @id @default(cuid())
-  questionId   String   @map("question_id")
-  voterTokenId String?  @map("voter_token_id")
-  userId       String?  @map("user_id")
-  responseData Json     @map("response_data") // Flexible for all question types
-  ipAddress    String?  @map("ip_address")
-  userAgent    String?  @map("user_agent")
-  createdAt    DateTime @default(now()) @map("created_at")
+// Responses to entire questionnaires
+model QuestionnaireResponse {
+  id               String   @id @default(cuid())
+  questionnaireId  String   @map("questionnaire_id")
+  voterTokenId     String?  @map("voter_token_id")
+  userId           String?  @map("user_id")
+  status           String   @default("in_progress") // 'in_progress', 'completed', 'abandoned'
+  startedAt        DateTime @default(now()) @map("started_at")
+  completedAt      DateTime? @map("completed_at")
+  ipAddress        String?  @map("ip_address")
+  userAgent        String?  @map("user_agent")
 
   // Relationships
-  question   Question    @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  voterToken VoterToken? @relation(fields: [voterTokenId], references: [id], onDelete: SetNull)
-  user       User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  questionnaire     Questionnaire      @relation(fields: [questionnaireId], references: [id], onDelete: Cascade)
+  voterToken        VoterToken?        @relation(fields: [voterTokenId], references: [id], onDelete: SetNull)
+  user              User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
+  questionResponses QuestionResponse[]
+
+  @@map("questionnaire_responses")
+}
+
+// User responses to questions
+model QuestionResponse {
+  id                      String   @id @default(cuid())
+  questionId              String   @map("question_id")
+  questionnaireResponseId String?  @map("questionnaire_response_id")
+  voterTokenId            String?  @map("voter_token_id")
+  userId                  String?  @map("user_id")
+  responseData            Json     @map("response_data") // Flexible for all question types
+  ipAddress               String?  @map("ip_address")
+  userAgent               String?  @map("user_agent")
+  createdAt               DateTime @default(now()) @map("created_at")
+
+  // Relationships
+  question              Question               @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionnaireResponse QuestionnaireResponse? @relation(fields: [questionnaireResponseId], references: [id], onDelete: SetNull)
+  voterToken            VoterToken?            @relation(fields: [voterTokenId], references: [id], onDelete: SetNull)
+  user                  User?                  @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@map("question_responses")
 }

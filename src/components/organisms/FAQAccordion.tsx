@@ -103,15 +103,15 @@ export function FAQAccordion({
       <div
         key={faq.id}
         className={cn(
-          "border border-light-gray dark:border-warm-gray/30 rounded-lg",
-          variant === "simple" && "border-0 border-b border-light-gray dark:border-warm-gray/30 rounded-none last:border-b-0",
+          "rounded-lg border border-light-gray dark:border-warm-gray/30",
+          variant === "simple" && "rounded-none border-0 border-b border-light-gray last:border-b-0 dark:border-warm-gray/30",
           faq.featured && "ring-2 ring-primary/20"
         )}
       >
         <button
           onClick={() => handleToggle(faq.id)}
           className={cn(
-            "w-full px-6 py-4 text-left flex items-center justify-between gap-4 hover:bg-light-gray/50 dark:hover:bg-warm-gray/10 transition-colors",
+            "flex w-full items-center justify-between gap-4 px-6 py-4 text-left transition-colors hover:bg-light-gray/50 dark:hover:bg-warm-gray/10",
             variant === "simple" && "px-0",
             isOpen && "bg-light-gray/30 dark:bg-warm-gray/10"
           )}
@@ -119,13 +119,13 @@ export function FAQAccordion({
           aria-controls={`faq-answer-${faq.id}`}
         >
           <span className={cn(
-            "font-medium text-off-black dark:text-off-white leading-relaxed",
+            "font-medium leading-relaxed text-off-black dark:text-off-white",
             size === "sm" ? "text-sm" : size === "md" ? "text-base" : "text-lg"
           )}>
             {faq.question}
           </span>
           
-          <div className="flex-shrink-0">
+          <div className="shrink-0">
             <LucideIcon 
               icon={isOpen ? ChevronUp : ChevronDown} 
               size="sm" 
@@ -141,7 +141,7 @@ export function FAQAccordion({
           <div
             id={`faq-answer-${faq.id}`}
             className={cn(
-              "px-6 pb-4 text-warm-gray leading-relaxed",
+              "px-6 pb-4 leading-relaxed text-warm-gray",
               variant === "simple" && "px-0",
               size === "sm" ? "text-sm" : size === "md" ? "text-base" : "text-lg"
             )}
@@ -155,7 +155,7 @@ export function FAQAccordion({
 
   const renderSearchInput = () => (
     <div className="relative mb-6">
-      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
         <LucideIcon icon={Search} size="sm" className="text-warm-gray" />
       </div>
       <input
@@ -164,10 +164,10 @@ export function FAQAccordion({
         onChange={(e) => setSearchQuery(e.target.value)}
         placeholder={searchPlaceholder}
         className={cn(
-          "w-full pl-10 pr-4 py-3 border border-light-gray dark:border-warm-gray/30 rounded-lg",
-          "bg-off-white dark:bg-off-black text-off-black dark:text-off-white",
+          "w-full rounded-lg border border-light-gray py-3 pl-10 pr-4 dark:border-warm-gray/30",
+          "bg-off-white text-off-black dark:bg-off-black dark:text-off-white",
           "placeholder:text-warm-gray",
-          "focus:ring-2 focus:ring-primary/20 focus:border-primary",
+          "focus:border-primary focus:ring-2 focus:ring-primary/20",
           "transition-colors"
         )}
       />
@@ -176,7 +176,7 @@ export function FAQAccordion({
 
   const renderSimpleVariant = () => (
     <div className={cn(sizeClasses[size], className)} {...props}>
-      <div className="max-w-3xl mx-auto space-y-6">
+      <div className="mx-auto max-w-3xl space-y-6">
         {/* Header */}
         {(title || description) && (
           <div className="space-y-4">
@@ -190,7 +190,7 @@ export function FAQAccordion({
             )}
             {description && (
               <p className={cn(
-                "text-warm-gray leading-relaxed",
+                "leading-relaxed text-warm-gray",
                 size === "lg" ? "text-lg" : "text-base"
               )}>
                 {description}
@@ -209,7 +209,7 @@ export function FAQAccordion({
 
         {/* No Results */}
         {searchQuery && filteredFAQs.length === 0 && (
-          <div className="text-center py-8 text-warm-gray">
+          <div className="py-8 text-center text-warm-gray">
             <LucideIcon icon={Search} size="lg" className="mx-auto mb-3 opacity-50" />
             <p>No FAQs found matching "{searchQuery}"</p>
           </div>
@@ -224,12 +224,12 @@ export function FAQAccordion({
 
   return (
     <div className={cn(sizeClasses[size], className)} {...props}>
-      <div className="max-w-4xl mx-auto space-y-8">
+      <div className="mx-auto max-w-4xl space-y-8">
         {/* Header */}
         {(title || description) && (
-          <div className="text-center space-y-4">
+          <div className="space-y-4 text-center">
             {title && (
-              <div className="flex items-center justify-center gap-3 mb-4">
+              <div className="mb-4 flex items-center justify-center gap-3">
                 <LucideIcon icon={HelpCircle} size="lg" className="text-primary" />
                 <h2 className={cn(
                   titleSizes[size],
@@ -241,7 +241,7 @@ export function FAQAccordion({
             )}
             {description && (
               <p className={cn(
-                "text-warm-gray leading-relaxed max-w-2xl mx-auto",
+                "mx-auto max-w-2xl leading-relaxed text-warm-gray",
                 size === "lg" ? "text-lg" : "text-base"
               )}>
                 {description}
@@ -252,7 +252,7 @@ export function FAQAccordion({
 
         {/* Search */}
         {(showSearch || variant === "searchable") && (
-          <div className="max-w-2xl mx-auto">
+          <div className="mx-auto max-w-2xl">
             {renderSearchInput()}
           </div>
         )}
@@ -263,7 +263,7 @@ export function FAQAccordion({
             {Object.entries(categorizedFAQs).map(([category, categoryFAQs]) => (
               <div key={category} className="space-y-4">
                 {category && (
-                  <h3 className="text-xl font-semibold text-off-black dark:text-off-white border-b border-light-gray dark:border-warm-gray/30 pb-2">
+                  <h3 className="border-b border-light-gray pb-2 text-xl font-semibold text-off-black dark:border-warm-gray/30 dark:text-off-white">
                     {category}
                   </h3>
                 )}
@@ -281,9 +281,9 @@ export function FAQAccordion({
 
         {/* No Results */}
         {searchQuery && filteredFAQs.length === 0 && (
-          <div className="text-center py-12 text-warm-gray">
+          <div className="py-12 text-center text-warm-gray">
             <LucideIcon icon={Search} size="xl" className="mx-auto mb-4 opacity-50" />
-            <h3 className="text-lg font-medium mb-2">No results found</h3>
+            <h3 className="mb-2 text-lg font-medium">No results found</h3>
             <p>No FAQs found matching "{searchQuery}". Try different keywords or browse all questions.</p>
           </div>
         )}

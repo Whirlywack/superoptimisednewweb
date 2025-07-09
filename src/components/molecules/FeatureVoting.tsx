@@ -174,19 +174,19 @@ export function FeatureVoting({
     const optionContent = (
       <>
         {/* Option Info */}
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             {option.icon && (
-              <span className="flex-shrink-0 text-primary">
+              <span className="shrink-0 text-primary">
                 {option.icon}
               </span>
             )}
-            <h3 className="font-medium text-off-black dark:text-off-white truncate">
+            <h3 className="truncate font-medium text-off-black dark:text-off-white">
               {option.label}
             </h3>
           </div>
           {option.description && (
-            <p className="text-sm text-warm-gray mt-1 leading-relaxed">
+            <p className="mt-1 text-sm leading-relaxed text-warm-gray">
               {option.description}
             </p>
           )}
@@ -199,16 +199,16 @@ export function FeatureVoting({
             onClick={() => handleDecrement(option.id)}
             disabled={!canDecrement}
             className={cn(
-              "w-8 h-8 rounded-full flex items-center justify-center",
+              "flex size-8 items-center justify-center rounded-full",
               "transition-all duration-200",
               "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
               canDecrement
-                ? "bg-light-gray hover:bg-warm-gray/20 text-off-black dark:text-off-white"
-                : "bg-light-gray/50 text-warm-gray/50 cursor-not-allowed"
+                ? "bg-light-gray text-off-black hover:bg-warm-gray/20 dark:text-off-white"
+                : "cursor-not-allowed bg-light-gray/50 text-warm-gray/50"
             )}
             aria-label={`Decrease points for ${option.label}`}
           >
-            <Minus className="w-4 h-4" />
+            <Minus className="size-4" />
           </button>
 
           <div className="w-16 text-center">
@@ -223,14 +223,14 @@ export function FeatureVoting({
               max={option.maxPoints || totalPoints}
               step={pointStep}
               className={cn(
-                "w-full text-center rounded-md px-2 py-1",
+                "w-full rounded-md px-2 py-1 text-center",
                 "text-lg font-semibold tabular-nums",
                 "border-2 transition-all duration-200",
                 "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
                 isFocused
                   ? "border-primary bg-primary/5"
                   : "border-light-gray bg-off-white dark:bg-off-black",
-                isDisabled && "opacity-50 cursor-not-allowed"
+                isDisabled && "cursor-not-allowed opacity-50"
               )}
               aria-label={`Points for ${option.label}`}
             />
@@ -241,16 +241,16 @@ export function FeatureVoting({
             onClick={() => handleIncrement(option.id)}
             disabled={!canIncrement}
             className={cn(
-              "w-8 h-8 rounded-full flex items-center justify-center",
+              "flex size-8 items-center justify-center rounded-full",
               "transition-all duration-200",
               "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
               canIncrement
-                ? "bg-light-gray hover:bg-warm-gray/20 text-off-black dark:text-off-white"
-                : "bg-light-gray/50 text-warm-gray/50 cursor-not-allowed"
+                ? "bg-light-gray text-off-black hover:bg-warm-gray/20 dark:text-off-white"
+                : "cursor-not-allowed bg-light-gray/50 text-warm-gray/50"
             )}
             aria-label={`Increase points for ${option.label}`}
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="size-4" />
           </button>
         </div>
       </>
@@ -282,22 +282,22 @@ export function FeatureVoting({
               isDisabled && "opacity-50"
             )}
           >
-            <span className="font-medium text-sm truncate">{option.label}</span>
+            <span className="truncate text-sm font-medium">{option.label}</span>
             <div className="flex items-center gap-1">
               <button
                 type="button"
                 onClick={() => handleDecrement(option.id)}
                 disabled={!canDecrement}
                 className={cn(
-                  "w-6 h-6 rounded flex items-center justify-center text-sm",
+                  "flex size-6 items-center justify-center rounded text-sm",
                   canDecrement
-                    ? "bg-off-white hover:bg-light-gray text-off-black"
-                    : "bg-light-gray text-warm-gray/50 cursor-not-allowed"
+                    ? "bg-off-white text-off-black hover:bg-light-gray"
+                    : "cursor-not-allowed bg-light-gray text-warm-gray/50"
                 )}
               >
                 -
               </button>
-              <span className="w-8 text-center font-semibold text-sm">
+              <span className="w-8 text-center text-sm font-semibold">
                 {points}
               </span>
               <button
@@ -305,10 +305,10 @@ export function FeatureVoting({
                 onClick={() => handleIncrement(option.id)}
                 disabled={!canIncrement}
                 className={cn(
-                  "w-6 h-6 rounded flex items-center justify-center text-sm",
+                  "flex size-6 items-center justify-center rounded text-sm",
                   canIncrement
-                    ? "bg-off-white hover:bg-light-gray text-off-black"
-                    : "bg-light-gray text-warm-gray/50 cursor-not-allowed"
+                    ? "bg-off-white text-off-black hover:bg-light-gray"
+                    : "cursor-not-allowed bg-light-gray text-warm-gray/50"
                 )}
               >
                 +
@@ -324,7 +324,7 @@ export function FeatureVoting({
             key={option.id}
             className={cn(
               "flex items-center gap-4 p-4",
-              "border rounded-lg transition-all duration-200",
+              "rounded-lg border transition-all duration-200",
               points > 0
                 ? "border-primary bg-primary/5"
                 : "border-light-gray bg-off-white dark:bg-off-black",
@@ -350,17 +350,17 @@ export function FeatureVoting({
           {question}
         </QuestionLabel>
         {description && (
-          <p className="text-warm-gray text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-warm-gray">
             {description}
           </p>
         )}
       </div>
 
       {/* Points Status Bar */}
-      <div className="bg-light-gray rounded-lg p-4">
-        <div className="flex items-center justify-between mb-3">
+      <div className="rounded-lg bg-light-gray p-4">
+        <div className="mb-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Coins className="w-5 h-5 text-primary" />
+            <Coins className="size-5 text-primary" />
             <span className="font-medium text-off-black dark:text-off-white">
               Points Available
             </span>
@@ -379,7 +379,7 @@ export function FeatureVoting({
         </div>
 
         {/* Progress Bar */}
-        <div className="w-full bg-warm-gray/20 rounded-full h-2 overflow-hidden">
+        <div className="h-2 w-full overflow-hidden rounded-full bg-warm-gray/20">
           <div
             className="h-full bg-primary transition-all duration-300 ease-out"
             style={{ width: `${(pointsAllocated / totalPoints) * 100}%` }}
@@ -392,7 +392,7 @@ export function FeatureVoting({
             type="button"
             onClick={handleReset}
             disabled={disabled}
-            className="mt-3 text-sm text-primary hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
+            className="mt-3 text-sm text-primary hover:underline disabled:cursor-not-allowed disabled:opacity-50"
           >
             Reset all votes
           </button>
@@ -402,8 +402,8 @@ export function FeatureVoting({
       {/* Voting Options */}
       <div className={cn(
         layout === 'cards' && "space-y-3",
-        layout === 'list' && "border border-light-gray rounded-lg overflow-hidden",
-        layout === 'compact' && "grid grid-cols-1 sm:grid-cols-2 gap-2"
+        layout === 'list' && "overflow-hidden rounded-lg border border-light-gray",
+        layout === 'compact' && "grid grid-cols-1 gap-2 sm:grid-cols-2"
       )}>
         {options.map(option => renderOption(option))}
       </div>

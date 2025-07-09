@@ -25,7 +25,7 @@ export function Icon({
     <span
       className={cn(
         "inline-flex items-center justify-center",
-        "text-current flex-shrink-0",
+        "shrink-0 text-current",
         iconSizes[size],
         className
       )}
@@ -53,7 +53,7 @@ export function LucideIcon({
     <IconComponent
       className={cn(
         iconSizes[size],
-        "text-current flex-shrink-0",
+        "shrink-0 text-current",
         className
       )}
       {...props}

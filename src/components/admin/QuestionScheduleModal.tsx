@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { api } from "@/lib/trpc/client";
+import { api } from "@/lib/trpc/react";
 
 interface QuestionScheduleModalProps {
   questionId: string;
   questionTitle: string;
-  currentStartDate: Date | null;
-  currentEndDate: Date | null;
+  initialStartDate: Date | null;
+  initialEndDate: Date | null;
   isOpen: boolean;
   onClose: () => void;
   onSuccess: (updatedSchedule: { startDate: Date | null; endDate: Date | null }) => void;
@@ -16,17 +16,17 @@ interface QuestionScheduleModalProps {
 export function QuestionScheduleModal({
   questionId,
   questionTitle,
-  currentStartDate,
-  currentEndDate,
+  initialStartDate,
+  initialEndDate,
   isOpen,
   onClose,
   onSuccess,
 }: QuestionScheduleModalProps) {
   const [startDate, setStartDate] = useState<string>(
-    currentStartDate ? currentStartDate.toISOString().slice(0, 16) : ""
+    initialStartDate ? initialStartDate.toISOString().slice(0, 16) : ""
   );
   const [endDate, setEndDate] = useState<string>(
-    currentEndDate ? currentEndDate.toISOString().slice(0, 16) : ""
+    initialEndDate ? initialEndDate.toISOString().slice(0, 16) : ""
   );
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -142,9 +142,9 @@ export function QuestionScheduleModal({
               <div className="font-mono text-sm font-bold text-off-black">CURRENT_SCHEDULE:</div>
               <div className="mt-2 space-y-1 font-mono text-xs text-warm-gray">
                 <div>
-                  start: {currentStartDate ? currentStartDate.toLocaleString() : "IMMEDIATE"}
+                  start: {initialStartDate ? initialStartDate.toLocaleString() : "IMMEDIATE"}
                 </div>
-                <div>end: {currentEndDate ? currentEndDate.toLocaleString() : "NEVER"}</div>
+                <div>end: {initialEndDate ? initialEndDate.toLocaleString() : "NEVER"}</div>
               </div>
             </div>
           </div>

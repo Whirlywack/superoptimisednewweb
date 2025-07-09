@@ -35,7 +35,7 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <XPToastProvider>
-      <div className="min-h-screen flex flex-col bg-off-white">
+      <div className="flex min-h-screen flex-col bg-off-white">
         {/* Block 1: Navigation Bar */}
         <HomepageNavigation />
 

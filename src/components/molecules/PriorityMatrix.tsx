@@ -153,9 +153,9 @@ export function PriorityMatrix({
       <div
         key={key}
         className={cn(
-          "relative min-h-[120px] p-4 border-2 border-dashed rounded-lg transition-all duration-200",
+          "relative min-h-[120px] rounded-lg border-2 border-dashed p-4 transition-all duration-200",
           quadrant.color,
-          isHovered && "border-solid shadow-md scale-102",
+          isHovered && "scale-102 border-solid shadow-md",
           disabled && "opacity-50"
         )}
         onDragOver={handleDragOver}
@@ -164,7 +164,7 @@ export function PriorityMatrix({
         onDrop={(e) => handleDrop(e, effort, impact)}
       >
         {/* Quadrant Label */}
-        <div className="text-xs font-semibold mb-2 text-center">
+        <div className="mb-2 text-center text-xs font-semibold">
           {quadrant.label}
         </div>
 
@@ -178,7 +178,7 @@ export function PriorityMatrix({
               <div
                 key={item.id}
                 className={cn(
-                  "bg-off-white dark:bg-off-black rounded-md p-2 shadow-sm border border-light-gray",
+                  "rounded-md border border-light-gray bg-off-white p-2 shadow-sm dark:bg-off-black",
                   "flex items-center justify-between gap-2",
                   "transition-all duration-200 hover:shadow-md",
                   draggedItem === item.id && "opacity-50"
@@ -187,13 +187,13 @@ export function PriorityMatrix({
                 onDragStart={(e) => handleDragStart(e, item.id)}
                 onDragEnd={handleDragEnd}
               >
-                <div className="flex items-center gap-2 flex-1 min-w-0">
+                <div className="flex min-w-0 flex-1 items-center gap-2">
                   {item.icon && (
-                    <span className="flex-shrink-0 text-primary">
+                    <span className="shrink-0 text-primary">
                       {item.icon}
                     </span>
                   )}
-                  <span className="text-sm font-medium truncate">
+                  <span className="truncate text-sm font-medium">
                     {item.label}
                   </span>
                 </div>
@@ -202,9 +202,9 @@ export function PriorityMatrix({
                   <button
                     type="button"
                     onClick={() => handleRemoveItem(item.id)}
-                    className="flex-shrink-0 w-5 h-5 rounded-full bg-light-gray hover:bg-warm-gray/20 
-                             flex items-center justify-center text-xs text-warm-gray hover:text-off-black
-                             transition-colors duration-200"
+                    className="flex size-5 shrink-0 items-center justify-center rounded-full 
+                             bg-light-gray text-xs text-warm-gray transition-colors duration-200 hover:bg-warm-gray/20
+                             hover:text-off-black"
                     aria-label={`Remove ${item.label} from matrix`}
                   >
                     ×
@@ -217,7 +217,7 @@ export function PriorityMatrix({
 
         {/* Drop zone hint */}
         {quadrantItems.length === 0 && !disabled && (
-          <div className="absolute inset-0 flex items-center justify-center text-xs text-warm-gray pointer-events-none">
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-center text-xs text-warm-gray">
             Drop items here
           </div>
         )}
@@ -241,7 +241,7 @@ export function PriorityMatrix({
           {question}
         </QuestionLabel>
         {description && (
-          <p className="text-warm-gray text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-warm-gray">
             {description}
           </p>
         )}
@@ -253,15 +253,15 @@ export function PriorityMatrix({
           <p className="text-sm font-medium text-off-black dark:text-off-white">
             Items to place:
           </p>
-          <div className="flex flex-wrap gap-2 p-3 bg-light-gray rounded-lg border border-light-gray">
+          <div className="flex flex-wrap gap-2 rounded-lg border border-light-gray bg-light-gray p-3">
             {unplacedItems.map(item => (
               <div
                 key={item.id}
                 className={cn(
-                  "bg-off-white dark:bg-off-black rounded-md p-2 border border-light-gray shadow-sm",
-                  "flex items-center gap-2 cursor-move",
-                  "transition-all duration-200 hover:shadow-md hover:scale-105",
-                  draggedItem === item.id && "opacity-50 scale-95",
+                  "rounded-md border border-light-gray bg-off-white p-2 shadow-sm dark:bg-off-black",
+                  "flex cursor-move items-center gap-2",
+                  "transition-all duration-200 hover:scale-105 hover:shadow-md",
+                  draggedItem === item.id && "scale-95 opacity-50",
                   disabled && "cursor-not-allowed opacity-50"
                 )}
                 draggable={!disabled && !item.disabled}
@@ -269,7 +269,7 @@ export function PriorityMatrix({
                 onDragEnd={handleDragEnd}
               >
                 {item.icon && (
-                  <span className="flex-shrink-0 text-primary">
+                  <span className="shrink-0 text-primary">
                     {item.icon}
                   </span>
                 )}
@@ -294,19 +294,19 @@ export function PriorityMatrix({
         {/* Matrix Grid */}
         <div className="relative">
           {/* Effort Axis Labels */}
-          <div className="absolute -left-16 top-1/2 -translate-y-1/2 -rotate-90 origin-center">
-            <p className="text-sm font-medium text-off-black dark:text-off-white whitespace-nowrap">
+          <div className="absolute -left-16 top-1/2 origin-center -translate-y-1/2 -rotate-90">
+            <p className="whitespace-nowrap text-sm font-medium text-off-black dark:text-off-white">
               {effortLabel.low}
             </p>
           </div>
-          <div className="absolute -right-16 top-1/2 -translate-y-1/2 rotate-90 origin-center">
-            <p className="text-sm font-medium text-off-black dark:text-off-white whitespace-nowrap">
+          <div className="absolute -right-16 top-1/2 origin-center -translate-y-1/2 rotate-90">
+            <p className="whitespace-nowrap text-sm font-medium text-off-black dark:text-off-white">
               {effortLabel.high}
             </p>
           </div>
 
           {/* Grid */}
-          <div className="grid grid-cols-2 gap-4 mx-20">
+          <div className="mx-20 grid grid-cols-2 gap-4">
             {/* Top Row: High Impact */}
             {renderQuadrant('low', 'high')}
             {renderQuadrant('high', 'high')}
@@ -327,7 +327,7 @@ export function PriorityMatrix({
 
       {/* Instructions */}
       {!disabled && hasUnplacedItems && (
-        <div className="text-sm text-warm-gray bg-light-gray p-3 rounded-lg">
+        <div className="rounded-lg bg-light-gray p-3 text-sm text-warm-gray">
           <strong>Tip:</strong> Drag and drop items from above into the appropriate quadrant based on their effort requirement and expected impact.
         </div>
       )}
@@ -337,7 +337,7 @@ export function PriorityMatrix({
         <div className="text-sm text-warm-gray">
           Progress: {value.length} of {items.filter(item => !item.disabled).length} items placed
           {allItemsPlaced && (
-            <span className="text-primary font-medium ml-2">Complete</span>
+            <span className="ml-2 font-medium text-primary">Complete</span>
           )}
         </div>
       )}

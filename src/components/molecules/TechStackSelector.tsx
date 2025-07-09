@@ -150,7 +150,7 @@ export function TechStackSelector({
           {question}
         </QuestionLabel>
         {description && (
-          <p className="text-warm-gray text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-warm-gray">
             {description}
           </p>
         )}
@@ -172,8 +172,8 @@ export function TechStackSelector({
               "border border-light-gray dark:border-warm-gray/30",
               "bg-off-white dark:bg-off-black",
               "focus:border-primary focus:ring-2 focus:ring-primary/20",
-              "focus:outline-none transition-all duration-200",
-              "disabled:opacity-50 disabled:cursor-not-allowed"
+              "transition-all duration-200 focus:outline-none",
+              "disabled:cursor-not-allowed disabled:opacity-50"
             )}
           />
         </div>
@@ -207,7 +207,7 @@ variant="default"
         {Object.entries(groupedOptions).map(([category, categoryOptions]) => (
           <div key={category} className="space-y-3">
             {groupByCategory && category !== 'All' && (
-              <h3 className="text-sm font-semibold text-off-black dark:text-off-white border-b border-light-gray pb-2">
+              <h3 className="border-b border-light-gray pb-2 text-sm font-semibold text-off-black dark:text-off-white">
                 {category}
               </h3>
             )}
@@ -223,17 +223,17 @@ variant="default"
                     key={option.id}
                     className={cn(
                       "relative rounded-lg border transition-all duration-200",
-                      "hover:border-primary/50 focus-within:border-primary",
+                      "focus-within:border-primary hover:border-primary/50",
                       isSelected
                         ? "border-primary bg-primary/5"
                         : "border-light-gray dark:border-warm-gray/30",
-                      isDisabled && "opacity-50 cursor-not-allowed",
+                      isDisabled && "cursor-not-allowed opacity-50",
                       layout === 'compact' ? "p-3" : "p-4"
                     )}
                   >
                     <label
                       className={cn(
-                        "flex items-start gap-3 cursor-pointer",
+                        "flex cursor-pointer items-start gap-3",
                         isDisabled && "cursor-not-allowed"
                       )}
                     >
@@ -245,16 +245,16 @@ variant="default"
                         className="mt-0.5"
                       />
                       
-                      <div className="flex-1 min-w-0">
+                      <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
                           {option.icon && (
-                            <span className="flex-shrink-0 text-primary">
+                            <span className="shrink-0 text-primary">
                               {option.icon}
                             </span>
                           )}
                           <span
                             className={cn(
-                              "font-medium truncate",
+                              "truncate font-medium",
                               layout === 'compact' ? "text-sm" : "text-base"
                             )}
                           >
@@ -268,7 +268,7 @@ variant="default"
                         </div>
                         
                         {option.description && layout !== 'compact' && (
-                          <p className="text-sm text-warm-gray mt-1 leading-relaxed">
+                          <p className="mt-1 text-sm leading-relaxed text-warm-gray">
                             {option.description}
                           </p>
                         )}
@@ -284,14 +284,14 @@ variant="default"
 
       {/* No results message */}
       {filteredOptions.length === 0 && searchTerm && (
-        <div className="text-center py-8">
+        <div className="py-8 text-center">
           <p className="text-warm-gray">
             No technologies found matching "{searchTerm}"
           </p>
           <button
             type="button"
             onClick={() => setSearchTerm('')}
-            className="text-primary hover:underline text-sm mt-2"
+            className="mt-2 text-sm text-primary hover:underline"
           >
             Clear search
           </button>
@@ -299,7 +299,7 @@ variant="default"
       )}
 
       {/* Selection Info */}
-      <div className="flex justify-between items-center text-sm">
+      <div className="flex items-center justify-between text-sm">
         <div className="space-y-1">
           {helperText && !error && (
             <p id={helperId} className="text-warm-gray">
@@ -319,7 +319,7 @@ variant="default"
             id={counterId}
             className={cn(
               "text-sm tabular-nums",
-              isAtMaxSelections ? "text-warm-gray font-medium" : "text-warm-gray"
+              isAtMaxSelections ? "font-medium text-warm-gray" : "text-warm-gray"
             )}
             aria-live="polite"
           >

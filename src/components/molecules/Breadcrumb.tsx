@@ -65,7 +65,7 @@ export function Breadcrumb({
                     href={item.href}
                     variant="muted"
                     className={cn(
-                      "text-sm hover:text-primary transition-colors duration-200",
+                      "text-sm transition-colors duration-200 hover:text-primary",
                       "no-underline hover:underline"
                     )}
                   >
@@ -76,7 +76,7 @@ export function Breadcrumb({
                     className={cn(
                       "text-sm",
                       isLast 
-                        ? "text-off-black dark:text-off-white font-medium"
+                        ? "font-medium text-off-black dark:text-off-white"
                         : "text-warm-gray"
                     )}
                     aria-current={isLast ? "page" : undefined}

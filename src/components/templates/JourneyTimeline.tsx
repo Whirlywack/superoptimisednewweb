@@ -164,7 +164,7 @@ export function JourneyTimeline({
         key={post.id}
         onClick={() => onPostClick?.(post)}
         className={cn(
-          "bg-off-white dark:bg-off-black border border-light-gray dark:border-warm-gray/30 rounded-lg p-6 space-y-4 hover:border-primary/50 transition-colors cursor-pointer",
+          "cursor-pointer space-y-4 rounded-lg border border-light-gray bg-off-white p-6 transition-colors hover:border-primary/50 dark:border-warm-gray/30 dark:bg-off-black",
           post.featured && "ring-2 ring-primary/20",
           post.milestone && "border-primary bg-primary/5 dark:bg-primary/10",
           currentViewMode === "timeline" && "relative",
@@ -175,8 +175,8 @@ export function JourneyTimeline({
         {/* Timeline connector */}
         {currentViewMode === "timeline" && (
           <div className={cn(
-            "absolute top-6 w-4 h-4 rounded-full border-2 border-primary bg-off-white dark:bg-off-black",
-            post.milestone && "bg-primary border-primary",
+            "absolute top-6 size-4 rounded-full border-2 border-primary bg-off-white dark:bg-off-black",
+            post.milestone && "border-primary bg-primary",
             isLeft ? "-right-6 lg:-right-8" : "-left-6 lg:-left-8"
           )} />
         )}
@@ -185,20 +185,20 @@ export function JourneyTimeline({
         <div className="space-y-3">
           <div className="flex items-start justify-between gap-4">
             <div className="space-y-2">
-              <div className="flex items-center gap-2 flex-wrap">
-                <time className="text-sm text-warm-gray flex items-center gap-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <time className="flex items-center gap-1 text-sm text-warm-gray">
                   <LucideIcon icon={Calendar} size="xs" />
                   {formatDate(post.publishedAt)}
                 </time>
                 
-                <span className="text-sm text-warm-gray flex items-center gap-1">
+                <span className="flex items-center gap-1 text-sm text-warm-gray">
                   <LucideIcon icon={Clock} size="xs" />
                   {post.readTime}
                 </span>
 
                 {post.status && (
                   <span className={cn(
-                    "inline-flex items-center px-2 py-1 rounded text-xs font-medium capitalize",
+                    "inline-flex items-center rounded px-2 py-1 text-xs font-medium capitalize",
                     getStatusColor(post.status)
                   )}>
                     {post.status}
@@ -206,19 +206,19 @@ export function JourneyTimeline({
                 )}
               </div>
 
-              <h3 className="text-xl font-semibold text-off-black dark:text-off-white leading-snug">
+              <h3 className="text-xl font-semibold leading-snug text-off-black dark:text-off-white">
                 {post.title}
               </h3>
             </div>
 
             {post.milestone && (
-              <div className="bg-primary/10 text-primary px-2 py-1 rounded text-xs font-medium flex-shrink-0">
+              <div className="shrink-0 rounded bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
                 Milestone
               </div>
             )}
           </div>
 
-          <p className="text-warm-gray leading-relaxed">
+          <p className="leading-relaxed text-warm-gray">
             {post.excerpt}
           </p>
         </div>
@@ -229,10 +229,10 @@ export function JourneyTimeline({
             <img
               src={post.author.avatar}
               alt={post.author.name}
-              className="w-8 h-8 rounded-full object-cover"
+              className="size-8 rounded-full object-cover"
             />
           ) : (
-            <div className="w-8 h-8 rounded-full bg-light-gray dark:bg-warm-gray/20 flex items-center justify-center">
+            <div className="flex size-8 items-center justify-center rounded-full bg-light-gray dark:bg-warm-gray/20">
               <LucideIcon icon={User} size="xs" className="text-warm-gray" />
             </div>
           )}
@@ -245,13 +245,13 @@ export function JourneyTimeline({
             {post.tags.slice(0, 4).map((tag) => (
               <span
                 key={tag}
-                className="bg-light-gray dark:bg-warm-gray/20 text-warm-gray px-2 py-1 rounded text-xs"
+                className="rounded bg-light-gray px-2 py-1 text-xs text-warm-gray dark:bg-warm-gray/20"
               >
                 {tag}
               </span>
             ))}
             {post.tags.length > 4 && (
-              <span className="text-warm-gray text-xs py-1">
+              <span className="py-1 text-xs text-warm-gray">
                 +{post.tags.length - 4} more
               </span>
             )}
@@ -260,7 +260,7 @@ export function JourneyTimeline({
 
         {/* Stats */}
         {showStats && (
-          <div className="flex items-center gap-4 text-sm text-warm-gray pt-2 border-t border-light-gray dark:border-warm-gray/30">
+          <div className="flex items-center gap-4 border-t border-light-gray pt-2 text-sm text-warm-gray dark:border-warm-gray/30">
             <div className="flex items-center gap-1">
               <LucideIcon icon={Eye} size="xs" />
               <span>{post.stats.views.toLocaleString()}</span>
@@ -274,10 +274,10 @@ export function JourneyTimeline({
               <span>{post.stats.comments}</span>
             </div>
             
-            <div className="flex items-center gap-1 ml-auto">
+            <div className="ml-auto flex items-center gap-1">
               <Link 
                 href={post.href} 
-                className="text-primary text-sm font-medium no-underline inline-flex items-center gap-1"
+                className="inline-flex items-center gap-1 text-sm font-medium text-primary no-underline"
               >
                 Read More
                 <LucideIcon icon={ArrowRight} size="xs" />
@@ -291,7 +291,7 @@ export function JourneyTimeline({
 
   const renderFilters = () => (
     <div className={cn(
-      "space-y-4 p-4 bg-light-gray/50 dark:bg-warm-gray/10 rounded-lg",
+      "space-y-4 rounded-lg bg-light-gray/50 p-4 dark:bg-warm-gray/10",
       showFiltersPanel ? "block" : "hidden lg:block"
     )}>
       {/* Category Filter */}
@@ -302,7 +302,7 @@ export function JourneyTimeline({
         <select
           value={filters.category}
           onChange={(e) => handleFilterChange({ category: e.target.value as any })}
-          className="w-full px-3 py-2 border border-light-gray dark:border-warm-gray/30 rounded-lg bg-off-white dark:bg-off-black text-off-black dark:text-off-white text-sm"
+          className="w-full rounded-lg border border-light-gray bg-off-white px-3 py-2 text-sm text-off-black dark:border-warm-gray/30 dark:bg-off-black dark:text-off-white"
         >
           {categories.map((category) => (
             <option key={category.value} value={category.value}>
@@ -320,7 +320,7 @@ export function JourneyTimeline({
         <select
           value={filters.timeRange}
           onChange={(e) => handleFilterChange({ timeRange: e.target.value as any })}
-          className="w-full px-3 py-2 border border-light-gray dark:border-warm-gray/30 rounded-lg bg-off-white dark:bg-off-black text-off-black dark:text-off-white text-sm"
+          className="w-full rounded-lg border border-light-gray bg-off-white px-3 py-2 text-sm text-off-black dark:border-warm-gray/30 dark:bg-off-black dark:text-off-white"
         >
           {timeRanges.map((range) => (
             <option key={range.value} value={range.value}>
@@ -377,15 +377,15 @@ export function JourneyTimeline({
   };
 
   return (
-    <div className={cn("min-h-screen bg-off-white dark:bg-off-black py-8", className)} {...props}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+    <div className={cn("min-h-screen bg-off-white py-8 dark:bg-off-black", className)} {...props}>
+      <div className="mx-auto max-w-7xl space-y-8 px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center space-y-4">
-          <h1 className="text-3xl lg:text-4xl font-bold text-off-black dark:text-off-white">
+        <div className="space-y-4 text-center">
+          <h1 className="text-3xl font-bold text-off-black dark:text-off-white lg:text-4xl">
             {title}
           </h1>
           {description && (
-            <p className="text-lg text-warm-gray max-w-3xl mx-auto leading-relaxed">
+            <p className="mx-auto max-w-3xl text-lg leading-relaxed text-warm-gray">
               {description}
             </p>
           )}
@@ -395,9 +395,9 @@ export function JourneyTimeline({
         <div className="space-y-4">
           {/* Search */}
           {showSearch && (
-            <div className="max-w-2xl mx-auto">
+            <div className="mx-auto max-w-2xl">
               <form onSubmit={handleSearch} className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                   <LucideIcon icon={Search} size="sm" className="text-warm-gray" />
                 </div>
                 <input
@@ -406,10 +406,10 @@ export function JourneyTimeline({
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={searchPlaceholder}
                   className={cn(
-                    "w-full pl-10 pr-4 py-3 border border-light-gray dark:border-warm-gray/30 rounded-lg",
-                    "bg-off-white dark:bg-off-black text-off-black dark:text-off-white",
+                    "w-full rounded-lg border border-light-gray py-3 pl-10 pr-4 dark:border-warm-gray/30",
+                    "bg-off-white text-off-black dark:bg-off-black dark:text-off-white",
                     "placeholder:text-warm-gray",
-                    "focus:ring-2 focus:ring-primary/20 focus:border-primary",
+                    "focus:border-primary focus:ring-2 focus:ring-primary/20",
                     "transition-colors"
                   )}
                 />
@@ -418,7 +418,7 @@ export function JourneyTimeline({
           )}
 
           {/* Filter and View Controls */}
-          <div className="flex items-center justify-between gap-4 flex-wrap">
+          <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               {showFilters && (
                 <Button
@@ -484,12 +484,12 @@ export function JourneyTimeline({
               <div className="space-y-8">
                 {/* Timeline Line */}
                 {currentViewMode === "timeline" && (
-                  <div className="hidden lg:block absolute left-1/2 transform -translate-x-1/2 w-0.5 bg-light-gray dark:bg-warm-gray/30 h-full" />
+                  <div className="absolute left-1/2 hidden h-full w-0.5 -translate-x-1/2 bg-light-gray dark:bg-warm-gray/30 lg:block" />
                 )}
                 
                 <div className={cn(
                   "space-y-8",
-                  currentViewMode === "grid" && "grid grid-cols-1 md:grid-cols-2 gap-6",
+                  currentViewMode === "grid" && "grid grid-cols-1 gap-6 md:grid-cols-2",
                   currentViewMode === "list" && "space-y-4",
                   currentViewMode === "timeline" && "relative"
                 )}>
@@ -497,9 +497,9 @@ export function JourneyTimeline({
                 </div>
               </div>
             ) : (
-              <div className="text-center py-12 text-warm-gray">
+              <div className="py-12 text-center text-warm-gray">
                 <LucideIcon icon={Search} size="xl" className="mx-auto mb-4 opacity-50" />
-                <h3 className="text-lg font-medium mb-2">No posts found</h3>
+                <h3 className="mb-2 text-lg font-medium">No posts found</h3>
                 <p>Try adjusting your search or filter criteria.</p>
               </div>
             )}

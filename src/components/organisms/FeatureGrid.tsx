@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { LucideIcon } from "@/components/ui/Icon";
 import { Link } from "@/components/ui/Typography";
 import { Tag } from "@/components/ui/Tag";
+import type { 
+  Zap} from "lucide-react";
 import { 
-  Zap, 
   Shield, 
   Globe, 
   Code, 
@@ -129,20 +130,20 @@ export function FeatureGrid({
       <div className={cn(
         "group relative h-full",
         variant === "compact" ? "p-4" : sizeClasses[size],
-        "border border-light-gray dark:border-warm-gray/30 rounded-lg",
+        "rounded-lg border border-light-gray dark:border-warm-gray/30",
         "bg-off-white dark:bg-off-black",
         "transition-all duration-200",
-        !isComingSoon && (feature.href || onFeatureClick) && "hover:border-primary/50 hover:shadow-sm cursor-pointer",
-        isHighlighted && "ring-2 ring-primary/20 border-primary/30",
+        !isComingSoon && (feature.href || onFeatureClick) && "cursor-pointer hover:border-primary/50 hover:shadow-sm",
+        isHighlighted && "border-primary/30 ring-2 ring-primary/20",
         isComingSoon && "opacity-75"
       )}
       onClick={() => !isComingSoon && onFeatureClick?.(feature)}
     >
       {/* Status Badge */}
       {showStatus && feature.status && (
-        <div className="absolute top-3 right-3">
+        <div className="absolute right-3 top-3">
           <span className={cn(
-            "px-2 py-1 text-xs font-medium rounded-full",
+            "rounded-full px-2 py-1 text-xs font-medium",
             getStatusColor(feature.status)
           )}>
             {getStatusText(feature.status)}
@@ -152,8 +153,8 @@ export function FeatureGrid({
 
       {/* Highlight indicator */}
       {isHighlighted && (
-        <div className="absolute top-3 left-3">
-          <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+        <div className="absolute left-3 top-3">
+          <div className="flex size-6 items-center justify-center rounded-full bg-primary">
             <LucideIcon icon={Star} size="xs" className="text-off-white" />
           </div>
         </div>
@@ -162,10 +163,10 @@ export function FeatureGrid({
       <div className="space-y-4">
         {/* Icon */}
         <div className={cn(
-          "w-12 h-12 rounded-lg flex items-center justify-center",
+          "flex size-12 items-center justify-center rounded-lg",
           isHighlighted 
             ? "bg-primary text-off-white" 
-            : "bg-light-gray dark:bg-warm-gray/20 text-warm-gray"
+            : "bg-light-gray text-warm-gray dark:bg-warm-gray/20"
         )}>
           <LucideIcon 
             icon={feature.icon} 
@@ -184,7 +185,7 @@ export function FeatureGrid({
           </h3>
           
           <p className={cn(
-            "text-warm-gray leading-relaxed",
+            "leading-relaxed text-warm-gray",
             variant === "compact" ? "text-sm" : "text-base",
             variant === "minimal" && "line-clamp-2"
           )}>
@@ -210,7 +211,7 @@ export function FeatureGrid({
 
         {/* Link indicator */}
         {!isComingSoon && feature.href && (
-          <div className="flex items-center text-sm text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="flex items-center text-sm text-primary opacity-0 transition-opacity group-hover:opacity-100">
             <span>Learn more</span>
             <LucideIcon icon={ArrowRight} size="xs" className="ml-1" />
           </div>
@@ -221,7 +222,7 @@ export function FeatureGrid({
 
     if (!isComingSoon && feature.href) {
       return (
-        <Link key={feature.id} href={feature.href} className="block no-underline h-full">
+        <Link key={feature.id} href={feature.href} className="block h-full no-underline">
           <FeatureContent />
         </Link>
       );
@@ -246,14 +247,14 @@ export function FeatureGrid({
         <div className="space-y-4">
           {features.map((feature) => (
             <div key={feature.id} className="flex items-start gap-4">
-              <div className="w-8 h-8 rounded-lg bg-light-gray dark:bg-warm-gray/20 flex items-center justify-center flex-shrink-0">
+              <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-light-gray dark:bg-warm-gray/20">
                 <LucideIcon icon={feature.icon} size="sm" className="text-warm-gray" />
               </div>
               <div className="space-y-1">
                 <h3 className="font-medium text-off-black dark:text-off-white">
                   {feature.title}
                 </h3>
-                <p className="text-sm text-warm-gray leading-relaxed">
+                <p className="text-sm leading-relaxed text-warm-gray">
                   {feature.description}
                 </p>
               </div>
@@ -268,7 +269,7 @@ export function FeatureGrid({
     <div className={cn("space-y-8", className)} {...props}>
       {/* Header */}
       {(title || description) && (
-        <div className="text-center space-y-4">
+        <div className="space-y-4 text-center">
           {title && (
             <h2 className={cn(
               titleSizes[size],
@@ -279,7 +280,7 @@ export function FeatureGrid({
           )}
           {description && (
             <p className={cn(
-              "text-warm-gray leading-relaxed max-w-3xl mx-auto",
+              "mx-auto max-w-3xl leading-relaxed text-warm-gray",
               size === "lg" ? "text-lg" : "text-base"
             )}>
               {description}

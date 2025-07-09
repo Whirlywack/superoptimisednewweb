@@ -22,12 +22,12 @@ export function SkipLink({
         // Hidden by default, visible when focused
         'sr-only focus:not-sr-only',
         // Positioning and styling when visible
-        'focus:absolute focus:top-4 focus:left-4 focus:z-50',
-        'focus:px-4 focus:py-2 focus:bg-primary focus:text-off-white',
+        'focus:absolute focus:left-4 focus:top-4 focus:z-50',
+        'focus:bg-primary focus:px-4 focus:py-2 focus:text-off-white',
         'focus:rounded-lg focus:shadow-lg',
         'focus:outline-none focus:ring-2 focus:ring-off-white focus:ring-offset-2 focus:ring-offset-primary',
         // Typography
-        'font-medium text-base',
+        'text-base font-medium',
         // Transitions
         'transition-all duration-200',
         className
@@ -113,7 +113,7 @@ export function FocusTarget({
       id={id}
       tabIndex={-1}
       className={cn(
-        'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-lg',
+        'rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
         className
       )}
       aria-label={label}

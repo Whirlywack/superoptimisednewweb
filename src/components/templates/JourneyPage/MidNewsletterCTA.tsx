@@ -116,7 +116,7 @@ export function MidNewsletterCTA() {
               Get Weekly Updates
             </button>
             {error && (
-              <div className="text-sm text-red-600 mt-2">
+              <div className="mt-2 text-sm text-red-600">
                 {error}
               </div>
             )}

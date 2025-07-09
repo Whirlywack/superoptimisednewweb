@@ -66,7 +66,7 @@ export function Navigation({
             <button
               onClick={() => toggleDropdown(item.label)}
               className={cn(
-                "flex items-center gap-1 px-3 py-2 text-sm font-medium rounded-md",
+                "flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium",
                 "text-off-black dark:text-off-white",
                 "hover:bg-light-gray dark:hover:bg-warm-gray/20",
                 "transition-colors duration-200",
@@ -90,7 +90,7 @@ export function Navigation({
                 className={cn(
                   isMobile
                     ? "ml-4 mt-1 space-y-1"
-                    : "absolute top-full left-0 mt-1 min-w-48 bg-off-white dark:bg-off-black border border-light-gray dark:border-warm-gray/30 rounded-md shadow-lg py-1 z-50"
+                    : "absolute left-0 top-full z-50 mt-1 min-w-48 rounded-md border border-light-gray bg-off-white py-1 shadow-lg dark:border-warm-gray/30 dark:bg-off-black"
                 )}
               >
                 {item.children?.map((child) => (
@@ -102,7 +102,7 @@ export function Navigation({
                     className={cn(
                       "block px-3 py-2 text-sm text-warm-gray hover:text-off-black dark:hover:text-off-white",
                       "hover:bg-light-gray dark:hover:bg-warm-gray/20",
-                      "transition-colors duration-200 no-underline",
+                      "no-underline transition-colors duration-200",
                       isMobile ? "rounded-md" : "first:rounded-t-md last:rounded-b-md"
                     )}
                   >
@@ -122,7 +122,7 @@ export function Navigation({
           external={item.external}
           onClick={() => handleItemClick(item)}
           className={cn(
-            "px-3 py-2 text-sm font-medium rounded-md no-underline",
+            "rounded-md px-3 py-2 text-sm font-medium no-underline",
             "text-off-black dark:text-off-white",
             "hover:bg-light-gray dark:hover:bg-warm-gray/20",
             "transition-colors duration-200",
@@ -141,7 +141,7 @@ export function Navigation({
         {/* Mobile Overlay */}
         {isMobileOpen && (
           <div
-            className="fixed inset-0 bg-off-black/50 z-40 lg:hidden"
+            className="fixed inset-0 z-40 bg-off-black/50 lg:hidden"
             onClick={() => setIsMobileOpen(false)}
           />
         )}
@@ -149,9 +149,9 @@ export function Navigation({
         {/* Mobile Navigation */}
         <nav
           className={cn(
-            "fixed top-0 left-0 w-80 h-full bg-off-white dark:bg-off-black",
+            "fixed left-0 top-0 h-full w-80 bg-off-white dark:bg-off-black",
             "border-r border-light-gray dark:border-warm-gray/30",
-            "transform transition-transform duration-300 z-50",
+            "z-50 transition-transform duration-300",
             isMobileOpen ? "translate-x-0" : "-translate-x-full",
             "lg:hidden",
             className
@@ -159,7 +159,7 @@ export function Navigation({
           {...props}
         >
           {/* Mobile Header */}
-          <div className="flex items-center justify-between p-4 border-b border-light-gray dark:border-warm-gray/30">
+          <div className="flex items-center justify-between border-b border-light-gray p-4 dark:border-warm-gray/30">
             {logo && (
               <Link href={logoHref} className="no-underline">
                 {logo}
@@ -175,7 +175,7 @@ export function Navigation({
           </div>
 
           {/* Mobile Menu Items */}
-          <div className="p-4 space-y-1 overflow-y-auto">
+          <div className="space-y-1 overflow-y-auto p-4">
             {renderNavItems(items, true)}
           </div>
         </nav>
@@ -203,7 +203,7 @@ export function Navigation({
       </div>
 
       {/* Desktop Navigation */}
-      <div className="hidden lg:flex items-center space-x-1">
+      <div className="hidden items-center space-x-1 lg:flex">
         {renderNavItems(items)}
       </div>
 

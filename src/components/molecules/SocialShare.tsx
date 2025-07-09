@@ -98,7 +98,7 @@ export function SocialShare({
         className={cn("flex items-center gap-2", className)}
         {...props}
       >
-        <Share className="h-4 w-4 text-warm-gray" />
+        <Share className="size-4 text-warm-gray" />
         <MonoText variant="muted" className="text-sm">
           Share
         </MonoText>
@@ -116,7 +116,7 @@ export function SocialShare({
       {...props}
     >
       {variant === "buttons" && showLabels && (
-        <MonoText variant="muted" className="text-sm mr-2">
+        <MonoText variant="muted" className="mr-2 text-sm">
           Share:
         </MonoText>
       )}

@@ -123,7 +123,7 @@ export function ProgressIndicator({
       <div className={cn("relative w-full", className)} {...props}>
         <div className={cn("w-full rounded-full", sizeConfig.line, colorConfig.upcoming)} />
         <div 
-          className={cn("absolute top-0 left-0 rounded-full transition-all duration-300", sizeConfig.line, colorConfig.line)}
+          className={cn("absolute left-0 top-0 rounded-full transition-all duration-300", sizeConfig.line, colorConfig.line)}
           style={{ width: `${Math.max(0, progressPercentage)}%` }}
         />
       </div>
@@ -131,7 +131,7 @@ export function ProgressIndicator({
   };
 
   const renderSteps = () => (
-    <div className={cn("flex items-center justify-between w-full", className)} {...props}>
+    <div className={cn("flex w-full items-center justify-between", className)} {...props}>
       {Array.from({ length: total }, (_, index) => {
         const stepNumber = index + 1;
         const status = getStepStatus(index);
@@ -144,9 +144,9 @@ export function ProgressIndicator({
               onClick={isClickable ? () => onStepClick(stepNumber) : undefined}
               disabled={!isClickable}
               className={cn(
-                "rounded-full border-2 flex items-center justify-center font-medium transition-all duration-200",
+                "flex items-center justify-center rounded-full border-2 font-medium transition-all duration-200",
                 status === "current" ? sizeConfig.activeStep : sizeConfig.step,
-                status === "completed" && cn(colorConfig.completed, "text-white border-transparent"),
+                status === "completed" && cn(colorConfig.completed, "border-transparent text-white"),
                 status === "current" && cn(colorConfig.current, "text-primary-foreground"),
                 status === "upcoming" && cn(colorConfig.upcoming, "text-muted-foreground"),
                 isClickable && "cursor-pointer hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
@@ -156,7 +156,7 @@ export function ProgressIndicator({
               aria-current={status === "current" ? "step" : undefined}
             >
               {status === "completed" && !showNumbers ? (
-                <Check className="w-4 h-4" />
+                <Check className="size-4" />
               ) : (
                 stepNumber
               )}
@@ -164,8 +164,8 @@ export function ProgressIndicator({
             
             {showLabels && labels[index] && (
               <span className={cn(
-                "mt-2 text-xs text-center max-w-16 leading-tight",
-                status === "current" ? "text-foreground font-medium" : "text-muted-foreground"
+                "mt-2 max-w-16 text-center text-xs leading-tight",
+                status === "current" ? "font-medium text-foreground" : "text-muted-foreground"
               )}>
                 {labels[index]}
               </span>
@@ -178,15 +178,15 @@ export function ProgressIndicator({
 
   const renderMinimal = () => (
     <div className={cn("flex items-center gap-1", className)} {...props}>
-      <span className="text-sm font-mono text-muted-foreground">
+      <span className="font-mono text-sm text-muted-foreground">
         {current}/{total}
       </span>
-      <div className="flex items-center gap-1 ml-2">
+      <div className="ml-2 flex items-center gap-1">
         {Array.from({ length: total }, (_, index) => (
           <div
             key={index}
             className={cn(
-              "w-1.5 h-1.5 rounded-full transition-colors duration-200",
+              "size-1.5 rounded-full transition-colors duration-200",
               index < current ? colorConfig.completed : colorConfig.upcoming
             )}
           />
@@ -241,7 +241,7 @@ export function QuestionnaireProgress({
           size="sm"
         />
         {showPercentage && (
-          <span className="text-sm font-mono text-muted-foreground">
+          <span className="font-mono text-sm text-muted-foreground">
             {percentage}%
           </span>
         )}
@@ -252,7 +252,7 @@ export function QuestionnaireProgress({
   return (
     <div className={cn("space-y-3", className)} {...props}>
       {/* Progress Header */}
-      <div className="flex justify-between items-center text-sm">
+      <div className="flex items-center justify-between text-sm">
         <span className="font-medium">
           Question {currentQuestion} of {totalQuestions}
         </span>
@@ -330,18 +330,18 @@ export function MultiStepProgress({
               onClick={onStepClick ? () => onStepClick(step.id) : undefined}
               disabled={!onStepClick}
               className={cn(
-                "flex-shrink-0 w-8 h-8 rounded-full border-2 flex items-center justify-center font-medium transition-all duration-200",
-                step.completed && "bg-primary border-primary text-off-white",
-                step.current && "bg-primary border-primary text-primary-foreground",
-                step.error && "bg-warm-gray border-warm-gray text-off-white",
-                !step.completed && !step.current && !step.error && "bg-muted border-border text-muted-foreground",
+                "flex size-8 shrink-0 items-center justify-center rounded-full border-2 font-medium transition-all duration-200",
+                step.completed && "border-primary bg-primary text-off-white",
+                step.current && "border-primary bg-primary text-primary-foreground",
+                step.error && "border-warm-gray bg-warm-gray text-off-white",
+                !step.completed && !step.current && !step.error && "border-border bg-muted text-muted-foreground",
                 onStepClick && "cursor-pointer hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
               )}
             >
-              {step.completed ? <Check className="w-4 h-4" /> : index + 1}
+              {step.completed ? <Check className="size-4" /> : index + 1}
             </button>
             
-            <div className="flex-1 min-w-0">
+            <div className="min-w-0 flex-1">
               <h3 className={cn(
                 "font-medium leading-tight",
                 step.current ? "text-foreground" : "text-muted-foreground"
@@ -349,7 +349,7 @@ export function MultiStepProgress({
                 {step.label}
               </h3>
               {step.description && (
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="mt-1 text-xs text-muted-foreground">
                   {step.description}
                 </p>
               )}
@@ -361,7 +361,7 @@ export function MultiStepProgress({
   }
 
   return (
-    <div className={cn("flex items-center justify-between w-full", className)} {...props}>
+    <div className={cn("flex w-full items-center justify-between", className)} {...props}>
       {steps.map((step, index) => (
         <React.Fragment key={step.id}>
           <div className="flex flex-col items-center">
@@ -370,20 +370,20 @@ export function MultiStepProgress({
               onClick={onStepClick ? () => onStepClick(step.id) : undefined}
               disabled={!onStepClick}
               className={cn(
-                "w-10 h-10 rounded-full border-2 flex items-center justify-center font-medium transition-all duration-200",
-                step.completed && "bg-primary border-primary text-off-white",
-                step.current && "bg-primary border-primary text-primary-foreground",
-                step.error && "bg-warm-gray border-warm-gray text-off-white",
-                !step.completed && !step.current && !step.error && "bg-muted border-border text-muted-foreground",
+                "flex size-10 items-center justify-center rounded-full border-2 font-medium transition-all duration-200",
+                step.completed && "border-primary bg-primary text-off-white",
+                step.current && "border-primary bg-primary text-primary-foreground",
+                step.error && "border-warm-gray bg-warm-gray text-off-white",
+                !step.completed && !step.current && !step.error && "border-border bg-muted text-muted-foreground",
                 onStepClick && "cursor-pointer hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
               )}
             >
-              {step.completed ? <Check className="w-5 h-5" /> : index + 1}
+              {step.completed ? <Check className="size-5" /> : index + 1}
             </button>
             
             <span className={cn(
-              "mt-2 text-xs text-center max-w-20 leading-tight",
-              step.current ? "text-foreground font-medium" : "text-muted-foreground"
+              "mt-2 max-w-20 text-center text-xs leading-tight",
+              step.current ? "font-medium text-foreground" : "text-muted-foreground"
             )}>
               {step.label}
             </span>
@@ -391,7 +391,7 @@ export function MultiStepProgress({
           
           {index < steps.length - 1 && (
             <div className={cn(
-              "flex-1 h-0.5 mx-2 rounded-full transition-colors duration-200",
+              "mx-2 h-0.5 flex-1 rounded-full transition-colors duration-200",
               step.completed ? "bg-primary" : "bg-light-gray"
             )} />
           )}

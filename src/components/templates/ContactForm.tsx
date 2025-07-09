@@ -362,7 +362,7 @@ export function ContactForm({
       <div key={field.id} className="space-y-2">
         <label htmlFor={field.id} className="block text-sm font-medium text-off-black dark:text-off-white">
           {field.label}
-          {field.required && <span className="text-red-500 ml-1">*</span>}
+          {field.required && <span className="ml-1 text-red-500">*</span>}
         </label>
         
         {field.type === "textarea" ? (
@@ -373,10 +373,10 @@ export function ContactForm({
             placeholder={field.placeholder}
             rows={4}
             className={cn(
-              "w-full px-3 py-2 border rounded-lg resize-none",
-              "bg-off-white dark:bg-off-black text-off-black dark:text-off-white",
+              "w-full resize-none rounded-lg border px-3 py-2",
+              "bg-off-white text-off-black dark:bg-off-black dark:text-off-white",
               "placeholder:text-warm-gray",
-              "focus:ring-2 focus:ring-primary/20 focus:border-primary",
+              "focus:border-primary focus:ring-2 focus:ring-primary/20",
               "transition-colors",
               hasError ? "border-red-500 dark:border-red-400" : "border-light-gray dark:border-warm-gray/30"
             )}
@@ -387,9 +387,9 @@ export function ContactForm({
             value={formData[field.name] || ""}
             onChange={(e) => handleInputChange(field, e.target.value)}
             className={cn(
-              "w-full px-3 py-2 border rounded-lg",
-              "bg-off-white dark:bg-off-black text-off-black dark:text-off-white",
-              "focus:ring-2 focus:ring-primary/20 focus:border-primary",
+              "w-full rounded-lg border px-3 py-2",
+              "bg-off-white text-off-black dark:bg-off-black dark:text-off-white",
+              "focus:border-primary focus:ring-2 focus:ring-primary/20",
               "transition-colors",
               hasError ? "border-red-500 dark:border-red-400" : "border-light-gray dark:border-warm-gray/30"
             )}
@@ -409,10 +409,10 @@ export function ContactForm({
             onChange={(e) => handleInputChange(field, e.target.value)}
             placeholder={field.placeholder}
             className={cn(
-              "w-full px-3 py-2 border rounded-lg",
-              "bg-off-white dark:bg-off-black text-off-black dark:text-off-white",
+              "w-full rounded-lg border px-3 py-2",
+              "bg-off-white text-off-black dark:bg-off-black dark:text-off-white",
               "placeholder:text-warm-gray",
-              "focus:ring-2 focus:ring-primary/20 focus:border-primary",
+              "focus:border-primary focus:ring-2 focus:ring-primary/20",
               "transition-colors",
               hasError ? "border-red-500 dark:border-red-400" : "border-light-gray dark:border-warm-gray/30"
             )}
@@ -431,16 +431,16 @@ export function ContactForm({
 
   if (isSuccess) {
     return (
-      <div className={cn("min-h-screen bg-off-white dark:bg-off-black flex items-center justify-center p-4", className)} {...props}>
-        <div className="max-w-md w-full text-center space-y-6">
-          <div className="w-16 h-16 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center mx-auto">
+      <div className={cn("flex min-h-screen items-center justify-center bg-off-white p-4 dark:bg-off-black", className)} {...props}>
+        <div className="w-full max-w-md space-y-6 text-center">
+          <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/20">
             <LucideIcon icon={CheckCircle} size="xl" className="text-green-600 dark:text-green-400" />
           </div>
           <div className="space-y-3">
             <h1 className="text-2xl font-bold text-off-black dark:text-off-white">
               {successTitle}
             </h1>
-            <p className="text-warm-gray leading-relaxed">
+            <p className="leading-relaxed text-warm-gray">
               {successMessage}
             </p>
           </div>
@@ -457,22 +457,22 @@ export function ContactForm({
   }
 
   return (
-    <div className={cn("min-h-screen bg-off-white dark:bg-off-black py-8", className)} {...props}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+    <div className={cn("min-h-screen bg-off-white py-8 dark:bg-off-black", className)} {...props}>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
           {/* Form Section */}
           <div className="lg:col-span-2">
             <div className="space-y-8">
               {/* Header */}
-              <div className="text-center lg:text-left space-y-4">
-                <h1 className="text-3xl lg:text-4xl font-bold text-off-black dark:text-off-white">
+              <div className="space-y-4 text-center lg:text-left">
+                <h1 className="text-3xl font-bold text-off-black dark:text-off-white lg:text-4xl">
                   {title}
                 </h1>
                 <p className="text-xl text-warm-gray">
                   {subtitle}
                 </p>
                 {description && (
-                  <p className="text-warm-gray leading-relaxed max-w-2xl">
+                  <p className="max-w-2xl leading-relaxed text-warm-gray">
                     {description}
                   </p>
                 )}
@@ -484,14 +484,14 @@ export function ContactForm({
                   <h2 className="text-lg font-semibold text-off-black dark:text-off-white">
                     What can we help you with?
                   </h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                     {displaySupportCategories.map((category) => (
                       <button
                         key={category.id}
                         type="button"
                         onClick={() => setSelectedCategory(category.id)}
                         className={cn(
-                          "p-4 border rounded-lg text-left transition-colors",
+                          "rounded-lg border p-4 text-left transition-colors",
                           "hover:border-primary/50",
                           selectedCategory === category.id
                             ? "border-primary bg-primary/5"
@@ -499,12 +499,12 @@ export function ContactForm({
                         )}
                       >
                         <div className="flex items-start gap-3">
-                          <LucideIcon icon={category.icon} size="lg" className="text-primary flex-shrink-0 mt-1" />
+                          <LucideIcon icon={category.icon} size="lg" className="mt-1 shrink-0 text-primary" />
                           <div>
                             <h3 className="font-medium text-off-black dark:text-off-white">
                               {category.title}
                             </h3>
-                            <p className="text-sm text-warm-gray mt-1">
+                            <p className="mt-1 text-sm text-warm-gray">
                               {category.description}
                             </p>
                           </div>
@@ -523,7 +523,7 @@ export function ContactForm({
 
               {/* Contact Form */}
               <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   {displayFields.map((field) => (
                     <div
                       key={field.id}
@@ -535,7 +535,7 @@ export function ContactForm({
                 </div>
 
                 {isError && (
-                  <div className="flex items-center gap-2 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-4 rounded-lg">
+                  <div className="flex items-center gap-2 rounded-lg bg-red-50 p-4 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400">
                     <LucideIcon icon={AlertCircle} size="sm" />
                     <span>{errorMessage}</span>
                   </div>
@@ -568,7 +568,7 @@ export function ContactForm({
           <div className="space-y-8">
             {/* Contact Methods */}
             {showContactMethods && (
-              <div className="bg-light-gray/50 dark:bg-warm-gray/10 rounded-lg p-6 space-y-6">
+              <div className="space-y-6 rounded-lg bg-light-gray/50 p-6 dark:bg-warm-gray/10">
                 <h2 className="text-lg font-semibold text-off-black dark:text-off-white">
                   Other Ways to Reach Us
                 </h2>
@@ -578,11 +578,11 @@ export function ContactForm({
                       key={method.id}
                       onClick={() => method.href ? window.open(method.href, '_blank') : onMethodClick?.(method)}
                       className={cn(
-                        "flex items-start gap-3 p-3 rounded-lg transition-colors",
+                        "flex items-start gap-3 rounded-lg p-3 transition-colors",
                         method.href || onMethodClick ? "cursor-pointer hover:bg-off-white/50 dark:hover:bg-off-black/20" : ""
                       )}
                     >
-                      <div className="p-2 bg-primary/10 rounded-lg flex-shrink-0">
+                      <div className="shrink-0 rounded-lg bg-primary/10 p-2">
                         <LucideIcon icon={method.icon} size="sm" className="text-primary" />
                       </div>
                       <div className="space-y-1">
@@ -611,8 +611,8 @@ export function ContactForm({
 
             {/* Business Hours */}
             {showBusinessHours && (
-              <div className="bg-light-gray/50 dark:bg-warm-gray/10 rounded-lg p-6 space-y-4">
-                <h2 className="text-lg font-semibold text-off-black dark:text-off-white flex items-center gap-2">
+              <div className="space-y-4 rounded-lg bg-light-gray/50 p-6 dark:bg-warm-gray/10">
+                <h2 className="flex items-center gap-2 text-lg font-semibold text-off-black dark:text-off-white">
                   <LucideIcon icon={Clock} size="sm" />
                   Business Hours
                 </h2>
@@ -621,7 +621,7 @@ export function ContactForm({
                     <div
                       key={day.day}
                       className={cn(
-                        "flex justify-between items-center text-sm",
+                        "flex items-center justify-between text-sm",
                         day.isToday ? "font-medium text-off-black dark:text-off-white" : "text-warm-gray"
                       )}
                     >
@@ -635,7 +635,7 @@ export function ContactForm({
 
             {/* Social Links */}
             {showSocialLinks && displaySocialLinks.length > 0 && (
-              <div className="bg-light-gray/50 dark:bg-warm-gray/10 rounded-lg p-6 space-y-4">
+              <div className="space-y-4 rounded-lg bg-light-gray/50 p-6 dark:bg-warm-gray/10">
                 <h2 className="text-lg font-semibold text-off-black dark:text-off-white">
                   Follow Us
                 </h2>
@@ -645,7 +645,7 @@ export function ContactForm({
                       key={social.platform}
                       href={social.url}
                       external
-                      className="p-3 bg-off-white dark:bg-off-black rounded-lg hover:bg-primary/10 transition-colors text-warm-gray hover:text-primary"
+                      className="rounded-lg bg-off-white p-3 text-warm-gray transition-colors hover:bg-primary/10 hover:text-primary dark:bg-off-black"
                     >
                       <LucideIcon icon={social.icon} size="sm" />
                     </Link>
@@ -656,7 +656,7 @@ export function ContactForm({
 
             {/* Company Info */}
             {companyInfo && (
-              <div className="bg-light-gray/50 dark:bg-warm-gray/10 rounded-lg p-6 space-y-4">
+              <div className="space-y-4 rounded-lg bg-light-gray/50 p-6 dark:bg-warm-gray/10">
                 <h2 className="text-lg font-semibold text-off-black dark:text-off-white">
                   {companyInfo.name}
                 </h2>

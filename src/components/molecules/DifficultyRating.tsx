@@ -90,7 +90,7 @@ export function DifficultyRating({
         level: 1,
         label: 'Very Easy',
         description: 'Trivial task, can be done quickly with existing knowledge',
-        icon: <Star className="w-5 h-5" />,
+        icon: <Star className="size-5" />,
         color: 'text-primary',
         examples: ['Fix typo', 'Update documentation', 'Change color values']
       },
@@ -98,7 +98,7 @@ export function DifficultyRating({
         level: 2,
         label: 'Easy',
         description: 'Simple task requiring basic programming skills',
-        icon: <Star className="w-5 h-5" />,
+        icon: <Star className="size-5" />,
         color: 'text-primary',
         examples: ['Add form validation', 'Create simple component', 'Write unit test']
       },
@@ -106,7 +106,7 @@ export function DifficultyRating({
         level: 3,
         label: 'Medium',
         description: 'Moderate complexity requiring some research or planning',
-        icon: <Star className="w-5 h-5" />,
+        icon: <Star className="size-5" />,
         color: 'text-warm-gray',
         examples: ['Integrate third-party API', 'Optimize database queries', 'Implement caching']
       },
@@ -114,7 +114,7 @@ export function DifficultyRating({
         level: 4,
         label: 'Hard',
         description: 'Complex task requiring significant expertise and careful planning',
-        icon: <Star className="w-5 h-5" />,
+        icon: <Star className="size-5" />,
         color: 'text-off-black dark:text-off-white',
         examples: ['Design new architecture', 'Implement real-time features', 'Performance optimization']
       },
@@ -122,29 +122,29 @@ export function DifficultyRating({
         level: 5,
         label: 'Very Hard',
         description: 'Extremely complex, may require research or learning new technologies',
-        icon: <Star className="w-5 h-5" />,
+        icon: <Star className="size-5" />,
         color: 'text-off-black dark:text-off-white',
         examples: ['Build custom framework', 'Implement ML algorithms', 'Solve scalability issues']
       }
     ],
     circles: [
-      { level: 1, label: 'Beginner', icon: <Circle className="w-4 h-4" />, color: 'text-primary' },
-      { level: 2, label: 'Novice', icon: <Circle className="w-5 h-5" />, color: 'text-primary' },
-      { level: 3, label: 'Intermediate', icon: <Circle className="w-6 h-6" />, color: 'text-warm-gray' },
-      { level: 4, label: 'Advanced', icon: <Circle className="w-7 h-7" />, color: 'text-off-black dark:text-off-white' },
-      { level: 5, label: 'Expert', icon: <Circle className="w-8 h-8" />, color: 'text-off-black dark:text-off-white' }
+      { level: 1, label: 'Beginner', icon: <Circle className="size-4" />, color: 'text-primary' },
+      { level: 2, label: 'Novice', icon: <Circle className="size-5" />, color: 'text-primary' },
+      { level: 3, label: 'Intermediate', icon: <Circle className="size-6" />, color: 'text-warm-gray' },
+      { level: 4, label: 'Advanced', icon: <Circle className="size-7" />, color: 'text-off-black dark:text-off-white' },
+      { level: 5, label: 'Expert', icon: <Circle className="size-8" />, color: 'text-off-black dark:text-off-white' }
     ],
     shapes: [
-      { level: 1, label: 'Basic', icon: <Circle className="w-5 h-5" />, color: 'text-primary' },
-      { level: 2, label: 'Simple', icon: <Square className="w-5 h-5" />, color: 'text-primary' },
-      { level: 3, label: 'Moderate', icon: <Triangle className="w-5 h-5" />, color: 'text-warm-gray' },
-      { level: 4, label: 'Complex', icon: <Hexagon className="w-5 h-5" />, color: 'text-off-black dark:text-off-white' },
-      { level: 5, label: 'Advanced', icon: <Star className="w-5 h-5" />, color: 'text-off-black dark:text-off-white' }
+      { level: 1, label: 'Basic', icon: <Circle className="size-5" />, color: 'text-primary' },
+      { level: 2, label: 'Simple', icon: <Square className="size-5" />, color: 'text-primary' },
+      { level: 3, label: 'Moderate', icon: <Triangle className="size-5" />, color: 'text-warm-gray' },
+      { level: 4, label: 'Complex', icon: <Hexagon className="size-5" />, color: 'text-off-black dark:text-off-white' },
+      { level: 5, label: 'Advanced', icon: <Star className="size-5" />, color: 'text-off-black dark:text-off-white' }
     ],
     bars: Array.from({ length: 5 }, (_, i) => ({
       level: (i + 1) as DifficultyLevel,
       label: `Level ${i + 1}`,
-      icon: <div className={`w-3 bg-current rounded`} style={{ height: `${(i + 1) * 4 + 8}px` }} />,
+      icon: <div className={`w-3 rounded bg-current`} style={{ height: `${(i + 1) * 4 + 8}px` }} />,
       color: ['text-primary', 'text-primary', 'text-warm-gray', 'text-off-black dark:text-off-white', 'text-off-black dark:text-off-white'][i]
     })),
     custom: []
@@ -166,12 +166,12 @@ export function DifficultyRating({
         <button
           type="button"
           className={cn(
-            "w-full p-4 rounded-lg border-2 transition-all duration-200 text-left",
+            "w-full rounded-lg border-2 p-4 text-left transition-all duration-200",
             "hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
             isSelected
               ? "border-primary bg-primary/10"
               : "border-light-gray dark:border-warm-gray/30",
-            disabled && "opacity-50 cursor-not-allowed"
+            disabled && "cursor-not-allowed opacity-50"
           )}
           onClick={() => !disabled && handleSelect(option.level)}
           disabled={disabled}
@@ -181,7 +181,7 @@ export function DifficultyRating({
           <div className="flex items-center space-x-3">
             {/* Icon */}
             <div className={cn(
-              "flex-shrink-0 transition-colors",
+              "shrink-0 transition-colors",
               variant === 'stars' && isBeforeSelected ? option.color : 
               isSelected ? option.color : 'text-warm-gray'
             )}>
@@ -189,7 +189,7 @@ export function DifficultyRating({
             </div>
 
             {/* Content */}
-            <div className="flex-1 min-w-0">
+            <div className="min-w-0 flex-1">
               <div className="font-medium text-off-black dark:text-off-white">
                 {option.label}
               </div>
@@ -197,7 +197,7 @@ export function DifficultyRating({
               {showDescriptions && option.description && (
                 <p
                   id={`difficulty-${option.level}-desc`}
-                  className="text-sm text-warm-gray mt-1 leading-relaxed"
+                  className="mt-1 text-sm leading-relaxed text-warm-gray"
                 >
                   {option.description}
                 </p>
@@ -205,12 +205,12 @@ export function DifficultyRating({
 
               {showExamples && option.examples && option.examples.length > 0 && (
                 <div className="mt-2">
-                  <div className="text-xs font-medium text-warm-gray mb-1">Examples:</div>
+                  <div className="mb-1 text-xs font-medium text-warm-gray">Examples:</div>
                   <div className="flex flex-wrap gap-1">
                     {option.examples.slice(0, 3).map((example, idx) => (
                       <span
                         key={idx}
-                        className="px-2 py-1 text-xs bg-warm-gray/10 text-warm-gray rounded"
+                        className="rounded bg-warm-gray/10 px-2 py-1 text-xs text-warm-gray"
                       >
                         {example}
                       </span>
@@ -222,7 +222,7 @@ export function DifficultyRating({
 
             {/* Level indicator */}
             <div className={cn(
-              "flex-shrink-0 w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-bold transition-colors",
+              "flex size-8 shrink-0 items-center justify-center rounded-full border-2 text-sm font-bold transition-colors",
               isSelected
                 ? "border-primary bg-primary text-off-white"
                 : "border-warm-gray text-warm-gray"
@@ -247,9 +247,9 @@ export function DifficultyRating({
               key={level}
               type="button"
               className={cn(
-                "p-2 rounded-lg transition-all duration-200",
+                "rounded-lg p-2 transition-all duration-200",
                 "hover:scale-110 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
-                disabled && "opacity-50 cursor-not-allowed"
+                disabled && "cursor-not-allowed opacity-50"
               )}
               onClick={() => !disabled && handleSelect(level)}
               disabled={disabled}
@@ -257,8 +257,8 @@ export function DifficultyRating({
             >
               <Star
                 className={cn(
-                  "w-8 h-8 transition-colors",
-                  isFilled ? "text-primary fill-current" : "text-warm-gray"
+                  "size-8 transition-colors",
+                  isFilled ? "fill-current text-primary" : "text-warm-gray"
                 )}
               />
             </button>
@@ -276,7 +276,7 @@ export function DifficultyRating({
           {question}
         </QuestionLabel>
         {description && (
-          <p className="text-warm-gray text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-warm-gray">
             {description}
           </p>
         )}
@@ -288,7 +288,7 @@ export function DifficultyRating({
       ) : (
         <div className={cn(
           "space-y-3",
-          orientation === 'horizontal' && "flex space-y-0 space-x-3"
+          orientation === 'horizontal' && "flex space-x-3 space-y-0"
         )}>
           {options.map((option, index) => renderOption(option, index))}
         </div>
@@ -296,10 +296,10 @@ export function DifficultyRating({
 
       {/* Selected Level Summary */}
       {selectedLevel && (
-        <div className="flex items-center justify-center p-4 bg-primary/10 rounded-lg">
+        <div className="flex items-center justify-center rounded-lg bg-primary/10 p-4">
           <div className="flex items-center space-x-3">
             <div className="flex items-center space-x-2">
-              <TrendingUp className="w-5 h-5 text-primary" />
+              <TrendingUp className="size-5 text-primary" />
               <span className="font-medium text-primary">
                 Selected Difficulty: Level {selectedLevel}
               </span>
@@ -312,8 +312,8 @@ export function DifficultyRating({
       )}
 
       {/* Difficulty Guide */}
-      <div className="flex items-start space-x-2 p-3 bg-light-gray dark:bg-warm-gray/20 rounded-lg">
-        <Brain className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+      <div className="flex items-start space-x-2 rounded-lg bg-light-gray p-3 dark:bg-warm-gray/20">
+        <Brain className="mt-0.5 size-5 shrink-0 text-primary" />
         <div className="text-sm text-off-black dark:text-off-white">
           <strong>Rating Guide:</strong> Consider technical complexity, required expertise, 
           time investment, and potential risks when rating difficulty.

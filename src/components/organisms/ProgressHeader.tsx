@@ -111,15 +111,15 @@ export function ProgressHeader({
 
   const getQuestionIcon = (question: QuestionProgress) => {
     if (question.hasError) {
-      return <X className="w-4 h-4 text-warm-gray" />;
+      return <X className="size-4 text-warm-gray" />;
     }
     if (question.isCompleted) {
-      return <CheckCircle className="w-4 h-4 text-primary" />;
+      return <CheckCircle className="size-4 text-primary" />;
     }
     if (question.isCurrent) {
-      return <Circle className="w-4 h-4 text-primary fill-current" />;
+      return <Circle className="size-4 fill-current text-primary" />;
     }
-    return <Circle className="w-4 h-4 text-warm-gray" />;
+    return <Circle className="size-4 text-warm-gray" />;
   };
 
   const getQuestionStatus = (question: QuestionProgress): string => {
@@ -132,38 +132,38 @@ export function ProgressHeader({
 
   return (
     <div className={cn(
-      "bg-off-white dark:bg-off-black border-b border-light-gray dark:border-warm-gray/30",
+      "border-b border-light-gray bg-off-white dark:border-warm-gray/30 dark:bg-off-black",
       "transition-all duration-300 ease-in-out",
       isCollapsed && collapsible ? "py-2" : "py-6",
       className
     )}>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* Main Header */}
         <div className="flex items-center justify-between">
           {/* Left Section: Title and Progress */}
-          <div className="flex-1 min-w-0">
+          <div className="min-w-0 flex-1">
             <div className="flex items-center space-x-4">
               {/* Collapse Toggle (Mobile) */}
               {collapsible && (
                 <button
                   type="button"
                   onClick={() => setIsCollapsed(!isCollapsed)}
-                  className="sm:hidden p-2 rounded-lg hover:bg-light-gray focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                  className="rounded-lg p-2 hover:bg-light-gray focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 sm:hidden"
                   aria-label={isCollapsed ? "Expand progress" : "Collapse progress"}
                 >
-                  <Menu className="w-5 h-5 text-warm-gray" />
+                  <Menu className="size-5 text-warm-gray" />
                 </button>
               )}
 
               {/* Title and Basic Progress */}
-              <div className="flex-1 min-w-0">
+              <div className="min-w-0 flex-1">
                 {!isCollapsed && (
                   <div className="mb-3">
-                    <h1 className="text-xl sm:text-2xl font-semibold text-off-black dark:text-off-white truncate">
+                    <h1 className="truncate text-xl font-semibold text-off-black dark:text-off-white sm:text-2xl">
                       {title}
                     </h1>
                     {subtitle && (
-                      <p className="text-sm text-warm-gray mt-1 truncate">
+                      <p className="mt-1 truncate text-sm text-warm-gray">
                         {subtitle}
                       </p>
                     )}
@@ -206,13 +206,13 @@ export function ProgressHeader({
           </div>
 
           {/* Right Section: Actions and Status */}
-          <div className="flex items-center space-x-2 ml-4">
+          <div className="ml-4 flex items-center space-x-2">
             {/* Time Indicators */}
             {showTimeIndicators && !isCollapsed && (
-              <div className="hidden sm:flex items-center space-x-4 text-xs text-warm-gray">
+              <div className="hidden items-center space-x-4 text-xs text-warm-gray sm:flex">
                 {timeElapsed && (
                   <div className="flex items-center space-x-1">
-                    <Clock className="w-3 h-3" />
+                    <Clock className="size-3" />
                     <span>{timeElapsed}</span>
                   </div>
                 )}
@@ -227,7 +227,7 @@ export function ProgressHeader({
               <div className="flex items-center space-x-2">
                 {autoSaveEnabled ? (
                   <div className="flex items-center space-x-1 text-xs text-primary">
-                    <Save className="w-3 h-3" />
+                    <Save className="size-3" />
                     <span className="hidden sm:inline">
                       {lastSaved ? formatTimeAgo(lastSaved) : 'Auto-save'}
                     </span>
@@ -239,7 +239,7 @@ export function ProgressHeader({
                     onClick={onSave}
                     className="text-xs"
                   >
-                    <Save className="w-4 h-4 mr-1" />
+                    <Save className="mr-1 size-4" />
                     Save
                   </Button>
                 )}
@@ -253,9 +253,9 @@ export function ProgressHeader({
                   variant="ghost"
                   size="sm"
                   onClick={onRestart}
-                  className="hidden sm:flex items-center space-x-1"
+                  className="hidden items-center space-x-1 sm:flex"
                 >
-                  <RotateCcw className="w-4 h-4" />
+                  <RotateCcw className="size-4" />
                   <span>Restart</span>
                 </Button>
               )}
@@ -267,7 +267,7 @@ export function ProgressHeader({
                   onClick={onExit}
                   className="flex items-center space-x-1 text-warm-gray hover:text-primary"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="size-4" />
                   <span className="hidden sm:inline">Exit</span>
                 </Button>
               )}
@@ -277,13 +277,13 @@ export function ProgressHeader({
 
         {/* Detailed Progress (Questions Overview) */}
         {showDetailedProgress && !isCollapsed && questionProgress && (
-          <div className="mt-6 pt-6 border-t border-light-gray dark:border-warm-gray/30">
+          <div className="mt-6 border-t border-light-gray pt-6 dark:border-warm-gray/30">
             <div className="space-y-4">
               <h3 className="text-sm font-medium text-off-black dark:text-off-white">
                 Question Overview
               </h3>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {questionProgress.map((question, index) => (
                   <button
                     key={question.id}
@@ -291,7 +291,7 @@ export function ProgressHeader({
                     onClick={() => onQuestionClick?.(question.id, index)}
                     disabled={!onQuestionClick}
                     className={cn(
-                      "flex items-center space-x-3 p-3 rounded-lg text-left transition-colors",
+                      "flex items-center space-x-3 rounded-lg p-3 text-left transition-colors",
                       "border border-light-gray dark:border-warm-gray/30",
                       question.isCurrent && "border-primary bg-primary/5",
                       question.hasError && "border-light-gray bg-light-gray dark:bg-gray-700",
@@ -301,23 +301,23 @@ export function ProgressHeader({
                     )}
                     aria-label={`Question ${index + 1}: ${question.title}`}
                   >
-                    <div className="flex-shrink-0">
+                    <div className="shrink-0">
                       {getQuestionIcon(question)}
                     </div>
                     
-                    <div className="flex-1 min-w-0">
+                    <div className="min-w-0 flex-1">
                       <div className="flex items-center space-x-2">
                         <span className="text-xs font-medium text-warm-gray">
                           Q{index + 1}
                         </span>
                         {question.isFlagged && (
-                          <Flag className="w-3 h-3 text-warm-gray" />
+                          <Flag className="size-3 text-warm-gray" />
                         )}
                         {question.isOptional && (
                           <span className="text-xs text-warm-gray">(optional)</span>
                         )}
                       </div>
-                      <p className="text-sm text-off-black dark:text-off-white truncate">
+                      <p className="truncate text-sm text-off-black dark:text-off-white">
                         {question.title}
                       </p>
                       <div className="text-xs text-warm-gray">
@@ -333,10 +333,10 @@ export function ProgressHeader({
 
         {/* Mobile Time Indicators */}
         {showTimeIndicators && !isCollapsed && (
-          <div className="sm:hidden mt-4 flex items-center justify-between text-xs text-warm-gray">
+          <div className="mt-4 flex items-center justify-between text-xs text-warm-gray sm:hidden">
             {timeElapsed && (
               <div className="flex items-center space-x-1">
-                <Clock className="w-3 h-3" />
+                <Clock className="size-3" />
                 <span>{timeElapsed}</span>
               </div>
             )}

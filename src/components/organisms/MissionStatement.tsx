@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { LucideIcon } from "@/components/ui/Icon";
 import { Link } from "@/components/ui/Typography";
 import { Tag } from "@/components/ui/Tag";
+import type { 
+  Heart} from "lucide-react";
 import { 
-  Heart, 
   Target, 
   Users, 
   Lightbulb, 
@@ -94,14 +95,14 @@ export function MissionStatement({
           {values.map((value, index) => (
             <div key={index} className="space-y-3">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10">
                   <LucideIcon icon={value.icon} size="sm" className="text-primary" />
                 </div>
                 <h4 className="font-medium text-off-black dark:text-off-white">
                   {value.title}
                 </h4>
               </div>
-              <p className="text-warm-gray text-sm leading-relaxed">
+              <p className="text-sm leading-relaxed text-warm-gray">
                 {value.description}
               </p>
             </div>
@@ -125,11 +126,11 @@ export function MissionStatement({
               <h4 className="font-medium text-off-black dark:text-off-white">
                 {principle.title}
               </h4>
-              <p className="text-warm-gray leading-relaxed">
+              <p className="leading-relaxed text-warm-gray">
                 {principle.description}
               </p>
               {principle.example && (
-                <p className="text-sm text-warm-gray italic">
+                <p className="text-sm italic text-warm-gray">
                   Example: {principle.example}
                 </p>
               )}
@@ -151,10 +152,10 @@ export function MissionStatement({
         <div className="grid gap-3">
           {goals.map((goal, index) => (
             <div key={index} className="flex items-start gap-3">
-              <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <div className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/10">
                 <LucideIcon icon={Target} size="xs" className="text-primary" />
               </div>
-              <p className="text-warm-gray leading-relaxed">{goal}</p>
+              <p className="leading-relaxed text-warm-gray">{goal}</p>
             </div>
           ))}
         </div>
@@ -165,17 +166,17 @@ export function MissionStatement({
   const Content = () => (
     <div className="space-y-8">
       {/* Header */}
-      <div className="text-center space-y-6">
+      <div className="space-y-6 text-center">
         <div className="space-y-4">
           <h2 className={cn(
             titleSizes[size],
-            "font-bold text-off-black dark:text-off-white leading-tight"
+            "font-bold leading-tight text-off-black dark:text-off-white"
           )}>
             Our Mission
           </h2>
           
           <p className={cn(
-            "text-warm-gray leading-relaxed max-w-3xl mx-auto",
+            "mx-auto max-w-3xl leading-relaxed text-warm-gray",
             size === "lg" ? "text-lg" : "text-base"
           )}>
             {mission}
@@ -187,7 +188,7 @@ export function MissionStatement({
             <h3 className="text-lg font-medium text-off-black dark:text-off-white">
               Our Vision
             </h3>
-            <p className="text-warm-gray leading-relaxed max-w-2xl mx-auto">
+            <p className="mx-auto max-w-2xl leading-relaxed text-warm-gray">
               {vision}
             </p>
           </div>
@@ -247,7 +248,7 @@ export function MissionStatement({
         {...props}
       >
         <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
+          <div className="mx-auto max-w-6xl">
             <Content />
           </div>
         </div>
@@ -261,11 +262,11 @@ export function MissionStatement({
         className={cn("space-y-6", className)}
         {...props}
       >
-        <div className="text-center space-y-4">
+        <div className="space-y-4 text-center">
           <h3 className="text-xl font-semibold text-off-black dark:text-off-white">
             Our Mission
           </h3>
-          <p className="text-warm-gray leading-relaxed">
+          <p className="leading-relaxed text-warm-gray">
             {mission}
           </p>
           {(ctaHref || onCtaClick) && (
@@ -273,7 +274,7 @@ export function MissionStatement({
               {ctaHref ? (
                 <Link 
                   href={ctaHref}
-                  className="inline-flex items-center gap-1 text-primary hover:text-primary/80 transition-colors no-underline"
+                  className="inline-flex items-center gap-1 text-primary no-underline transition-colors hover:text-primary/80"
                 >
                   {ctaText}
                   <LucideIcon icon={ArrowRight} size="xs" />
@@ -281,7 +282,7 @@ export function MissionStatement({
               ) : (
                 <button
                   onClick={onCtaClick}
-                  className="inline-flex items-center gap-1 text-primary hover:text-primary/80 transition-colors"
+                  className="inline-flex items-center gap-1 text-primary transition-colors hover:text-primary/80"
                 >
                   {ctaText}
                   <LucideIcon icon={ArrowRight} size="xs" />
@@ -309,7 +310,7 @@ export function MissionStatement({
       )}
       {...props}
     >
-      <div className="max-w-4xl mx-auto">
+      <div className="mx-auto max-w-4xl">
         <Content />
       </div>
     </div>

@@ -192,24 +192,24 @@ export function ProjectPhase({
             <div
               key={phase.phase}
               className={cn(
-                "flex items-center gap-3 p-2 rounded-lg transition-all duration-200",
+                "flex items-center gap-3 rounded-lg p-2 transition-all duration-200",
                 isCurrentPhase && "bg-muted/50",
                 isCompleted && "opacity-60"
               )}
             >
               <div
                 className={cn(
-                  "flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center border",
+                  "flex size-8 shrink-0 items-center justify-center rounded-full border",
                   isCompleted ? statusConfig.complete.colors : config.colors,
                   isCurrentPhase && "animate-pulse"
                 )}
               >
-                <Icon className="w-4 h-4" />
+                <Icon className="size-4" />
               </div>
               
-              <div className="flex-1 min-w-0">
+              <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <span className={cn("font-medium text-sm", isCurrentPhase && "text-foreground")}>
+                  <span className={cn("text-sm font-medium", isCurrentPhase && "text-foreground")}>
                     {phase.label || config.label}
                   </span>
                   {isCurrentPhase && (
@@ -229,7 +229,7 @@ export function ProjectPhase({
                 )}
                 
                 {'completedAt' in phase && phase.completedAt && isCompleted && (
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     Completed {phase.completedAt}
                   </p>
                 )}
@@ -264,7 +264,7 @@ export function BuildingStatus({
   return (
     <div 
       className={cn(
-        "border rounded-lg p-4 space-y-3",
+        "space-y-3 rounded-lg border p-4",
         "bg-gradient-to-br from-background to-muted/30",
         className
       )} 
@@ -293,9 +293,9 @@ export function BuildingStatus({
                 <span>Progress</span>
                 <span className="text-muted-foreground">{progress}%</span>
               </div>
-              <div className="w-full bg-muted rounded-full h-2">
+              <div className="h-2 w-full rounded-full bg-muted">
                 <div 
-                  className="bg-primary h-2 rounded-full transition-all duration-300" 
+                  className="h-2 rounded-full bg-primary transition-all duration-300" 
                   style={{ width: `${progress}%` }}
                 />
               </div>

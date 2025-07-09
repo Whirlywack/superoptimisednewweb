@@ -97,9 +97,9 @@ export function RatingInput({
       type="button"
       className={cn(
         "relative flex items-center justify-center",
-        "border-2 rounded-full transition-all duration-200",
+        "rounded-full border-2 transition-all duration-200",
         "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
-        "font-medium touch-manipulation",
+        "touch-manipulation font-medium",
         sizeConfig.touch, // Extended touch target
         className
       )}
@@ -170,7 +170,7 @@ export function RatingScale({
     <div className={cn("space-y-3", className)} {...props}>
       {/* Rating Dots */}
       <div 
-        className="flex items-center justify-center gap-2 flex-wrap"
+        className="flex flex-wrap items-center justify-center gap-2"
         role="radiogroup"
         aria-label="Rating scale"
       >
@@ -193,7 +193,7 @@ export function RatingScale({
 
       {/* Labels */}
       {labels && (
-        <div className="flex justify-between items-center text-xs text-muted-foreground">
+        <div className="flex items-center justify-between text-xs text-muted-foreground">
           <span>{labels.min}</span>
           {labels.mid && range > 6 && (
             <span className="hidden sm:inline">{labels.mid}</span>
@@ -205,7 +205,7 @@ export function RatingScale({
       {/* Current Value Display */}
       {showValue && value !== undefined && (
         <div className="text-center">
-          <span className="text-sm font-mono bg-muted px-2 py-1 rounded">
+          <span className="rounded bg-muted px-2 py-1 font-mono text-sm">
             {value} / {max}
           </span>
         </div>
@@ -250,7 +250,7 @@ export function LikertScale({
       <div 
         className={cn(
           "flex gap-2",
-          isVertical ? "flex-col" : "flex-row items-center justify-center flex-wrap"
+          isVertical ? "flex-col" : "flex-row flex-wrap items-center justify-center"
         )}
         role="radiogroup"
         aria-label="Likert scale"
@@ -265,16 +265,16 @@ export function LikertScale({
               type="button"
               disabled={disabled}
               className={cn(
-                "px-3 py-2 rounded-lg border-2 transition-all duration-200",
+                "rounded-lg border-2 px-3 py-2 transition-all duration-200",
                 "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
-                "touch-manipulation min-h-[44px]",
-                size === "sm" && "px-2 py-1 text-sm min-h-[40px]",
-                size === "lg" && "px-4 py-3 text-lg min-h-[48px]",
+                "min-h-[44px] touch-manipulation",
+                size === "sm" && "min-h-[40px] px-2 py-1 text-sm",
+                size === "lg" && "min-h-[48px] px-4 py-3 text-lg",
                 isVertical ? "w-full text-left" : "flex-1 text-center",
                 isSelected
                   ? "border-primary bg-primary text-primary-foreground"
                   : "border-border bg-background hover:border-primary/50 hover:bg-muted/50",
-                disabled && "opacity-50 cursor-not-allowed"
+                disabled && "cursor-not-allowed opacity-50"
               )}
               onClick={() => onChange?.(option.value)}
               aria-pressed={isSelected}

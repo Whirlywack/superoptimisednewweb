@@ -3,6 +3,8 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { LucideIcon } from "@/components/ui/Icon";
 import { Link } from "@/components/ui/Typography";
+import type {
+  Zap} from "lucide-react";
 import { 
   ArrowRight, 
   Star, 
@@ -14,7 +16,6 @@ import {
   Calendar,
   TrendingUp,
   MessageCircle,
-  Zap,
   Shield,
   Globe,
   Code,
@@ -133,24 +134,24 @@ export function Homepage({
   };
 
   const renderHeroSection = () => (
-    <section className="bg-gradient-to-b from-off-white to-light-gray dark:from-off-black dark:to-warm-gray/10 py-20 lg:py-32">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center space-y-8">
+    <section className="bg-gradient-to-b from-off-white to-light-gray py-20 dark:from-off-black dark:to-warm-gray/10 lg:py-32">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="space-y-8 text-center">
           <div className="space-y-6">
             <div className="space-y-4">
-              <h1 className="text-4xl lg:text-6xl font-bold text-off-black dark:text-off-white leading-tight">
+              <h1 className="text-4xl font-bold leading-tight text-off-black dark:text-off-white lg:text-6xl">
                 {hero.title}
               </h1>
-              <p className="text-xl lg:text-2xl font-medium text-primary">
+              <p className="text-xl font-medium text-primary lg:text-2xl">
                 {hero.subtitle}
               </p>
             </div>
-            <p className="text-lg lg:text-xl text-warm-gray max-w-3xl mx-auto leading-relaxed">
+            <p className="mx-auto max-w-3xl text-lg leading-relaxed text-warm-gray lg:text-xl">
               {hero.description}
             </p>
           </div>
           
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Button 
               variant="primary" 
               size="lg"
@@ -197,37 +198,37 @@ export function Homepage({
     
     return (
       <section className="py-20 lg:py-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4 mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-off-black dark:text-off-white">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-16 space-y-4 text-center">
+            <h2 className="text-3xl font-bold text-off-black dark:text-off-white lg:text-4xl">
               Why Build in Public?
             </h2>
-            <p className="text-lg text-warm-gray max-w-2xl mx-auto">
+            <p className="mx-auto max-w-2xl text-lg text-warm-gray">
               Discover the benefits of transparent development and community-driven building
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {features.map((feature, index) => (
               <div
                 key={index}
                 className={cn(
-                  "bg-off-white dark:bg-off-black border border-light-gray dark:border-warm-gray/30 rounded-lg p-6 space-y-4 transition-colors",
-                  feature.href && "hover:border-primary/50 cursor-pointer"
+                  "space-y-4 rounded-lg border border-light-gray bg-off-white p-6 transition-colors dark:border-warm-gray/30 dark:bg-off-black",
+                  feature.href && "cursor-pointer hover:border-primary/50"
                 )}
                 {...(feature.href ? { onClick: () => window.location.href = feature.href } : {})}
               >
-                <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                <div className="flex size-12 items-center justify-center rounded-lg bg-primary/10">
                   <LucideIcon icon={feature.icon} size="md" className="text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold text-off-black dark:text-off-white">
                   {feature.title}
                 </h3>
-                <p className="text-warm-gray leading-relaxed">
+                <p className="leading-relaxed text-warm-gray">
                   {feature.description}
                 </p>
                 {feature.href && (
-                  <div className="flex items-center text-primary text-sm font-medium">
+                  <div className="flex items-center text-sm font-medium text-primary">
                     Learn more
                     <LucideIcon icon={ChevronRight} size="xs" className="ml-1" />
                   </div>
@@ -244,23 +245,23 @@ export function Homepage({
     if (!testimonials.length) return null;
     
     return (
-      <section className="bg-light-gray/50 dark:bg-warm-gray/5 py-20 lg:py-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4 mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-off-black dark:text-off-white">
+      <section className="bg-light-gray/50 py-20 dark:bg-warm-gray/5 lg:py-32">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-16 space-y-4 text-center">
+            <h2 className="text-3xl font-bold text-off-black dark:text-off-white lg:text-4xl">
               What Developers Are Saying
             </h2>
-            <p className="text-lg text-warm-gray max-w-2xl mx-auto">
+            <p className="mx-auto max-w-2xl text-lg text-warm-gray">
               Feedback from our amazing community of builders and creators
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {testimonials.slice(0, 6).map((testimonial, index) => (
               <div
                 key={index}
                 className={cn(
-                  "bg-off-white dark:bg-off-black border border-light-gray dark:border-warm-gray/30 rounded-lg p-6 space-y-4",
+                  "space-y-4 rounded-lg border border-light-gray bg-off-white p-6 dark:border-warm-gray/30 dark:bg-off-black",
                   testimonial.featured && "ring-2 ring-primary/20"
                 )}
               >
@@ -268,7 +269,7 @@ export function Homepage({
                   <LucideIcon icon={Quote} size="sm" className="text-primary" />
                 </div>
                 
-                <blockquote className="text-warm-gray leading-relaxed">
+                <blockquote className="leading-relaxed text-warm-gray">
                   "{testimonial.content}"
                 </blockquote>
                 
@@ -277,11 +278,11 @@ export function Homepage({
                     <img
                       src={testimonial.avatar}
                       alt={testimonial.author}
-                      className="w-10 h-10 rounded-full object-cover"
+                      className="size-10 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="w-10 h-10 rounded-full bg-light-gray dark:bg-warm-gray/20 flex items-center justify-center">
-                      <span className="text-warm-gray font-medium text-sm">
+                    <div className="flex size-10 items-center justify-center rounded-full bg-light-gray dark:bg-warm-gray/20">
+                      <span className="text-sm font-medium text-warm-gray">
                         {testimonial.author.charAt(0)}
                       </span>
                     </div>
@@ -310,28 +311,28 @@ export function Homepage({
     
     return (
       <section className="py-20 lg:py-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-12">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-12 flex items-center justify-between">
             <div>
-              <h2 className="text-3xl lg:text-4xl font-bold text-off-black dark:text-off-white mb-4">
+              <h2 className="mb-4 text-3xl font-bold text-off-black dark:text-off-white lg:text-4xl">
                 Current Projects
               </h2>
               <p className="text-lg text-warm-gray">
                 Follow along as we build these projects in public
               </p>
             </div>
-            <Link href="/projects" className="hidden sm:flex items-center text-primary font-medium no-underline">
+            <Link href="/projects" className="hidden items-center font-medium text-primary no-underline sm:flex">
               View All Projects
               <LucideIcon icon={ChevronRight} size="sm" className="ml-1" />
             </Link>
           </div>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
             {currentProjects.slice(0, 4).map((project) => (
               <div
                 key={project.id}
                 className={cn(
-                  "bg-off-white dark:bg-off-black border border-light-gray dark:border-warm-gray/30 rounded-lg p-6 space-y-4",
+                  "space-y-4 rounded-lg border border-light-gray bg-off-white p-6 dark:border-warm-gray/30 dark:bg-off-black",
                   project.featured && "ring-2 ring-primary/20"
                 )}
               >
@@ -341,7 +342,7 @@ export function Homepage({
                       {project.title}
                     </h3>
                     <span className={cn(
-                      "inline-flex items-center px-2 py-1 rounded text-xs font-medium capitalize",
+                      "inline-flex items-center rounded px-2 py-1 text-xs font-medium capitalize",
                       getStatusColor(project.status)
                     )}>
                       {project.status.replace('-', ' ')}
@@ -353,9 +354,9 @@ export function Homepage({
                       <div className="text-sm font-medium text-off-black dark:text-off-white">
                         {project.progress}%
                       </div>
-                      <div className="w-16 h-2 bg-light-gray dark:bg-warm-gray/30 rounded-full mt-1">
+                      <div className="mt-1 h-2 w-16 rounded-full bg-light-gray dark:bg-warm-gray/30">
                         <div 
-                          className="h-2 bg-primary rounded-full"
+                          className="h-2 rounded-full bg-primary"
                           style={{ width: `${project.progress}%` }}
                         />
                       </div>
@@ -363,7 +364,7 @@ export function Homepage({
                   )}
                 </div>
                 
-                <p className="text-warm-gray leading-relaxed">
+                <p className="leading-relaxed text-warm-gray">
                   {project.description}
                 </p>
                 
@@ -371,13 +372,13 @@ export function Homepage({
                   {project.technologies.slice(0, 4).map((tech) => (
                     <span
                       key={tech}
-                      className="bg-light-gray dark:bg-warm-gray/20 text-warm-gray px-2 py-1 rounded text-xs"
+                      className="rounded bg-light-gray px-2 py-1 text-xs text-warm-gray dark:bg-warm-gray/20"
                     >
                       {tech}
                     </span>
                   ))}
                   {project.technologies.length > 4 && (
-                    <span className="text-warm-gray text-xs py-1">
+                    <span className="py-1 text-xs text-warm-gray">
                       +{project.technologies.length - 4} more
                     </span>
                   )}
@@ -385,7 +386,7 @@ export function Homepage({
                 
                 <Link 
                   href={project.href} 
-                  className="inline-flex items-center text-primary text-sm font-medium no-underline"
+                  className="inline-flex items-center text-sm font-medium text-primary no-underline"
                 >
                   View Project
                   <LucideIcon icon={ChevronRight} size="xs" className="ml-1" />
@@ -394,8 +395,8 @@ export function Homepage({
             ))}
           </div>
           
-          <div className="text-center mt-8 sm:hidden">
-            <Link href="/projects" className="inline-flex items-center text-primary font-medium no-underline">
+          <div className="mt-8 text-center sm:hidden">
+            <Link href="/projects" className="inline-flex items-center font-medium text-primary no-underline">
               View All Projects
               <LucideIcon icon={ChevronRight} size="sm" className="ml-1" />
             </Link>
@@ -409,37 +410,37 @@ export function Homepage({
     if (!recentPosts.length) return null;
     
     return (
-      <section className="bg-light-gray/50 dark:bg-warm-gray/5 py-20 lg:py-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between mb-12">
+      <section className="bg-light-gray/50 py-20 dark:bg-warm-gray/5 lg:py-32">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-12 flex items-center justify-between">
             <div>
-              <h2 className="text-3xl lg:text-4xl font-bold text-off-black dark:text-off-white mb-4">
+              <h2 className="mb-4 text-3xl font-bold text-off-black dark:text-off-white lg:text-4xl">
                 Latest Updates
               </h2>
               <p className="text-lg text-warm-gray">
                 Recent posts from our building in public journey
               </p>
             </div>
-            <Link href="/blog" className="hidden sm:flex items-center text-primary font-medium no-underline">
+            <Link href="/blog" className="hidden items-center font-medium text-primary no-underline sm:flex">
               View All Posts
               <LucideIcon icon={ChevronRight} size="sm" className="ml-1" />
             </Link>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {recentPosts.slice(0, 6).map((post) => (
               <article
                 key={post.id}
                 className={cn(
-                  "bg-off-white dark:bg-off-black border border-light-gray dark:border-warm-gray/30 rounded-lg p-6 space-y-4 hover:border-primary/50 transition-colors",
+                  "space-y-4 rounded-lg border border-light-gray bg-off-white p-6 transition-colors hover:border-primary/50 dark:border-warm-gray/30 dark:bg-off-black",
                   post.featured && "ring-2 ring-primary/20"
                 )}
               >
                 <div className="space-y-3">
-                  <h3 className="text-lg font-semibold text-off-black dark:text-off-white leading-snug">
+                  <h3 className="text-lg font-semibold leading-snug text-off-black dark:text-off-white">
                     {post.title}
                   </h3>
-                  <p className="text-warm-gray leading-relaxed line-clamp-3">
+                  <p className="line-clamp-3 leading-relaxed text-warm-gray">
                     {post.excerpt}
                   </p>
                 </div>
@@ -454,7 +455,7 @@ export function Homepage({
                 
                 <Link 
                   href={post.href} 
-                  className="inline-flex items-center text-primary text-sm font-medium no-underline"
+                  className="inline-flex items-center text-sm font-medium text-primary no-underline"
                 >
                   Read More
                   <LucideIcon icon={ChevronRight} size="xs" className="ml-1" />
@@ -463,8 +464,8 @@ export function Homepage({
             ))}
           </div>
           
-          <div className="text-center mt-8 sm:hidden">
-            <Link href="/blog" className="inline-flex items-center text-primary font-medium no-underline">
+          <div className="mt-8 text-center sm:hidden">
+            <Link href="/blog" className="inline-flex items-center font-medium text-primary no-underline">
               View All Posts
               <LucideIcon icon={ChevronRight} size="sm" className="ml-1" />
             </Link>
@@ -479,11 +480,11 @@ export function Homepage({
     
     return (
       <section className="py-20 lg:py-32">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
-          <h2 className="text-3xl lg:text-4xl font-bold text-off-black dark:text-off-white">
+        <div className="mx-auto max-w-4xl space-y-8 px-4 text-center sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-off-black dark:text-off-white lg:text-4xl">
             {missionTitle}
           </h2>
-          <p className="text-lg lg:text-xl text-warm-gray leading-relaxed">
+          <p className="text-lg leading-relaxed text-warm-gray lg:text-xl">
             {missionContent}
           </p>
         </div>
@@ -495,22 +496,22 @@ export function Homepage({
     if (!showCommunity) return null;
     
     return (
-      <section className="bg-primary/5 dark:bg-primary/10 py-20 lg:py-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-12">
+      <section className="bg-primary/5 py-20 dark:bg-primary/10 lg:py-32">
+        <div className="mx-auto max-w-7xl space-y-12 px-4 text-center sm:px-6 lg:px-8">
           <div className="space-y-4">
-            <h2 className="text-3xl lg:text-4xl font-bold text-off-black dark:text-off-white">
+            <h2 className="text-3xl font-bold text-off-black dark:text-off-white lg:text-4xl">
               {communityTitle}
             </h2>
-            <p className="text-lg text-warm-gray max-w-2xl mx-auto">
+            <p className="mx-auto max-w-2xl text-lg text-warm-gray">
               {communityDescription}
             </p>
           </div>
           
           {communityStats.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
               {communityStats.map((stat, index) => (
                 <div key={index} className="space-y-2">
-                  <div className="text-3xl lg:text-4xl font-bold text-primary">
+                  <div className="text-3xl font-bold text-primary lg:text-4xl">
                     {stat.value}
                   </div>
                   <div className="text-warm-gray">
@@ -532,9 +533,9 @@ export function Homepage({
 
   const renderCtaSection = () => (
     <section className="py-20 lg:py-32">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
+      <div className="mx-auto max-w-4xl space-y-8 px-4 text-center sm:px-6 lg:px-8">
         <div className="space-y-4">
-          <h2 className="text-3xl lg:text-4xl font-bold text-off-black dark:text-off-white">
+          <h2 className="text-3xl font-bold text-off-black dark:text-off-white lg:text-4xl">
             {ctaTitle}
           </h2>
           <p className="text-lg text-warm-gray">

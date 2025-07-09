@@ -67,7 +67,7 @@ export function PostPreview({
       "transition-all duration-200"
     ),
     list: cn(
-      "border-b border-light-gray dark:border-warm-gray/30 last:border-0",
+      "border-b border-light-gray last:border-0 dark:border-warm-gray/30",
       "py-4 first:pt-0 last:pb-0"
     ),
     minimal: "space-y-2",
@@ -105,7 +105,7 @@ export function PostPreview({
           className={cn(
             sizeClasses[size].title,
             "font-semibold text-off-black dark:text-off-white",
-            "group-hover:text-primary transition-colors duration-200",
+            "transition-colors duration-200 group-hover:text-primary",
             "no-underline",
             "flex items-center gap-2"
           )}
@@ -115,13 +115,13 @@ export function PostPreview({
             <LucideIcon 
               icon={ExternalLink} 
               size="sm" 
-              className="opacity-50 group-hover:opacity-100 transition-opacity" 
+              className="opacity-50 transition-opacity group-hover:opacity-100" 
             />
           ) : (
             <LucideIcon 
               icon={ArrowRight} 
               size="sm" 
-              className="opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-1 transition-all duration-200" 
+              className="translate-x-0 opacity-0 transition-all duration-200 group-hover:translate-x-1 group-hover:opacity-100" 
             />
           )}
         </LinkComponent>

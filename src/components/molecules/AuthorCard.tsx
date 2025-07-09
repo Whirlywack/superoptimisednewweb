@@ -83,7 +83,7 @@ export function AuthorCard({
     >
       {/* Avatar */}
       <div className={cn(
-        "flex-shrink-0",
+        "shrink-0",
         isInline ? "" : "flex justify-center"
       )}>
         {avatar ? (
@@ -91,18 +91,18 @@ export function AuthorCard({
             src={avatar}
             alt={`${name} avatar`}
             className={cn(
-              "rounded-full object-cover bg-light-gray dark:bg-warm-gray/20",
+              "rounded-full bg-light-gray object-cover dark:bg-warm-gray/20",
               sizeClasses[size].avatar
             )}
           />
         ) : (
           <div
             className={cn(
-              "rounded-full bg-primary/10 flex items-center justify-center",
+              "flex items-center justify-center rounded-full bg-primary/10",
               sizeClasses[size].avatar
             )}
           >
-            <span className="text-primary font-medium text-lg">
+            <span className="text-lg font-medium text-primary">
               {name.charAt(0).toUpperCase()}
             </span>
           </div>
@@ -111,7 +111,7 @@ export function AuthorCard({
 
       {/* Content */}
       <div className={cn(
-        "flex-1 min-w-0",
+        "min-w-0 flex-1",
         !isInline && variant === "minimal" && "text-center"
       )}>
         {/* Name and Role */}

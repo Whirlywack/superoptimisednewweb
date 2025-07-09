@@ -61,7 +61,7 @@ export function QuestionLabel({
       {/* Question Number Indicator */}
       {questionNumber && totalQuestions && (
         <div className={cn(
-          "text-xs font-mono text-warm-gray",
+          "font-mono text-xs text-warm-gray",
           alignment === "center" ? "text-center" : "text-left"
         )}>
           Question {questionNumber} of {totalQuestions}
@@ -73,13 +73,13 @@ export function QuestionLabel({
         <h2 
           className={cn(
             variantStyles.question,
-            "text-off-black dark:text-off-white max-w-none",
+            "max-w-none text-off-black dark:text-off-white",
             alignment === "center" && "text-center"
           )}
         >
           {questionText}
           {required && (
-            <span className="text-warm-gray ml-1" aria-label="Required">
+            <span className="ml-1 text-warm-gray" aria-label="Required">
               *
             </span>
           )}
@@ -89,14 +89,14 @@ export function QuestionLabel({
               type="button"
               onClick={() => setShowHelp(!showHelp)}
               className={cn(
-                "inline-flex items-center justify-center ml-2",
-                "w-5 h-5 text-warm-gray hover:text-off-black dark:hover:text-off-white",
-                "transition-colors rounded-full",
+                "ml-2 inline-flex items-center justify-center",
+                "size-5 text-warm-gray hover:text-off-black dark:hover:text-off-white",
+                "rounded-full transition-colors",
                 "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
               )}
               aria-label="Show help text"
             >
-              <HelpCircle className="w-4 h-4" />
+              <HelpCircle className="size-4" />
             </button>
           )}
         </h2>
@@ -104,9 +104,9 @@ export function QuestionLabel({
         {/* Help Text */}
         {helpText && showHelp && (
           <div className={cn(
-            "mt-2 p-3 bg-light-gray rounded-lg border border-light-gray",
+            "mt-2 rounded-lg border border-light-gray bg-light-gray p-3",
             "text-sm text-warm-gray",
-            "animate-in slide-in-from-top-2 fade-in-0"
+            "animate-in fade-in-0 slide-in-from-top-2"
           )}>
             {helpText}
           </div>
@@ -154,7 +154,7 @@ export function QuestionHeader({
       {/* Progress Indicator */}
       {progress && variant !== "minimal" && (
         <div className="space-y-2">
-          <div className="flex justify-between items-center text-sm">
+          <div className="flex items-center justify-between text-sm">
             <span className="text-warm-gray">
               Progress
             </span>
@@ -166,9 +166,9 @@ export function QuestionHeader({
             </span>
           </div>
           
-          <div className="w-full bg-light-gray rounded-full h-2">
+          <div className="h-2 w-full rounded-full bg-light-gray">
             <div 
-              className="bg-primary h-2 rounded-full transition-all duration-300"
+              className="h-2 rounded-full bg-primary transition-all duration-300"
               style={{ width: `${progressPercentage}%` }}
             />
           </div>
@@ -178,7 +178,7 @@ export function QuestionHeader({
       {/* Header Content */}
       <div className="space-y-2">
         <h1 className={cn(
-          "font-bold text-off-black dark:text-off-white leading-tight",
+          "font-bold leading-tight text-off-black dark:text-off-white",
           variant === "detailed" ? "text-2xl md:text-3xl" : "text-xl md:text-2xl"
         )}>
           {title}
@@ -186,7 +186,7 @@ export function QuestionHeader({
         
         {description && (
           <p className={cn(
-            "text-warm-gray leading-relaxed",
+            "leading-relaxed text-warm-gray",
             variant === "detailed" ? "text-base" : "text-sm"
           )}>
             {description}

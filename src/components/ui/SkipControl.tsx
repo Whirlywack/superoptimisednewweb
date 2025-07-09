@@ -54,7 +54,7 @@ export function SkipControl({
 }: SkipControlProps) {
   const [showConfirm, setShowConfirm] = React.useState(false);
   const variantConfig = skipVariants[variant];
-  const defaultIcon = icon || <ChevronRight className="w-4 h-4" />;
+  const defaultIcon = icon || <ChevronRight className="size-4" />;
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (confirmSkip && !showConfirm) {
@@ -82,7 +82,7 @@ export function SkipControl({
         <button
           type="button"
           onClick={handleClick}
-          className="text-primary hover:text-primary/80 font-medium"
+          className="font-medium text-primary hover:text-primary/80"
         >
           Yes
         </button>
@@ -168,7 +168,7 @@ export function SkipOptions({
         <button
           type="button"
           onClick={() => setShowReasons(true)}
-          className="text-xs text-muted-foreground hover:text-foreground underline"
+          className="text-xs text-muted-foreground underline hover:text-foreground"
         >
           Why skip?
         </button>
@@ -177,24 +177,24 @@ export function SkipOptions({
   }
 
   return (
-    <div className={cn("space-y-4 p-4 border border-border rounded-lg bg-muted/30", className)} {...props}>
-      <h4 className="font-medium text-sm">Why are you skipping this question?</h4>
+    <div className={cn("space-y-4 rounded-lg border border-border bg-muted/30 p-4", className)} {...props}>
+      <h4 className="text-sm font-medium">Why are you skipping this question?</h4>
       
       <div className="space-y-2">
         {reasons.map((reason) => (
-          <label key={reason.id} className="flex items-start gap-3 cursor-pointer">
+          <label key={reason.id} className="flex cursor-pointer items-start gap-3">
             <input
               type="radio"
               name="skip-reason"
               value={reason.id}
               checked={selectedReason === reason.id}
               onChange={(e) => setSelectedReason(e.target.value)}
-              className="mt-1 w-4 h-4 text-primary focus:ring-primary border-border"
+              className="mt-1 size-4 border-border text-primary focus:ring-primary"
             />
             <div className="flex-1">
               <div className="text-sm font-medium">{reason.label}</div>
               {reason.description && (
-                <div className="text-xs text-muted-foreground mt-1">
+                <div className="mt-1 text-xs text-muted-foreground">
                   {reason.description}
                 </div>
               )}
@@ -203,14 +203,14 @@ export function SkipOptions({
         ))}
         
         {showCustomReason && (
-          <label className="flex items-start gap-3 cursor-pointer">
+          <label className="flex cursor-pointer items-start gap-3">
             <input
               type="radio"
               name="skip-reason"
               value="custom"
               checked={selectedReason === "custom"}
               onChange={(e) => setSelectedReason(e.target.value)}
-              className="mt-1 w-4 h-4 text-primary focus:ring-primary border-border"
+              className="mt-1 size-4 border-border text-primary focus:ring-primary"
             />
             <div className="flex-1 space-y-2">
               <div className="text-sm font-medium">Other reason</div>
@@ -218,7 +218,7 @@ export function SkipOptions({
                 value={customReason}
                 onChange={(e) => setCustomReason(e.target.value)}
                 placeholder={customReasonPlaceholder}
-                className="w-full px-3 py-2 text-sm border border-border rounded bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full rounded border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                 rows={2}
                 disabled={selectedReason !== "custom"}
               />
@@ -320,18 +320,18 @@ export function TimeoutSkip({
   const progressPercentage = ((timeoutSeconds - secondsLeft) / timeoutSeconds) * 100;
 
   return (
-    <div className={cn("space-y-3 p-4 border border-warm-gray bg-light-gray rounded-lg", className)} {...props}>
+    <div className={cn("space-y-3 rounded-lg border border-warm-gray bg-light-gray p-4", className)} {...props}>
       <div className="flex items-center gap-2 text-off-black">
-        <Clock className="w-4 h-4" />
+        <Clock className="size-4" />
         <span className="text-sm">
           {message} <span className="font-mono font-bold">{secondsLeft}</span> second{secondsLeft !== 1 ? 's' : ''}
         </span>
       </div>
       
       {showProgress && (
-        <div className="w-full bg-warm-gray/30 rounded-full h-1">
+        <div className="h-1 w-full rounded-full bg-warm-gray/30">
           <div 
-            className="bg-warm-gray h-1 rounded-full transition-all duration-1000 ease-linear"
+            className="h-1 rounded-full bg-warm-gray transition-all duration-1000 ease-linear"
             style={{ width: `${progressPercentage}%` }}
           />
         </div>
@@ -341,7 +341,7 @@ export function TimeoutSkip({
         <button
           type="button"
           onClick={onCancel}
-          className="text-sm text-warm-gray hover:text-off-black underline"
+          className="text-sm text-warm-gray underline hover:text-off-black"
         >
           Stay on this question
         </button>

@@ -427,9 +427,9 @@ export function QuestionFlow({
 
       default:
         return (
-          <div className="text-center py-8 text-warm-gray">
+          <div className="py-8 text-center text-warm-gray">
             <div>Unsupported question type: {question.type}</div>
-            <div className="text-sm mt-2">Please implement the renderer for this question type</div>
+            <div className="mt-2 text-sm">Please implement the renderer for this question type</div>
           </div>
         );
     }
@@ -437,7 +437,7 @@ export function QuestionFlow({
 
   if (state.isComplete) {
     return (
-      <div className={cn("w-full max-w-4xl mx-auto text-center py-12", className)}>
+      <div className={cn("mx-auto w-full max-w-4xl py-12 text-center", className)}>
         <div className="space-y-4">
           <div className="text-2xl font-semibold text-off-black dark:text-off-white">
             Questionnaire Complete!
@@ -458,7 +458,7 @@ export function QuestionFlow({
   const currentQuestion = state.visibleQuestions[state.currentIndex];
   if (!currentQuestion) {
     return (
-      <div className={cn("w-full max-w-4xl mx-auto text-center py-12", className)}>
+      <div className={cn("mx-auto w-full max-w-4xl py-12 text-center", className)}>
         <div className="text-warm-gray">No questions available</div>
       </div>
     );

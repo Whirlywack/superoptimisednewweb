@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { api } from "@/lib/trpc/client";
+import { api } from "@/lib/trpc/react";
 
 /**
  * Admin New Question Form

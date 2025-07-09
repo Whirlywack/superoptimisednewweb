@@ -11,7 +11,7 @@ import { XPToastProvider } from './Homepage/XPToastProvider';
 export function JourneyPage() {
   return (
     <XPToastProvider>
-      <div className="min-h-screen flex flex-col bg-off-white">
+      <div className="flex min-h-screen flex-col bg-off-white">
         {/* Navigation */}
         <HomepageNavigation />
 

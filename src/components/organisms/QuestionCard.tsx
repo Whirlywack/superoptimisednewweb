@@ -136,14 +136,14 @@ export function QuestionCard({
 
   return (
     <div className={cn(
-      "w-full max-w-4xl mx-auto transition-all duration-500 ease-out",
-      isVisible ? "opacity-100 transform translate-y-0" : "opacity-0 transform translate-y-4",
+      "mx-auto w-full max-w-4xl transition-all duration-500 ease-out",
+      isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0",
       className
     )}>
       {/* Progress Header */}
       {showProgress && (
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
+          <div className="mb-4 flex items-center justify-between">
             {showCounter && (
               <span className="text-sm font-medium text-warm-gray">
                 Question {currentIndex + 1} of {totalQuestions}
@@ -154,14 +154,14 @@ export function QuestionCard({
               onClick={handleFlag}
               disabled={disabled}
               className={cn(
-                "p-2 rounded-lg transition-colors",
+                "rounded-lg p-2 transition-colors",
                 "hover:bg-light-gray focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
-                isFlagged ? "text-primary bg-primary/10" : "text-warm-gray",
-                disabled && "opacity-50 cursor-not-allowed"
+                isFlagged ? "bg-primary/10 text-primary" : "text-warm-gray",
+                disabled && "cursor-not-allowed opacity-50"
               )}
               aria-label={isFlagged ? "Remove flag" : "Flag for review"}
             >
-              <Flag className="w-4 h-4" />
+              <Flag className="size-4" />
             </button>
           </div>
           <ProgressIndicator 
@@ -174,28 +174,28 @@ export function QuestionCard({
 
       {/* Question Card */}
       <div className={cn(
-        "bg-off-white dark:bg-off-black border-2 rounded-lg shadow-sm transition-colors duration-200",
-        "p-6 sm:p-8 space-y-6",
+        "rounded-lg border-2 bg-off-white shadow-sm transition-colors duration-200 dark:bg-off-black",
+        "space-y-6 p-6 sm:p-8",
         "border-light-gray dark:border-warm-gray/30",
-        "hover:border-primary/50 focus-within:border-primary",
+        "focus-within:border-primary hover:border-primary/50",
         hasValue && "border-primary/30",
         isValidating && "animate-pulse border-primary"
       )}>
         {/* Question Header */}
         <div className="space-y-3">
           <div className="flex items-start justify-between">
-            <h2 className="text-xl sm:text-2xl font-semibold text-off-black dark:text-off-white leading-tight pr-4">
+            <h2 className="pr-4 text-xl font-semibold leading-tight text-off-black dark:text-off-white sm:text-2xl">
               {question.question}
             </h2>
             {question.required && (
-              <span className="flex-shrink-0 text-warm-gray text-lg" aria-label="Required">
+              <span className="shrink-0 text-lg text-warm-gray" aria-label="Required">
                 *
               </span>
             )}
           </div>
           
           {question.description && (
-            <p className="text-warm-gray text-base leading-relaxed">
+            <p className="text-base leading-relaxed text-warm-gray">
               {question.description}
             </p>
           )}
@@ -209,7 +209,7 @@ export function QuestionCard({
             </div>
           ) : (
             <div className="flex items-center justify-center py-12 text-warm-gray">
-              <div className="text-center space-y-2">
+              <div className="space-y-2 text-center">
                 <div className="text-lg">Question content placeholder</div>
                 <div className="text-sm">
                   Pass a question component as children or implement question rendering
@@ -225,7 +225,7 @@ export function QuestionCard({
         )}
 
         {/* Navigation */}
-        <div className="flex items-center justify-between pt-6 border-t border-light-gray dark:border-warm-gray/30">
+        <div className="flex items-center justify-between border-t border-light-gray pt-6 dark:border-warm-gray/30">
           {/* Previous Button */}
           <div className="flex items-center space-x-3">
             {showPrevious && !isFirstQuestion ? (
@@ -235,7 +235,7 @@ export function QuestionCard({
                 disabled={disabled || isValidating}
                 className="flex items-center space-x-2"
               >
-                <ChevronLeft className="w-4 h-4" />
+                <ChevronLeft className="size-4" />
                 <span>{previousButtonText}</span>
               </Button>
             ) : (
@@ -252,7 +252,7 @@ export function QuestionCard({
                 disabled={disabled || isValidating}
                 className="flex items-center space-x-2 text-warm-gray hover:text-off-black dark:hover:text-off-white"
               >
-                <SkipForward className="w-4 h-4" />
+                <SkipForward className="size-4" />
                 <span>Skip</span>
               </Button>
             )}
@@ -271,7 +271,7 @@ export function QuestionCard({
                 className="flex items-center space-x-2"
               >
                 <span>{isLastQuestion ? "Complete" : nextButtonText}</span>
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="size-4" />
               </Button>
             ) : (
               <div /> // Spacer
@@ -282,7 +282,7 @@ export function QuestionCard({
 
       {/* Question Type Indicator */}
       <div className="mt-4 flex items-center justify-center">
-        <div className="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full font-medium">
+        <div className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
           {question.type.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
         </div>
       </div>

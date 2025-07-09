@@ -182,28 +182,28 @@ export function ThankYouScreen({
   };
   
   return (
-    <div className={cn("min-h-screen flex items-center justify-center p-4", styles.container, className)}>
-      <div className="w-full max-w-4xl mx-auto space-y-8">
+    <div className={cn("flex min-h-screen items-center justify-center p-4", styles.container, className)}>
+      <div className="mx-auto w-full max-w-4xl space-y-8">
         {/* Main Success Message */}
-        <div className="text-center space-y-6">
-          <div className={cn("inline-flex items-center justify-center w-20 h-20 rounded-full bg-white dark:bg-gray-800 shadow-lg", styles.accent)}>
+        <div className="space-y-6 text-center">
+          <div className={cn("inline-flex size-20 items-center justify-center rounded-full bg-white shadow-lg dark:bg-gray-800", styles.accent)}>
             <Icon size={40} className={styles.icon}>
               <CheckCircle />
             </Icon>
           </div>
           
           <div className="space-y-3">
-            <H1 className="text-3xl md:text-4xl lg:text-5xl text-off-black dark:text-off-white">
+            <H1 className="text-3xl text-off-black dark:text-off-white md:text-4xl lg:text-5xl">
               {title}
             </H1>
             
             {subtitle && (
-              <H2 className="text-xl md:text-2xl text-warm-gray">
+              <H2 className="text-xl text-warm-gray md:text-2xl">
                 {subtitle}
               </H2>
             )}
             
-            <Paragraph className="text-lg max-w-2xl mx-auto text-warm-gray">
+            <Paragraph className="mx-auto max-w-2xl text-lg text-warm-gray">
               {description}
             </Paragraph>
           </div>
@@ -211,8 +211,8 @@ export function ThankYouScreen({
         
         {/* Progress and Stats */}
         {showProgress && (
-          <Card className="max-w-2xl mx-auto">
-            <CardContent className="p-6 space-y-4">
+          <Card className="mx-auto max-w-2xl">
+            <CardContent className="space-y-4 p-6">
               <div className="flex items-center justify-between text-sm text-warm-gray">
                 <span>Completion</span>
                 <span>{completionProgress}%</span>
@@ -224,7 +224,7 @@ export function ThankYouScreen({
                 className="h-2"
               />
               
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-light-gray dark:border-gray-700">
+              <div className="grid grid-cols-2 gap-4 border-t border-light-gray pt-4 dark:border-gray-700 md:grid-cols-4">
                 {questionsAnswered && totalQuestions && (
                   <div className="text-center">
                     <div className="text-2xl font-semibold text-off-black dark:text-off-white">
@@ -268,19 +268,19 @@ export function ThankYouScreen({
         {/* Next Steps */}
         {nextSteps.length > 0 && (
           <div className="space-y-6">
-            <H2 className="text-2xl font-semibold text-center text-off-black dark:text-off-white">
+            <H2 className="text-center text-2xl font-semibold text-off-black dark:text-off-white">
               What's next?
             </H2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {nextSteps
                 .sort((a, b) => (a.priority || 0) - (b.priority || 0))
                 .map((step) => (
-                  <Card key={step.id} className="hover:shadow-lg transition-shadow">
-                    <CardContent className="p-6 space-y-4">
+                  <Card key={step.id} className="transition-shadow hover:shadow-lg">
+                    <CardContent className="space-y-4 p-6">
                       <div className="flex items-start gap-4">
                         {step.icon && (
-                          <div className={cn("flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center", step.completed && "bg-primary/20 dark:bg-primary/20")}>
+                          <div className={cn("flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10", step.completed && "bg-primary/20 dark:bg-primary/20")}>
                             <Icon size={20} className={step.completed ? "text-primary" : "text-primary"}>
                               {step.completed ? <CheckCircle /> : step.icon}
                             </Icon>
@@ -325,9 +325,9 @@ export function ThankYouScreen({
         
         {/* Social Sharing */}
         {showSharing && socialSharing.length > 0 && (
-          <Card className="max-w-2xl mx-auto">
-            <CardContent className="p-6 space-y-4">
-              <div className="text-center space-y-2">
+          <Card className="mx-auto max-w-2xl">
+            <CardContent className="space-y-4 p-6">
+              <div className="space-y-2 text-center">
                 <H2 className="text-lg font-semibold text-off-black dark:text-off-white">
                   Share your experience
                 </H2>
@@ -362,10 +362,10 @@ export function ThankYouScreen({
         
         {/* Newsletter Signup */}
         {newsletterSignup && (
-          <Card className="max-w-2xl mx-auto">
-            <CardContent className="p-6 space-y-4">
-              <div className="text-center space-y-2">
-                <H2 className="text-lg font-semibold text-off-black dark:text-off-white flex items-center justify-center gap-2">
+          <Card className="mx-auto max-w-2xl">
+            <CardContent className="space-y-4 p-6">
+              <div className="space-y-2 text-center">
+                <H2 className="flex items-center justify-center gap-2 text-lg font-semibold text-off-black dark:text-off-white">
                   <Icon size={20}>
                     <Zap />
                   </Icon>
@@ -382,7 +382,7 @@ export function ThankYouScreen({
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={newsletterSignup.placeholder || "Enter your email"}
-                  className="flex-1 px-4 py-2 border border-light-gray dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-off-black dark:text-off-white placeholder-warm-gray focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="flex-1 rounded-lg border border-light-gray bg-white px-4 py-2 text-off-black placeholder:text-warm-gray focus:outline-none focus:ring-2 focus:ring-primary dark:border-gray-700 dark:bg-gray-800 dark:text-off-white"
                   required
                 />
                 <Button
@@ -414,7 +414,7 @@ export function ThankYouScreen({
         
         {/* Footer Content */}
         {footerContent && (
-          <div className="text-center text-sm text-warm-gray max-w-2xl mx-auto">
+          <div className="mx-auto max-w-2xl text-center text-sm text-warm-gray">
             {footerContent}
           </div>
         )}

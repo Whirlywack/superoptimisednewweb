@@ -292,7 +292,7 @@ export function ConditionalSection({
   return (
     <div 
       className={cn(
-        "transition-all duration-300 overflow-hidden",
+        "overflow-hidden transition-all duration-300",
         {
           'max-h-0 opacity-0': !isVisible,
           'max-h-screen opacity-100': isVisible,

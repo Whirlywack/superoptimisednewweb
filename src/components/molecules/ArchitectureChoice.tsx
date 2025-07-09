@@ -106,7 +106,7 @@ export function ArchitectureChoice({
     if (architecture.svg) {
       return (
         <div 
-          className="w-full h-48 flex items-center justify-center bg-light-gray/30 rounded-lg"
+          className="flex h-48 w-full items-center justify-center rounded-lg bg-light-gray/30"
           dangerouslySetInnerHTML={{ __html: architecture.svg }}
         />
       );
@@ -114,11 +114,11 @@ export function ArchitectureChoice({
     
     if (architecture.imageUrl) {
       return (
-        <div className="w-full h-48 bg-light-gray/30 rounded-lg overflow-hidden">
+        <div className="h-48 w-full overflow-hidden rounded-lg bg-light-gray/30">
           <img
             src={architecture.imageUrl}
             alt={`${architecture.title} architecture diagram`}
-            className="w-full h-full object-cover"
+            className="size-full object-cover"
           />
         </div>
       );
@@ -126,20 +126,20 @@ export function ArchitectureChoice({
 
     // Fallback: Simple component diagram
     return (
-      <div className="w-full h-48 bg-light-gray/30 rounded-lg p-4 flex flex-col items-center justify-center">
-        <div className="text-center space-y-3">
+      <div className="flex h-48 w-full flex-col items-center justify-center rounded-lg bg-light-gray/30 p-4">
+        <div className="space-y-3 text-center">
           <h4 className="text-sm font-medium text-warm-gray">Components:</h4>
           <div className="flex flex-wrap justify-center gap-2">
             {architecture.components.slice(0, 4).map((component, index) => (
               <div
                 key={index}
-                className="px-3 py-1 bg-primary/10 text-primary text-xs rounded-full"
+                className="rounded-full bg-primary/10 px-3 py-1 text-xs text-primary"
               >
                 {component}
               </div>
             ))}
             {architecture.components.length > 4 && (
-              <div className="px-3 py-1 bg-warm-gray/20 text-warm-gray text-xs rounded-full">
+              <div className="rounded-full bg-warm-gray/20 px-3 py-1 text-xs text-warm-gray">
                 +{architecture.components.length - 4} more
               </div>
             )}
@@ -157,7 +157,7 @@ export function ArchitectureChoice({
           {question}
         </QuestionLabel>
         {description && (
-          <p className="text-warm-gray text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-warm-gray">
             {description}
           </p>
         )}
@@ -172,12 +172,12 @@ export function ArchitectureChoice({
             <div
               key={architecture.id}
               className={cn(
-                "relative rounded-lg border-2 transition-all duration-200 cursor-pointer",
+                "relative cursor-pointer rounded-lg border-2 transition-all duration-200",
                 "bg-off-white dark:bg-off-black",
                 isSelected
                   ? "border-primary bg-primary/5"
-                  : "border-light-gray dark:border-warm-gray/30 hover:border-primary/50",
-                disabled && "opacity-50 cursor-not-allowed"
+                  : "border-light-gray hover:border-primary/50 dark:border-warm-gray/30",
+                disabled && "cursor-not-allowed opacity-50"
               )}
               onClick={() => !disabled && handleSelect(architecture.id)}
               role="radio"
@@ -194,29 +194,29 @@ export function ArchitectureChoice({
             >
               {/* Selection Indicator */}
               <div className={cn(
-                "absolute top-4 right-4 w-4 h-4 rounded-full border-2 transition-colors z-10",
+                "absolute right-4 top-4 z-10 size-4 rounded-full border-2 transition-colors",
                 isSelected
                   ? "border-primary bg-primary"
                   : "border-light-gray dark:border-warm-gray/30"
               )}>
                 {isSelected && (
-                  <div className="w-2 h-2 bg-off-white rounded-full m-0.5" />
+                  <div className="m-0.5 size-2 rounded-full bg-off-white" />
                 )}
               </div>
 
-              <div className="p-6 space-y-4">
+              <div className="space-y-4 p-6">
                 {/* Architecture Header */}
                 <div className="space-y-2">
                   <h3
                     id={`architecture-${architecture.id}-title`}
-                    className="text-lg font-semibold text-off-black dark:text-off-white pr-8"
+                    className="pr-8 text-lg font-semibold text-off-black dark:text-off-white"
                   >
                     {architecture.title}
                   </h3>
                   {architecture.description && (
                     <p
                       id={`architecture-${architecture.id}-description`}
-                      className="text-warm-gray text-sm"
+                      className="text-sm text-warm-gray"
                     >
                       {architecture.description}
                     </p>
@@ -231,7 +231,7 @@ export function ArchitectureChoice({
                   <div className="flex flex-wrap gap-2">
                     {architecture.complexity && (
                       <span className={cn(
-                        "px-2 py-1 rounded-full text-xs font-medium",
+                        "rounded-full px-2 py-1 text-xs font-medium",
                         getMetadataColor(architecture.complexity)
                       )}>
                         Complexity: {architecture.complexity}
@@ -239,7 +239,7 @@ export function ArchitectureChoice({
                     )}
                     {architecture.scalability && (
                       <span className={cn(
-                        "px-2 py-1 rounded-full text-xs font-medium",
+                        "rounded-full px-2 py-1 text-xs font-medium",
                         getMetadataColor(architecture.scalability)
                       )}>
                         Scalability: {architecture.scalability}
@@ -247,7 +247,7 @@ export function ArchitectureChoice({
                     )}
                     {architecture.cost && (
                       <span className={cn(
-                        "px-2 py-1 rounded-full text-xs font-medium",
+                        "rounded-full px-2 py-1 text-xs font-medium",
                         getMetadataColor(architecture.cost)
                       )}>
                         Cost: {architecture.cost}
@@ -266,7 +266,7 @@ export function ArchitectureChoice({
                       {architecture.components.map((component, index) => (
                         <span
                           key={index}
-                          className="px-2 py-1 bg-warm-gray/10 text-warm-gray text-xs rounded"
+                          className="rounded bg-warm-gray/10 px-2 py-1 text-xs text-warm-gray"
                         >
                           {component}
                         </span>
@@ -277,7 +277,7 @@ export function ArchitectureChoice({
 
                 {/* Pros and Cons */}
                 {showProsAndCons && (architecture.pros || architecture.cons) && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                  <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
                     {architecture.pros && architecture.pros.length > 0 && (
                       <div className="space-y-2">
                         <h4 className="font-medium text-primary">
@@ -286,7 +286,7 @@ export function ArchitectureChoice({
                         <ul className="space-y-1 text-warm-gray">
                           {architecture.pros.map((pro, index) => (
                             <li key={index} className="flex items-start gap-2">
-                              <span className="text-primary mt-1 text-xs">✓</span>
+                              <span className="mt-1 text-xs text-primary">✓</span>
                               <span>{pro}</span>
                             </li>
                           ))}
@@ -301,7 +301,7 @@ export function ArchitectureChoice({
                         <ul className="space-y-1 text-warm-gray">
                           {architecture.cons.map((con, index) => (
                             <li key={index} className="flex items-start gap-2">
-                              <span className="text-warm-gray mt-1 text-xs">✗</span>
+                              <span className="mt-1 text-xs text-warm-gray">✗</span>
                               <span>{con}</span>
                             </li>
                           ))}

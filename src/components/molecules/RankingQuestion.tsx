@@ -140,14 +140,14 @@ export function RankingQuestion({
           {question}
         </QuestionLabel>
         {description && (
-          <p className="text-warm-gray text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-warm-gray">
             {description}
           </p>
         )}
       </div>
 
       {/* Instructions */}
-      <div className="text-sm text-warm-gray bg-light-gray p-3 rounded-lg">
+      <div className="rounded-lg bg-light-gray p-3 text-sm text-warm-gray">
         {variant === 'drag' ? (
           <p>Drag and drop items to rank them from most to least important.</p>
         ) : (
@@ -158,7 +158,7 @@ export function RankingQuestion({
 
       {/* Item limit warning */}
       {items.length > 6 && (
-        <div className="text-xs text-warm-gray bg-light-gray p-3 rounded-lg">
+        <div className="rounded-lg bg-light-gray p-3 text-xs text-warm-gray">
           Note: Only the first 6 items are shown for optimal mobile experience.
         </div>
       )}
@@ -181,39 +181,39 @@ export function RankingQuestion({
               onDragEnd={handleDragEnd}
               onDrop={handleDrop}
               className={cn(
-                "flex items-center gap-4 p-4 bg-off-white border-2 rounded-lg transition-all",
+                "flex items-center gap-4 rounded-lg border-2 bg-off-white p-4 transition-all",
                 "hover:border-primary/50",
-                isBeingDragged && "opacity-50 scale-95",
+                isBeingDragged && "scale-95 opacity-50",
                 disabled && "opacity-50",
                 variant === 'drag' && !disabled && "cursor-move"
               )}
             >
               {/* Position Number */}
-              <div className="flex-shrink-0 w-8 h-8 bg-primary text-off-white rounded-full flex items-center justify-center text-sm font-medium">
+              <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-medium text-off-white">
                 {position}
               </div>
 
               {/* Drag Handle (for drag variant) */}
               {variant === 'drag' && !disabled && (
-                <div className="flex-shrink-0 text-warm-gray cursor-grab active:cursor-grabbing">
-                  <GripVertical className="w-5 h-5" />
+                <div className="shrink-0 cursor-grab text-warm-gray active:cursor-grabbing">
+                  <GripVertical className="size-5" />
                 </div>
               )}
 
               {/* Item Content */}
-              <div className="flex-1 min-w-0">
+              <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-3">
                   {item.icon && (
-                    <div className="flex-shrink-0 text-primary">
+                    <div className="shrink-0 text-primary">
                       {item.icon}
                     </div>
                   )}
                   <div className="min-w-0">
-                    <h4 className="font-medium text-off-black truncate">
+                    <h4 className="truncate font-medium text-off-black">
                       {item.label}
                     </h4>
                     {item.description && (
-                      <p className="text-sm text-warm-gray mt-1">
+                      <p className="mt-1 text-sm text-warm-gray">
                         {item.description}
                       </p>
                     )}
@@ -229,26 +229,26 @@ export function RankingQuestion({
                     onClick={() => moveUp(index)}
                     disabled={index === 0}
                     className={cn(
-                      "p-1 rounded border text-warm-gray hover:text-off-black hover:border-primary/50",
-                      "disabled:opacity-30 disabled:cursor-not-allowed",
+                      "rounded border p-1 text-warm-gray hover:border-primary/50 hover:text-off-black",
+                      "disabled:cursor-not-allowed disabled:opacity-30",
                       "transition-colors"
                     )}
                     aria-label={`Move ${item.label} up`}
                   >
-                    <ArrowUp className="w-4 h-4" />
+                    <ArrowUp className="size-4" />
                   </button>
                   <button
                     type="button"
                     onClick={() => moveDown(index)}
                     disabled={index === ranking.length - 1}
                     className={cn(
-                      "p-1 rounded border text-warm-gray hover:text-off-black hover:border-primary/50",
-                      "disabled:opacity-30 disabled:cursor-not-allowed",
+                      "rounded border p-1 text-warm-gray hover:border-primary/50 hover:text-off-black",
+                      "disabled:cursor-not-allowed disabled:opacity-30",
                       "transition-colors"
                     )}
                     aria-label={`Move ${item.label} down`}
                   >
-                    <ArrowDown className="w-4 h-4" />
+                    <ArrowDown className="size-4" />
                   </button>
                 </div>
               )}
@@ -258,8 +258,8 @@ export function RankingQuestion({
       </div>
 
       {/* Current Ranking Summary */}
-      <div className="text-sm text-warm-gray bg-light-gray p-3 rounded-lg">
-        <h4 className="font-medium text-off-black mb-2">Current Ranking:</h4>
+      <div className="rounded-lg bg-light-gray p-3 text-sm text-warm-gray">
+        <h4 className="mb-2 font-medium text-off-black">Current Ranking:</h4>
         <ol className="space-y-1">
           {ranking.map((itemId, index) => {
             const item = getItemByRankingId(itemId);

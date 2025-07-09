@@ -37,15 +37,15 @@ function ConfirmationContent() {
 
   if (confirmationState === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
           <div className="text-center">
-            <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-              <Mail className="w-8 h-8 text-blue-600 animate-pulse" />
+            <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-blue-100">
+              <Mail className="size-8 animate-pulse text-blue-600" />
             </div>
-            <h1 className="text-xl font-bold text-gray-900 mb-2">Confirming Subscription</h1>
-            <p className="text-gray-600 mb-6">Please wait while we confirm your newsletter subscription...</p>
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+            <h1 className="mb-2 text-xl font-bold text-gray-900">Confirming Subscription</h1>
+            <p className="mb-6 text-gray-600">Please wait while we confirm your newsletter subscription...</p>
+            <div className="mx-auto size-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
           </div>
         </div>
       </div>
@@ -54,14 +54,14 @@ function ConfirmationContent() {
 
   if (confirmationState === 'success') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
           <div className="text-center">
-            <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
-              <CheckCircle className="w-8 h-8 text-green-600" />
+            <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-green-100">
+              <CheckCircle className="size-8 text-green-600" />
             </div>
-            <h1 className="text-xl font-bold text-green-800 mb-2">Subscription Confirmed!</h1>
-            <p className="text-gray-600 mb-6">
+            <h1 className="mb-2 text-xl font-bold text-green-800">Subscription Confirmed!</h1>
+            <p className="mb-6 text-gray-600">
               Thank you for subscribing to our newsletter. You&apos;ll receive updates at{' '}
               <strong>{email}</strong>
             </p>
@@ -77,12 +77,12 @@ function ConfirmationContent() {
               </ul>
             </div>
             <div className="flex flex-col space-y-2">
-              <Link href="/" className="w-full bg-blue-600 text-white rounded-lg px-4 py-2 flex items-center justify-center hover:bg-blue-700 transition-colors">
-                <Home className="w-4 h-4 mr-2" />
+              <Link href="/" className="flex w-full items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700">
+                <Home className="mr-2 size-4" />
                 Back to Homepage
               </Link>
-              <Link href="/research" className="w-full bg-gray-200 text-gray-800 rounded-lg px-4 py-2 flex items-center justify-center hover:bg-gray-300 transition-colors">
-                <ArrowRight className="w-4 h-4 mr-2" />
+              <Link href="/research" className="flex w-full items-center justify-center rounded-lg bg-gray-200 px-4 py-2 text-gray-800 transition-colors hover:bg-gray-300">
+                <ArrowRight className="mr-2 size-4" />
                 Start Voting
               </Link>
             </div>
@@ -94,18 +94,18 @@ function ConfirmationContent() {
 
   if (confirmationState === 'invalid') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
           <div className="text-center">
-            <div className="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
-              <XCircle className="w-8 h-8 text-red-600" />
+            <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-red-100">
+              <XCircle className="size-8 text-red-600" />
             </div>
-            <h1 className="text-xl font-bold text-red-800 mb-2">Invalid Link</h1>
-            <p className="text-gray-600 mb-6">
+            <h1 className="mb-2 text-xl font-bold text-red-800">Invalid Link</h1>
+            <p className="mb-6 text-gray-600">
               The confirmation link is missing or invalid. Please check your email for the correct link.
             </p>
-            <Link href="/" className="w-full bg-blue-600 text-white rounded-lg px-4 py-2 flex items-center justify-center hover:bg-blue-700 transition-colors">
-              <Home className="w-4 h-4 mr-2" />
+            <Link href="/" className="flex w-full items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700">
+              <Home className="mr-2 size-4" />
               Back to Homepage
             </Link>
           </div>
@@ -115,14 +115,14 @@ function ConfirmationContent() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50">
+      <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
         <div className="text-center">
-          <div className="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
-            <XCircle className="w-8 h-8 text-red-600" />
+          <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-red-100">
+            <XCircle className="size-8 text-red-600" />
           </div>
-          <h1 className="text-xl font-bold text-red-800 mb-2">Confirmation Failed</h1>
-          <p className="text-gray-600 mb-6">
+          <h1 className="mb-2 text-xl font-bold text-red-800">Confirmation Failed</h1>
+          <p className="mb-6 text-gray-600">
             We couldn&apos;t confirm your subscription. {errorMessage}
           </p>
         </div>
@@ -136,12 +136,12 @@ function ConfirmationContent() {
             </ul>
           </div>
           <div className="flex flex-col space-y-2">
-            <Link href="/" className="w-full bg-blue-600 text-white rounded-lg px-4 py-2 flex items-center justify-center hover:bg-blue-700 transition-colors">
-              <Home className="w-4 h-4 mr-2" />
+            <Link href="/" className="flex w-full items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700">
+              <Home className="mr-2 size-4" />
               Back to Homepage
             </Link>
-            <Link href="/" className="w-full bg-gray-200 text-gray-800 rounded-lg px-4 py-2 flex items-center justify-center hover:bg-gray-300 transition-colors">
-              <Mail className="w-4 h-4 mr-2" />
+            <Link href="/" className="flex w-full items-center justify-center rounded-lg bg-gray-200 px-4 py-2 text-gray-800 transition-colors hover:bg-gray-300">
+              <Mail className="mr-2 size-4" />
               Try Again
             </Link>
           </div>
@@ -154,8 +154,8 @@ function ConfirmationContent() {
 export default function NewsletterConfirmPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <div className="size-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
       </div>
     }>
       <ConfirmationContent />

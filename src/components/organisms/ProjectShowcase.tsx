@@ -247,7 +247,7 @@ export function ProjectShowcase({
     return (
       <div
         className={cn(
-          "grid grid-cols-1 lg:grid-cols-2 gap-8 items-center",
+          "grid grid-cols-1 items-center gap-8 lg:grid-cols-2",
           sizeClasses[size],
           className
         )}
@@ -281,7 +281,7 @@ export function ProjectShowcase({
             </div>
           </div>
 
-          <p className="text-lg text-warm-gray leading-relaxed">
+          <p className="text-lg leading-relaxed text-warm-gray">
             {longDescription || description}
           </p>
 
@@ -294,13 +294,13 @@ export function ProjectShowcase({
         {/* Image */}
         {image && (
           <div className={cn(
-            "aspect-video rounded-lg overflow-hidden",
+            "aspect-video overflow-hidden rounded-lg",
             "bg-light-gray dark:bg-warm-gray/20"
           )}>
             <img
               src={image}
               alt={imageAlt || `${name} screenshot`}
-              className="w-full h-full object-cover"
+              className="size-full object-cover"
             />
           </div>
         )}
@@ -323,11 +323,11 @@ export function ProjectShowcase({
         {...props}
       >
         {image && (
-          <div className="aspect-video rounded-lg overflow-hidden -m-6 mb-0">
+          <div className="-m-6 mb-0 aspect-video overflow-hidden rounded-lg">
             <img
               src={image}
               alt={imageAlt || `${name} screenshot`}
-              className="w-full h-full object-cover"
+              className="size-full object-cover"
             />
           </div>
         )}
@@ -349,11 +349,11 @@ export function ProjectShowcase({
               </div>
             </div>
             {featured && (
-              <LucideIcon icon={Star} size="md" className="text-primary flex-shrink-0" />
+              <LucideIcon icon={Star} size="md" className="shrink-0 text-primary" />
             )}
           </div>
 
-          <p className="text-warm-gray leading-relaxed">
+          <p className="leading-relaxed text-warm-gray">
             {longDescription || description}
           </p>
 
@@ -387,7 +387,7 @@ export function ProjectShowcase({
               {getStatusLabel()}
             </span>
           </div>
-          <p className="text-sm text-warm-gray line-clamp-1">{description}</p>
+          <p className="line-clamp-1 text-sm text-warm-gray">{description}</p>
           {renderTechStack()}
         </div>
         {links.length > 0 && (
@@ -417,7 +417,7 @@ export function ProjectShowcase({
       {...props}
     >
       <div className="flex items-start justify-between gap-4">
-        <div className="space-y-2 flex-1">
+        <div className="flex-1 space-y-2">
           <h3 className={cn(
             titleSizes[size],
             "font-semibold text-off-black dark:text-off-white"
@@ -429,11 +429,11 @@ export function ProjectShowcase({
           </span>
         </div>
         {featured && (
-          <LucideIcon icon={Star} size="md" className="text-primary flex-shrink-0" />
+          <LucideIcon icon={Star} size="md" className="shrink-0 text-primary" />
         )}
       </div>
 
-      <p className="text-warm-gray leading-relaxed">
+      <p className="leading-relaxed text-warm-gray">
         {description}
       </p>
 

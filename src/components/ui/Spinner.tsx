@@ -98,7 +98,7 @@ export function Loader({
       >
         <div
           className={cn(
-            "rounded-full animate-bounce",
+            "animate-bounce rounded-full",
             sizeConfig.item,
             colorClass,
             "[animation-delay:-0.3s]"
@@ -106,7 +106,7 @@ export function Loader({
         />
         <div
           className={cn(
-            "rounded-full animate-bounce",
+            "animate-bounce rounded-full",
             sizeConfig.item,
             colorClass,
             "[animation-delay:-0.15s]"
@@ -114,7 +114,7 @@ export function Loader({
         />
         <div
           className={cn(
-            "rounded-full animate-bounce",
+            "animate-bounce rounded-full",
             sizeConfig.item,
             colorClass
           )}
@@ -195,7 +195,7 @@ export function Loader({
       >
         <div
           className={cn(
-            "rounded-full animate-ping",
+            "animate-ping rounded-full",
             sizeConfig.item,
             colorClass.replace("bg-", "bg-"),
             "opacity-75"

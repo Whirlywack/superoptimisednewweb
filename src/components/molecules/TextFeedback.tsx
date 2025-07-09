@@ -102,7 +102,7 @@ export function TextFeedback({
           {question}
         </QuestionLabel>
         {description && (
-          <p className="text-warm-gray text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-warm-gray">
             {description}
           </p>
         )}
@@ -123,7 +123,7 @@ export function TextFeedback({
             maxLength={maxLength}
             className={cn(
               // Base styles
-              "w-full rounded-lg resize-none",
+              "w-full resize-none rounded-lg",
               "text-off-black dark:text-off-white",
               "placeholder:text-warm-gray",
               "transition-all duration-200",
@@ -141,7 +141,7 @@ export function TextFeedback({
                 "focus:border-warm-gray focus:ring-warm-gray/20",
               ],
               // Disabled state
-              "disabled:opacity-50 disabled:cursor-not-allowed",
+              "disabled:cursor-not-allowed disabled:opacity-50",
               // Touch target optimization
               "min-h-[44px]"
             )}
@@ -156,12 +156,12 @@ export function TextFeedback({
           
           {/* Focus ring enhancement */}
           {isFocused && !disabled && (
-            <div className="absolute inset-0 rounded-lg ring-2 ring-primary/20 pointer-events-none" />
+            <div className="pointer-events-none absolute inset-0 rounded-lg ring-2 ring-primary/20" />
           )}
         </div>
 
         {/* Character count and helper text */}
-        <div className="flex justify-between items-start gap-4">
+        <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
             {helperText && !error && (
               <p

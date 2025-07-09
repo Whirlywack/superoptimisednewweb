@@ -11,7 +11,7 @@ import { PostNavigation } from './PostPage/PostNavigation';
 export function PostPage() {
   return (
     <XPToastProvider>
-      <div className="min-h-screen flex flex-col bg-off-white">
+      <div className="flex min-h-screen flex-col bg-off-white">
         <HomepageNavigation />
         <main className="flex-1">
           <PostHeader />

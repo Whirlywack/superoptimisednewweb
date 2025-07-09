@@ -1,7 +1,8 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { PriorityMatrix, MatrixItem, MatrixSelection } from './PriorityMatrix';
+import type { MatrixItem, MatrixSelection } from './PriorityMatrix';
+import { PriorityMatrix } from './PriorityMatrix';
 
 // Mock the utility functions
 jest.mock('@/lib/utils', () => ({

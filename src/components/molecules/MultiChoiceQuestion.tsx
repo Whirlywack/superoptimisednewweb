@@ -88,7 +88,7 @@ export function MultiChoiceQuestion({
           {question}
         </QuestionLabel>
         {description && (
-          <p className="text-warm-gray text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-warm-gray">
             {description}
           </p>
         )}
@@ -106,7 +106,7 @@ export function MultiChoiceQuestion({
           {selectedOptions.length} of {maxSelections} selected
         </span>
         {_hasMinimumSelections && (
-          <span className="text-primary font-medium">
+          <span className="font-medium text-primary">
             ✓ Minimum requirement met
           </span>
         )}
@@ -125,12 +125,12 @@ export function MultiChoiceQuestion({
               onClick={() => handleOptionToggle(option.id)}
               disabled={!canToggle}
               className={cn(
-                "group relative w-full p-4 text-left border-2 rounded-lg transition-all duration-200",
+                "group relative w-full rounded-lg border-2 p-4 text-left transition-all duration-200",
                 "hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/20",
                 isSelected
                   ? "border-primary bg-primary/5"
                   : "border-light-gray bg-off-white hover:bg-light-gray/50",
-                !canToggle && "opacity-50 cursor-not-allowed",
+                !canToggle && "cursor-not-allowed opacity-50",
                 "sm:max-w-none"
               )}
               aria-pressed={isSelected}
@@ -140,22 +140,22 @@ export function MultiChoiceQuestion({
               <div className="flex items-start gap-3">
                 <div
                   className={cn(
-                    "flex-shrink-0 w-6 h-6 border-2 rounded transition-colors mt-0.5",
+                    "mt-0.5 size-6 shrink-0 rounded border-2 transition-colors",
                     isSelected
                       ? "border-primary bg-primary"
                       : "border-warm-gray group-hover:border-primary/50"
                   )}
                 >
                   {isSelected && (
-                    <Check className="w-4 h-4 text-off-white m-0.5" />
+                    <Check className="m-0.5 size-4 text-off-white" />
                   )}
                 </div>
 
                 {/* Option Content */}
-                <div className="flex-1 min-w-0">
+                <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-3">
                     {option.icon && (
-                      <div className="flex-shrink-0 text-primary">
+                      <div className="shrink-0 text-primary">
                         {option.icon}
                       </div>
                     )}
@@ -164,7 +164,7 @@ export function MultiChoiceQuestion({
                         {option.text}
                       </h4>
                       {option.description && (
-                        <p className="text-sm text-warm-gray mt-1">
+                        <p className="mt-1 text-sm text-warm-gray">
                           {option.description}
                         </p>
                       )}
@@ -179,22 +179,22 @@ export function MultiChoiceQuestion({
 
       {/* Selection Summary */}
       {selectedOptions.length > 0 && (
-        <div className="bg-light-gray p-4 rounded-lg">
-          <h4 className="font-medium text-off-black mb-2">Selected Options:</h4>
+        <div className="rounded-lg bg-light-gray p-4">
+          <h4 className="mb-2 font-medium text-off-black">Selected Options:</h4>
           <div className="flex flex-wrap gap-2">
             {selectedOptions.map((optionId) => {
               const option = options.find(opt => opt.id === optionId);
               return option ? (
                 <span
                   key={optionId}
-                  className="inline-flex items-center gap-1 bg-primary text-off-white px-3 py-1 rounded-full text-sm"
+                  className="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-sm text-off-white"
                 >
                   {option.text}
                   <button
                     type="button"
                     onClick={() => handleOptionToggle(optionId)}
                     disabled={disabled}
-                    className="hover:bg-white/20 rounded-full p-0.5 ml-1"
+                    className="ml-1 rounded-full p-0.5 hover:bg-white/20"
                     aria-label={`Remove ${option.text}`}
                   >
                     ×

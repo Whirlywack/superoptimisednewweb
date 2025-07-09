@@ -96,12 +96,12 @@ export function CommunityVoices({
       <blockquote
         key={quote.id}
         className={cn(
-          "relative p-6 rounded-lg space-y-4",
+          "relative space-y-4 rounded-lg p-6",
           "bg-off-white dark:bg-off-black",
           "border transition-all duration-200",
           isHighlighted
             ? "border-primary/30 bg-gradient-to-br from-primary/5 to-transparent"
-            : "border-light-gray dark:border-warm-gray/30 hover:border-warm-gray dark:hover:border-warm-gray/60",
+            : "border-light-gray hover:border-warm-gray dark:border-warm-gray/30 dark:hover:border-warm-gray/60",
           variant === "masonry" && index % 3 === 1 && "md:mt-8",
           variant === "masonry" && index % 3 === 2 && "lg:mt-16"
         )}
@@ -110,11 +110,11 @@ export function CommunityVoices({
         <LucideIcon
           icon={Quote}
           size="lg"
-          className="absolute top-4 right-4 text-primary/20"
+          className="absolute right-4 top-4 text-primary/20"
         />
 
         {/* Content */}
-        <p className="text-warm-gray leading-relaxed relative z-10 pr-8">
+        <p className="relative z-10 pr-8 leading-relaxed text-warm-gray">
           "{quote.content}"
         </p>
 
@@ -124,7 +124,7 @@ export function CommunityVoices({
           <div className="flex items-center gap-3">
             {/* Avatar */}
             <div className={cn(
-              "w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium",
+              "flex size-10 items-center justify-center rounded-full text-sm font-medium",
               "bg-light-gray dark:bg-warm-gray/20",
               "text-warm-gray"
             )}>
@@ -132,7 +132,7 @@ export function CommunityVoices({
                 <img
                   src={quote.avatarUrl}
                   alt={quote.author}
-                  className="w-full h-full rounded-full object-cover"
+                  className="size-full rounded-full object-cover"
                 />
               ) : (
                 getInitials(quote.author)
@@ -141,12 +141,12 @@ export function CommunityVoices({
 
             {/* Author Info */}
             <div>
-              <cite className="not-italic font-medium text-sm text-off-black dark:text-off-white">
+              <cite className="text-sm font-medium not-italic text-off-black dark:text-off-white">
                 {quote.url ? (
                   <Link
                     href={quote.url}
                     external
-                    className="hover:text-primary transition-colors no-underline"
+                    className="no-underline transition-colors hover:text-primary"
                   >
                     {quote.author}
                   </Link>
@@ -198,7 +198,7 @@ export function CommunityVoices({
       <div className="space-y-8">
         {/* Featured Quote */}
         {highlightedQuotes.length > 0 && (
-          <div className="max-w-3xl mx-auto">
+          <div className="mx-auto max-w-3xl">
             {renderQuoteCard(highlightedQuotes[0], 0)}
           </div>
         )}
@@ -214,10 +214,10 @@ export function CommunityVoices({
   };
 
   const renderCarousel = () => (
-    <div className="overflow-x-auto pb-4 -mx-4 px-4">
+    <div className="-mx-4 overflow-x-auto px-4 pb-4">
       <div className="flex gap-6" style={{ width: "max-content" }}>
         {displayQuotes.map((quote, index) => (
-          <div key={quote.id} className="w-80 flex-shrink-0">
+          <div key={quote.id} className="w-80 shrink-0">
             {renderQuoteCard(quote, index)}
           </div>
         ))}
@@ -232,9 +232,9 @@ export function CommunityVoices({
     >
       {/* Header */}
       {(title || description) && (
-        <div className="text-center space-y-2 max-w-3xl mx-auto">
+        <div className="mx-auto max-w-3xl space-y-2 text-center">
           {title && (
-            <h2 className="text-3xl lg:text-4xl font-bold text-off-black dark:text-off-white">
+            <h2 className="text-3xl font-bold text-off-black dark:text-off-white lg:text-4xl">
               {title}
             </h2>
           )}
@@ -254,10 +254,10 @@ export function CommunityVoices({
 
       {/* View More */}
       {maxQuotes && quotes.length > maxQuotes && (
-        <div className="text-center pt-4">
+        <div className="pt-4 text-center">
           <Link
             href="/community"
-            className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors font-medium"
+            className="inline-flex items-center gap-2 font-medium text-primary transition-colors hover:text-primary/80"
           >
             View all {quotes.length} community voices
             <LucideIcon icon={MessageCircle} size="sm" />

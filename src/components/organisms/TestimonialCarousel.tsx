@@ -141,8 +141,8 @@ export function TestimonialCarousel({
         key={testimonial.id}
         className={cn(
           "space-y-6",
-          variant === "cards" && "bg-off-white dark:bg-off-black border border-light-gray dark:border-warm-gray/30 rounded-lg p-6",
-          variant === "centered" && "text-center max-w-3xl mx-auto"
+          variant === "cards" && "rounded-lg border border-light-gray bg-off-white p-6 dark:border-warm-gray/30 dark:bg-off-black",
+          variant === "centered" && "mx-auto max-w-3xl text-center"
         )}
       >
         {/* Quote Icon */}
@@ -151,7 +151,7 @@ export function TestimonialCarousel({
             "flex",
             variant === "centered" ? "justify-center" : "justify-start"
           )}>
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+            <div className="flex size-8 items-center justify-center rounded-full bg-primary/10">
               <LucideIcon icon={Quote} size="sm" className="text-primary" />
             </div>
           </div>
@@ -159,7 +159,7 @@ export function TestimonialCarousel({
 
         {/* Content */}
         <blockquote className={cn(
-          "text-warm-gray leading-relaxed",
+          "leading-relaxed text-warm-gray",
           size === "sm" ? "text-base" : size === "md" ? "text-lg" : "text-xl",
           variant === "centered" && "text-center"
         )}>
@@ -182,15 +182,15 @@ export function TestimonialCarousel({
           variant === "centered" && "justify-center"
         )}>
           {/* Avatar */}
-          <div className="flex-shrink-0">
+          <div className="shrink-0">
             {testimonial.avatar ? (
               <img
                 src={testimonial.avatar}
                 alt={testimonial.author}
-                className="w-12 h-12 rounded-full object-cover"
+                className="size-12 rounded-full object-cover"
               />
             ) : (
-              <div className="w-12 h-12 rounded-full bg-light-gray dark:bg-warm-gray/20 flex items-center justify-center">
+              <div className="flex size-12 items-center justify-center rounded-full bg-light-gray dark:bg-warm-gray/20">
                 <LucideIcon icon={User} size="sm" className="text-warm-gray" />
               </div>
             )}
@@ -221,12 +221,12 @@ export function TestimonialCarousel({
             <div className="ml-auto">
               {testimonial.sourceUrl ? (
                 <Link href={testimonial.sourceUrl} external className="no-underline">
-                  <div className="w-8 h-8 rounded-full bg-light-gray dark:bg-warm-gray/20 flex items-center justify-center hover:bg-primary/10 transition-colors">
+                  <div className="flex size-8 items-center justify-center rounded-full bg-light-gray transition-colors hover:bg-primary/10 dark:bg-warm-gray/20">
                     <LucideIcon icon={SourceIcon} size="xs" className="text-warm-gray" />
                   </div>
                 </Link>
               ) : (
-                <div className="w-8 h-8 rounded-full bg-light-gray dark:bg-warm-gray/20 flex items-center justify-center">
+                <div className="flex size-8 items-center justify-center rounded-full bg-light-gray dark:bg-warm-gray/20">
                   <LucideIcon icon={SourceIcon} size="xs" className="text-warm-gray" />
                 </div>
               )}
@@ -286,7 +286,7 @@ export function TestimonialCarousel({
       <div className="space-y-8">
         {/* Header */}
         {(title || description) && (
-          <div className="text-center space-y-4">
+          <div className="space-y-4 text-center">
             {title && (
               <h2 className={cn(
                 titleSizes[size],
@@ -297,7 +297,7 @@ export function TestimonialCarousel({
             )}
             {description && (
               <p className={cn(
-                "text-warm-gray leading-relaxed max-w-3xl mx-auto",
+                "mx-auto max-w-3xl leading-relaxed text-warm-gray",
                 size === "lg" ? "text-lg" : "text-base"
               )}>
                 {description}
@@ -324,7 +324,7 @@ export function TestimonialCarousel({
                 <div
                   key={testimonial.id}
                   className={cn(
-                    "flex-shrink-0",
+                    "shrink-0",
                     itemsPerView === 1 && "w-full",
                     itemsPerView === 2 && "w-1/2",
                     itemsPerView === 3 && "w-1/3"
@@ -343,7 +343,7 @@ export function TestimonialCarousel({
               <Button
                 variant="ghost"
                 size="sm"
-                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4"
+                className="absolute left-0 top-1/2 -translate-x-4 -translate-y-1/2"
                 onClick={goToPrevious}
                 disabled={currentIndex === 0}
               >
@@ -374,10 +374,10 @@ export function TestimonialCarousel({
                     key={i}
                     onClick={() => goToSlide(i)}
                     className={cn(
-                      "w-2 h-2 rounded-full transition-all",
+                      "size-2 rounded-full transition-all",
                       i === currentIndex
-                        ? "bg-primary w-6"
-                        : "bg-light-gray dark:bg-warm-gray/30 hover:bg-warm-gray"
+                        ? "w-6 bg-primary"
+                        : "bg-light-gray hover:bg-warm-gray dark:bg-warm-gray/30"
                     )}
                   />
                 ))}

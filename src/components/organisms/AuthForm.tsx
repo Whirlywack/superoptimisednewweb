@@ -147,7 +147,7 @@ export function AuthForm({
     card: cn(
       "bg-off-white dark:bg-off-black",
       "border border-light-gray dark:border-warm-gray/30",
-      "rounded-lg p-6 max-w-md mx-auto"
+      "mx-auto max-w-md rounded-lg p-6"
     ),
     page: "max-w-md mx-auto",
     modal: "max-w-sm mx-auto",
@@ -159,8 +159,8 @@ export function AuthForm({
       {...props}
     >
       {/* Header */}
-      <div className="text-center mb-6">
-        <h1 className="text-2xl font-semibold text-off-black dark:text-off-white mb-2">
+      <div className="mb-6 text-center">
+        <h1 className="mb-2 text-2xl font-semibold text-off-black dark:text-off-white">
           {getTitle()}
         </h1>
         <p className="text-sm text-warm-gray">
@@ -171,7 +171,7 @@ export function AuthForm({
       {/* Success Message */}
       {success && (
         <div className={cn(
-          "flex items-center gap-2 p-3 mb-4 rounded-md",
+          "mb-4 flex items-center gap-2 rounded-md p-3",
           "bg-green-50 dark:bg-green-900/20",
           "border border-green-200 dark:border-green-800/30"
         )}>
@@ -183,7 +183,7 @@ export function AuthForm({
       {/* Error Message */}
       {error && (
         <div className={cn(
-          "flex items-center gap-2 p-3 mb-4 rounded-md",
+          "mb-4 flex items-center gap-2 rounded-md p-3",
           "bg-red-50 dark:bg-red-900/20",
           "border border-red-200 dark:border-red-800/30"
         )}>
@@ -209,7 +209,7 @@ export function AuthForm({
               value={formData.name}
               onChange={(e) => handleInputChange("name", e.target.value)}
               className={cn(
-                "w-full px-3 py-2 rounded-md",
+                "w-full rounded-md px-3 py-2",
                 "bg-off-white dark:bg-off-black",
                 "border border-light-gray dark:border-warm-gray/30",
                 "text-off-black dark:text-off-white",
@@ -235,7 +235,7 @@ export function AuthForm({
             Email Address
           </label>
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
               <LucideIcon icon={Mail} size="sm" className="text-warm-gray" />
             </div>
             <input
@@ -244,7 +244,7 @@ export function AuthForm({
               value={formData.email}
               onChange={(e) => handleInputChange("email", e.target.value)}
               className={cn(
-                "w-full pl-10 pr-3 py-2 rounded-md",
+                "w-full rounded-md py-2 pl-10 pr-3",
                 "bg-off-white dark:bg-off-black",
                 "border border-light-gray dark:border-warm-gray/30",
                 "text-off-black dark:text-off-white",
@@ -272,7 +272,7 @@ export function AuthForm({
               Password
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                 <LucideIcon icon={Lock} size="sm" className="text-warm-gray" />
               </div>
               <input
@@ -281,7 +281,7 @@ export function AuthForm({
                 value={formData.password}
                 onChange={(e) => handleInputChange("password", e.target.value)}
                 className={cn(
-                  "w-full pl-10 pr-10 py-2 rounded-md",
+                  "w-full rounded-md px-10 py-2",
                   "bg-off-white dark:bg-off-black",
                   "border border-light-gray dark:border-warm-gray/30",
                   "text-off-black dark:text-off-white",
@@ -297,7 +297,7 @@ export function AuthForm({
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   <LucideIcon
@@ -324,7 +324,7 @@ export function AuthForm({
               Confirm Password
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                 <LucideIcon icon={Lock} size="sm" className="text-warm-gray" />
               </div>
               <input
@@ -333,7 +333,7 @@ export function AuthForm({
                 value={formData.confirmPassword}
                 onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
                 className={cn(
-                  "w-full pl-10 pr-10 py-2 rounded-md",
+                  "w-full rounded-md px-10 py-2",
                   "bg-off-white dark:bg-off-black",
                   "border border-light-gray dark:border-warm-gray/30",
                   "text-off-black dark:text-off-white",
@@ -349,7 +349,7 @@ export function AuthForm({
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3"
                   aria-label={showConfirmPassword ? "Hide password" : "Show password"}
                 >
                   <LucideIcon
@@ -388,7 +388,7 @@ export function AuthForm({
             <button
               type="button"
               onClick={() => onModeChange?.("reset-password")}
-              className="text-sm text-primary hover:text-primary/80 transition-colors"
+              className="text-sm text-primary transition-colors hover:text-primary/80"
             >
               Forgot your password?
             </button>
@@ -401,7 +401,7 @@ export function AuthForm({
             <button
               type="button"
               onClick={() => onModeChange?.("magic-link")}
-              className="text-sm text-primary hover:text-primary/80 transition-colors"
+              className="text-sm text-primary transition-colors hover:text-primary/80"
             >
               Sign in with magic link instead
             </button>
@@ -416,7 +416,7 @@ export function AuthForm({
               <button
                 type="button"
                 onClick={() => onModeChange?.("signup")}
-                className="text-primary hover:text-primary/80 transition-colors font-medium"
+                className="font-medium text-primary transition-colors hover:text-primary/80"
               >
                 Sign up
               </button>
@@ -427,7 +427,7 @@ export function AuthForm({
               <button
                 type="button"
                 onClick={() => onModeChange?.("signin")}
-                className="text-primary hover:text-primary/80 transition-colors font-medium"
+                className="font-medium text-primary transition-colors hover:text-primary/80"
               >
                 Sign in
               </button>
@@ -438,7 +438,7 @@ export function AuthForm({
               <button
                 type="button"
                 onClick={() => onModeChange?.("signin")}
-                className="text-primary hover:text-primary/80 transition-colors font-medium"
+                className="font-medium text-primary transition-colors hover:text-primary/80"
               >
                 Sign in
               </button>

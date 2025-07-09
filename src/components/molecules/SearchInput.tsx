@@ -82,7 +82,7 @@ export function SearchInput({
     <div className={cn("relative w-full max-w-md", className)}>
       <form onSubmit={handleSearch} className="relative">
         {/* Search Icon */}
-        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+        <div className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
           <LucideIcon
             icon={Search}
             size="sm"
@@ -109,7 +109,7 @@ export function SearchInput({
 
         {/* Clear Button */}
         {showClearButton && query && !loading && (
-          <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+          <div className="absolute right-3 top-1/2 -translate-y-1/2">
             <IconButton
               type="button"
               icon={<LucideIcon icon={X} size="xs" />}
@@ -117,15 +117,15 @@ export function SearchInput({
               variant="ghost"
               size="sm"
               aria-label="Clear search"
-              className="h-6 w-6"
+              className="size-6"
             />
           </div>
         )}
 
         {/* Loading Indicator */}
         {loading && (
-          <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-            <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          <div className="absolute right-3 top-1/2 -translate-y-1/2">
+            <div className="size-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
           </div>
         )}
       </form>

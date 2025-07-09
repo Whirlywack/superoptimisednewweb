@@ -31,7 +31,7 @@ export function FormGroup({
         <label className={cn(
           "block text-sm font-medium",
           hasError ? "text-warm-gray" : "text-off-black dark:text-off-white",
-          required && "after:content-['*'] after:ml-0.5 after:text-warm-gray"
+          required && "after:ml-0.5 after:text-warm-gray after:content-['*']"
         )}>
           {label}
         </label>

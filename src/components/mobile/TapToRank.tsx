@@ -238,9 +238,9 @@ export function TapToRank({
             </span>
             <span className="text-warm-gray">{Math.round(progress)}%</span>
           </div>
-          <div className="w-full bg-light-gray dark:bg-gray-700 rounded-full h-2">
+          <div className="h-2 w-full rounded-full bg-light-gray dark:bg-gray-700">
             <div 
-              className="bg-primary rounded-full h-2 transition-all duration-300"
+              className="h-2 rounded-full bg-primary transition-all duration-300"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -248,7 +248,7 @@ export function TapToRank({
       )}
       
       {/* Instructions */}
-      <div className="text-center space-y-1">
+      <div className="space-y-1 text-center">
         <p className="text-sm text-warm-gray">
           {mode === 'tap-to-select' 
             ? 'Tap to select items' 
@@ -274,7 +274,7 @@ export function TapToRank({
               <button
                 onClick={handleReset}
                 disabled={disabled}
-                className="flex items-center gap-1 px-3 py-1 text-sm text-warm-gray hover:text-primary transition-colors"
+                className="flex items-center gap-1 px-3 py-1 text-sm text-warm-gray transition-colors hover:text-primary"
               >
                 <Icon size={14}>
                   <RotateCcw />
@@ -296,14 +296,14 @@ export function TapToRank({
                 >
                   {/* Rank Number */}
                   {showNumbers && (
-                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-semibold text-sm">
+                    <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-semibold text-white">
                       {rank}
                     </div>
                   )}
                   
                   {/* Icon */}
                   {item.icon && (
-                    <div className="flex-shrink-0 w-6 h-6 text-primary">
+                    <div className="size-6 shrink-0 text-primary">
                       <Icon size={20}>
                         {item.icon}
                       </Icon>
@@ -311,20 +311,20 @@ export function TapToRank({
                   )}
                   
                   {/* Content */}
-                  <div className="flex-1 min-w-0">
+                  <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
                       <span className="font-medium text-off-black dark:text-off-white">
                         {item.label}
                       </span>
                       {item.badge && (
-                        <span className="px-2 py-1 text-xs bg-primary/10 text-primary dark:bg-primary/10 dark:text-primary rounded-full">
+                        <span className="rounded-full bg-primary/10 px-2 py-1 text-xs text-primary dark:bg-primary/10 dark:text-primary">
                           {item.badge}
                         </span>
                       )}
                     </div>
                     
                     {showDescriptions && item.description && (
-                      <p className="text-sm text-warm-gray mt-1 line-clamp-2">
+                      <p className="mt-1 line-clamp-2 text-sm text-warm-gray">
                         {item.description}
                       </p>
                     )}
@@ -339,7 +339,7 @@ export function TapToRank({
                           handleMoveItem(item.id, 'up');
                         }}
                         disabled={disabled || index === 0}
-                        className="p-1 text-warm-gray hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="p-1 text-warm-gray hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         <Icon size={16}>
                           <ChevronUp />
@@ -352,7 +352,7 @@ export function TapToRank({
                           handleMoveItem(item.id, 'down');
                         }}
                         disabled={disabled || index === rankedItemsData.length - 1}
-                        className="p-1 text-warm-gray hover:text-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="p-1 text-warm-gray hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         <Icon size={16}>
                           <ChevronDown />
@@ -368,7 +368,7 @@ export function TapToRank({
                       handleItemTap(item.id);
                     }}
                     disabled={disabled}
-                    className="flex-shrink-0 p-1 text-warm-gray hover:text-primary transition-colors"
+                    className="shrink-0 p-1 text-warm-gray transition-colors hover:text-primary"
                   >
                     <Icon size={16}>
                       <X />
@@ -397,7 +397,7 @@ export function TapToRank({
               >
                 {/* Icon */}
                 {item.icon && (
-                  <div className="flex-shrink-0 w-6 h-6 text-warm-gray">
+                  <div className="size-6 shrink-0 text-warm-gray">
                     <Icon size={20}>
                       {item.icon}
                     </Icon>
@@ -405,27 +405,27 @@ export function TapToRank({
                 )}
                 
                 {/* Content */}
-                <div className="flex-1 min-w-0">
+                <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <span className="font-medium text-off-black dark:text-off-white">
                       {item.label}
                     </span>
                     {item.badge && (
-                      <span className="px-2 py-1 text-xs bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400 rounded-full">
+                      <span className="rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-600 dark:bg-gray-700 dark:text-gray-400">
                         {item.badge}
                       </span>
                     )}
                   </div>
                   
                   {showDescriptions && item.description && (
-                    <p className="text-sm text-warm-gray mt-1 line-clamp-2">
+                    <p className="mt-1 line-clamp-2 text-sm text-warm-gray">
                       {item.description}
                     </p>
                   )}
                 </div>
                 
                 {/* Add Button */}
-                <div className="flex-shrink-0 w-8 h-8 rounded-full border-2 border-warm-gray flex items-center justify-center transition-colors group-hover:border-primary">
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-full border-2 border-warm-gray transition-colors group-hover:border-primary">
                   <Icon size={16} className="text-warm-gray group-hover:text-primary">
                     <Check />
                   </Icon>
@@ -438,7 +438,7 @@ export function TapToRank({
       
       {/* Validation Message */}
       {!hasEnoughItems && minRanked > 0 && (
-        <div className="text-center p-3 bg-light-gray dark:bg-gray-800 border border-light-gray dark:border-gray-700 rounded-lg">
+        <div className="rounded-lg border border-light-gray bg-light-gray p-3 text-center dark:border-gray-700 dark:bg-gray-800">
           <p className="text-sm text-warm-gray dark:text-warm-gray">
             Please {mode === 'tap-to-select' ? 'select' : 'rank'} at least {minRanked} item{minRanked !== 1 ? 's' : ''}.
           </p>

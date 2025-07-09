@@ -87,10 +87,10 @@ export function InlineCode({ children, className, ...props }: InlineCodeProps) {
   return (
     <code
       className={cn(
-        "text-code font-mono",
+        "font-mono text-code",
         "bg-light-gray dark:bg-warm-gray/20",
         "text-off-black dark:text-off-white",
-        "px-1.5 py-0.5 rounded-md",
+        "rounded-md px-1.5 py-0.5",
         "border border-light-gray dark:border-warm-gray/30",
         className
       )}
@@ -128,7 +128,7 @@ export function Link({
     <a
       className={cn(
         variantClasses[variant],
-        "underline underline-offset-4 decoration-2",
+        "underline decoration-2 underline-offset-4",
         "transition-colors duration-200",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
         className
@@ -161,10 +161,10 @@ export function CodeBlock({
   return (
     <pre
       className={cn(
-        "text-code font-mono",
+        "font-mono text-code",
         "bg-light-gray dark:bg-warm-gray/10",
         "text-off-black dark:text-off-white",
-        "p-4 rounded-lg",
+        "rounded-lg p-4",
         "border border-light-gray dark:border-warm-gray/30",
         "overflow-x-auto",
         "max-w-full",
@@ -173,7 +173,7 @@ export function CodeBlock({
       {...props}
     >
       {language && (
-        <div className="text-small text-warm-gray mb-2 font-sans">
+        <div className="mb-2 font-sans text-small text-warm-gray">
           {language}
         </div>
       )}

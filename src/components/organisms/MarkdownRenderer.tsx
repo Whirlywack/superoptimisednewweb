@@ -55,14 +55,14 @@ function CodeBlock({
     <div className="group relative my-4">
       {/* Header */}
       {(fileName || language || showCopyButton) && (
-        <div className="flex items-center justify-between px-4 py-2 bg-warm-gray/10 border-b border-warm-gray/20 rounded-t-md">
+        <div className="flex items-center justify-between rounded-t-md border-b border-warm-gray/20 bg-warm-gray/10 px-4 py-2">
           <div className="flex items-center gap-2">
             <LucideIcon icon={Code} size="sm" className="text-warm-gray" />
             {fileName && (
-              <span className="text-sm font-mono text-warm-gray">{fileName}</span>
+              <span className="font-mono text-sm text-warm-gray">{fileName}</span>
             )}
             {language && (
-              <span className="text-xs px-2 py-1 rounded bg-primary/10 text-primary">
+              <span className="rounded bg-primary/10 px-2 py-1 text-xs text-primary">
                 {language}
               </span>
             )}
@@ -72,7 +72,7 @@ function CodeBlock({
             <button
               onClick={handleCopy}
               className={cn(
-                "flex items-center gap-1 px-2 py-1 text-xs rounded transition-colors",
+                "flex items-center gap-1 rounded px-2 py-1 text-xs transition-colors",
                 "hover:bg-warm-gray/20",
                 copied ? "text-green-600" : "text-warm-gray"
               )}
@@ -138,7 +138,7 @@ export function MarkdownRenderer({
     "prose-strong:text-off-black prose-strong:font-bold",
     "prose-em:text-off-black",
     "prose-code:text-primary prose-code:bg-light-gray prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-sm",
-    "prose-blockquote:border-l-primary prose-blockquote:border-l-4 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:bg-light-gray prose-blockquote:p-4 prose-blockquote:rounded-r-lg prose-blockquote:text-warm-gray",
+    "prose-blockquote:border-l-primary prose-blockquote:border-l-4 prose-blockquote:p-4 prose-blockquote:italic prose-blockquote:bg-light-gray prose-blockquote:rounded-r-lg prose-blockquote:text-warm-gray",
     "prose-ul:text-off-black prose-ol:text-off-black",
     "prose-li:text-off-black",
     "prose-table:text-off-black prose-table:border-collapse",
@@ -153,8 +153,8 @@ export function MarkdownRenderer({
 
   if (!content?.trim()) {
     return (
-      <div className="text-center py-8">
-        <LucideIcon icon={FileText} size="lg" className="mx-auto text-warm-gray mb-3" />
+      <div className="py-8 text-center">
+        <LucideIcon icon={FileText} size="lg" className="mx-auto mb-3 text-warm-gray" />
         <p className="text-warm-gray">No content to display</p>
       </div>
     );
@@ -180,7 +180,7 @@ export function MarkdownRenderer({
                 {String(children).replace(/\n$/, "")}
               </CodeBlock>
             ) : (
-              <code className="text-primary bg-light-gray px-1 py-0.5 rounded text-sm font-mono" {...props}>
+              <code className="rounded bg-light-gray px-1 py-0.5 font-mono text-sm text-primary" {...props}>
                 {children}
               </code>
             );
@@ -192,7 +192,7 @@ export function MarkdownRenderer({
             return (
               <h1 
                 id={id}
-                className="group flex items-center gap-2 text-3xl font-bold text-off-black mb-4 mt-8 first:mt-0 scroll-mt-20" 
+                className="group mb-4 mt-8 flex scroll-mt-20 items-center gap-2 text-3xl font-bold text-off-black first:mt-0" 
                 {...props}
               >
                 {children}
@@ -208,7 +208,7 @@ export function MarkdownRenderer({
                         }
                       }
                     }}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-light-gray rounded"
+                    className="rounded p-1 opacity-0 transition-opacity hover:bg-light-gray group-hover:opacity-100"
                     aria-label={`Link to ${text}`}
                   >
                     <LucideIcon icon={Hash} size="sm" className="text-warm-gray" />
@@ -224,7 +224,7 @@ export function MarkdownRenderer({
             return (
               <h2 
                 id={id}
-                className="group flex items-center gap-2 text-2xl font-bold text-off-black mb-3 mt-6 scroll-mt-20" 
+                className="group mb-3 mt-6 flex scroll-mt-20 items-center gap-2 text-2xl font-bold text-off-black" 
                 {...props}
               >
                 {children}
@@ -240,7 +240,7 @@ export function MarkdownRenderer({
                         }
                       }
                     }}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-light-gray rounded"
+                    className="rounded p-1 opacity-0 transition-opacity hover:bg-light-gray group-hover:opacity-100"
                     aria-label={`Link to ${text}`}
                   >
                     <LucideIcon icon={Hash} size="sm" className="text-warm-gray" />
@@ -256,7 +256,7 @@ export function MarkdownRenderer({
             return (
               <h3 
                 id={id}
-                className="group flex items-center gap-2 text-xl font-bold text-off-black mb-2 mt-4 scroll-mt-20" 
+                className="group mb-2 mt-4 flex scroll-mt-20 items-center gap-2 text-xl font-bold text-off-black" 
                 {...props}
               >
                 {children}
@@ -272,7 +272,7 @@ export function MarkdownRenderer({
                         }
                       }
                     }}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-light-gray rounded"
+                    className="rounded p-1 opacity-0 transition-opacity hover:bg-light-gray group-hover:opacity-100"
                     aria-label={`Link to ${text}`}
                   >
                     <LucideIcon icon={Hash} size="sm" className="text-warm-gray" />
@@ -286,7 +286,7 @@ export function MarkdownRenderer({
             return (
               <a
                 href={href}
-                className="text-primary hover:underline font-medium inline-flex items-center gap-1"
+                className="inline-flex items-center gap-1 font-medium text-primary hover:underline"
                 target={isExternal ? "_blank" : undefined}
                 rel={isExternal ? "noopener noreferrer" : undefined}
                 {...props}
@@ -301,7 +301,7 @@ export function MarkdownRenderer({
               <img
                 src={src}
                 alt={alt}
-                className="rounded-lg max-w-full h-auto my-4"
+                className="my-4 h-auto max-w-full rounded-lg"
                 loading="lazy"
                 {...props}
               />
@@ -309,7 +309,7 @@ export function MarkdownRenderer({
           },
           table({ children, ...props }) {
             return (
-              <div className="overflow-x-auto mb-4">
+              <div className="mb-4 overflow-x-auto">
                 <table className="min-w-full border-collapse border border-light-gray" {...props}>
                   {children}
                 </table>

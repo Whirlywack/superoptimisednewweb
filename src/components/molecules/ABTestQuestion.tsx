@@ -59,50 +59,50 @@ const OptionCard = React.forwardRef<
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        "group relative w-full p-6 text-left border-2 rounded-lg transition-all duration-200",
+        "group relative w-full rounded-lg border-2 p-6 text-left transition-all duration-200",
         "hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/20",
         isSelected
           ? "border-primary bg-primary/5"
           : "border-light-gray bg-off-white hover:bg-light-gray/50",
-        disabled && "opacity-50 cursor-not-allowed",
+        disabled && "cursor-not-allowed opacity-50",
         "sm:max-w-none"
       )}
       aria-pressed={isSelected}
       aria-label={`${label}: ${option.title}`}
     >
       {/* Option Label */}
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-sm font-medium text-primary uppercase tracking-wide">
+      <div className="mb-3 flex items-center justify-between">
+        <span className="text-sm font-medium uppercase tracking-wide text-primary">
           {label}
         </span>
         <div
           className={cn(
-            "w-4 h-4 border-2 rounded-full transition-colors",
+            "size-4 rounded-full border-2 transition-colors",
             isSelected
               ? "border-primary bg-primary"
               : "border-warm-gray group-hover:border-primary/50"
           )}
         >
           {isSelected && (
-            <div className="w-2 h-2 bg-off-white rounded-full m-0.5" />
+            <div className="m-0.5 size-2 rounded-full bg-off-white" />
           )}
         </div>
       </div>
 
       {/* Title */}
-      <h3 className="text-lg font-semibold text-off-black mb-2">
+      <h3 className="mb-2 text-lg font-semibold text-off-black">
         {option.title}
       </h3>
 
       {/* Description */}
-      <p className="text-warm-gray text-sm mb-4 leading-relaxed">
+      <p className="mb-4 text-sm leading-relaxed text-warm-gray">
         {option.description}
       </p>
 
       {/* Code Example */}
       {option.codeExample && (
         <div className="mb-4">
-          <pre className="bg-light-gray p-3 rounded text-xs font-mono text-off-black overflow-x-auto">
+          <pre className="overflow-x-auto rounded bg-light-gray p-3 font-mono text-xs text-off-black">
             <code>{option.codeExample}</code>
           </pre>
         </div>
@@ -110,7 +110,7 @@ const OptionCard = React.forwardRef<
 
       {/* Metrics */}
       {(option.performance || option.maintainability) && (
-        <div className="grid grid-cols-2 gap-3 mb-4">
+        <div className="mb-4 grid grid-cols-2 gap-3">
           {option.performance && (
             <div>
               <span className="text-xs font-medium text-warm-gray">Performance</span>
@@ -131,11 +131,11 @@ const OptionCard = React.forwardRef<
         <div className="space-y-3">
           {option.pros && option.pros.length > 0 && (
             <div>
-              <span className="text-xs font-medium text-primary mb-1 block">Pros</span>
+              <span className="mb-1 block text-xs font-medium text-primary">Pros</span>
               <ul className="space-y-1">
                 {option.pros.map((pro, index) => (
-                  <li key={index} className="text-xs text-warm-gray flex items-start">
-                    <span className="text-primary mr-2 mt-0.5">+</span>
+                  <li key={index} className="flex items-start text-xs text-warm-gray">
+                    <span className="mr-2 mt-0.5 text-primary">+</span>
                     {pro}
                   </li>
                 ))}
@@ -144,11 +144,11 @@ const OptionCard = React.forwardRef<
           )}
           {option.cons && option.cons.length > 0 && (
             <div>
-              <span className="text-xs font-medium text-warm-gray mb-1 block">Cons</span>
+              <span className="mb-1 block text-xs font-medium text-warm-gray">Cons</span>
               <ul className="space-y-1">
                 {option.cons.map((con, index) => (
-                  <li key={index} className="text-xs text-warm-gray flex items-start">
-                    <span className="text-warm-gray mr-2 mt-0.5">-</span>
+                  <li key={index} className="flex items-start text-xs text-warm-gray">
+                    <span className="mr-2 mt-0.5 text-warm-gray">-</span>
                     {con}
                   </li>
                 ))}
@@ -191,14 +191,14 @@ export function ABTestQuestion({
           {question}
         </QuestionLabel>
         {description && (
-          <p className="text-warm-gray text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-warm-gray">
             {description}
           </p>
         )}
       </div>
 
       {/* A/B Options */}
-      <div className="space-y-4 md:space-y-0 md:grid md:grid-cols-2 md:gap-6">
+      <div className="space-y-4 md:grid md:grid-cols-2 md:gap-6 md:space-y-0">
         <OptionCard
           option={optionA}
           isSelected={value === optionA.id}

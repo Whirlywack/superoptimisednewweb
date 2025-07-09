@@ -108,7 +108,7 @@ export function CodeApproachComparison({
           {question}
         </QuestionLabel>
         {description && (
-          <p className="text-warm-gray text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-warm-gray">
             {description}
           </p>
         )}
@@ -123,12 +123,12 @@ export function CodeApproachComparison({
             <div
               key={approach.id}
               className={cn(
-                "relative rounded-lg border-2 transition-all duration-200 cursor-pointer",
+                "relative cursor-pointer rounded-lg border-2 transition-all duration-200",
                 "bg-off-white dark:bg-off-black",
                 isSelected
                   ? "border-primary bg-primary/5"
-                  : "border-light-gray dark:border-warm-gray/30 hover:border-primary/50",
-                disabled && "opacity-50 cursor-not-allowed"
+                  : "border-light-gray hover:border-primary/50 dark:border-warm-gray/30",
+                disabled && "cursor-not-allowed opacity-50"
               )}
               onClick={() => !disabled && handleSelect(approach.id)}
               role="radio"
@@ -145,17 +145,17 @@ export function CodeApproachComparison({
             >
               {/* Selection Indicator */}
               <div className={cn(
-                "absolute top-4 right-4 w-4 h-4 rounded-full border-2 transition-colors",
+                "absolute right-4 top-4 size-4 rounded-full border-2 transition-colors",
                 isSelected
                   ? "border-primary bg-primary"
                   : "border-light-gray dark:border-warm-gray/30"
               )}>
                 {isSelected && (
-                  <div className="w-2 h-2 bg-off-white rounded-full m-0.5" />
+                  <div className="m-0.5 size-2 rounded-full bg-off-white" />
                 )}
               </div>
 
-              <div className="p-6 space-y-4">
+              <div className="space-y-4 p-6">
                 {/* Approach Header */}
                 <div className="space-y-2">
                   <h3
@@ -167,7 +167,7 @@ export function CodeApproachComparison({
                   {approach.description && (
                     <p
                       id={`approach-${approach.id}-description`}
-                      className="text-warm-gray text-sm"
+                      className="text-sm text-warm-gray"
                     >
                       {approach.description}
                     </p>
@@ -176,15 +176,15 @@ export function CodeApproachComparison({
 
                 {/* Code Block */}
                 <div className="relative">
-                  <div className="bg-off-black dark:bg-warm-gray/10 rounded-lg p-4 overflow-x-auto">
+                  <div className="overflow-x-auto rounded-lg bg-off-black p-4 dark:bg-warm-gray/10">
                     <pre className="text-sm">
-                      <code className="text-off-white dark:text-off-black font-mono">
+                      <code className="font-mono text-off-white dark:text-off-black">
                         {approach.code}
                       </code>
                     </pre>
                   </div>
                   {approach.language && (
-                    <div className="absolute top-2 right-2 px-2 py-1 bg-warm-gray/20 rounded text-xs font-mono text-warm-gray">
+                    <div className="absolute right-2 top-2 rounded bg-warm-gray/20 px-2 py-1 font-mono text-xs text-warm-gray">
                       {approach.language}
                     </div>
                   )}
@@ -195,7 +195,7 @@ export function CodeApproachComparison({
                   <div className="flex flex-wrap gap-2">
                     {approach.metadata.performance && (
                       <span className={cn(
-                        "px-2 py-1 rounded-full text-xs font-medium",
+                        "rounded-full px-2 py-1 text-xs font-medium",
                         getMetadataColor(approach.metadata.performance)
                       )}>
                         Performance: {approach.metadata.performance}
@@ -203,7 +203,7 @@ export function CodeApproachComparison({
                     )}
                     {approach.metadata.complexity && (
                       <span className={cn(
-                        "px-2 py-1 rounded-full text-xs font-medium",
+                        "rounded-full px-2 py-1 text-xs font-medium",
                         getMetadataColor(approach.metadata.complexity)
                       )}>
                         Complexity: {approach.metadata.complexity}
@@ -211,7 +211,7 @@ export function CodeApproachComparison({
                     )}
                     {approach.metadata.maintainability && (
                       <span className={cn(
-                        "px-2 py-1 rounded-full text-xs font-medium",
+                        "rounded-full px-2 py-1 text-xs font-medium",
                         getMetadataColor(approach.metadata.maintainability)
                       )}>
                         Maintainability: {approach.metadata.maintainability}
@@ -222,7 +222,7 @@ export function CodeApproachComparison({
 
                 {/* Pros and Cons */}
                 {showProsAndCons && (approach.pros || approach.cons) && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                  <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
                     {approach.pros && approach.pros.length > 0 && (
                       <div className="space-y-2">
                         <h4 className="font-medium text-primary">
@@ -231,7 +231,7 @@ export function CodeApproachComparison({
                         <ul className="space-y-1 text-warm-gray">
                           {approach.pros.map((pro, index) => (
                             <li key={index} className="flex items-start gap-2">
-                              <span className="text-primary mt-1 text-xs">✓</span>
+                              <span className="mt-1 text-xs text-primary">✓</span>
                               <span>{pro}</span>
                             </li>
                           ))}
@@ -246,7 +246,7 @@ export function CodeApproachComparison({
                         <ul className="space-y-1 text-warm-gray">
                           {approach.cons.map((con, index) => (
                             <li key={index} className="flex items-start gap-2">
-                              <span className="text-warm-gray mt-1 text-xs">✗</span>
+                              <span className="mt-1 text-xs text-warm-gray">✗</span>
                               <span>{con}</span>
                             </li>
                           ))}
@@ -263,7 +263,7 @@ export function CodeApproachComparison({
 
       {/* Approach limit warning */}
       {approaches.length > 2 && (
-        <div className="text-xs text-warm-gray bg-light-gray p-3 rounded-lg">
+        <div className="rounded-lg bg-light-gray p-3 text-xs text-warm-gray">
           Note: Only the first 2 approaches are shown for optimal comparison.
         </div>
       )}

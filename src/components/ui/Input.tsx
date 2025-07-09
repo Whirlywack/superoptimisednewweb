@@ -48,11 +48,11 @@ export function TextField({
       {label && (
         <label
           htmlFor={inputId}
-          className="block text-small font-medium text-off-black dark:text-off-white mb-2"
+          className="mb-2 block text-small font-medium text-off-black dark:text-off-white"
         >
           {label}
           {props.required && (
-            <span className="text-warm-gray ml-1" aria-label="required">
+            <span className="ml-1 text-warm-gray" aria-label="required">
               *
             </span>
           )}
@@ -80,7 +80,7 @@ export function TextField({
             "focus:border-warm-gray focus:ring-warm-gray/20",
           ],
           // Disabled state
-          "disabled:opacity-50 disabled:cursor-not-allowed",
+          "disabled:cursor-not-allowed disabled:opacity-50",
           className
         )}
         aria-invalid={error ? "true" : undefined}
@@ -155,7 +155,7 @@ export function Checkbox({
           // Error state
           error && "border-warm-gray",
           // Disabled state
-          "disabled:opacity-50 disabled:cursor-not-allowed",
+          "disabled:cursor-not-allowed disabled:opacity-50",
           className
         )}
         aria-invalid={error ? "true" : undefined}
@@ -167,11 +167,11 @@ export function Checkbox({
         {label && (
           <label
             htmlFor={checkboxId}
-            className="text-body text-off-black dark:text-off-white cursor-pointer"
+            className="cursor-pointer text-body text-off-black dark:text-off-white"
           >
             {label}
             {props.required && (
-              <span className="text-warm-gray ml-1" aria-label="required">
+              <span className="ml-1 text-warm-gray" aria-label="required">
                 *
               </span>
             )}
@@ -229,7 +229,7 @@ export function Radio({
           // Size
           radioSizes[size],
           // Disabled state
-          "disabled:opacity-50 disabled:cursor-not-allowed",
+          "disabled:cursor-not-allowed disabled:opacity-50",
           className
         )}
         {...props}
@@ -238,11 +238,11 @@ export function Radio({
       {label && (
         <label
           htmlFor={radioId}
-          className="text-body text-off-black dark:text-off-white cursor-pointer"
+          className="cursor-pointer text-body text-off-black dark:text-off-white"
         >
           {label}
           {props.required && (
-            <span className="text-warm-gray ml-1" aria-label="required">
+            <span className="ml-1 text-warm-gray" aria-label="required">
               *
             </span>
           )}
@@ -271,7 +271,7 @@ export function RadioGroup({
   return (
     <fieldset className={cn("w-full", className)}>
       {label && (
-        <legend className="block text-small font-medium text-off-black dark:text-off-white mb-3">
+        <legend className="mb-3 block text-small font-medium text-off-black dark:text-off-white">
           {label}
         </legend>
       )}

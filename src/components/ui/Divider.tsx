@@ -82,7 +82,7 @@ export function Divider({
           <div className={cn("flex-1", horizontalSizes[size], dividerVariants[variant])} />
         )}
         
-        <div className={cn("px-3 text-sm text-muted-foreground whitespace-nowrap")}>
+        <div className={cn("whitespace-nowrap px-3 text-sm text-muted-foreground")}>
           {label}
         </div>
         
@@ -144,7 +144,7 @@ export function SectionDivider({
           </div>
           
           <div className="relative flex justify-center">
-            <div className="bg-background px-4 flex items-center gap-2">
+            <div className="flex items-center gap-2 bg-background px-4">
               {icon && <span className="text-muted-foreground">{icon}</span>}
               
               <div className="text-center">
@@ -154,7 +154,7 @@ export function SectionDivider({
                   </h3>
                 )}
                 {subtitle && (
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     {subtitle}
                   </p>
                 )}

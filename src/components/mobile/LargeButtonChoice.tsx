@@ -176,7 +176,7 @@ export function LargeButtonChoice({
         {[...Array(3)].map((_, index) => (
           <div
             key={index}
-            className="w-full h-16 bg-light-gray dark:bg-gray-800 rounded-lg animate-pulse"
+            className="h-16 w-full animate-pulse rounded-lg bg-light-gray dark:bg-gray-800"
           />
         ))}
       </div>
@@ -201,19 +201,19 @@ export function LargeButtonChoice({
             onClick={() => handleOptionClick(option.value, option.disabled)}
             disabled={isDisabled || loading}
           >
-            <div className="flex items-center justify-between h-full">
-              <div className="flex items-center gap-3 flex-1 min-w-0">
+            <div className="flex h-full items-center justify-between">
+              <div className="flex min-w-0 flex-1 items-center gap-3">
                 {option.icon && (
-                  <div className="flex-shrink-0 w-6 h-6 flex items-center justify-center">
+                  <div className="flex size-6 shrink-0 items-center justify-center">
                     <Icon size="lg" className={isSelected ? 'text-current' : 'text-warm-gray'}>
                       {option.icon}
                     </Icon>
                   </div>
                 )}
                 
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="font-medium text-base leading-tight">
+                <div className="min-w-0 flex-1">
+                  <div className="mb-1 flex items-center gap-2">
+                    <span className="text-base font-medium leading-tight">
                       {option.label}
                     </span>
                     {option.badge && (
@@ -224,18 +224,18 @@ export function LargeButtonChoice({
                   </div>
                   
                   {option.description && (
-                    <p className="text-sm text-warm-gray leading-tight line-clamp-2">
+                    <p className="line-clamp-2 text-sm leading-tight text-warm-gray">
                       {option.description}
                     </p>
                   )}
                 </div>
               </div>
               
-              <div className="flex items-center gap-2 flex-shrink-0">
+              <div className="flex shrink-0 items-center gap-2">
                 {showIndicators && (
                   <div
                     className={cn(
-                      "w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors",
+                      "flex size-5 items-center justify-center rounded-full border-2 transition-colors",
                       {
                         'bg-primary border-primary': isSelected,
                         'border-warm-gray': !isSelected,

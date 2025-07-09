@@ -139,11 +139,11 @@ export function MagicLinkForm({
   // Success State
   if (isSuccess) {
     return (
-      <div className={cn("min-h-screen bg-off-white dark:bg-off-black flex items-center justify-center p-4", className)} {...props}>
-        <div className="max-w-md w-full space-y-8">
-          <div className="text-center space-y-6">
+      <div className={cn("flex min-h-screen items-center justify-center bg-off-white p-4 dark:bg-off-black", className)} {...props}>
+        <div className="w-full max-w-md space-y-8">
+          <div className="space-y-6 text-center">
             {/* Success Icon */}
-            <div className="w-16 h-16 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center mx-auto">
+            <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/20">
               <LucideIcon icon={CheckCircle} size="xl" className="text-green-600 dark:text-green-400" />
             </div>
 
@@ -153,12 +153,12 @@ export function MagicLinkForm({
                 {successTitle}
               </h1>
               
-              <p className="text-warm-gray leading-relaxed">
+              <p className="leading-relaxed text-warm-gray">
                 {successMessage}
               </p>
 
               {submittedEmail && (
-                <div className="bg-light-gray/50 dark:bg-warm-gray/10 rounded-lg p-4">
+                <div className="rounded-lg bg-light-gray/50 p-4 dark:bg-warm-gray/10">
                   <div className="flex items-center gap-2 text-sm text-warm-gray">
                     <LucideIcon icon={Mail} size="xs" />
                     <span>Sent to: <strong className="text-off-black dark:text-off-white">{submittedEmail}</strong></span>
@@ -224,18 +224,18 @@ export function MagicLinkForm({
   // Form State
   return (
     <div className={cn("min-h-screen bg-off-white dark:bg-off-black", className)} {...props}>
-      <div className="grid grid-cols-1 lg:grid-cols-2 min-h-screen">
+      <div className="grid min-h-screen grid-cols-1 lg:grid-cols-2">
         {/* Form Section */}
         <div className="flex items-center justify-center p-8 lg:p-12">
-          <div className="max-w-md w-full space-y-8">
+          <div className="w-full max-w-md space-y-8">
             {/* Header */}
-            <div className="text-center space-y-4">
-              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto">
+            <div className="space-y-4 text-center">
+              <div className="mx-auto flex size-12 items-center justify-center rounded-lg bg-primary/10">
                 <LucideIcon icon={Sparkles} size="lg" className="text-primary" />
               </div>
               
               <div className="space-y-2">
-                <h1 className="text-2xl lg:text-3xl font-bold text-off-black dark:text-off-white">
+                <h1 className="text-2xl font-bold text-off-black dark:text-off-white lg:text-3xl">
                   {title}
                 </h1>
                 <p className="text-warm-gray">
@@ -245,8 +245,8 @@ export function MagicLinkForm({
             </div>
 
             {/* Description */}
-            <div className="bg-light-gray/50 dark:bg-warm-gray/10 rounded-lg p-4">
-              <p className="text-sm text-warm-gray leading-relaxed">
+            <div className="rounded-lg bg-light-gray/50 p-4 dark:bg-warm-gray/10">
+              <p className="text-sm leading-relaxed text-warm-gray">
                 {description}
               </p>
             </div>
@@ -258,7 +258,7 @@ export function MagicLinkForm({
                   Email Address
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                     <LucideIcon icon={Mail} size="sm" className="text-warm-gray" />
                   </div>
                   <input
@@ -268,10 +268,10 @@ export function MagicLinkForm({
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder={emailPlaceholder}
                     className={cn(
-                      "w-full pl-10 pr-4 py-3 border rounded-lg",
-                      "bg-off-white dark:bg-off-black text-off-black dark:text-off-white",
+                      "w-full rounded-lg border py-3 pl-10 pr-4",
+                      "bg-off-white text-off-black dark:bg-off-black dark:text-off-white",
                       "placeholder:text-warm-gray",
-                      "focus:ring-2 focus:ring-primary/20 focus:border-primary",
+                      "focus:border-primary focus:ring-2 focus:ring-primary/20",
                       "transition-colors",
                       (validationError || isError) ? "border-red-500 dark:border-red-400" : "border-light-gray dark:border-warm-gray/30"
                     )}
@@ -331,14 +331,14 @@ export function MagicLinkForm({
         </div>
 
         {/* Info Section */}
-        <div className="bg-light-gray/30 dark:bg-warm-gray/5 p-8 lg:p-12 flex items-center">
+        <div className="flex items-center bg-light-gray/30 p-8 dark:bg-warm-gray/5 lg:p-12">
           <div className="max-w-lg space-y-8">
             {/* Brand */}
             <div className="space-y-4">
               <h2 className="text-xl font-semibold text-off-black dark:text-off-white">
                 Welcome to {brandName}
               </h2>
-              <p className="text-warm-gray leading-relaxed">
+              <p className="leading-relaxed text-warm-gray">
                 Join thousands of developers building amazing things with our platform. 
                 No complex passwords required – just secure, seamless access.
               </p>
@@ -353,14 +353,14 @@ export function MagicLinkForm({
                 <div className="space-y-4">
                   {displayBenefits.map((benefit) => (
                     <div key={benefit.id} className="flex items-start gap-3">
-                      <div className="p-2 bg-primary/10 rounded-lg flex-shrink-0">
+                      <div className="shrink-0 rounded-lg bg-primary/10 p-2">
                         <LucideIcon icon={benefit.icon} size="sm" className="text-primary" />
                       </div>
                       <div className="space-y-1">
                         <h4 className="text-sm font-medium text-off-black dark:text-off-white">
                           {benefit.title}
                         </h4>
-                        <p className="text-xs text-warm-gray leading-relaxed">
+                        <p className="text-xs leading-relaxed text-warm-gray">
                           {benefit.description}
                         </p>
                       </div>
@@ -372,14 +372,14 @@ export function MagicLinkForm({
 
             {/* Security */}
             {showSecurity && (
-              <div className="bg-off-white/50 dark:bg-off-black/20 rounded-lg p-4 space-y-3">
+              <div className="space-y-3 rounded-lg bg-off-white/50 p-4 dark:bg-off-black/20">
                 <div className="flex items-center gap-2">
                   <LucideIcon icon={Shield} size="sm" className="text-primary" />
                   <h4 className="text-sm font-medium text-off-black dark:text-off-white">
                     Secure & Private
                   </h4>
                 </div>
-                <p className="text-xs text-warm-gray leading-relaxed">
+                <p className="text-xs leading-relaxed text-warm-gray">
                   Magic links are sent securely and expire after 15 minutes. 
                   We never store passwords and your email is protected according to our privacy policy.
                 </p>

@@ -112,7 +112,7 @@ export function RatingScale({
           {question}
         </QuestionLabel>
         {description && (
-          <p className="text-warm-gray text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-warm-gray">
             {description}
           </p>
         )}
@@ -130,7 +130,7 @@ export function RatingScale({
 
         {/* Rating Buttons */}
         <div className={cn(
-          "flex justify-center items-center flex-wrap",
+          "flex flex-wrap items-center justify-center",
           sizeClasses.container
         )}>
           {ratings.map((rating) => (
@@ -148,7 +148,7 @@ export function RatingScale({
                 value === rating
                   ? "border-primary bg-primary text-off-white"
                   : "border-light-gray bg-off-white text-warm-gray hover:bg-light-gray/50",
-                disabled && "opacity-50 cursor-not-allowed"
+                disabled && "cursor-not-allowed opacity-50"
               )}
               aria-pressed={value === rating}
               aria-label={`Rate ${rating} out of ${max}`}
@@ -171,7 +171,7 @@ export function RatingScale({
         {/* Scale Numbers (when not showing on buttons) */}
         {!showNumbers && (
           <div className={cn(
-            "flex justify-center items-center",
+            "flex items-center justify-center",
             sizeClasses.container
           )}>
             {ratings.map((rating) => (

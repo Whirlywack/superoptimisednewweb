@@ -138,7 +138,7 @@ export function MobileFilter({
       <div
         className={cn(
           'fixed inset-y-0 right-0 z-50 w-full max-w-sm bg-off-white shadow-xl transition-transform duration-300 ease-in-out',
-          'transform',
+          '',
           isOpen ? 'translate-x-0' : 'translate-x-full',
           drawerClassName
         )}
@@ -147,7 +147,7 @@ export function MobileFilter({
         aria-label={ariaLabel}
       >
         <div className="flex h-full flex-col">
-          <div className="flex items-center justify-between p-4 border-b border-light-gray">
+          <div className="flex items-center justify-between border-b border-light-gray p-4">
             <h2 className="text-h4 font-medium text-off-black">Filters</h2>
             <TouchTarget
               variant="icon"
@@ -155,7 +155,7 @@ export function MobileFilter({
               onClick={() => setIsOpen(false)}
               aria-label="Close filters"
             >
-              <X className="h-5 w-5" />
+              <X className="size-5" />
             </TouchTarget>
           </div>
           
@@ -164,14 +164,14 @@ export function MobileFilter({
               <div key={group.id} className="border-b border-light-gray">
                 <TouchTarget
                   variant="custom"
-                  className="w-full flex items-center justify-between p-4 hover:bg-light-gray"
+                  className="flex w-full items-center justify-between p-4 hover:bg-light-gray"
                   onClick={() => toggleGroup(group.id)}
                   aria-expanded={expandedGroups.has(group.id)}
                 >
                   <span className="font-medium text-off-black">{group.label}</span>
                   <ChevronDown 
                     className={cn(
-                      'h-5 w-5 text-warm-gray transition-transform duration-200',
+                      'size-5 text-warm-gray transition-transform duration-200',
                       expandedGroups.has(group.id) && 'rotate-180'
                     )}
                   />
@@ -186,25 +186,25 @@ export function MobileFilter({
                         <TouchTarget
                           key={option.id}
                           variant="custom"
-                          className="w-full flex items-center gap-3 px-4 py-3 hover:bg-light-gray"
+                          className="flex w-full items-center gap-3 px-4 py-3 hover:bg-light-gray"
                           onClick={() => handleOptionToggle(group.id, option.value, group.multiple)}
                         >
                           <div className={cn(
-                            'flex-shrink-0 w-5 h-5 border-2 rounded flex items-center justify-center',
+                            'flex size-5 shrink-0 items-center justify-center rounded border-2',
                             group.multiple ? 'rounded-sm' : 'rounded-full',
                             isSelected 
-                              ? 'bg-primary border-primary' 
+                              ? 'border-primary bg-primary' 
                               : 'border-warm-gray'
                           )}>
                             {isSelected && (
-                              <Check className="h-3 w-3 text-off-white" />
+                              <Check className="size-3 text-off-white" />
                             )}
                           </div>
                           
-                          <div className="flex-1 flex items-center justify-between">
+                          <div className="flex flex-1 items-center justify-between">
                             <span className={cn(
                               'text-base',
-                              isSelected ? 'text-off-black font-medium' : 'text-warm-gray'
+                              isSelected ? 'font-medium text-off-black' : 'text-warm-gray'
                             )}>
                               {option.label}
                             </span>
@@ -223,11 +223,11 @@ export function MobileFilter({
             ))}
           </div>
           
-          <div className="p-4 border-t border-light-gray space-y-3">
+          <div className="space-y-3 border-t border-light-gray p-4">
             {showClearButton && (
               <TouchTarget
                 variant="custom"
-                className="w-full py-3 text-center border border-warm-gray text-warm-gray hover:bg-light-gray rounded-lg font-medium"
+                className="w-full rounded-lg border border-warm-gray py-3 text-center font-medium text-warm-gray hover:bg-light-gray"
                 onClick={handleClear}
               >
                 Clear All
@@ -242,7 +242,7 @@ export function MobileFilter({
               >
                 Apply Filters
                 {totalSelectedCount > 0 && (
-                  <span className="ml-2 px-2 py-1 bg-off-white/20 rounded-full text-small">
+                  <span className="ml-2 rounded-full bg-off-white/20 px-2 py-1 text-small">
                     {totalSelectedCount}
                   </span>
                 )}
@@ -264,19 +264,19 @@ export function MobileFilter({
         variant="custom"
         onClick={() => setIsOpen(true)}
         className={cn(
-          'inline-flex items-center gap-2 px-4 py-2 border border-warm-gray rounded-lg',
+          'inline-flex items-center gap-2 rounded-lg border border-warm-gray px-4 py-2',
           'text-warm-gray hover:bg-light-gray hover:text-off-black',
           'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
-          'transition-colors duration-200 relative',
+          'relative transition-colors duration-200',
           triggerClassName
         )}
         aria-label={`Open filters${totalSelectedCount > 0 ? ` (${totalSelectedCount} active)` : ''}`}
         {...props}
       >
-        <Filter className="h-4 w-4" />
+        <Filter className="size-4" />
         <span className="font-medium">Filter</span>
         {totalSelectedCount > 0 && (
-          <span className="absolute -top-2 -right-2 bg-primary text-off-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+          <span className="absolute -right-2 -top-2 flex size-5 items-center justify-center rounded-full bg-primary text-xs text-off-white">
             {totalSelectedCount}
           </span>
         )}
@@ -330,10 +330,10 @@ export function QuickFilter({
             size="sm"
             onClick={() => handleOptionToggle(option.value)}
             className={cn(
-              'px-3 py-2 rounded-full text-small font-medium border transition-colors duration-200',
+              'rounded-full border px-3 py-2 text-small font-medium transition-colors duration-200',
               isSelected
-                ? 'bg-primary text-off-white border-primary'
-                : 'bg-off-white text-warm-gray border-warm-gray hover:border-primary hover:text-primary'
+                ? 'border-primary bg-primary text-off-white'
+                : 'border-warm-gray bg-off-white text-warm-gray hover:border-primary hover:text-primary'
             )}
           >
             {option.label}

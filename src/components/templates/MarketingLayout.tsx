@@ -124,14 +124,14 @@ export function MarketingLayout({
         href={item.href}
         external={item.external}
         className={cn(
-          "text-warm-gray hover:text-off-black dark:hover:text-off-white transition-colors font-medium no-underline",
+          "font-medium text-warm-gray no-underline transition-colors hover:text-off-black dark:hover:text-off-white",
           "flex items-center gap-1"
         )}
         onClick={() => setIsMobileMenuOpen(false)}
       >
         {item.title}
         {item.badge && (
-          <span className="bg-primary/10 text-primary px-2 py-0.5 rounded text-xs font-medium ml-2">
+          <span className="ml-2 rounded bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
             {item.badge}
           </span>
         )}
@@ -143,13 +143,13 @@ export function MarketingLayout({
   );
 
   const renderHeader = () => (
-    <header className="bg-off-white/80 dark:bg-off-black/80 backdrop-blur-sm border-b border-light-gray dark:border-warm-gray/30 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+    <header className="sticky top-0 z-50 border-b border-light-gray bg-off-white/80 backdrop-blur-sm dark:border-warm-gray/30 dark:bg-off-black/80">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link 
             href={logoHref} 
-            className="flex items-center gap-2 font-bold text-off-black dark:text-off-white no-underline"
+            className="flex items-center gap-2 font-bold text-off-black no-underline dark:text-off-white"
           >
             {logoImage ? (
               <img src={logoImage} alt={logoText} className="h-8 w-auto" />
@@ -159,12 +159,12 @@ export function MarketingLayout({
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden items-center space-x-8 md:flex">
             {navigation.map(renderNavItem)}
           </nav>
 
           {/* Desktop CTA */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden items-center gap-3 md:flex">
             <Button
               variant="primary"
               size="sm"
@@ -189,14 +189,14 @@ export function MarketingLayout({
 
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-light-gray dark:border-warm-gray/30">
-            <nav className="py-4 space-y-4">
+          <div className="border-t border-light-gray dark:border-warm-gray/30 md:hidden">
+            <nav className="space-y-4 py-4">
               {navigation.map(item => (
                 <div key={item.id} className="block">
                   {renderNavItem(item)}
                 </div>
               ))}
-              <div className="pt-4 border-t border-light-gray dark:border-warm-gray/30">
+              <div className="border-t border-light-gray pt-4 dark:border-warm-gray/30">
                 <Button
                   variant="primary"
                   size="sm"
@@ -219,19 +219,19 @@ export function MarketingLayout({
   );
 
   const renderFooter = () => (
-    <footer className="bg-off-white dark:bg-off-black border-t border-light-gray dark:border-warm-gray/30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <footer className="border-t border-light-gray bg-off-white dark:border-warm-gray/30 dark:bg-off-black">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         {footerContent ? (
           footerContent
         ) : (
           <div className="space-y-8">
             {/* Footer Links and Social */}
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
               {/* Logo and Description */}
               <div className="space-y-4">
                 <Link 
                   href={logoHref} 
-                  className="flex items-center gap-2 font-bold text-off-black dark:text-off-white no-underline"
+                  className="flex items-center gap-2 font-bold text-off-black no-underline dark:text-off-white"
                 >
                   {logoImage ? (
                     <img src={logoImage} alt={logoText} className="h-8 w-auto" />
@@ -239,7 +239,7 @@ export function MarketingLayout({
                     <span className="text-xl">{logoText}</span>
                   )}
                 </Link>
-                <p className="text-warm-gray text-sm max-w-md">
+                <p className="max-w-md text-sm text-warm-gray">
                   Building in public, sharing the journey, and fostering community-driven development.
                 </p>
               </div>
@@ -253,7 +253,7 @@ export function MarketingLayout({
                       key={social.platform}
                       href={social.href}
                       external
-                      className="text-warm-gray hover:text-off-black dark:hover:text-off-white transition-colors no-underline"
+                      className="text-warm-gray no-underline transition-colors hover:text-off-black dark:hover:text-off-white"
                       aria-label={social.label}
                     >
                       <LucideIcon icon={Icon} size="md" />
@@ -265,13 +265,13 @@ export function MarketingLayout({
 
             {/* Navigation Links */}
             {navigation.length > 0 && (
-              <div className="flex flex-wrap gap-6 py-6 border-t border-light-gray dark:border-warm-gray/30">
+              <div className="flex flex-wrap gap-6 border-t border-light-gray py-6 dark:border-warm-gray/30">
                 {navigation.map(item => (
                   <Link
                     key={item.id}
                     href={item.href}
                     external={item.external}
-                    className="text-warm-gray hover:text-off-black dark:hover:text-off-white transition-colors text-sm no-underline"
+                    className="text-sm text-warm-gray no-underline transition-colors hover:text-off-black dark:hover:text-off-white"
                   >
                     {item.title}
                   </Link>
@@ -280,7 +280,7 @@ export function MarketingLayout({
             )}
 
             {/* Copyright */}
-            <div className="pt-6 border-t border-light-gray dark:border-warm-gray/30">
+            <div className="border-t border-light-gray pt-6 dark:border-warm-gray/30">
               <p className="text-center text-sm text-warm-gray">
                 {copyrightText || `© ${new Date().getFullYear()} ${logoText}. Building in public with transparency and community.`}
               </p>
@@ -292,7 +292,7 @@ export function MarketingLayout({
   );
 
   return (
-    <div className={cn("min-h-screen bg-off-white dark:bg-off-black flex flex-col", className)} {...props}>
+    <div className={cn("flex min-h-screen flex-col bg-off-white dark:bg-off-black", className)} {...props}>
       {renderHeader()}
       
       <main className="flex-1">
@@ -304,7 +304,7 @@ export function MarketingLayout({
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
         <div
-          className="fixed inset-0 bg-off-black/50 z-40 md:hidden"
+          className="fixed inset-0 z-40 bg-off-black/50 md:hidden"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}

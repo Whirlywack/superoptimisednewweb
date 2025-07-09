@@ -1,7 +1,8 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { FeatureVoting, VotingOption, FeatureVote } from './FeatureVoting';
+import type { VotingOption, FeatureVote } from './FeatureVoting';
+import { FeatureVoting } from './FeatureVoting';
 
 // Mock the utility functions
 jest.mock('@/lib/utils', () => ({

@@ -71,7 +71,7 @@ export function FilterButtonGroup({
       {...props}
     >
       {showFilterIcon && (
-        <div className="flex items-center gap-2 mr-2">
+        <div className="mr-2 flex items-center gap-2">
           <LucideIcon 
             icon={Filter} 
             size="sm" 
@@ -119,7 +119,7 @@ export function FilterButtonGroup({
             {option.count !== undefined && (
               <span
                 className={cn(
-                  "text-xs px-1.5 py-0.5 rounded-full",
+                  "rounded-full px-1.5 py-0.5 text-xs",
                   isSelected
                     ? "bg-primary-foreground/20 text-primary-foreground"
                     : "bg-warm-gray/20 text-warm-gray"

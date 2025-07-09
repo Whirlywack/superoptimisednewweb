@@ -198,7 +198,7 @@ export function ProjectPortfolio({
         key={project.id}
         onClick={() => onProjectClick?.(project)}
         className={cn(
-          "bg-off-white dark:bg-off-black border border-light-gray dark:border-warm-gray/30 rounded-lg overflow-hidden hover:border-primary/50 transition-colors cursor-pointer",
+          "cursor-pointer overflow-hidden rounded-lg border border-light-gray bg-off-white transition-colors hover:border-primary/50 dark:border-warm-gray/30 dark:bg-off-black",
           project.featured && "ring-2 ring-primary/20",
           currentViewMode === "list" && "flex gap-6 p-6"
         )}
@@ -206,21 +206,21 @@ export function ProjectPortfolio({
         {/* Project Image */}
         {project.image && (
           <div className={cn(
-            "aspect-video bg-light-gray dark:bg-warm-gray/20 relative overflow-hidden",
-            currentViewMode === "list" && "w-48 h-32 flex-shrink-0 aspect-auto"
+            "relative aspect-video overflow-hidden bg-light-gray dark:bg-warm-gray/20",
+            currentViewMode === "list" && "aspect-auto h-32 w-48 shrink-0"
           )}>
             <img
               src={project.image}
               alt={project.title}
-              className="w-full h-full object-cover"
+              className="size-full object-cover"
             />
             {project.buildingInPublic && (
-              <div className="absolute top-3 left-3 bg-primary/90 text-off-white px-2 py-1 rounded text-xs font-medium">
+              <div className="absolute left-3 top-3 rounded bg-primary/90 px-2 py-1 text-xs font-medium text-off-white">
                 Building in Public
               </div>
             )}
             {project.featured && (
-              <div className="absolute top-3 right-3 bg-yellow-500 text-off-white px-2 py-1 rounded text-xs font-medium">
+              <div className="absolute right-3 top-3 rounded bg-yellow-500 px-2 py-1 text-xs font-medium text-off-white">
                 Featured
               </div>
             )}
@@ -228,19 +228,19 @@ export function ProjectPortfolio({
         )}
 
         <div className={cn(
-          "p-6 space-y-4 flex-1",
+          "flex-1 space-y-4 p-6",
           !project.image && currentViewMode === "grid" && "pt-6"
         )}>
           {/* Header */}
           <div className="space-y-3">
             <div className="flex items-start justify-between gap-4">
               <div className="space-y-2">
-                <h3 className="text-xl font-semibold text-off-black dark:text-off-white leading-snug">
+                <h3 className="text-xl font-semibold leading-snug text-off-black dark:text-off-white">
                   {project.title}
                 </h3>
                 <div className="flex items-center gap-2">
                   <span className={cn(
-                    "inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium capitalize",
+                    "inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium capitalize",
                     getStatusColor(project.status)
                   )}>
                     <LucideIcon icon={StatusIcon} size="xs" />
@@ -255,9 +255,9 @@ export function ProjectPortfolio({
                   <div className="text-sm font-medium text-off-black dark:text-off-white">
                     {project.progress}%
                   </div>
-                  <div className="w-16 h-2 bg-light-gray dark:bg-warm-gray/30 rounded-full mt-1">
+                  <div className="mt-1 h-2 w-16 rounded-full bg-light-gray dark:bg-warm-gray/30">
                     <div 
-                      className="h-2 bg-primary rounded-full"
+                      className="h-2 rounded-full bg-primary"
                       style={{ width: `${project.progress}%` }}
                     />
                   </div>
@@ -265,7 +265,7 @@ export function ProjectPortfolio({
               )}
             </div>
 
-            <p className="text-warm-gray leading-relaxed">
+            <p className="leading-relaxed text-warm-gray">
               {project.description}
             </p>
           </div>
@@ -275,13 +275,13 @@ export function ProjectPortfolio({
             {project.technologies.slice(0, 4).map((tech) => (
               <span
                 key={tech}
-                className="bg-light-gray dark:bg-warm-gray/20 text-warm-gray px-2 py-1 rounded text-xs"
+                className="rounded bg-light-gray px-2 py-1 text-xs text-warm-gray dark:bg-warm-gray/20"
               >
                 {tech}
               </span>
             ))}
             {project.technologies.length > 4 && (
-              <span className="text-warm-gray text-xs py-1">
+              <span className="py-1 text-xs text-warm-gray">
                 +{project.technologies.length - 4} more
               </span>
             )}
@@ -332,12 +332,12 @@ export function ProjectPortfolio({
           </div>
 
           {/* Links */}
-          <div className="flex items-center gap-3 pt-2 border-t border-light-gray dark:border-warm-gray/30">
+          <div className="flex items-center gap-3 border-t border-light-gray pt-2 dark:border-warm-gray/30">
             {project.links.demo && (
               <Link
                 href={project.links.demo}
                 external
-                className="inline-flex items-center gap-1 text-primary text-sm font-medium no-underline"
+                className="inline-flex items-center gap-1 text-sm font-medium text-primary no-underline"
               >
                 <LucideIcon icon={Globe} size="xs" />
                 Demo
@@ -347,7 +347,7 @@ export function ProjectPortfolio({
               <Link
                 href={project.links.github}
                 external
-                className="inline-flex items-center gap-1 text-primary text-sm font-medium no-underline"
+                className="inline-flex items-center gap-1 text-sm font-medium text-primary no-underline"
               >
                 <LucideIcon icon={Github} size="xs" />
                 Code
@@ -357,7 +357,7 @@ export function ProjectPortfolio({
               <Link
                 href={project.links.documentation}
                 external
-                className="inline-flex items-center gap-1 text-primary text-sm font-medium no-underline"
+                className="inline-flex items-center gap-1 text-sm font-medium text-primary no-underline"
               >
                 <LucideIcon icon={Code} size="xs" />
                 Docs
@@ -366,7 +366,7 @@ export function ProjectPortfolio({
             {project.links.blog && (
               <Link
                 href={project.links.blog}
-                className="inline-flex items-center gap-1 text-primary text-sm font-medium no-underline ml-auto"
+                className="ml-auto inline-flex items-center gap-1 text-sm font-medium text-primary no-underline"
               >
                 Read More
                 <LucideIcon icon={ArrowRight} size="xs" />
@@ -380,7 +380,7 @@ export function ProjectPortfolio({
 
   const renderFilters = () => (
     <div className={cn(
-      "space-y-4 p-4 bg-light-gray/50 dark:bg-warm-gray/10 rounded-lg",
+      "space-y-4 rounded-lg bg-light-gray/50 p-4 dark:bg-warm-gray/10",
       showFiltersPanel ? "block" : "hidden lg:block"
     )}>
       {/* Category Filter */}
@@ -391,7 +391,7 @@ export function ProjectPortfolio({
         <select
           value={filters.category}
           onChange={(e) => handleFilterChange({ category: e.target.value })}
-          className="w-full px-3 py-2 border border-light-gray dark:border-warm-gray/30 rounded-lg bg-off-white dark:bg-off-black text-off-black dark:text-off-white text-sm"
+          className="w-full rounded-lg border border-light-gray bg-off-white px-3 py-2 text-sm text-off-black dark:border-warm-gray/30 dark:bg-off-black dark:text-off-white"
         >
           {categories.map((category) => (
             <option key={category} value={category}>
@@ -409,7 +409,7 @@ export function ProjectPortfolio({
         <select
           value={filters.status}
           onChange={(e) => handleFilterChange({ status: e.target.value })}
-          className="w-full px-3 py-2 border border-light-gray dark:border-warm-gray/30 rounded-lg bg-off-white dark:bg-off-black text-off-black dark:text-off-white text-sm"
+          className="w-full rounded-lg border border-light-gray bg-off-white px-3 py-2 text-sm text-off-black dark:border-warm-gray/30 dark:bg-off-black dark:text-off-white"
         >
           {statuses.map((status) => (
             <option key={status.value} value={status.value}>
@@ -427,7 +427,7 @@ export function ProjectPortfolio({
         <select
           value={filters.technology}
           onChange={(e) => handleFilterChange({ technology: e.target.value })}
-          className="w-full px-3 py-2 border border-light-gray dark:border-warm-gray/30 rounded-lg bg-off-white dark:bg-off-black text-off-black dark:text-off-white text-sm"
+          className="w-full rounded-lg border border-light-gray bg-off-white px-3 py-2 text-sm text-off-black dark:border-warm-gray/30 dark:bg-off-black dark:text-off-white"
         >
           {technologies.map((tech) => (
             <option key={tech} value={tech}>
@@ -450,15 +450,15 @@ export function ProjectPortfolio({
   );
 
   return (
-    <div className={cn("min-h-screen bg-off-white dark:bg-off-black py-8", className)} {...props}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+    <div className={cn("min-h-screen bg-off-white py-8 dark:bg-off-black", className)} {...props}>
+      <div className="mx-auto max-w-7xl space-y-8 px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center space-y-4">
-          <h1 className="text-3xl lg:text-4xl font-bold text-off-black dark:text-off-white">
+        <div className="space-y-4 text-center">
+          <h1 className="text-3xl font-bold text-off-black dark:text-off-white lg:text-4xl">
             {title}
           </h1>
           {description && (
-            <p className="text-lg text-warm-gray max-w-3xl mx-auto leading-relaxed">
+            <p className="mx-auto max-w-3xl text-lg leading-relaxed text-warm-gray">
               {description}
             </p>
           )}
@@ -468,9 +468,9 @@ export function ProjectPortfolio({
         <div className="space-y-4">
           {/* Search */}
           {showSearch && (
-            <div className="max-w-2xl mx-auto">
+            <div className="mx-auto max-w-2xl">
               <form onSubmit={handleSearch} className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                   <LucideIcon icon={Search} size="sm" className="text-warm-gray" />
                 </div>
                 <input
@@ -479,10 +479,10 @@ export function ProjectPortfolio({
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={searchPlaceholder}
                   className={cn(
-                    "w-full pl-10 pr-4 py-3 border border-light-gray dark:border-warm-gray/30 rounded-lg",
-                    "bg-off-white dark:bg-off-black text-off-black dark:text-off-white",
+                    "w-full rounded-lg border border-light-gray py-3 pl-10 pr-4 dark:border-warm-gray/30",
+                    "bg-off-white text-off-black dark:bg-off-black dark:text-off-white",
                     "placeholder:text-warm-gray",
-                    "focus:ring-2 focus:ring-primary/20 focus:border-primary",
+                    "focus:border-primary focus:ring-2 focus:ring-primary/20",
                     "transition-colors"
                   )}
                 />
@@ -491,7 +491,7 @@ export function ProjectPortfolio({
           )}
 
           {/* Filter and View Controls */}
-          <div className="flex items-center justify-between gap-4 flex-wrap">
+          <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               {showFilters && (
                 <Button
@@ -556,9 +556,9 @@ export function ProjectPortfolio({
                 {filteredProjects.map(renderProjectCard)}
               </div>
             ) : (
-              <div className="text-center py-12 text-warm-gray">
+              <div className="py-12 text-center text-warm-gray">
                 <LucideIcon icon={Search} size="xl" className="mx-auto mb-4 opacity-50" />
-                <h3 className="text-lg font-medium mb-2">No projects found</h3>
+                <h3 className="mb-2 text-lg font-medium">No projects found</h3>
                 <p>Try adjusting your search or filter criteria.</p>
               </div>
             )}

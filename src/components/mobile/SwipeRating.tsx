@@ -301,7 +301,7 @@ export function SwipeRating({
     <div className={cn("select-none", className)}>
       {/* Instructions */}
       {showInstructions && (
-        <div className="text-center mb-4">
+        <div className="mb-4 text-center">
           <p className="text-sm text-warm-gray">
             {enableSwipe && enableTap ? 'Swipe or tap to rate' : 
              enableSwipe ? 'Swipe to rate' : 
@@ -334,7 +334,7 @@ export function SwipeRating({
         onClick={enableTap ? handleClick : undefined}
       >
         {/* Icons */}
-        <div className={cn("flex items-center justify-between flex-1", sizeStyles.spacing)}>
+        <div className={cn("flex flex-1 items-center justify-between", sizeStyles.spacing)}>
           {range.map((rating, index) => (
             <div
               key={rating}
@@ -354,7 +354,7 @@ export function SwipeRating({
         
         {/* Swipe Indicator */}
         {enableSwipe && (
-          <div className="absolute inset-0 flex items-center justify-between px-2 pointer-events-none">
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-between px-2">
             <Icon size={16} className="text-warm-gray/50">
               <ChevronLeft />
             </Icon>
@@ -367,11 +367,11 @@ export function SwipeRating({
       
       {/* Value Display */}
       {showValue && (
-        <div className="text-center mt-4">
+        <div className="mt-4 text-center">
           <span className={cn("font-semibold text-off-black dark:text-off-white", sizeStyles.value)}>
             {currentValue > 0 ? currentValue : '—'}
           </span>
-          <span className="text-warm-gray text-sm ml-2">
+          <span className="ml-2 text-sm text-warm-gray">
             {currentValue > 0 ? `/ ${max}` : `Rate from ${min} to ${max}`}
           </span>
         </div>
@@ -379,7 +379,7 @@ export function SwipeRating({
       
       {/* Labels */}
       {showLabels && (
-        <div className="flex justify-between mt-2 text-sm text-warm-gray">
+        <div className="mt-2 flex justify-between text-sm text-warm-gray">
           <span>{labels.min}</span>
           <span>{labels.max}</span>
         </div>

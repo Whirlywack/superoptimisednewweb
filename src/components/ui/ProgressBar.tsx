@@ -43,7 +43,7 @@ export function ProgressBar({
   return (
     <div className={cn("w-full", className)} {...props}>
       {showLabel && (
-        <div className="flex justify-between items-center mb-1">
+        <div className="mb-1 flex items-center justify-between">
           <span className="text-sm font-medium text-off-black">
             {displayLabel}
           </span>
@@ -55,7 +55,7 @@ export function ProgressBar({
       
       <div
         className={cn(
-          "w-full bg-light-gray rounded-full overflow-hidden",
+          "w-full overflow-hidden rounded-full bg-light-gray",
           progressSizes[size]
         )}
         role="progressbar"
@@ -66,10 +66,10 @@ export function ProgressBar({
       >
         <div
           className={cn(
-            "h-full transition-all duration-300 ease-out rounded-full",
+            "h-full rounded-full transition-all duration-300 ease-out",
             progressVariants[variant],
             animated && "animate-pulse",
-            striped && "bg-gradient-to-r from-transparent via-white/20 to-transparent bg-[length:1rem_1rem] animate-[progress-stripes_1s_linear_infinite]"
+            striped && "animate-[progress-stripes_1s_linear_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent bg-[length:1rem_1rem]"
           )}
           style={{ width: `${percentage}%` }}
         />
@@ -121,7 +121,7 @@ export function CircularProgress({
       <svg
         width={size}
         height={size}
-        className="transform -rotate-90"
+        className="-rotate-90"
         role="progressbar"
         aria-valuenow={value}
         aria-valuemin={0}
@@ -215,10 +215,10 @@ export function StepProgress({
     switch (status) {
       case "completed":
         return cn(
-          "bg-primary text-primary-foreground border-primary",
-          variant === "success" && "bg-primary border-primary",
-          variant === "warning" && "bg-warm-gray border-warm-gray",
-          variant === "danger" && "bg-warm-gray border-warm-gray"
+          "border-primary bg-primary text-primary-foreground",
+          variant === "success" && "border-primary bg-primary",
+          variant === "warning" && "border-warm-gray bg-warm-gray",
+          variant === "danger" && "border-warm-gray bg-warm-gray"
         );
       case "current":
         return "bg-background text-primary border-primary border-2";
@@ -256,7 +256,7 @@ export function StepProgress({
                       {stepData.label}
                     </div>
                     {stepData.description && (
-                      <div className="text-xs text-muted-foreground mt-1">
+                      <div className="mt-1 text-xs text-muted-foreground">
                         {stepData.description}
                       </div>
                     )}
@@ -267,7 +267,7 @@ export function StepProgress({
               {index < totalSteps - 1 && (
                 <div
                   className={cn(
-                    "flex-1 mx-2 rounded-full transition-all duration-200",
+                    "mx-2 flex-1 rounded-full transition-all duration-200",
                     sizeConfig.connector,
                     index < completedSteps ? "bg-primary" : "bg-muted"
                   )}

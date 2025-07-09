@@ -92,7 +92,7 @@ export function DevIndicator({
       {showLabel && label && (
         <div
           className={cn(
-            'absolute -top-6 left-0 px-2 py-1 text-xs font-mono font-medium rounded z-50',
+            'absolute -top-6 left-0 z-50 rounded px-2 py-1 font-mono text-xs font-medium',
             labelColors[color]
           )}
         >
@@ -104,7 +104,7 @@ export function DevIndicator({
       {showInfo && (
         <div
           className={cn(
-            'absolute -bottom-8 left-0 px-2 py-1 text-xs font-mono bg-gray-800 text-white rounded z-50',
+            'absolute -bottom-8 left-0 z-50 rounded bg-gray-800 px-2 py-1 font-mono text-xs text-white',
             'flex gap-2'
           )}
         >
@@ -201,7 +201,7 @@ export function DevBreakpointIndicator({ className }: DevBreakpointIndicatorProp
   return (
     <div
       className={cn(
-        'fixed top-4 right-4 z-50 px-3 py-2 bg-gray-800 text-white text-sm font-mono rounded shadow-lg',
+        'fixed right-4 top-4 z-50 rounded bg-gray-800 px-3 py-2 font-mono text-sm text-white shadow-lg',
         className
       )}
     >
@@ -255,7 +255,7 @@ export function DevComponentBoundary({
   return (
     <div
       className={cn(
-        'relative border border-dashed bg-current/5',
+        'bg-current/5 relative border border-dashed',
         borderColor,
         className
       )}
@@ -263,7 +263,7 @@ export function DevComponentBoundary({
       {name && (
         <div
           className={cn(
-            'absolute -top-5 left-0 px-2 py-1 text-xs font-mono font-medium bg-gray-800 text-white rounded z-10'
+            'absolute -top-5 left-0 z-10 rounded bg-gray-800 px-2 py-1 font-mono text-xs font-medium text-white'
           )}
         >
           {name}

@@ -96,26 +96,26 @@ export function ArticleList({
         className={cn(
           "group cursor-pointer transition-all duration-200",
           isCompact
-            ? "flex gap-4 p-4 rounded-lg hover:bg-light-gray dark:hover:bg-warm-gray/10"
-            : "block p-6 rounded-lg border border-light-gray dark:border-warm-gray/30 hover:border-primary/30 dark:hover:border-primary/50"
+            ? "flex gap-4 rounded-lg p-4 hover:bg-light-gray dark:hover:bg-warm-gray/10"
+            : "block rounded-lg border border-light-gray p-6 hover:border-primary/30 dark:border-warm-gray/30 dark:hover:border-primary/50"
         )}
         onClick={() => handleArticleClick(article)}
       >
         {/* Featured Badge */}
         {article.featured && !isCompact && (
           <div className="mb-3">
-            <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-primary/10 text-primary">
+            <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
               Featured
             </span>
           </div>
         )}
 
-        <div className={cn(isCompact ? "flex-1 min-w-0" : "space-y-3")}>
+        <div className={cn(isCompact ? "min-w-0 flex-1" : "space-y-3")}>
           {/* Title */}
           <h3
             className={cn(
-              "font-semibold text-off-black dark:text-off-white group-hover:text-primary transition-colors",
-              isCompact ? "text-lg line-clamp-2" : "text-xl"
+              "font-semibold text-off-black transition-colors group-hover:text-primary dark:text-off-white",
+              isCompact ? "line-clamp-2 text-lg" : "text-xl"
             )}
           >
             {article.title}
@@ -125,7 +125,7 @@ export function ArticleList({
           <p
             className={cn(
               "text-warm-gray",
-              isCompact ? "text-sm line-clamp-2" : "text-base line-clamp-3"
+              isCompact ? "line-clamp-2 text-sm" : "line-clamp-3 text-base"
             )}
           >
             {article.excerpt}
@@ -142,10 +142,10 @@ export function ArticleList({
                     setSelectedTag(selectedTag === tag ? null : tag);
                   }}
                   className={cn(
-                    "inline-flex items-center px-2 py-1 text-xs rounded-full transition-colors",
+                    "inline-flex items-center rounded-full px-2 py-1 text-xs transition-colors",
                     selectedTag === tag
                       ? "bg-primary text-off-white"
-                      : "bg-light-gray dark:bg-warm-gray/20 text-warm-gray hover:bg-primary/10 hover:text-primary"
+                      : "bg-light-gray text-warm-gray hover:bg-primary/10 hover:text-primary dark:bg-warm-gray/20"
                   )}
                 >
                   <LucideIcon icon={Tag} size="xs" className="mr-1" />
@@ -178,10 +178,10 @@ export function ArticleList({
           <div className={cn(isCompact ? "ml-2" : "mt-3")}>
             <span
               className={cn(
-                "inline-flex items-center px-2 py-1 text-xs font-medium rounded-full",
+                "inline-flex items-center rounded-full px-2 py-1 text-xs font-medium",
                 article.status === "draft"
-                  ? "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300"
-                  : "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
+                  ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300"
+                  : "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
               )}
             >
               {article.status === "draft" ? "Draft" : "Updated"}
@@ -210,11 +210,11 @@ export function ArticleList({
   return (
     <div className={cn("space-y-6", className)} {...props}>
       {/* Header with Controls */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
         <div className="flex items-center gap-4">
           {/* View Toggle */}
           {showViewToggle && variant !== "compact" && (
-            <div className="flex items-center gap-1 p-1 bg-light-gray dark:bg-warm-gray/20 rounded-md">
+            <div className="flex items-center gap-1 rounded-md bg-light-gray p-1 dark:bg-warm-gray/20">
               <Button
                 variant={view === "grid" ? "primary" : "ghost"}
                 size="sm"
@@ -256,7 +256,7 @@ export function ArticleList({
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
               className={cn(
-                "px-3 py-1 text-sm rounded-md",
+                "rounded-md px-3 py-1 text-sm",
                 "bg-off-white dark:bg-off-black",
                 "border border-light-gray dark:border-warm-gray/30",
                 "text-off-black dark:text-off-white",
@@ -288,17 +288,17 @@ export function ArticleList({
           {Array.from({ length: 6 }).map((_, i) => (
             <div
               key={i}
-              className="animate-pulse p-6 border border-light-gray dark:border-warm-gray/30 rounded-lg"
+              className="animate-pulse rounded-lg border border-light-gray p-6 dark:border-warm-gray/30"
             >
               <div className="space-y-3">
-                <div className="h-6 bg-light-gray dark:bg-warm-gray/20 rounded w-3/4"></div>
+                <div className="h-6 w-3/4 rounded bg-light-gray dark:bg-warm-gray/20"></div>
                 <div className="space-y-2">
-                  <div className="h-4 bg-light-gray dark:bg-warm-gray/20 rounded"></div>
-                  <div className="h-4 bg-light-gray dark:bg-warm-gray/20 rounded w-5/6"></div>
+                  <div className="h-4 rounded bg-light-gray dark:bg-warm-gray/20"></div>
+                  <div className="h-4 w-5/6 rounded bg-light-gray dark:bg-warm-gray/20"></div>
                 </div>
                 <div className="flex gap-2">
-                  <div className="h-6 bg-light-gray dark:bg-warm-gray/20 rounded w-16"></div>
-                  <div className="h-6 bg-light-gray dark:bg-warm-gray/20 rounded w-20"></div>
+                  <div className="h-6 w-16 rounded bg-light-gray dark:bg-warm-gray/20"></div>
+                  <div className="h-6 w-20 rounded bg-light-gray dark:bg-warm-gray/20"></div>
                 </div>
               </div>
             </div>
@@ -320,7 +320,7 @@ export function ArticleList({
               {sortedArticles.map(renderArticleCard)}
             </div>
           ) : (
-            <div className="text-center py-12">
+            <div className="py-12 text-center">
               <div className="space-y-3">
                 <LucideIcon icon={Grid} size="lg" className="mx-auto text-warm-gray" />
                 <h3 className="text-lg font-medium text-off-black dark:text-off-white">
@@ -345,7 +345,7 @@ export function ArticleList({
 
           {/* Load More */}
           {showLoadMore && hasMore && !loading && sortedArticles.length > 0 && (
-            <div className="text-center pt-6">
+            <div className="pt-6 text-center">
               <Button
                 variant="outline"
                 onClick={onLoadMore}

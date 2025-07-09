@@ -81,14 +81,14 @@ export function Toast({
     return null;
   }
 
-  const displayIcon = icon || (DefaultIcon && <DefaultIcon className="h-5 w-5" />);
+  const displayIcon = icon || (DefaultIcon && <DefaultIcon className="size-5" />);
 
   return (
     <div
       className={cn(
         "relative flex w-full max-w-sm items-start gap-3 rounded-lg border p-4 shadow-lg",
         "transition-all duration-300 ease-in-out",
-        "animate-in slide-in-from-top-2 fade-in-0",
+        "animate-in fade-in-0 slide-in-from-top-2",
         isVisible ? "opacity-100" : "opacity-0",
         variantStyles.container,
         className
@@ -98,14 +98,14 @@ export function Toast({
       {...props}
     >
       {displayIcon && (
-        <div className={cn("flex-shrink-0 mt-0.5", variantStyles.icon)}>
+        <div className={cn("mt-0.5 shrink-0", variantStyles.icon)}>
           {displayIcon}
         </div>
       )}
       
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         {title && (
-          <div className="font-semibold text-sm leading-5 mb-1">
+          <div className="mb-1 text-sm font-semibold leading-5">
             {title}
           </div>
         )}
@@ -130,8 +130,8 @@ export function Toast({
           type="button"
           onClick={handleClose}
           className={cn(
-            "flex-shrink-0 inline-flex items-center justify-center",
-            "h-5 w-5 rounded-md",
+            "inline-flex shrink-0 items-center justify-center",
+            "size-5 rounded-md",
             "hover:bg-black/10 dark:hover:bg-white/10",
             "transition-colors",
             "focus:outline-none focus:ring-2 focus:ring-current focus:ring-offset-2",
@@ -139,7 +139,7 @@ export function Toast({
           )}
           aria-label="Close notification"
         >
-          <X className="h-4 w-4" />
+          <X className="size-4" />
         </button>
       )}
     </div>
@@ -192,7 +192,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     <ToastContext.Provider value={{ toasts, toast, dismiss, dismissAll }}>
       {children}
       {toasts.length > 0 && (
-        <div className="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full">
+        <div className="fixed right-4 top-4 z-50 flex w-full max-w-sm flex-col gap-2">
           {toasts.map(({ component }) => component)}
         </div>
       )}

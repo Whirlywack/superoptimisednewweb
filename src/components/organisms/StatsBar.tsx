@@ -2,8 +2,9 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import { LucideIcon } from "@/components/ui/Icon";
 import { Link } from "@/components/ui/Typography";
+import type { 
+  FileText} from "lucide-react";
 import { 
-  FileText, 
   Clock, 
   Folder, 
   Users, 
@@ -137,17 +138,17 @@ export function StatsBar({
     
     const StatContent = () => (
       <div className={cn(
-        "flex flex-col items-center text-center space-y-2",
+        "flex flex-col items-center space-y-2 text-center",
         variant === "detailed" && "space-y-3",
-        isBest && "ring-2 ring-primary/20 bg-primary/5 rounded-lg",
+        isBest && "rounded-lg bg-primary/5 ring-2 ring-primary/20",
         statSizes[size].padding
       )}>
         {/* Icon */}
         {showIcons && stat.icon && (
           <div className={cn(
             "flex items-center justify-center rounded-full",
-            isBest ? "bg-primary text-off-white" : "bg-light-gray dark:bg-warm-gray/20 text-warm-gray",
-            size === "sm" ? "w-8 h-8" : size === "md" ? "w-10 h-10" : "w-12 h-12"
+            isBest ? "bg-primary text-off-white" : "bg-light-gray text-warm-gray dark:bg-warm-gray/20",
+            size === "sm" ? "size-8" : size === "md" ? "size-10" : "size-12"
           )}>
             <LucideIcon 
               icon={stat.icon} 
@@ -188,7 +189,7 @@ export function StatsBar({
           
           <p className={cn(
             statSizes[size].label,
-            "text-warm-gray font-medium"
+            "font-medium text-warm-gray"
           )}>
             {stat.label}
           </p>
@@ -196,14 +197,14 @@ export function StatsBar({
 
         {/* Description */}
         {variant === "detailed" && stat.description && (
-          <p className="text-xs text-warm-gray text-center leading-relaxed">
+          <p className="text-center text-xs leading-relaxed text-warm-gray">
             {stat.description}
           </p>
         )}
 
         {/* Best indicator */}
         {isBest && (
-          <div className="flex items-center gap-1 text-xs text-primary font-medium">
+          <div className="flex items-center gap-1 text-xs font-medium text-primary">
             <LucideIcon icon={Star} size="xs" />
             <span>Highest</span>
           </div>
@@ -216,7 +217,7 @@ export function StatsBar({
         <Link 
           key={index}
           href={stat.href} 
-          className="block no-underline hover:bg-light-gray/50 dark:hover:bg-warm-gray/10 rounded-lg transition-colors"
+          className="block rounded-lg no-underline transition-colors hover:bg-light-gray/50 dark:hover:bg-warm-gray/10"
         >
           <StatContent />
         </Link>
@@ -282,14 +283,14 @@ export function StatsBar({
       <div className="space-y-6">
         {/* Header */}
         {(title || description) && (
-          <div className="text-center space-y-2">
+          <div className="space-y-2 text-center">
             {title && (
               <h2 className="text-2xl font-bold text-off-black dark:text-off-white">
                 {title}
               </h2>
             )}
             {description && (
-              <p className="text-warm-gray max-w-2xl mx-auto">
+              <p className="mx-auto max-w-2xl text-warm-gray">
                 {description}
               </p>
             )}

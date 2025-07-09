@@ -196,7 +196,7 @@ export function IndividualPost({
       key={comment.id}
       className={cn(
         "space-y-3",
-        isReply && "ml-8 pl-4 border-l-2 border-light-gray dark:border-warm-gray/30"
+        isReply && "ml-8 border-l-2 border-light-gray pl-4 dark:border-warm-gray/30"
       )}
     >
       <div className="flex items-start gap-3">
@@ -205,22 +205,22 @@ export function IndividualPost({
           <img
             src={comment.author.avatar}
             alt={comment.author.name}
-            className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+            className="size-8 shrink-0 rounded-full object-cover"
           />
         ) : (
-          <div className="w-8 h-8 rounded-full bg-light-gray dark:bg-warm-gray/20 flex items-center justify-center flex-shrink-0">
+          <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-light-gray dark:bg-warm-gray/20">
             <LucideIcon icon={User} size="xs" className="text-warm-gray" />
           </div>
         )}
 
         <div className="flex-1 space-y-2">
           {/* Comment Header */}
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="font-medium text-off-black dark:text-off-white">
               {comment.author.name}
             </span>
             {comment.author.role && (
-              <span className="text-xs text-warm-gray bg-light-gray dark:bg-warm-gray/20 px-2 py-0.5 rounded">
+              <span className="rounded bg-light-gray px-2 py-0.5 text-xs text-warm-gray dark:bg-warm-gray/20">
                 {comment.author.role}
               </span>
             )}
@@ -233,7 +233,7 @@ export function IndividualPost({
           </div>
 
           {/* Comment Content */}
-          <div className="text-warm-gray leading-relaxed">
+          <div className="leading-relaxed text-warm-gray">
             {comment.content}
           </div>
 
@@ -242,7 +242,7 @@ export function IndividualPost({
             <button
               onClick={() => onCommentLike?.(comment.id)}
               className={cn(
-                "flex items-center gap-1 text-warm-gray hover:text-primary transition-colors",
+                "flex items-center gap-1 text-warm-gray transition-colors hover:text-primary",
                 comment.isLiked && "text-red-500"
               )}
             >
@@ -252,7 +252,7 @@ export function IndividualPost({
             
             <button
               onClick={() => setReplyTo(comment.id)}
-              className="flex items-center gap-1 text-warm-gray hover:text-primary transition-colors"
+              className="flex items-center gap-1 text-warm-gray transition-colors hover:text-primary"
             >
               <LucideIcon icon={Reply} size="xs" />
               <span>Reply</span>
@@ -260,16 +260,16 @@ export function IndividualPost({
 
             {comment.isAuthor && (
               <div className="flex items-center gap-2">
-                <button className="text-warm-gray hover:text-primary transition-colors">
+                <button className="text-warm-gray transition-colors hover:text-primary">
                   <LucideIcon icon={Edit} size="xs" />
                 </button>
-                <button className="text-warm-gray hover:text-red-500 transition-colors">
+                <button className="text-warm-gray transition-colors hover:text-red-500">
                   <LucideIcon icon={Trash2} size="xs" />
                 </button>
               </div>
             )}
 
-            <button className="text-warm-gray hover:text-primary transition-colors ml-auto">
+            <button className="ml-auto text-warm-gray transition-colors hover:text-primary">
               <LucideIcon icon={MoreVertical} size="xs" />
             </button>
           </div>
@@ -287,12 +287,12 @@ export function IndividualPost({
 
   return (
     <div className={cn("min-h-screen bg-off-white dark:bg-off-black", className)} {...props}>
-      <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <article className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Post Header */}
-        <header className="space-y-6 mb-8">
+        <header className="mb-8 space-y-6">
           {/* Series Info */}
           {post.series && (
-            <div className="bg-light-gray/50 dark:bg-warm-gray/10 px-4 py-3 rounded-lg">
+            <div className="rounded-lg bg-light-gray/50 px-4 py-3 dark:bg-warm-gray/10">
               <div className="text-sm text-warm-gray">
                 Part {post.series.part} of {post.series.total} in the series:
               </div>
@@ -303,12 +303,12 @@ export function IndividualPost({
           )}
 
           {/* Title */}
-          <h1 className="text-3xl lg:text-4xl font-bold text-off-black dark:text-off-white leading-tight">
+          <h1 className="text-3xl font-bold leading-tight text-off-black dark:text-off-white lg:text-4xl">
             {post.title}
           </h1>
 
           {/* Post Meta */}
-          <div className="flex items-center gap-4 flex-wrap text-sm text-warm-gray">
+          <div className="flex flex-wrap items-center gap-4 text-sm text-warm-gray">
             <div className="flex items-center gap-1">
               <LucideIcon icon={Calendar} size="xs" />
               <time>{formatDate(post.publishedAt)}</time>
@@ -352,7 +352,7 @@ export function IndividualPost({
               {post.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="bg-light-gray dark:bg-warm-gray/20 text-warm-gray px-2 py-1 rounded text-sm"
+                  className="rounded bg-light-gray px-2 py-1 text-sm text-warm-gray dark:bg-warm-gray/20"
                 >
                   #{tag}
                 </span>
@@ -361,7 +361,7 @@ export function IndividualPost({
           )}
 
           {/* Action Buttons */}
-          <div className="flex items-center gap-3 pt-4 border-t border-light-gray dark:border-warm-gray/30">
+          <div className="flex items-center gap-3 border-t border-light-gray pt-4 dark:border-warm-gray/30">
             <Button
               variant={post.isLiked ? "primary" : "outline"}
               size="sm"
@@ -390,24 +390,24 @@ export function IndividualPost({
               </Button>
 
               {showShareMenu && (
-                <div className="absolute top-full left-0 mt-2 bg-off-white dark:bg-off-black border border-light-gray dark:border-warm-gray/30 rounded-lg shadow-lg z-10 min-w-[160px]">
+                <div className="absolute left-0 top-full z-10 mt-2 min-w-[160px] rounded-lg border border-light-gray bg-off-white shadow-lg dark:border-warm-gray/30 dark:bg-off-black">
                   <button
                     onClick={() => handleShare("twitter")}
-                    className="w-full px-4 py-2 text-left text-sm text-off-black dark:text-off-white hover:bg-light-gray dark:hover:bg-warm-gray/10 flex items-center gap-2"
+                    className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-off-black hover:bg-light-gray dark:text-off-white dark:hover:bg-warm-gray/10"
                   >
                     <LucideIcon icon={Twitter} size="xs" />
                     Twitter
                   </button>
                   <button
                     onClick={() => handleShare("linkedin")}
-                    className="w-full px-4 py-2 text-left text-sm text-off-black dark:text-off-white hover:bg-light-gray dark:hover:bg-warm-gray/10 flex items-center gap-2"
+                    className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-off-black hover:bg-light-gray dark:text-off-white dark:hover:bg-warm-gray/10"
                   >
                     <LucideIcon icon={Linkedin} size="xs" />
                     LinkedIn
                   </button>
                   <button
                     onClick={() => handleShare("copy")}
-                    className="w-full px-4 py-2 text-left text-sm text-off-black dark:text-off-white hover:bg-light-gray dark:hover:bg-warm-gray/10 flex items-center gap-2"
+                    className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-off-black hover:bg-light-gray dark:text-off-white dark:hover:bg-warm-gray/10"
                   >
                     <LucideIcon icon={copied ? CheckCircle : Copy} size="xs" />
                     {copied ? "Copied!" : "Copy Link"}
@@ -419,25 +419,25 @@ export function IndividualPost({
         </header>
 
         {/* Post Content */}
-        <div className="prose max-w-none mb-12">
+        <div className="prose mb-12 max-w-none">
           <div 
-            className="text-warm-gray leading-relaxed text-lg"
+            className="text-lg leading-relaxed text-warm-gray"
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
         </div>
 
         {/* Author Card */}
         {showAuthorCard && (
-          <div className="bg-light-gray/50 dark:bg-warm-gray/10 rounded-lg p-6 mb-8">
+          <div className="mb-8 rounded-lg bg-light-gray/50 p-6 dark:bg-warm-gray/10">
             <div className="flex items-start gap-4">
               {post.author.avatar ? (
                 <img
                   src={post.author.avatar}
                   alt={post.author.name}
-                  className="w-16 h-16 rounded-full object-cover flex-shrink-0"
+                  className="size-16 shrink-0 rounded-full object-cover"
                 />
               ) : (
-                <div className="w-16 h-16 rounded-full bg-light-gray dark:bg-warm-gray/20 flex items-center justify-center flex-shrink-0">
+                <div className="flex size-16 shrink-0 items-center justify-center rounded-full bg-light-gray dark:bg-warm-gray/20">
                   <LucideIcon icon={User} size="md" className="text-warm-gray" />
                 </div>
               )}
@@ -447,7 +447,7 @@ export function IndividualPost({
                   {post.author.name}
                 </h3>
                 {post.author.role && (
-                  <p className="text-sm text-primary font-medium">{post.author.role}</p>
+                  <p className="text-sm font-medium text-primary">{post.author.role}</p>
                 )}
                 {post.author.bio && (
                   <p className="text-warm-gray">{post.author.bio}</p>
@@ -478,7 +478,7 @@ export function IndividualPost({
 
         {/* Comments Section */}
         {showComments && (
-          <div className="space-y-8 mb-8">
+          <div className="mb-8 space-y-8">
             <h2 className="text-2xl font-bold text-off-black dark:text-off-white">
               Comments ({comments.length})
             </h2>
@@ -496,10 +496,10 @@ export function IndividualPost({
                   placeholder={replyTo ? "Write a reply..." : "Share your thoughts..."}
                   rows={4}
                   className={cn(
-                    "w-full px-4 py-3 border border-light-gray dark:border-warm-gray/30 rounded-lg",
-                    "bg-off-white dark:bg-off-black text-off-black dark:text-off-white",
-                    "placeholder:text-warm-gray resize-y",
-                    "focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                    "w-full rounded-lg border border-light-gray px-4 py-3 dark:border-warm-gray/30",
+                    "bg-off-white text-off-black dark:bg-off-black dark:text-off-white",
+                    "resize-y placeholder:text-warm-gray",
+                    "focus:border-primary focus:ring-2 focus:ring-primary/20"
                   )}
                 />
               </div>
@@ -535,7 +535,7 @@ export function IndividualPost({
             </div>
 
             {comments.length === 0 && (
-              <div className="text-center py-8 text-warm-gray">
+              <div className="py-8 text-center text-warm-gray">
                 <LucideIcon icon={MessageCircle} size="lg" className="mx-auto mb-3 opacity-50" />
                 <p>No comments yet. Be the first to share your thoughts!</p>
               </div>
@@ -545,23 +545,23 @@ export function IndividualPost({
 
         {/* Related Posts */}
         {showRelated && relatedPosts.length > 0 && (
-          <div className="space-y-6 mb-8">
+          <div className="mb-8 space-y-6">
             <h2 className="text-2xl font-bold text-off-black dark:text-off-white">
               Related Posts
             </h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {relatedPosts.map((relatedPost) => (
                 <article
                   key={relatedPost.id}
-                  className="bg-light-gray/50 dark:bg-warm-gray/10 rounded-lg p-6 space-y-3"
+                  className="space-y-3 rounded-lg bg-light-gray/50 p-6 dark:bg-warm-gray/10"
                 >
-                  <h3 className="font-semibold text-off-black dark:text-off-white leading-snug">
-                    <Link href={relatedPost.href} className="hover:text-primary no-underline">
+                  <h3 className="font-semibold leading-snug text-off-black dark:text-off-white">
+                    <Link href={relatedPost.href} className="no-underline hover:text-primary">
                       {relatedPost.title}
                     </Link>
                   </h3>
-                  <p className="text-warm-gray text-sm leading-relaxed">
+                  <p className="text-sm leading-relaxed text-warm-gray">
                     {relatedPost.excerpt}
                   </p>
                   <div className="flex items-center gap-4 text-xs text-warm-gray">
@@ -576,10 +576,10 @@ export function IndividualPost({
 
         {/* Post Navigation */}
         {showNavigation && (previousPost || nextPost) && (
-          <nav className="flex items-center justify-between gap-4 pt-8 border-t border-light-gray dark:border-warm-gray/30">
+          <nav className="flex items-center justify-between gap-4 border-t border-light-gray pt-8 dark:border-warm-gray/30">
             <div className="flex-1">
               {previousPost && (
-                <Link href={previousPost.href} className="group flex items-center gap-2 text-warm-gray hover:text-primary no-underline">
+                <Link href={previousPost.href} className="group flex items-center gap-2 text-warm-gray no-underline hover:text-primary">
                   <LucideIcon icon={ArrowLeft} size="sm" />
                   <div>
                     <div className="text-xs">Previous</div>
@@ -591,7 +591,7 @@ export function IndividualPost({
             
             <div className="flex-1 text-right">
               {nextPost && (
-                <Link href={nextPost.href} className="group flex items-center justify-end gap-2 text-warm-gray hover:text-primary no-underline">
+                <Link href={nextPost.href} className="group flex items-center justify-end gap-2 text-warm-gray no-underline hover:text-primary">
                   <div>
                     <div className="text-xs">Next</div>
                     <div className="font-medium group-hover:underline">{nextPost.title}</div>

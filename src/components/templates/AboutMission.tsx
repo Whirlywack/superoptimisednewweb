@@ -203,17 +203,17 @@ export function AboutMission({
     <div className={cn("min-h-screen bg-off-white dark:bg-off-black", className)} {...props}>
       {/* Hero Section */}
       <section className="relative py-16 lg:py-24">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
-          <h1 className="text-4xl lg:text-5xl font-bold text-off-black dark:text-off-white leading-tight">
+        <div className="mx-auto max-w-4xl space-y-8 px-4 text-center sm:px-6 lg:px-8">
+          <h1 className="text-4xl font-bold leading-tight text-off-black dark:text-off-white lg:text-5xl">
             {title}
           </h1>
           
-          <p className="text-xl text-warm-gray leading-relaxed max-w-3xl mx-auto">
+          <p className="mx-auto max-w-3xl text-xl leading-relaxed text-warm-gray">
             {subtitle}
           </p>
           
-          <div className="bg-light-gray/50 dark:bg-warm-gray/10 rounded-lg p-8 text-left">
-            <p className="text-lg text-warm-gray leading-relaxed">
+          <div className="rounded-lg bg-light-gray/50 p-8 text-left dark:bg-warm-gray/10">
+            <p className="text-lg leading-relaxed text-warm-gray">
               {story}
             </p>
           </div>
@@ -221,9 +221,9 @@ export function AboutMission({
       </section>
 
       {/* Mission & Vision */}
-      <section className="py-16 bg-light-gray/30 dark:bg-warm-gray/5">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <section className="bg-light-gray/30 py-16 dark:bg-warm-gray/5">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
             {/* Mission */}
             <div className="space-y-6">
               <div className="flex items-center gap-3">
@@ -232,7 +232,7 @@ export function AboutMission({
                   Our Mission
                 </h2>
               </div>
-              <p className="text-lg text-warm-gray leading-relaxed">
+              <p className="text-lg leading-relaxed text-warm-gray">
                 {mission}
               </p>
             </div>
@@ -245,7 +245,7 @@ export function AboutMission({
                   Our Vision
                 </h2>
               </div>
-              <p className="text-lg text-warm-gray leading-relaxed">
+              <p className="text-lg leading-relaxed text-warm-gray">
                 {vision}
               </p>
             </div>
@@ -256,31 +256,31 @@ export function AboutMission({
       {/* Values */}
       {showValues && displayValues.length > 0 && (
         <section className="py-16">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          <div className="mx-auto max-w-6xl space-y-12 px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <h2 className="text-3xl font-bold text-off-black dark:text-off-white mb-4">
+              <h2 className="mb-4 text-3xl font-bold text-off-black dark:text-off-white">
                 Our Values
               </h2>
-              <p className="text-lg text-warm-gray max-w-2xl mx-auto">
+              <p className="mx-auto max-w-2xl text-lg text-warm-gray">
                 The principles that guide every decision we make and every feature we build.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
               {displayValues.map((value) => (
                 <div
                   key={value.id}
-                  className="bg-off-white dark:bg-off-black border border-light-gray dark:border-warm-gray/30 rounded-lg p-8 space-y-4"
+                  className="space-y-4 rounded-lg border border-light-gray bg-off-white p-8 dark:border-warm-gray/30 dark:bg-off-black"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-primary/10 rounded-lg">
+                    <div className="rounded-lg bg-primary/10 p-2">
                       <LucideIcon icon={value.icon} size="md" className="text-primary" />
                     </div>
                     <h3 className="text-xl font-semibold text-off-black dark:text-off-white">
                       {value.title}
                     </h3>
                   </div>
-                  <p className="text-warm-gray leading-relaxed">
+                  <p className="leading-relaxed text-warm-gray">
                     {value.description}
                   </p>
                 </div>
@@ -292,13 +292,13 @@ export function AboutMission({
 
       {/* Milestones */}
       {showMilestones && displayMilestones.length > 0 && (
-        <section className="py-16 bg-light-gray/30 dark:bg-warm-gray/5">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <section className="bg-light-gray/30 py-16 dark:bg-warm-gray/5">
+          <div className="mx-auto max-w-4xl space-y-12 px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <h2 className="text-3xl font-bold text-off-black dark:text-off-white mb-4">
+              <h2 className="mb-4 text-3xl font-bold text-off-black dark:text-off-white">
                 Our Journey
               </h2>
-              <p className="text-lg text-warm-gray max-w-2xl mx-auto">
+              <p className="mx-auto max-w-2xl text-lg text-warm-gray">
                 Key milestones in our transparent building journey.
               </p>
             </div>
@@ -307,21 +307,21 @@ export function AboutMission({
               {displayMilestones.map((milestone, index) => (
                 <div
                   key={milestone.id}
-                  className="flex gap-6 relative"
+                  className="relative flex gap-6"
                 >
                   {/* Timeline Line */}
                   {index < displayMilestones.length - 1 && (
-                    <div className="absolute left-4 top-12 w-0.5 h-16 bg-light-gray dark:bg-warm-gray/30" />
+                    <div className="absolute left-4 top-12 h-16 w-0.5 bg-light-gray dark:bg-warm-gray/30" />
                   )}
                   
                   {/* Timeline Dot */}
-                  <div className="flex-shrink-0 w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                    <div className="w-3 h-3 bg-off-white rounded-full" />
+                  <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary">
+                    <div className="size-3 rounded-full bg-off-white" />
                   </div>
 
                   {/* Content */}
                   <div className="space-y-2 pb-8">
-                    <div className="flex items-center gap-4 flex-wrap">
+                    <div className="flex flex-wrap items-center gap-4">
                       <h3 className="text-lg font-semibold text-off-black dark:text-off-white">
                         {milestone.title}
                       </h3>
@@ -330,12 +330,12 @@ export function AboutMission({
                         <span>{formatDate(milestone.date)}</span>
                       </div>
                       {milestone.metric && (
-                        <span className="bg-primary/10 text-primary px-2 py-1 rounded text-sm font-medium">
+                        <span className="rounded bg-primary/10 px-2 py-1 text-sm font-medium text-primary">
                           {milestone.metric}
                         </span>
                       )}
                     </div>
-                    <p className="text-warm-gray leading-relaxed">
+                    <p className="leading-relaxed text-warm-gray">
                       {milestone.description}
                     </p>
                   </div>
@@ -349,24 +349,24 @@ export function AboutMission({
       {/* Team */}
       {showTeam && displayTeam.length > 0 && (
         <section className="py-16">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          <div className="mx-auto max-w-6xl space-y-12 px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <h2 className="text-3xl font-bold text-off-black dark:text-off-white mb-4">
+              <h2 className="mb-4 text-3xl font-bold text-off-black dark:text-off-white">
                 Meet the Team
               </h2>
-              <p className="text-lg text-warm-gray max-w-2xl mx-auto">
+              <p className="mx-auto max-w-2xl text-lg text-warm-gray">
                 The people building this platform and sharing the journey with you.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
               {displayTeam.map((member) => (
                 <div
                   key={member.id}
                   onClick={() => onTeamMemberClick?.(member)}
                   className={cn(
-                    "bg-off-white dark:bg-off-black border border-light-gray dark:border-warm-gray/30 rounded-lg p-6 space-y-4 text-center",
-                    onTeamMemberClick && "cursor-pointer hover:border-primary/50 transition-colors"
+                    "space-y-4 rounded-lg border border-light-gray bg-off-white p-6 text-center dark:border-warm-gray/30 dark:bg-off-black",
+                    onTeamMemberClick && "cursor-pointer transition-colors hover:border-primary/50"
                   )}
                 >
                   {/* Avatar */}
@@ -374,10 +374,10 @@ export function AboutMission({
                     <img
                       src={member.avatar}
                       alt={member.name}
-                      className="w-20 h-20 rounded-full object-cover mx-auto"
+                      className="mx-auto size-20 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="w-20 h-20 rounded-full bg-light-gray dark:bg-warm-gray/20 flex items-center justify-center mx-auto">
+                    <div className="mx-auto flex size-20 items-center justify-center rounded-full bg-light-gray dark:bg-warm-gray/20">
                       <LucideIcon icon={Users} size="lg" className="text-warm-gray" />
                     </div>
                   )}
@@ -386,10 +386,10 @@ export function AboutMission({
                     <h3 className="text-lg font-semibold text-off-black dark:text-off-white">
                       {member.name}
                     </h3>
-                    <p className="text-sm text-primary font-medium">
+                    <p className="text-sm font-medium text-primary">
                       {member.role}
                     </p>
-                    <p className="text-warm-gray text-sm leading-relaxed">
+                    <p className="text-sm leading-relaxed text-warm-gray">
                       {member.bio}
                     </p>
                   </div>
@@ -428,28 +428,28 @@ export function AboutMission({
 
       {/* Contact */}
       {showContact && displayContactMethods.length > 0 && (
-        <section className="py-16 bg-light-gray/30 dark:bg-warm-gray/5">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <section className="bg-light-gray/30 py-16 dark:bg-warm-gray/5">
+          <div className="mx-auto max-w-4xl space-y-12 px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <h2 className="text-3xl font-bold text-off-black dark:text-off-white mb-4">
+              <h2 className="mb-4 text-3xl font-bold text-off-black dark:text-off-white">
                 Get in Touch
               </h2>
-              <p className="text-lg text-warm-gray max-w-2xl mx-auto">
+              <p className="mx-auto max-w-2xl text-lg text-warm-gray">
                 We'd love to hear from you. Whether you have questions, feedback, or just want to connect.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               {displayContactMethods.map((method) => (
                 <div
                   key={method.type}
                   onClick={() => onContactClick?.(method)}
                   className={cn(
-                    "bg-off-white dark:bg-off-black border border-light-gray dark:border-warm-gray/30 rounded-lg p-6 text-center space-y-4",
-                    "hover:border-primary/50 transition-colors cursor-pointer"
+                    "space-y-4 rounded-lg border border-light-gray bg-off-white p-6 text-center dark:border-warm-gray/30 dark:bg-off-black",
+                    "cursor-pointer transition-colors hover:border-primary/50"
                   )}
                 >
-                  <div className="p-3 bg-primary/10 rounded-lg w-fit mx-auto">
+                  <div className="mx-auto w-fit rounded-lg bg-primary/10 p-3">
                     <LucideIcon icon={method.icon} size="lg" className="text-primary" />
                   </div>
                   
@@ -457,7 +457,7 @@ export function AboutMission({
                     <h3 className="font-semibold text-off-black dark:text-off-white">
                       {method.label}
                     </h3>
-                    <p className="text-warm-gray text-sm">
+                    <p className="text-sm text-warm-gray">
                       {method.value}
                     </p>
                   </div>

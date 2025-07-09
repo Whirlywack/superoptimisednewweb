@@ -77,7 +77,7 @@ export function CommunityQuote({
           <LucideIcon
             icon={Quote}
             size={sizeClasses[size].icon}
-            className="absolute -top-2 -left-2 text-primary/40"
+            className="absolute -left-2 -top-2 text-primary/40"
           />
         )}
         
@@ -98,7 +98,7 @@ export function CommunityQuote({
           <img
             src={avatar}
             alt={`${author} avatar`}
-            className="w-10 h-10 rounded-full object-cover bg-light-gray dark:bg-warm-gray/20"
+            className="size-10 rounded-full bg-light-gray object-cover dark:bg-warm-gray/20"
           />
         )}
         

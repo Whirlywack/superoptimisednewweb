@@ -131,11 +131,11 @@ export function PostCard({
         )}
 
         {status === "updated" && (
-          <span className="text-primary font-medium">Updated</span>
+          <span className="font-medium text-primary">Updated</span>
         )}
         
         {status === "draft" && (
-          <span className="text-warm-gray italic">Draft</span>
+          <span className="italic text-warm-gray">Draft</span>
         )}
       </div>
     );
@@ -184,8 +184,8 @@ export function PostCard({
         <div className="flex items-start justify-between gap-2">
           <h3 className={cn(
             titleSizes[size],
-            "font-semibold text-off-black dark:text-off-white leading-tight",
-            "group-hover:text-primary transition-colors duration-200"
+            "font-semibold leading-tight text-off-black dark:text-off-white",
+            "transition-colors duration-200 group-hover:text-primary"
           )}>
             {title}
           </h3>
@@ -194,7 +194,7 @@ export function PostCard({
             <LucideIcon 
               icon={Star} 
               size="sm" 
-              className="text-primary flex-shrink-0 mt-1"
+              className="mt-1 shrink-0 text-primary"
             />
           )}
         </div>
@@ -206,7 +206,7 @@ export function PostCard({
       {showExcerpt && excerpt && (
         <p className={cn(
           excerptSizes[size],
-          "text-warm-gray leading-relaxed",
+          "leading-relaxed text-warm-gray",
           variant === "compact" ? "line-clamp-2" : "line-clamp-3"
         )}>
           {excerpt}
@@ -223,12 +223,12 @@ export function PostCard({
 
       {/* Read More */}
       {variant !== "minimal" && (
-        <div className="flex items-center gap-2 text-primary font-medium">
+        <div className="flex items-center gap-2 font-medium text-primary">
           <span>Read more</span>
           <LucideIcon 
             icon={external ? ExternalLink : ArrowRight} 
             size="xs" 
-            className="group-hover:translate-x-1 transition-transform duration-200"
+            className="transition-transform duration-200 group-hover:translate-x-1"
           />
         </div>
       )}
@@ -250,7 +250,7 @@ export function PostCard({
         <Link 
           href={postUrl} 
           external={external}
-          className="no-underline block space-y-3"
+          className="block space-y-3 no-underline"
         >
           <CardContent />
         </Link>
@@ -272,7 +272,7 @@ export function PostCard({
       <Link 
         href={postUrl} 
         external={external}
-        className="no-underline block space-y-4"
+        className="block space-y-4 no-underline"
       >
         <CardContent />
       </Link>

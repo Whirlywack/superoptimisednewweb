@@ -90,14 +90,14 @@ export function RatingQuestion({
           onMouseLeave={handleMouseLeave}
           disabled={disabled}
           className={cn(
-            "p-1 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20 rounded",
+            "rounded p-1 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/20",
             disabled && "cursor-not-allowed opacity-50"
           )}
           aria-label={`Rate ${i} out of ${scale} stars`}
         >
           <Star
             className={cn(
-              "w-8 h-8 transition-colors",
+              "size-8 transition-colors",
               isActive || isHovered
                 ? "fill-yellow-400 text-yellow-400"
                 : "fill-none text-warm-gray hover:text-yellow-300"
@@ -131,7 +131,7 @@ export function RatingQuestion({
           onMouseLeave={handleMouseLeave}
           disabled={disabled}
           className={cn(
-            "w-12 h-12 border-2 rounded-lg transition-all duration-200",
+            "size-12 rounded-lg border-2 transition-all duration-200",
             "hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/20",
             isSelected || isHovered
               ? "border-primary bg-primary text-off-white"
@@ -172,7 +172,7 @@ export function RatingQuestion({
           onMouseLeave={handleMouseLeave}
           disabled={disabled}
           className={cn(
-            "p-3 border-2 rounded-lg transition-all duration-200",
+            "rounded-lg border-2 p-3 transition-all duration-200",
             "hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/20",
             isActive || isHovered
               ? "border-primary bg-primary text-off-white"
@@ -182,7 +182,7 @@ export function RatingQuestion({
           aria-label={`Rate ${i} out of ${displayScale}`}
           aria-pressed={isActive && !hoverRating}
         >
-          <ThumbsUp className="w-6 h-6" />
+          <ThumbsUp className="size-6" />
         </button>
       );
     }
@@ -226,7 +226,7 @@ export function RatingQuestion({
           {question}
         </QuestionLabel>
         {description && (
-          <p className="text-warm-gray text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-warm-gray">
             {description}
           </p>
         )}
@@ -236,12 +236,12 @@ export function RatingQuestion({
       </div>
 
       {/* Rating Component */}
-      <div className="bg-off-white border-2 border-light-gray rounded-lg p-6">
+      <div className="rounded-lg border-2 border-light-gray bg-off-white p-6">
         {getRatingComponent()}
         
         {/* Scale Labels */}
         {scaleLabels && (
-          <div className="flex justify-between text-xs text-warm-gray mt-4">
+          <div className="mt-4 flex justify-between text-xs text-warm-gray">
             <span>{scaleLabels.min}</span>
             <span>{scaleLabels.max}</span>
           </div>
@@ -251,11 +251,11 @@ export function RatingQuestion({
       {/* Selected Rating Display */}
       {rating && (
         <div className="text-center">
-          <div className="inline-flex items-center gap-2 bg-primary text-off-white px-4 py-2 rounded-full">
+          <div className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-off-white">
             <span className="font-medium">Your Rating:</span>
-            <span className="font-bold text-lg">{rating}/{scale}</span>
+            <span className="text-lg font-bold">{rating}/{scale}</span>
             {variant === 'stars' && (
-              <Star className="w-4 h-4 fill-current" />
+              <Star className="size-4 fill-current" />
             )}
           </div>
         </div>

@@ -1,7 +1,8 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { TechStackSelector, TechStackOption } from './TechStackSelector';
+import type { TechStackOption } from './TechStackSelector';
+import { TechStackSelector } from './TechStackSelector';
 
 // Mock the utility functions
 jest.mock('@/lib/utils', () => ({

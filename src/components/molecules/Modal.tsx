@@ -78,8 +78,8 @@ export function Modal({
         "fixed inset-0 z-50 flex items-center justify-center p-4",
         "transition-all duration-200 ease-out",
         open
-          ? "bg-black/50 backdrop-blur-sm opacity-100"
-          : "bg-black/0 backdrop-blur-0 opacity-0 pointer-events-none",
+          ? "bg-black/50 opacity-100 backdrop-blur-sm"
+          : "pointer-events-none bg-black/0 opacity-0 backdrop-blur-0",
         overlayClassName
       )}
       onClick={handleOverlayClick}
@@ -90,19 +90,19 @@ export function Modal({
     >
       <div
         className={cn(
-          "relative w-full bg-background rounded-lg shadow-lg",
+          "relative w-full rounded-lg bg-background shadow-lg",
           "transition-all duration-200 ease-out",
           "max-h-[90vh] overflow-hidden",
           open
-            ? "scale-100 translate-y-0 opacity-100"
-            : "scale-95 translate-y-4 opacity-0",
+            ? "translate-y-0 scale-100 opacity-100"
+            : "translate-y-4 scale-95 opacity-0",
           modalSizes[size],
           className
         )}
       >
         {/* Header */}
         {(title || closable) && (
-          <div className="flex items-center justify-between p-6 border-b border-border">
+          <div className="flex items-center justify-between border-b border-border p-6">
             <div className="flex-1">
               {title && (
                 <h2
@@ -128,21 +128,21 @@ export function Modal({
                 onClick={onClose}
                 className={cn(
                   "ml-4 inline-flex items-center justify-center",
-                  "h-8 w-8 rounded-md",
+                  "size-8 rounded-md",
                   "hover:bg-muted",
                   "transition-colors",
                   "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                 )}
                 aria-label="Close dialog"
               >
-                <X className="h-4 w-4" />
+                <X className="size-4" />
               </button>
             )}
           </div>
         )}
 
         {/* Content */}
-        <div className="overflow-y-auto max-h-[calc(90vh-8rem)]">
+        <div className="max-h-[calc(90vh-8rem)] overflow-y-auto">
           {children}
         </div>
       </div>
@@ -170,7 +170,7 @@ export function ModalFooter({ className, children, ...props }: ModalFooterProps)
   return (
     <div
       className={cn(
-        "flex items-center justify-end gap-3 p-6 border-t border-border bg-muted/30",
+        "flex items-center justify-end gap-3 border-t border-border bg-muted/30 p-6",
         className
       )}
       {...props}

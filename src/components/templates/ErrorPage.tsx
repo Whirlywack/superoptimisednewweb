@@ -206,16 +206,16 @@ export function ErrorPage({
   const displaySuggestions = suggestions || getDefaultSuggestions();
 
   return (
-    <div className={cn("min-h-screen bg-off-white dark:bg-off-black flex items-center justify-center p-4", className)} {...props}>
-      <div className="max-w-2xl w-full text-center space-y-8">
+    <div className={cn("flex min-h-screen items-center justify-center bg-off-white p-4 dark:bg-off-black", className)} {...props}>
+      <div className="w-full max-w-2xl space-y-8 text-center">
         {/* Error Icon and Code */}
         <div className="space-y-6">
-          <div className="w-24 h-24 bg-warm-gray/10 dark:bg-warm-gray/20 rounded-full flex items-center justify-center mx-auto">
+          <div className="mx-auto flex size-24 items-center justify-center rounded-full bg-warm-gray/10 dark:bg-warm-gray/20">
             <LucideIcon icon={ErrorIcon} size="xl" className="text-warm-gray" />
           </div>
           
           {showErrorDetails && (
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-light-gray dark:bg-warm-gray/20 rounded-full text-sm text-warm-gray">
+            <div className="inline-flex items-center gap-2 rounded-full bg-light-gray px-3 py-1 text-sm text-warm-gray dark:bg-warm-gray/20">
               <span>Error {errorConfig.code}</span>
             </div>
           )}
@@ -223,7 +223,7 @@ export function ErrorPage({
 
         {/* Error Content */}
         <div className="space-y-4">
-          <h1 className="text-3xl lg:text-4xl font-bold text-off-black dark:text-off-white">
+          <h1 className="text-3xl font-bold text-off-black dark:text-off-white lg:text-4xl">
             {errorConfig.title}
           </h1>
           
@@ -232,14 +232,14 @@ export function ErrorPage({
           </p>
           
           {errorConfig.description && (
-            <p className="text-warm-gray leading-relaxed max-w-lg mx-auto">
+            <p className="mx-auto max-w-lg leading-relaxed text-warm-gray">
               {errorConfig.description}
             </p>
           )}
         </div>
 
         {/* Actions */}
-        <div className="flex items-center justify-center gap-4 flex-wrap">
+        <div className="flex flex-wrap items-center justify-center gap-4">
           {displayActions.map((action) => (
             <Button
               key={action.id}
@@ -272,29 +272,29 @@ export function ErrorPage({
         {/* Suggestions */}
         {showSuggestions && displaySuggestions.length > 0 && (
           <div className="space-y-6">
-            <div className="w-full h-px bg-light-gray dark:bg-warm-gray/30" />
+            <div className="h-px w-full bg-light-gray dark:bg-warm-gray/30" />
             
             <div className="space-y-4">
               <h2 className="text-lg font-semibold text-off-black dark:text-off-white">
                 Try these instead
               </h2>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                 {displaySuggestions.map((suggestion) => (
                   <Link
                     key={suggestion.id}
                     href={suggestion.href}
-                    className="block p-4 bg-light-gray/50 dark:bg-warm-gray/10 rounded-lg hover:bg-light-gray dark:hover:bg-warm-gray/20 transition-colors no-underline group"
+                    className="group block rounded-lg bg-light-gray/50 p-4 no-underline transition-colors hover:bg-light-gray dark:bg-warm-gray/10 dark:hover:bg-warm-gray/20"
                   >
                     <div className="flex items-start gap-3">
-                      <div className="p-2 bg-primary/10 rounded-lg flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                      <div className="shrink-0 rounded-lg bg-primary/10 p-2 transition-colors group-hover:bg-primary/20">
                         <LucideIcon icon={suggestion.icon} size="sm" className="text-primary" />
                       </div>
                       <div className="space-y-1 text-left">
-                        <h3 className="font-medium text-off-black dark:text-off-white text-sm">
+                        <h3 className="text-sm font-medium text-off-black dark:text-off-white">
                           {suggestion.title}
                         </h3>
-                        <p className="text-xs text-warm-gray leading-relaxed">
+                        <p className="text-xs leading-relaxed text-warm-gray">
                           {suggestion.description}
                         </p>
                       </div>
@@ -309,11 +309,11 @@ export function ErrorPage({
         {/* Error Details */}
         {showErrorDetails && (timestamp || requestId) && (
           <div className="space-y-4">
-            <div className="w-full h-px bg-light-gray dark:bg-warm-gray/30" />
+            <div className="h-px w-full bg-light-gray dark:bg-warm-gray/30" />
             
-            <div className="text-center space-y-2">
+            <div className="space-y-2 text-center">
               <p className="text-sm text-warm-gray">Error Details</p>
-              <div className="text-xs text-warm-gray space-y-1">
+              <div className="space-y-1 text-xs text-warm-gray">
                 {timestamp && (
                   <div>Timestamp: {timestamp}</div>
                 )}
@@ -328,9 +328,9 @@ export function ErrorPage({
         {/* Contact Information */}
         {showContactInfo && (
           <div className="space-y-4">
-            <div className="w-full h-px bg-light-gray dark:bg-warm-gray/30" />
+            <div className="h-px w-full bg-light-gray dark:bg-warm-gray/30" />
             
-            <div className="text-center space-y-3">
+            <div className="space-y-3 text-center">
               <p className="text-sm font-medium text-off-black dark:text-off-white">
                 Need help?
               </p>

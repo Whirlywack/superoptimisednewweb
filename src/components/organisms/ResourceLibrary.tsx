@@ -186,7 +186,7 @@ export function ResourceLibrary({
         key={resource.id}
         onClick={() => handleResourceClick(resource)}
         className={cn(
-          "bg-off-white dark:bg-off-black border border-light-gray dark:border-warm-gray/30 rounded-lg p-6 space-y-4 hover:border-primary/50 transition-colors cursor-pointer",
+          "cursor-pointer space-y-4 rounded-lg border border-light-gray bg-off-white p-6 transition-colors hover:border-primary/50 dark:border-warm-gray/30 dark:bg-off-black",
           resource.featured && "ring-2 ring-primary/20",
           viewMode === "list" && "flex items-start gap-6 p-4"
         )}
@@ -194,19 +194,19 @@ export function ResourceLibrary({
         {/* Icon and Header */}
         <div className={cn(
           "flex items-start gap-4",
-          viewMode === "list" && "flex-shrink-0"
+          viewMode === "list" && "shrink-0"
         )}>
-          <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+          <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-primary/10">
             <LucideIcon icon={TypeIcon} size="md" className="text-primary" />
           </div>
           
           <div className={cn(
-            "space-y-2 flex-1",
+            "flex-1 space-y-2",
             viewMode === "list" && "space-y-1"
           )}>
             <div className="flex items-start justify-between gap-2">
               <h3 className={cn(
-                "font-semibold text-off-black dark:text-off-white leading-snug",
+                "font-semibold leading-snug text-off-black dark:text-off-white",
                 size === "sm" ? "text-base" : size === "md" ? "text-lg" : "text-xl",
                 viewMode === "list" && "text-base"
               )}>
@@ -214,16 +214,16 @@ export function ResourceLibrary({
               </h3>
               
               {resource.featured && (
-                <div className="bg-primary/10 text-primary px-2 py-1 rounded text-xs font-medium">
+                <div className="rounded bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
                   Featured
                 </div>
               )}
             </div>
             
             <p className={cn(
-              "text-warm-gray leading-relaxed",
+              "leading-relaxed text-warm-gray",
               size === "sm" ? "text-sm" : "text-base",
-              viewMode === "list" && "text-sm line-clamp-2"
+              viewMode === "list" && "line-clamp-2 text-sm"
             )}>
               {resource.description}
             </p>
@@ -233,7 +233,7 @@ export function ResourceLibrary({
         {/* Metadata */}
         <div className={cn(
           "space-y-3",
-          viewMode === "list" && "space-y-2 flex-shrink-0"
+          viewMode === "list" && "shrink-0 space-y-2"
         )}>
           <div className="flex flex-wrap items-center gap-4 text-sm text-warm-gray">
             {resource.author && (
@@ -299,13 +299,13 @@ export function ResourceLibrary({
               {resource.tags.slice(0, 4).map((tag) => (
                 <span
                   key={tag}
-                  className="bg-light-gray dark:bg-warm-gray/20 text-warm-gray px-2 py-1 rounded text-xs"
+                  className="rounded bg-light-gray px-2 py-1 text-xs text-warm-gray dark:bg-warm-gray/20"
                 >
                   {tag}
                 </span>
               ))}
               {resource.tags.length > 4 && (
-                <span className="text-warm-gray text-xs">
+                <span className="text-xs text-warm-gray">
                   +{resource.tags.length - 4} more
                 </span>
               )}
@@ -314,7 +314,7 @@ export function ResourceLibrary({
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-2 pt-2 border-t border-light-gray dark:border-warm-gray/30">
+        <div className="flex items-center gap-2 border-t border-light-gray pt-2 dark:border-warm-gray/30">
           {resource.downloadUrl && (
             <Button
               variant="outline"
@@ -347,7 +347,7 @@ export function ResourceLibrary({
 
   const renderFilters = () => (
     <div className={cn(
-      "space-y-4 p-4 bg-light-gray/50 dark:bg-warm-gray/10 rounded-lg",
+      "space-y-4 rounded-lg bg-light-gray/50 p-4 dark:bg-warm-gray/10",
       showFiltersPanel ? "block" : "hidden lg:block"
     )}>
       {/* Category Filter */}
@@ -358,7 +358,7 @@ export function ResourceLibrary({
         <select
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
-          className="w-full px-3 py-2 border border-light-gray dark:border-warm-gray/30 rounded-lg bg-off-white dark:bg-off-black text-off-black dark:text-off-white text-sm"
+          className="w-full rounded-lg border border-light-gray bg-off-white px-3 py-2 text-sm text-off-black dark:border-warm-gray/30 dark:bg-off-black dark:text-off-white"
         >
           {categories.map((category) => (
             <option key={category} value={category}>
@@ -376,7 +376,7 @@ export function ResourceLibrary({
         <select
           value={selectedType}
           onChange={(e) => setSelectedType(e.target.value)}
-          className="w-full px-3 py-2 border border-light-gray dark:border-warm-gray/30 rounded-lg bg-off-white dark:bg-off-black text-off-black dark:text-off-white text-sm"
+          className="w-full rounded-lg border border-light-gray bg-off-white px-3 py-2 text-sm text-off-black dark:border-warm-gray/30 dark:bg-off-black dark:text-off-white"
         >
           {types.map((type) => (
             <option key={type} value={type}>
@@ -390,10 +390,10 @@ export function ResourceLibrary({
 
   return (
     <div className={cn(sizeClasses[size], className)} {...props}>
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div className="mx-auto max-w-7xl space-y-8">
         {/* Header */}
         {(title || description) && (
-          <div className="text-center space-y-4">
+          <div className="space-y-4 text-center">
             {title && (
               <h2 className={cn(
                 titleSizes[size],
@@ -404,7 +404,7 @@ export function ResourceLibrary({
             )}
             {description && (
               <p className={cn(
-                "text-warm-gray leading-relaxed max-w-3xl mx-auto",
+                "mx-auto max-w-3xl leading-relaxed text-warm-gray",
                 size === "lg" ? "text-lg" : "text-base"
               )}>
                 {description}
@@ -417,8 +417,8 @@ export function ResourceLibrary({
         <div className="space-y-4">
           {/* Search */}
           {showSearch && (
-            <div className="relative max-w-2xl mx-auto">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <div className="relative mx-auto max-w-2xl">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                 <LucideIcon icon={Search} size="sm" className="text-warm-gray" />
               </div>
               <input
@@ -427,10 +427,10 @@ export function ResourceLibrary({
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={searchPlaceholder}
                 className={cn(
-                  "w-full pl-10 pr-4 py-3 border border-light-gray dark:border-warm-gray/30 rounded-lg",
-                  "bg-off-white dark:bg-off-black text-off-black dark:text-off-white",
+                  "w-full rounded-lg border border-light-gray py-3 pl-10 pr-4 dark:border-warm-gray/30",
+                  "bg-off-white text-off-black dark:bg-off-black dark:text-off-white",
                   "placeholder:text-warm-gray",
-                  "focus:ring-2 focus:ring-primary/20 focus:border-primary",
+                  "focus:border-primary focus:ring-2 focus:ring-primary/20",
                   "transition-colors"
                 )}
               />
@@ -438,7 +438,7 @@ export function ResourceLibrary({
           )}
 
           {/* Filter and View Controls */}
-          <div className="flex items-center justify-between gap-4 flex-wrap">
+          <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               {showFilters && (
                 <Button
@@ -503,9 +503,9 @@ export function ResourceLibrary({
                 {filteredResources.map(renderResourceCard)}
               </div>
             ) : (
-              <div className="text-center py-12 text-warm-gray">
+              <div className="py-12 text-center text-warm-gray">
                 <LucideIcon icon={Search} size="xl" className="mx-auto mb-4 opacity-50" />
-                <h3 className="text-lg font-medium mb-2">No resources found</h3>
+                <h3 className="mb-2 text-lg font-medium">No resources found</h3>
                 <p>Try adjusting your search or filter criteria.</p>
               </div>
             )}

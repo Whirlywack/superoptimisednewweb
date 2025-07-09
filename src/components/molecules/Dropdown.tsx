@@ -75,7 +75,7 @@ export function Dropdown({
         <div
           className={cn(
             "absolute z-50 min-w-[200px]",
-            "bg-background border border-border rounded-lg shadow-lg",
+            "rounded-lg border border-border bg-background shadow-lg",
             "animate-in fade-in-0 zoom-in-95",
             alignmentClasses[align],
             sideClasses[side],
@@ -111,10 +111,10 @@ export function DropdownItem({
   return (
     <div
       className={cn(
-        "flex items-center gap-3 px-3 py-2 text-sm cursor-pointer",
+        "flex cursor-pointer items-center gap-3 px-3 py-2 text-sm",
         "transition-colors",
         disabled
-          ? "opacity-50 cursor-not-allowed"
+          ? "cursor-not-allowed opacity-50"
           : "hover:bg-muted focus:bg-muted",
         selected && "bg-muted",
         className
@@ -123,14 +123,14 @@ export function DropdownItem({
       onClick={disabled ? undefined : onClick}
       {...props}
     >
-      <div className="flex items-center gap-3 flex-1">
+      <div className="flex flex-1 items-center gap-3">
         {icon && (
-          <span className="flex-shrink-0 w-4 h-4 flex items-center justify-center">
+          <span className="flex size-4 shrink-0 items-center justify-center">
             {icon}
           </span>
         )}
         <span className="flex-1">{children}</span>
-        {selected && <Check className="w-4 h-4 text-primary" />}
+        {selected && <Check className="size-4 text-primary" />}
       </div>
       {shortcut && (
         <span className="text-xs text-muted-foreground">{shortcut}</span>
@@ -140,12 +140,12 @@ export function DropdownItem({
 }
 
 export function DropdownSeparator({ className }: { className?: string }) {
-  return <div className={cn("h-px bg-border my-1", className)} role="separator" />;
+  return <div className={cn("my-1 h-px bg-border", className)} role="separator" />;
 }
 
 export function DropdownLabel({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn("px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider", className)}>
+    <div className={cn("px-3 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground", className)}>
       {children}
     </div>
   );
@@ -199,11 +199,11 @@ export function Select({
           type="button"
           disabled={disabled}
           className={cn(
-            "flex items-center justify-between w-full px-3 py-2",
-            "text-left bg-background border border-border rounded-lg",
+            "flex w-full items-center justify-between px-3 py-2",
+            "rounded-lg border border-border bg-background text-left",
             "transition-colors",
             disabled
-              ? "opacity-50 cursor-not-allowed"
+              ? "cursor-not-allowed opacity-50"
               : "hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
             className
           )}
@@ -213,7 +213,7 @@ export function Select({
           <span className={cn(!selectedOption && "text-muted-foreground")}>
             {selectedOption?.label || placeholder}
           </span>
-          <ChevronDown className={cn("w-4 h-4 transition-transform", isOpen && "rotate-180")} />
+          <ChevronDown className={cn("size-4 transition-transform", isOpen && "rotate-180")} />
         </button>
       }
     >

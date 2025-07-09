@@ -86,7 +86,7 @@ export function MultipleChoice({
           {question}
         </QuestionLabel>
         {description && (
-          <p className="text-warm-gray text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-warm-gray">
             {description}
           </p>
         )}
@@ -105,7 +105,7 @@ export function MultipleChoice({
             disabled={disabled || option.disabled}
             onClick={() => handleSelect(option.id)}
             icon={option.icon}
-            className="w-full text-left justify-start"
+            className="w-full justify-start text-left"
             aria-pressed={value === option.id}
           />
         ))}
@@ -113,7 +113,7 @@ export function MultipleChoice({
 
       {/* Option limit warning */}
       {options.length > 4 && (
-        <div className="text-xs text-warm-gray bg-light-gray p-3 rounded-lg">
+        <div className="rounded-lg bg-light-gray p-3 text-xs text-warm-gray">
           Note: Only the first 4 options are shown for optimal mobile experience.
         </div>
       )}

@@ -102,7 +102,7 @@ export function Footer({
           href={social.href}
           external={social.external}
           className={cn(
-            "inline-flex items-center justify-center p-2 rounded-md no-underline",
+            "inline-flex items-center justify-center rounded-md p-2 no-underline",
             "text-warm-gray hover:text-off-black dark:hover:text-off-white",
             "hover:bg-light-gray dark:hover:bg-warm-gray/20",
             "transition-colors duration-200"
@@ -128,7 +128,7 @@ export function Footer({
               external={link.external}
               className={cn(
                 "text-sm text-warm-gray hover:text-off-black dark:hover:text-off-white",
-                "transition-colors duration-200 no-underline"
+                "no-underline transition-colors duration-200"
               )}
             >
               {link.label}
@@ -159,7 +159,7 @@ export function Footer({
           type="email"
           placeholder="Enter your email"
           className={cn(
-            "flex-1 px-3 py-2 text-sm rounded-md",
+            "flex-1 rounded-md px-3 py-2 text-sm",
             "bg-off-white dark:bg-off-black",
             "border border-light-gray dark:border-warm-gray/30",
             "text-off-black dark:text-off-white",
@@ -170,7 +170,7 @@ export function Footer({
         <button
           type="submit"
           className={cn(
-            "px-4 py-2 text-sm font-medium rounded-md",
+            "rounded-md px-4 py-2 text-sm font-medium",
             "bg-primary text-off-white",
             "hover:bg-primary/90",
             "transition-colors duration-200",
@@ -187,14 +187,14 @@ export function Footer({
     return (
       <footer
         className={cn(
-          "py-6 border-t border-light-gray dark:border-warm-gray/30",
+          "border-t border-light-gray py-6 dark:border-warm-gray/30",
           "bg-off-white dark:bg-off-black",
           className
         )}
         {...props}
       >
         <div className="container mx-auto px-4">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
             <p className="text-sm text-warm-gray">{copyright}</p>
             {renderSocialLinks()}
           </div>
@@ -207,21 +207,21 @@ export function Footer({
     return (
       <footer
         className={cn(
-          "py-8 border-t border-light-gray dark:border-warm-gray/30",
+          "border-t border-light-gray py-8 dark:border-warm-gray/30",
           "bg-off-white dark:bg-off-black",
           className
         )}
         {...props}
       >
         <div className="container mx-auto px-4">
-          <div className="flex flex-col lg:flex-row items-start justify-between gap-8">
+          <div className="flex flex-col items-start justify-between gap-8 lg:flex-row">
             {/* Brand and Social */}
             <div className="space-y-4">
               <div className="space-y-2">
                 <h2 className="text-lg font-semibold text-off-black dark:text-off-white">
                   Superoptimised
                 </h2>
-                <p className="text-sm text-warm-gray max-w-md">
+                <p className="max-w-md text-sm text-warm-gray">
                   Building in the open. Sharing the journey. Learning together.
                 </p>
               </div>
@@ -237,8 +237,8 @@ export function Footer({
           </div>
 
           {/* Copyright */}
-          <div className="mt-8 pt-6 border-t border-light-gray dark:border-warm-gray/30">
-            <p className="text-sm text-warm-gray text-center lg:text-left">
+          <div className="mt-8 border-t border-light-gray pt-6 dark:border-warm-gray/30">
+            <p className="text-center text-sm text-warm-gray lg:text-left">
               {copyright}
             </p>
           </div>
@@ -250,21 +250,21 @@ export function Footer({
   return (
     <footer
       className={cn(
-        "py-12 border-t border-light-gray dark:border-warm-gray/30",
+        "border-t border-light-gray py-12 dark:border-warm-gray/30",
         "bg-off-white dark:bg-off-black",
         className
       )}
       {...props}
     >
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
           {/* Brand */}
-          <div className="lg:col-span-2 xl:col-span-2 space-y-4">
+          <div className="space-y-4 lg:col-span-2 xl:col-span-2">
             <div className="space-y-2">
               <h2 className="text-xl font-semibold text-off-black dark:text-off-white">
                 Superoptimised
               </h2>
-              <p className="text-sm text-warm-gray max-w-md">
+              <p className="max-w-md text-sm text-warm-gray">
                 Documenting the journey of building products in the open.
                 Sharing learnings, challenges, and community feedback along the
                 way.
@@ -285,20 +285,20 @@ export function Footer({
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-12 pt-8 border-t border-light-gray dark:border-warm-gray/30">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="mt-12 border-t border-light-gray pt-8 dark:border-warm-gray/30">
+          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
             <p className="text-sm text-warm-gray">{copyright}</p>
             
             <div className="flex items-center gap-4 text-sm text-warm-gray">
               <Link
                 href="/sitemap"
-                className="hover:text-off-black dark:hover:text-off-white transition-colors no-underline"
+                className="no-underline transition-colors hover:text-off-black dark:hover:text-off-white"
               >
                 Sitemap
               </Link>
               <Link
                 href="/rss"
-                className="hover:text-off-black dark:hover:text-off-white transition-colors no-underline"
+                className="no-underline transition-colors hover:text-off-black dark:hover:text-off-white"
               >
                 RSS
               </Link>

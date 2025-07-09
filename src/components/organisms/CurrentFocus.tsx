@@ -148,7 +148,7 @@ export function CurrentFocus({
               <span
                 className={cn(
                   "flex-1",
-                  milestone.completed && "line-through text-warm-gray"
+                  milestone.completed && "text-warm-gray line-through"
                 )}
               >
                 {milestone.title}
@@ -179,7 +179,7 @@ export function CurrentFocus({
               <LucideIcon
                 icon={getUpdateIcon(update.type)}
                 size="sm"
-                className={cn("mt-0.5 flex-shrink-0", getUpdateColor(update.type))}
+                className={cn("mt-0.5 shrink-0", getUpdateColor(update.type))}
               />
               <div className="flex-1 space-y-1">
                 <p className="text-sm text-warm-gray">{update.content}</p>
@@ -196,7 +196,7 @@ export function CurrentFocus({
     if (!showMetrics || metrics.length === 0) return null;
 
     return (
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
         {metrics.map((metric, index) => (
           <div key={index} className="space-y-1">
             <div className="flex items-center gap-2">
@@ -209,8 +209,8 @@ export function CurrentFocus({
                   size="xs"
                   className={cn(
                     metric.trend === "up" && "text-green-600 dark:text-green-400",
-                    metric.trend === "down" && "text-red-600 dark:text-red-400 rotate-180",
-                    metric.trend === "stable" && "text-warm-gray rotate-90"
+                    metric.trend === "down" && "rotate-180 text-red-600 dark:text-red-400",
+                    metric.trend === "stable" && "rotate-90 text-warm-gray"
                   )}
                 />
               )}
@@ -237,7 +237,7 @@ export function CurrentFocus({
             </h2>
           </div>
           
-          <p className="text-warm-gray leading-relaxed">
+          <p className="leading-relaxed text-warm-gray">
             {description}
           </p>
         </div>
@@ -280,21 +280,21 @@ export function CurrentFocus({
 
       {/* Metrics */}
       {showMetrics && metrics.length > 0 && (
-        <div className="pt-4 border-t border-light-gray dark:border-warm-gray/30">
+        <div className="border-t border-light-gray pt-4 dark:border-warm-gray/30">
           {renderMetrics()}
         </div>
       )}
 
       {/* Milestones */}
       {showMilestones && milestones.length > 0 && (
-        <div className="pt-4 border-t border-light-gray dark:border-warm-gray/30">
+        <div className="border-t border-light-gray pt-4 dark:border-warm-gray/30">
           {renderMilestones()}
         </div>
       )}
 
       {/* Updates */}
       {showUpdates && recentUpdates.length > 0 && (
-        <div className="pt-4 border-t border-light-gray dark:border-warm-gray/30">
+        <div className="border-t border-light-gray pt-4 dark:border-warm-gray/30">
           {renderUpdates()}
         </div>
       )}
@@ -339,7 +339,7 @@ export function CurrentFocus({
         {...props}
       >
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto space-y-6">
+          <div className="mx-auto max-w-4xl space-y-6">
             <CardContent />
           </div>
         </div>
@@ -376,7 +376,7 @@ export function CurrentFocus({
               <Link 
                 href={ctaHref} 
                 external={ctaExternal}
-                className="inline-flex items-center gap-1 text-sm text-primary hover:text-primary/80 transition-colors no-underline"
+                className="inline-flex items-center gap-1 text-sm text-primary no-underline transition-colors hover:text-primary/80"
               >
                 {ctaText}
                 <LucideIcon icon={ArrowRight} size="xs" />
@@ -384,7 +384,7 @@ export function CurrentFocus({
             ) : (
               <button
                 onClick={onCtaClick}
-                className="inline-flex items-center gap-1 text-sm text-primary hover:text-primary/80 transition-colors"
+                className="inline-flex items-center gap-1 text-sm text-primary transition-colors hover:text-primary/80"
               >
                 {ctaText}
                 <LucideIcon icon={ArrowRight} size="xs" />

@@ -90,8 +90,8 @@ export function PageHeader({
                 href={item.href}
                 external={item.external}
                 className={cn(
-                  "hover:text-off-black dark:hover:text-off-white transition-colors no-underline",
-                  index === breadcrumbs.length - 1 && "text-off-black dark:text-off-white font-medium"
+                  "no-underline transition-colors hover:text-off-black dark:hover:text-off-white",
+                  index === breadcrumbs.length - 1 && "font-medium text-off-black dark:text-off-white"
                 )}
               >
                 {item.label}
@@ -118,8 +118,8 @@ export function PageHeader({
         <Link
           href={backButtonHref}
           className={cn(
-            "inline-flex items-center gap-2 mb-4 text-sm text-warm-gray",
-            "hover:text-off-black dark:hover:text-off-white transition-colors no-underline"
+            "mb-4 inline-flex items-center gap-2 text-sm text-warm-gray",
+            "no-underline transition-colors hover:text-off-black dark:hover:text-off-white"
           )}
         >
           <LucideIcon icon={ArrowLeft} size="sm" />
@@ -132,8 +132,8 @@ export function PageHeader({
       <button
         onClick={() => window.history.back()}
         className={cn(
-          "inline-flex items-center gap-2 mb-4 text-sm text-warm-gray",
-          "hover:text-off-black dark:hover:text-off-white transition-colors"
+          "mb-4 inline-flex items-center gap-2 text-sm text-warm-gray",
+          "transition-colors hover:text-off-black dark:hover:text-off-white"
         )}
       >
         <LucideIcon icon={ArrowLeft} size="sm" />
@@ -146,7 +146,7 @@ export function PageHeader({
     if (!actions || actions.length === 0) return null;
 
     return (
-      <div className="flex flex-wrap items-center gap-3 mt-6">
+      <div className="mt-6 flex flex-wrap items-center gap-3">
         {actions.map((action, index) => {
           if (action.href) {
             return (
@@ -206,7 +206,7 @@ export function PageHeader({
             <div className="space-y-2">
               <h1 className={cn(
                 titleSizes[size],
-                "font-semibold text-off-black dark:text-off-white leading-tight"
+                "font-semibold leading-tight text-off-black dark:text-off-white"
               )}>
                 {title}
               </h1>
@@ -223,7 +223,7 @@ export function PageHeader({
             <div className="space-y-4">
               <h1 className={cn(
                 titleSizes[size],
-                "font-bold text-off-black dark:text-off-white leading-tight",
+                "font-bold leading-tight text-off-black dark:text-off-white",
                 variant === "hero" && "tracking-tight"
               )}>
                 {title}
@@ -231,7 +231,7 @@ export function PageHeader({
               {description && (
                 <p className={cn(
                   descriptionSizes[size],
-                  "text-warm-gray leading-relaxed",
+                  "leading-relaxed text-warm-gray",
                   variant === "centered" && "mx-auto",
                   size === "xl" ? "max-w-4xl" : "max-w-3xl"
                 )}>
