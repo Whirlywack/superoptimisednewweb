@@ -4,6 +4,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { api } from "@/lib/trpc/react";
 import { questionnaireTemplates } from "@/lib/questionnaire-templates";
+import { LoadingState, CardSkeleton } from "@/components/ui/LoadingState";
+import { RealTimeIndicator, CompactRealTimeIndicator, PulseIndicator } from "@/components/ui/RealTimeIndicator";
+import { useRealtimeStats } from "@/hooks/useRealtimeStats";
 import {
   Plus,
   BarChart3,
@@ -12,6 +15,8 @@ import {
   Zap,
   Eye,
   Edit,
+  AlertCircle,
+  RefreshCw,
 } from "lucide-react";
 
 interface AdminDashboardClientProps {
@@ -20,18 +25,39 @@ interface AdminDashboardClientProps {
 
 export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardClientProps) {
   const [_activeQuickAction, _setActiveQuickAction] = useState<string | null>(null);
+
+  // Real-time stats hook
+  const realtimeStats = useRealtimeStats({ enabled: true });
+
+  // Error state component
+  const ErrorMessage = ({ error, title }: { error: any; title: string }) => (
+    <div
+      className="flex items-center border-2 p-4"
+      style={{
+        borderColor: "var(--primary)",
+        backgroundColor: "var(--off-white)",
+        color: "var(--primary)",
+      }}
+    >
+      <AlertCircle size={20} className="mr-2" />
+      <div>
+        <h3 className="font-medium">{title}</h3>
+        <p className="text-sm">{error?.message || "An error occurred"}</p>
+      </div>
+    </div>
+  );
   
-  const { data: stats, isLoading: statsLoading } = api.questionnaire.getStats.useQuery();
-  const { data: questionnaires, isLoading: questionnairesLoading } =
+  const { data: stats, isLoading: statsLoading, error: statsError } = api.questionnaire.getStats.useQuery();
+  const { data: questionnaires, isLoading: questionnairesLoading, error: questionnairesError } =
     api.questionnaire.getAll.useQuery({
       limit: 4,
     });
 
   // Real data from tRPC APIs
-  const { data: analyticsData, isLoading: analyticsLoading } = api.analytics.getWebsiteStats.useQuery();
-  const { data: questionnaireAnalytics } = api.analytics.getQuestionnaireAnalytics.useQuery();
-  const { data: contentStats } = api.content.getContentStats.useQuery();
-  const { data: blogPosts } = api.blog.getBlogPosts.useQuery({ limit: 3 });
+  const { data: analyticsData, isLoading: analyticsLoading, error: analyticsError } = api.analytics.getWebsiteStats.useQuery();
+  const { data: questionnaireAnalytics, error: questionnaireAnalyticsError } = api.analytics.getQuestionnaireAnalytics.useQuery();
+  const { data: contentStats, error: contentStatsError } = api.content.getContentStats.useQuery();
+  const { data: blogPosts, error: blogPostsError } = api.blog.getBlogPosts.useQuery({ limit: 3 });
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--off-white)" }}>
@@ -60,8 +86,17 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
               </p>
             </div>
             
-            {/* Quick Action Bar */}
+            {/* Real-time Status & Quick Action Bar */}
             <div className="flex items-center" style={{ gap: "var(--space-sm)" }}>
+              {/* Real-time Status Indicator */}
+              <RealTimeIndicator
+                isConnected={realtimeStats.isConnected}
+                isPolling={realtimeStats.isPolling}
+                lastUpdated={realtimeStats.stats?.lastUpdated}
+                onRefresh={() => window.location.reload()}
+              />
+              
+              {/* Quick Actions */}
               <Link
                 href="/admin/questionnaires/new"
                 className="flex items-center font-medium uppercase transition-colors"
@@ -105,74 +140,115 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
         style={{ paddingTop: "var(--space-lg)", paddingBottom: "var(--space-lg)" }}
       >
         {/* Unified Stats Dashboard */}
-        <div
-          className="grid gap-0"
-          style={{
-            gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-            marginBottom: "var(--space-xl)",
-            border: "2px solid var(--light-gray)",
-          }}
-        >
-          {/* Questionnaire Stats */}
-          <div
-            className="border-r-2 text-center"
-            style={{
-              borderColor: "var(--light-gray)",
-              backgroundColor: "var(--off-white)",
-              padding: "var(--space-md)",
-            }}
-          >
-            <div
-              className="font-bold"
-              style={{
-                fontSize: "var(--text-lg)",
-                color: "var(--off-black)",
-                marginBottom: "var(--space-xs)",
-              }}
-            >
-              {statsLoading ? "..." : stats?.activeQuestionnaires || 0}
-            </div>
-            <div
-              className="font-medium uppercase"
-              style={{
-                fontSize: "var(--text-xs)",
-                color: "var(--warm-gray)",
-                letterSpacing: "0.05em",
-              }}
-            >
-              Active Surveys
-            </div>
+        {statsError || analyticsError ? (
+          <div style={{ marginBottom: "var(--space-xl)" }}>
+            <ErrorMessage error={statsError || analyticsError} title="Failed to load dashboard stats" />
           </div>
-          
-          <div
-            className="border-r-2 text-center"
-            style={{
-              borderColor: "var(--light-gray)",
-              backgroundColor: "var(--off-white)",
-              padding: "var(--space-md)",
-            }}
-          >
+        ) : (
+          <div style={{ marginBottom: "var(--space-xl)" }}>
+            {/* Real-time Update Indicator */}
             <div
-              className="font-bold"
+              className="flex items-center justify-between border-b-2 px-4 py-2"
               style={{
-                fontSize: "var(--text-lg)",
-                color: "var(--primary)",
-                marginBottom: "var(--space-xs)",
+                borderColor: "var(--light-gray)",
+                backgroundColor: "var(--off-white)",
               }}
             >
-              {statsLoading ? "..." : stats?.totalResponses || 0}
+              <h2
+                className="font-medium uppercase"
+                style={{
+                  fontSize: "var(--text-sm)",
+                  color: "var(--off-black)",
+                  letterSpacing: "0.05em",
+                }}
+              >
+                Dashboard Statistics
+              </h2>
+              <div className="flex items-center" style={{ gap: "var(--space-sm)" }}>
+                <PulseIndicator isActive={realtimeStats.isLoading} />
+                <CompactRealTimeIndicator
+                  isConnected={realtimeStats.isConnected}
+                  isPolling={realtimeStats.isPolling}
+                />
+              </div>
             </div>
+            
             <div
-              className="font-medium uppercase"
+              className="grid gap-0"
               style={{
-                fontSize: "var(--text-xs)",
-                color: "var(--warm-gray)",
-                letterSpacing: "0.05em",
+                gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+                border: "2px solid var(--light-gray)",
+                borderTop: "none",
               }}
             >
-              Total Responses
+            {/* Questionnaire Stats */}
+            <div
+              className="border-r-2 text-center"
+              style={{
+                borderColor: "var(--light-gray)",
+                backgroundColor: "var(--off-white)",
+                padding: "var(--space-md)",
+              }}
+            >
+              <div
+                className="font-bold"
+                style={{
+                  fontSize: "var(--text-lg)",
+                  color: "var(--off-black)",
+                  marginBottom: "var(--space-xs)",
+                }}
+              >
+                {statsLoading ? (
+                  <div className="animate-pulse h-6 w-8 bg-light-gray rounded mx-auto"></div>
+                ) : (
+                  realtimeStats.stats?.activeQuestions || stats?.activeQuestionnaires || 0
+                )}
+              </div>
+              <div
+                className="font-medium uppercase"
+                style={{
+                  fontSize: "var(--text-xs)",
+                  color: "var(--warm-gray)",
+                  letterSpacing: "0.05em",
+                }}
+              >
+                Active Surveys
+              </div>
             </div>
-          </div>
+            
+            <div
+              className="border-r-2 text-center"
+              style={{
+                borderColor: "var(--light-gray)",
+                backgroundColor: "var(--off-white)",
+                padding: "var(--space-md)",
+              }}
+            >
+              <div
+                className="font-bold"
+                style={{
+                  fontSize: "var(--text-lg)",
+                  color: "var(--primary)",
+                  marginBottom: "var(--space-xs)",
+                }}
+              >
+                {statsLoading ? (
+                  <div className="animate-pulse h-6 w-8 bg-light-gray rounded mx-auto"></div>
+                ) : (
+                  realtimeStats.stats?.totalVotes || stats?.totalResponses || 0
+                )}
+              </div>
+              <div
+                className="font-medium uppercase"
+                style={{
+                  fontSize: "var(--text-xs)",
+                  color: "var(--warm-gray)",
+                  letterSpacing: "0.05em",
+                }}
+              >
+                Total Responses
+              </div>
+            </div>
           
           {/* Analytics Stats */}
           <div
@@ -191,7 +267,11 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
                 marginBottom: "var(--space-xs)",
               }}
             >
-              {analyticsLoading ? "..." : analyticsData?.totalVisitors.toLocaleString() || 0}
+              {analyticsLoading ? (
+                <div className="animate-pulse h-6 w-12 bg-light-gray rounded mx-auto"></div>
+              ) : (
+                realtimeStats.stats?.uniqueVoters.toLocaleString() || analyticsData?.totalVisitors.toLocaleString() || 0
+              )}
             </div>
             <div
               className="font-medium uppercase"
@@ -201,7 +281,7 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
                 letterSpacing: "0.05em",
               }}
             >
-              Page Views
+              Unique Visitors
             </div>
           </div>
           
@@ -221,7 +301,11 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
                 marginBottom: "var(--space-xs)",
               }}
             >
-              {analyticsLoading ? "..." : analyticsData?.totalSubmissions.toLocaleString() || 0}
+              {analyticsLoading ? (
+                <div className="animate-pulse h-6 w-12 bg-light-gray rounded mx-auto"></div>
+              ) : (
+                realtimeStats.stats?.totalXpEarned.toLocaleString() || analyticsData?.totalSubmissions.toLocaleString() || 0
+              )}
             </div>
             <div
               className="font-medium uppercase"
@@ -231,7 +315,7 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
                 letterSpacing: "0.05em",
               }}
             >
-              Active Users
+              XP Earned
             </div>
           </div>
           
