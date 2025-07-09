@@ -6,6 +6,7 @@ import { contentRouter } from "./routers/contentRouter";
 import { blogRouter } from "./routers/blogRouter";
 import { newsletterRouter } from "./routers/newsletterRouter";
 import { adminRouter } from "./routers/adminRouter";
+import { analyticsRouter } from "./routers/analyticsRouter";
 
 /**
  * This is the primary router for your server.
@@ -20,6 +21,7 @@ export const appRouter = createTRPCRouter({
   blog: blogRouter,
   newsletter: newsletterRouter,
   admin: adminRouter,
+  analytics: analyticsRouter,
 });
 
 // export type definition of API

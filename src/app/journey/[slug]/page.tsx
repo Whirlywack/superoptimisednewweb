@@ -10,14 +10,15 @@ import {
 } from "@/lib/utils/seo";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   try {
-    const post = await api.blog.getBlogPostBySlug({ slug: params.slug });
+    const { slug } = await params;
+    const post = await api.blog.getBlogPostBySlug({ slug });
 
     if (!post) {
       return {
@@ -79,7 +80,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function JourneyPost({ params }: PageProps) {
   try {
-    const post = await api.blog.getBlogPostBySlug({ slug: params.slug });
+    const { slug } = await params;
+    const post = await api.blog.getBlogPostBySlug({ slug });
 
     if (!post) {
       notFound();

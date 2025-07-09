@@ -25,15 +25,15 @@ export function AnnounceRegion({
 }
 
 export interface LiveAnnouncerProps {
-  children?: React.ReactNode;
+  children?: React.ReactNode | ((announce: (message: string, priority?: "polite" | "assertive") => void) => React.ReactNode);
   className?: string;
 }
 
 export function LiveAnnouncer({ children, className }: LiveAnnouncerProps) {
   const [politeMessages, setPoliteMessages] = useState<string[]>([]);
   const [assertiveMessages, setAssertiveMessages] = useState<string[]>([]);
-  const politeTimeoutRef = useRef<NodeJS.Timeout>();
-  const assertiveTimeoutRef = useRef<NodeJS.Timeout>();
+  const politeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const assertiveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const announce = (message: string, priority: "polite" | "assertive" = "polite") => {
     if (priority === "polite") {
@@ -96,7 +96,7 @@ export interface StatusAnnouncerProps {
 export function StatusAnnouncer({ children, className }: StatusAnnouncerProps) {
   const [status, setStatus] = useState("");
   const [priority, setPriority] = useState<"polite" | "assertive">("polite");
-  const timeoutRef = useRef<NodeJS.Timeout>();
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const announceStatus = (
     message: string,

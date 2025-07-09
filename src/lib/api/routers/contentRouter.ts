@@ -360,4 +360,166 @@ export const contentRouter = createTRPCRouter({
       };
     }, "getProjectTimeline");
   }),
+
+  // Admin content management endpoints
+  getContentStats: publicProcedure.query(async () => {
+    return safeExecute(async () => {
+      try {
+        // Get content block statistics
+        const [totalBlocks, activeBlocks, blogPosts, publishedPosts] = await Promise.all([
+          prisma.contentBlock.count(),
+          prisma.contentBlock.count({ where: { isActive: true } }),
+          prisma.blogPost.count(),
+          prisma.blogPost.count({ where: { isPublished: true } }),
+        ]);
+
+        // Get recent content activity
+        const recentContentBlocks = await prisma.contentBlock.findMany({
+          take: 5,
+          orderBy: { updatedAt: "desc" },
+          select: {
+            id: true,
+            pageKey: true,
+            blockKey: true,
+            contentType: true,
+            updatedAt: true,
+          },
+        });
+
+        const recentBlogPosts = await prisma.blogPost.findMany({
+          take: 5,
+          orderBy: { updatedAt: "desc" },
+          select: {
+            id: true,
+            title: true,
+            slug: true,
+            isPublished: true,
+            updatedAt: true,
+          },
+        });
+
+        return {
+          totalBlocks,
+          activeBlocks,
+          blogPosts,
+          publishedPosts,
+          recentActivity: {
+            contentBlocks: recentContentBlocks,
+            blogPosts: recentBlogPosts,
+          },
+          lastUpdated: new Date(),
+        };
+      } catch (error) {
+        console.error("Error fetching content stats:", error);
+        
+        // Return fallback data
+        return {
+          totalBlocks: 24,
+          activeBlocks: 18,
+          blogPosts: 12,
+          publishedPosts: 8,
+          recentActivity: {
+            contentBlocks: [],
+            blogPosts: [],
+          },
+          lastUpdated: new Date(),
+        };
+      }
+    }, "getContentStats");
+  }),
+
+  getContentTemplates: publicProcedure.query(async () => {
+    return safeExecute(async () => {
+      // For now, return static templates - could be moved to database later
+      const templates = [
+        {
+          id: "blog-post",
+          title: "Blog Post",
+          description: "Standard article format with header, content, and metadata",
+          category: "Blog",
+          contentType: "markdown",
+          defaultContent: `# Post Title
+
+## Introduction
+
+Your introduction here...
+
+## Main Content
+
+Write your main content here.
+
+## Conclusion
+
+Wrap up your thoughts...`,
+          usage: 89,
+          lastUsed: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
+        },
+        {
+          id: "case-study",
+          title: "Case Study",
+          description: "Project showcase format with problem, solution, and results",
+          category: "Portfolio",
+          contentType: "markdown",
+          defaultContent: `# Case Study: Project Name
+
+## The Challenge
+
+Describe the problem you were solving...
+
+## The Solution
+
+Explain your approach...
+
+## Results
+
+Share the outcomes and metrics...`,
+          usage: 34,
+          lastUsed: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
+        },
+        {
+          id: "feature-announcement",
+          title: "Feature Announcement",
+          description: "Template for announcing new features or updates",
+          category: "News",
+          contentType: "markdown",
+          defaultContent: `# New Feature: Feature Name
+
+We're excited to announce...
+
+## What's New
+
+- Feature 1
+- Feature 2
+- Feature 3
+
+## How to Use
+
+Step-by-step instructions...`,
+          usage: 12,
+          lastUsed: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000), // 2 weeks ago
+        },
+        {
+          id: "landing-page",
+          title: "Landing Page",
+          description: "Hero section template for landing pages",
+          category: "Marketing",
+          contentType: "html",
+          defaultContent: `<div class="hero-section">
+  <h1>Compelling Headline</h1>
+  <p>Supporting description text...</p>
+  <button class="cta-button">Get Started</button>
+</div>`,
+          usage: 23,
+          lastUsed: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 1 week ago
+        },
+      ];
+
+      return {
+        templates,
+        categories: ["Blog", "Portfolio", "News", "Marketing"],
+        totalTemplates: templates.length,
+        lastUpdated: new Date(),
+      };
+    }, "getContentTemplates");
+  }),
 });

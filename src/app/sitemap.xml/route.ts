@@ -8,7 +8,7 @@ export async function GET() {
     // Get all published blog posts
     const blogPosts = await api.blog.getBlogPosts({
       limit: 1000, // Get all posts for sitemap
-      offset: 0,
+      page: 1,
     });
 
     // Static pages
@@ -20,7 +20,7 @@ export async function GET() {
     ];
 
     // Dynamic blog post pages
-    const dynamicPages = blogPosts.map((post) => ({
+    const dynamicPages = blogPosts.posts.map((post) => ({
       url: `/journey/${post.slug}`,
       lastModified: post.updatedAt.toISOString(),
       priority: "0.8",

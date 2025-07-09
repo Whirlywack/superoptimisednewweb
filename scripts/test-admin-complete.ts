@@ -74,7 +74,7 @@ async function testCompleteAdminSystem() {
 
         console.log(`   ${status} ${test.testName}: ${result}`);
       } catch (error) {
-        console.log(`   ❌ ${test.testName}: ${error.message}`);
+        console.log(`   ❌ ${test.testName}: ${error instanceof Error ? error.message : String(error)}`);
       }
     }
 

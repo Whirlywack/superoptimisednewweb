@@ -616,7 +616,7 @@ export function QuestionListClient({
         questionTitle={scheduleModal.questionTitle}
         initialStartDate={scheduleModal.startDate}
         initialEndDate={scheduleModal.endDate}
-        onSuccess={handleScheduleSuccess}
+        onSuccess={(updatedSchedule) => handleScheduleSuccess(scheduleModal.questionId, updatedSchedule)}
       />
     </div>
   );

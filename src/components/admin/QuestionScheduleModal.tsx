@@ -154,7 +154,7 @@ export function QuestionScheduleModal({
             <button
               type="submit"
               disabled={
-                isUpdating || (startDate && endDate && new Date(startDate) >= new Date(endDate))
+                isUpdating || Boolean(startDate && endDate && new Date(startDate) >= new Date(endDate))
               }
               className="bg-off-black px-6 py-3 font-mono text-sm text-off-white transition-colors hover:bg-primary hover:text-off-black disabled:bg-warm-gray disabled:text-light-gray"
             >

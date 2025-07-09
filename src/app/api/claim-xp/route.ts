@@ -18,10 +18,12 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(new URL("/claim-xp/invalid", request.url));
     }
 
+    const validatedToken = result.data.token;
+
     // Find the XP claim record
     const xpClaim = await prisma.xpClaim.findFirst({
       where: {
-        claimToken: token,
+        claimToken: validatedToken,
         status: "pending",
         expiresAt: {
           gte: new Date(),

@@ -95,7 +95,7 @@ async function testAdminIntegration() {
       console.log("✅ Admin caller can access public endpoints");
       console.log(`   Retrieved ${result.length} question(s)`);
     } catch (error) {
-      console.log("❌ Admin caller failed on public endpoint:", error.message);
+      console.log("❌ Admin caller failed on public endpoint:", error instanceof Error ? error.message : String(error));
     }
 
     // Test non-admin access (should work for public endpoints)
@@ -107,7 +107,7 @@ async function testAdminIntegration() {
       console.log("✅ User caller can access public endpoints");
       console.log(`   Retrieved ${result.length} question(s)`);
     } catch (error) {
-      console.log("❌ User caller failed on public endpoint:", error.message);
+      console.log("❌ User caller failed on public endpoint:", error instanceof Error ? error.message : String(error));
     }
 
     console.log("\n4️⃣ Testing Session Verification");

@@ -339,7 +339,7 @@ export function TypographyGuidelines({ className }: TypographyGuidelinesProps) {
         </p>
         <div className="grid sm:grid-cols-3 gap-4 text-small">
           <div>
-            <span className="font-medium text-off-black">Mobile (< 768px)</span>
+            <span className="font-medium text-off-black">Mobile (&lt; 768px)</span>
             <div className="text-warm-gray">Optimized for thumb navigation and single-column reading</div>
           </div>
           <div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -813,6 +813,7 @@ export default function NewQuestionnairePage() {
     };
     setEditingQuestion(newQuestion);
     setShowQuestionModal(true);
+    return newQuestion;
   };
 
   const saveQuestion = (question: Question) => {
@@ -917,7 +918,7 @@ export default function NewQuestionnairePage() {
                   Admin
                 </Link>
                 <span>/</span>
-                <Link href="/admin/questionnaires" className="hover:opacity-75">
+                <Link href="/admin/questionnaires/templates" className="hover:opacity-75">
                   Questionnaires
                 </Link>
                 <span>/</span>
@@ -1134,7 +1135,7 @@ export default function NewQuestionnairePage() {
                   <div className="space-y-4">
                     {questionnaire.questions.map((question, index) => {
                       const questionType = questionTypes.find((t) => t.id === question.type);
-                      const QuestionIcon = questionType?.icon || Type;
+                      const QuestionIcon = (questionType as QuestionType)?.icon || Type;
 
                       return (
                         <div

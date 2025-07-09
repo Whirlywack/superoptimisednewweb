@@ -22,8 +22,8 @@ export function ScreenReaderText({
       <>
         {React.Children.map(children, (child) => {
           if (React.isValidElement(child)) {
-            return React.cloneElement(child, {
-              className: cn("sr-only", child.props.className),
+            return React.cloneElement(child as React.ReactElement<any>, {
+              className: cn("sr-only", (child.props as any)?.className),
               ...props,
             });
           }
@@ -40,17 +40,16 @@ export function ScreenReaderText({
   );
 }
 
-export interface VisuallyHiddenProps extends React.HTMLAttributes<HTMLElement> {
+export interface VisuallyHiddenProps {
   children: React.ReactNode;
   className?: string;
-  as?: keyof JSX.IntrinsicElements;
+  as?: React.ElementType;
 }
 
 export function VisuallyHidden({
   children,
   className,
   as: Component = "span",
-  ...props
 }: VisuallyHiddenProps) {
   return (
     <Component
@@ -60,7 +59,6 @@ export function VisuallyHidden({
         "[clip:rect(0,0,0,0)]",
         className
       )}
-      {...props}
     >
       {children}
     </Component>
@@ -130,7 +128,7 @@ export function AccessibleLabel({
 
       {React.Children.map(children, (child) => {
         if (React.isValidElement(child)) {
-          return React.cloneElement(child, {
+          return React.cloneElement(child as React.ReactElement<any>, {
             "aria-labelledby": labelId,
             "aria-describedby": description ? descriptionId : undefined,
             "aria-required": required,

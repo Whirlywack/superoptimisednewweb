@@ -331,7 +331,7 @@ export function OneHandedInput({
       label: isVoiceActive ? 'Stop recording' : 'Voice input',
       onClick: handleVoiceToggle,
       active: isVoiceActive,
-      variant: isVoiceActive ? 'danger' : 'default' as const,
+      variant: (isVoiceActive ? 'danger' : 'default') as const,
     }] : []),
     ...(type === 'password' ? [{
       id: 'toggle-password',

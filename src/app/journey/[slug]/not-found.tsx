@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Icon } from "@/components/ui/Icon";
+import { AlertTriangle } from "lucide-react";
 
 export default function NotFound() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-16 text-center">
       <div className="mb-8">
-        <Icon name="ExclamationTriangleIcon" className="text-warm-gray-400 mx-auto size-16" />
+        <AlertTriangle className="text-warm-gray-400 mx-auto size-16" />
       </div>
 
       <h1 className="text-dark-blue mb-4 text-4xl font-bold dark:text-white">
@@ -26,7 +26,7 @@ export default function NotFound() {
           </Link>
 
           <Link href="/">
-            <Button variant="secondary">Back to Home</Button>
+            <Button variant="outline">Back to Home</Button>
           </Link>
         </div>
 

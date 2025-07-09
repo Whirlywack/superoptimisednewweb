@@ -214,30 +214,43 @@
 - ✅ **Task 8.2.3**: Implement question activate/deactivate toggle controls
 - ✅ **Task 8.2.4**: Add question scheduling interface (start/end dates)
 
-### 8.2.5 Questionnaire Builder Foundation (High Priority - Foundation-First Strategy)
+### 8.2.5 Admin Dashboard Data Integration (High Priority - CURRENT PHASE)
+
+**Current Status: Phase 8.3 Architecture Complete, Phase 8.2.5 Data Integration Required**
 
 **Critical Issues Identified:**
 
-- 🔴 Questionnaire builder UI exists but creates poor user experience
-- 🔴 185 actions needed for 10 questions using current individual workflow
-- 🔴 No templates integration - Templates exist but not connected to UI
-- 🔴 No question duplication - Must configure each question from scratch
+- ✅ Modern 4-page admin architecture implemented 
+- 🔴 **75% of admin dashboard data is hardcoded mock data**
+- 🔴 Analytics dashboard shows fake metrics with no real backend
+- 🔴 Content dashboard uses mock blog posts and statistics  
+- 🔴 Chart.js integration missing entirely ("Coming Soon" placeholders)
+- 🔴 Multiple tRPC routers incomplete or missing
 
-**Phase 1: Quick Wins + Questionnaire Foundation (2-3 weeks)**
+**IMMEDIATE PRIORITY: Complete Data Integration (Week 1-3)**
 
-**Priority 1: Fix Questionnaire Builder (High Impact)**
+**Week 1: Foundation APIs (High Priority)**
 
-- **Task 8.2.5.1**: Create card-based template gallery - Contemporary UI with visual template cards (4-5 hours)
-- **Task 8.2.5.2**: Add question duplication functionality - Copy/paste questions with "Duplicate" button (2-3 hours)
-- **Task 8.2.5.3**: Improve question modal - Add full configuration support for all 6 question types (4-6 hours)
-- **Task 8.2.5.4**: Connect questionnaire UI to backend - Make Save/Publish buttons functional (3-4 hours)
+- **Task 8.2.5.1**: ✅ **COMPLETE** - Modern 4-page admin architecture implemented
+- **Task 8.2.5.2**: Install Chart.js dependencies (react-chartjs-2, chart.js) for analytics visualization (1 hour)
+- **Task 8.2.5.3**: Create Analytics tRPC router with getWebsiteStats, getTrafficOverTime, getTopPages endpoints (4-6 hours)
+- **Task 8.2.5.4**: Replace hardcoded mockAnalytics data in AdminDashboardClient with real API calls (2-3 hours)
+- **Task 8.2.5.5**: Replace hardcoded analytics data in AnalyticsDashboardClient with real tRPC integration (3-4 hours)
 
-**Priority 2: Efficiency Improvements (High ROI)**
+**Week 2: Content Management & Visualization (High Priority)**
 
-- **Task 8.2.5.5**: Better question type selector - Visual cards instead of dropdown (2-3 hours)
-- **Task 8.2.5.6**: Pre-configured individual question templates - Quick-add common questions (2-3 hours)
+- **Task 8.2.5.6**: Extend Content tRPC router with getContentStats, getContentTemplates, CRUD operations (4-5 hours)
+- **Task 8.2.5.7**: Replace hardcoded mockContent data in ContentDashboardClient with real API calls (2-3 hours)
+- **Task 8.2.5.8**: Create real chart components to replace "Coming Soon" placeholders in analytics (4-6 hours)
+- **Task 8.2.5.9**: Implement functional blog post creation/editing in content dashboard (3-4 hours)
 
-**Expected Result:** 10-question questionnaire creation drops from 185 actions to ~25 actions
+**Week 3: Template System & Enhancement (Medium Priority)**
+
+- **Task 8.2.5.10**: Move questionnaireTemplates from static file to database with admin management (4-5 hours)
+- **Task 8.2.5.11**: Add drag and drop functionality for question reordering (3-4 hours) 
+- **Task 8.2.5.12**: Add bulk operations for question management (2-3 hours)
+
+**Expected Result:** 100% real data integration across all admin interfaces, functional analytics with Chart.js, complete content management system
 
 **Card-Based Template Gallery Features:**
 

@@ -250,7 +250,7 @@ export function FocusTrapDropdown({
   contentClassName,
   placement = 'bottom-start',
 }: FocusTrapDropdownProps) {
-  const triggerRef = useRef<HTMLButtonElement>(null);
+  const triggerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -278,9 +278,8 @@ export function FocusTrapDropdown({
   };
 
   return (
-    <div className={cn('relative inline-block', className)}>
-      {React.cloneElement(trigger as React.ReactElement, {
-        ref: triggerRef,
+    <div className={cn('relative inline-block', className)} ref={triggerRef}>
+      {React.cloneElement(trigger as React.ReactElement<any>, {
         onClick: () => onOpenChange(!isOpen),
         'aria-expanded': isOpen,
         'aria-haspopup': true,
