@@ -119,7 +119,7 @@ function TemplatePreviewModal({
                   QUESTIONS_PREVIEW ({template.questions.length})
                 </h3>
                 <div className="font-mono text-xs" style={{ color: "var(--warm-gray)" }}>
-                  Click &quot;USE_TEMPLATE&quot; to customize these questions
+                  Click &quot;Use Template&quot; to customize these questions
                 </div>
               </div>
               <div className="space-y-4">
@@ -227,7 +227,7 @@ function TemplatePreviewModal({
                   color: "var(--off-white)",
                 }}
               >
-                USE_TEMPLATE
+                Use Template
               </button>
             </div>
           </div>
