@@ -14,6 +14,475 @@ interface Question {
   required: boolean;
 }
 
+// Configuration panel for different question types
+function QuestionConfigurationPanel({
+  question,
+  onConfigChange,
+}: {
+  question: Question;
+  onConfigChange: (config: Record<string, unknown>) => void;
+}) {
+  const config = question.config || {};
+
+  const updateConfig = (updates: Record<string, unknown>) => {
+    onConfigChange({ ...config, ...updates });
+  };
+
+  const addOption = (key: string) => {
+    const options = (config[key] as Array<{ id: string; text: string }>) || [];
+    const newOption = { id: `opt_${Date.now()}`, text: "" };
+    updateConfig({ [key]: [...options, newOption] });
+  };
+
+  const updateOption = (key: string, index: number, field: string, value: string) => {
+    const options = (config[key] as Array<{ id: string; text: string }>) || [];
+    const updatedOptions = [...options];
+    updatedOptions[index] = { ...updatedOptions[index], [field]: value };
+    updateConfig({ [key]: updatedOptions });
+  };
+
+  const removeOption = (key: string, index: number) => {
+    const options = (config[key] as Array<{ id: string; text: string }>) || [];
+    updateConfig({ [key]: options.filter((_, i) => i !== index) });
+  };
+
+  switch (question.type) {
+    case "binary":
+      return (
+        <div className="space-y-4">
+          <div className="font-mono text-sm font-medium" style={{ color: "var(--off-black)" }}>
+            BINARY_OPTIONS
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="mb-2 block font-mono text-xs" style={{ color: "var(--warm-gray)" }}>
+                OPTION_A
+              </label>
+              <input
+                type="text"
+                value={(config.optionA as { text: string })?.text || ""}
+                onChange={(e) => updateConfig({ optionA: { id: "a", text: e.target.value } })}
+                className="w-full border-2 font-mono text-sm transition-all duration-200 focus:outline-none"
+                style={{
+                  borderColor: "var(--light-gray)",
+                  backgroundColor: "var(--off-white)",
+                  color: "var(--off-black)",
+                  padding: "0.5rem",
+                }}
+                placeholder="Yes, True, Option A..."
+              />
+            </div>
+            <div>
+              <label className="mb-2 block font-mono text-xs" style={{ color: "var(--warm-gray)" }}>
+                OPTION_B
+              </label>
+              <input
+                type="text"
+                value={(config.optionB as { text: string })?.text || ""}
+                onChange={(e) => updateConfig({ optionB: { id: "b", text: e.target.value } })}
+                className="w-full border-2 font-mono text-sm transition-all duration-200 focus:outline-none"
+                style={{
+                  borderColor: "var(--light-gray)",
+                  backgroundColor: "var(--off-white)",
+                  color: "var(--off-black)",
+                  padding: "0.5rem",
+                }}
+                placeholder="No, False, Option B..."
+              />
+            </div>
+          </div>
+        </div>
+      );
+
+    case "multi-choice":
+      const multiOptions = (config.options as Array<{ id: string; text: string }>) || [];
+      return (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="font-mono text-sm font-medium" style={{ color: "var(--off-black)" }}>
+              CHOICE_OPTIONS
+            </div>
+            <button
+              type="button"
+              onClick={() => addOption("options")}
+              className="px-3 py-1 font-mono text-xs transition-colors"
+              style={{
+                backgroundColor: "var(--primary)",
+                color: "var(--off-white)",
+              }}
+            >
+              ADD_OPTION
+            </button>
+          </div>
+          <div className="space-y-2">
+            {multiOptions.map((option, index) => (
+              <div key={option.id} className="flex items-center space-x-2">
+                <input
+                  type="text"
+                  value={option.text}
+                  onChange={(e) => updateOption("options", index, "text", e.target.value)}
+                  className="flex-1 border-2 font-mono text-sm transition-all duration-200 focus:outline-none"
+                  style={{
+                    borderColor: "var(--light-gray)",
+                    backgroundColor: "var(--off-white)",
+                    color: "var(--off-black)",
+                    padding: "0.5rem",
+                  }}
+                  placeholder={`Option ${index + 1}...`}
+                />
+                <button
+                  type="button"
+                  onClick={() => removeOption("options", index)}
+                  className="px-2 py-1 font-mono text-xs transition-colors"
+                  style={{
+                    backgroundColor: "var(--warm-gray)",
+                    color: "var(--off-white)",
+                  }}
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+          <div>
+            <label className="mb-2 block font-mono text-xs" style={{ color: "var(--warm-gray)" }}>
+              MAX_SELECTIONS
+            </label>
+            <input
+              type="number"
+              value={(config.maxSelections as number) || 1}
+              onChange={(e) => updateConfig({ maxSelections: parseInt(e.target.value) || 1 })}
+              min="1"
+              max={multiOptions.length || 1}
+              className="w-24 border-2 font-mono text-sm transition-all duration-200 focus:outline-none"
+              style={{
+                borderColor: "var(--light-gray)",
+                backgroundColor: "var(--off-white)",
+                color: "var(--off-black)",
+                padding: "0.5rem",
+              }}
+            />
+          </div>
+        </div>
+      );
+
+    case "rating-scale":
+      return (
+        <div className="space-y-4">
+          <div className="font-mono text-sm font-medium" style={{ color: "var(--off-black)" }}>
+            RATING_SCALE
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="mb-2 block font-mono text-xs" style={{ color: "var(--warm-gray)" }}>
+                SCALE_MAX
+              </label>
+              <select
+                value={(config.scale as number) || 5}
+                onChange={(e) => updateConfig({ scale: parseInt(e.target.value) })}
+                className="w-full border-2 font-mono text-sm transition-all duration-200 focus:outline-none"
+                style={{
+                  borderColor: "var(--light-gray)",
+                  backgroundColor: "var(--off-white)",
+                  color: "var(--off-black)",
+                  padding: "0.5rem",
+                }}
+              >
+                <option value="5">1-5 Scale</option>
+                <option value="10">1-10 Scale</option>
+              </select>
+            </div>
+            <div>
+              <label className="mb-2 block font-mono text-xs" style={{ color: "var(--warm-gray)" }}>
+                DISPLAY_TYPE
+              </label>
+              <select
+                value={(config.variant as string) || "numbers"}
+                onChange={(e) => updateConfig({ variant: e.target.value })}
+                className="w-full border-2 font-mono text-sm transition-all duration-200 focus:outline-none"
+                style={{
+                  borderColor: "var(--light-gray)",
+                  backgroundColor: "var(--off-white)",
+                  color: "var(--off-black)",
+                  padding: "0.5rem",
+                }}
+              >
+                <option value="numbers">Numbers</option>
+                <option value="stars">Stars</option>
+                <option value="emoji">Emoji</option>
+              </select>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="mb-2 block font-mono text-xs" style={{ color: "var(--warm-gray)" }}>
+                MIN_LABEL
+              </label>
+              <input
+                type="text"
+                value={(config.labels as { min: string })?.min || ""}
+                onChange={(e) =>
+                  updateConfig({
+                    labels: { ...((config.labels as object) || {}), min: e.target.value },
+                  })
+                }
+                className="w-full border-2 font-mono text-sm transition-all duration-200 focus:outline-none"
+                style={{
+                  borderColor: "var(--light-gray)",
+                  backgroundColor: "var(--off-white)",
+                  color: "var(--off-black)",
+                  padding: "0.5rem",
+                }}
+                placeholder="Poor, Disagree..."
+              />
+            </div>
+            <div>
+              <label className="mb-2 block font-mono text-xs" style={{ color: "var(--warm-gray)" }}>
+                MAX_LABEL
+              </label>
+              <input
+                type="text"
+                value={(config.labels as { max: string })?.max || ""}
+                onChange={(e) =>
+                  updateConfig({
+                    labels: { ...((config.labels as object) || {}), max: e.target.value },
+                  })
+                }
+                className="w-full border-2 font-mono text-sm transition-all duration-200 focus:outline-none"
+                style={{
+                  borderColor: "var(--light-gray)",
+                  backgroundColor: "var(--off-white)",
+                  color: "var(--off-black)",
+                  padding: "0.5rem",
+                }}
+                placeholder="Excellent, Agree..."
+              />
+            </div>
+          </div>
+        </div>
+      );
+
+    case "text-response":
+      return (
+        <div className="space-y-4">
+          <div className="font-mono text-sm font-medium" style={{ color: "var(--off-black)" }}>
+            TEXT_CONFIG
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="mb-2 block font-mono text-xs" style={{ color: "var(--warm-gray)" }}>
+                MAX_LENGTH
+              </label>
+              <input
+                type="number"
+                value={(config.maxLength as number) || 500}
+                onChange={(e) => updateConfig({ maxLength: parseInt(e.target.value) || 500 })}
+                min="10"
+                max="5000"
+                className="w-full border-2 font-mono text-sm transition-all duration-200 focus:outline-none"
+                style={{
+                  borderColor: "var(--light-gray)",
+                  backgroundColor: "var(--off-white)",
+                  color: "var(--off-black)",
+                  padding: "0.5rem",
+                }}
+              />
+            </div>
+            <div>
+              <label className="flex items-center font-mono text-xs">
+                <input
+                  type="checkbox"
+                  checked={(config.multiline as boolean) || false}
+                  onChange={(e) => updateConfig({ multiline: e.target.checked })}
+                  className="mr-2"
+                />
+                <span style={{ color: "var(--off-black)" }}>MULTILINE</span>
+              </label>
+            </div>
+          </div>
+          <div>
+            <label className="mb-2 block font-mono text-xs" style={{ color: "var(--warm-gray)" }}>
+              PLACEHOLDER
+            </label>
+            <input
+              type="text"
+              value={(config.placeholder as string) || ""}
+              onChange={(e) => updateConfig({ placeholder: e.target.value })}
+              className="w-full border-2 font-mono text-sm transition-all duration-200 focus:outline-none"
+              style={{
+                borderColor: "var(--light-gray)",
+                backgroundColor: "var(--off-white)",
+                color: "var(--off-black)",
+                padding: "0.5rem",
+              }}
+              placeholder="Enter placeholder text..."
+            />
+          </div>
+        </div>
+      );
+
+    case "ranking":
+      const rankingItems = (config.items as Array<{ id: string; text: string }>) || [];
+      return (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="font-mono text-sm font-medium" style={{ color: "var(--off-black)" }}>
+              RANKING_ITEMS
+            </div>
+            <button
+              type="button"
+              onClick={() => addOption("items")}
+              className="px-3 py-1 font-mono text-xs transition-colors"
+              style={{
+                backgroundColor: "var(--primary)",
+                color: "var(--off-white)",
+              }}
+            >
+              ADD_ITEM
+            </button>
+          </div>
+          <div className="space-y-2">
+            {rankingItems.map((item, index) => (
+              <div key={item.id} className="flex items-center space-x-2">
+                <div className="font-mono text-xs" style={{ color: "var(--warm-gray)" }}>
+                  {index + 1}.
+                </div>
+                <input
+                  type="text"
+                  value={item.text}
+                  onChange={(e) => updateOption("items", index, "text", e.target.value)}
+                  className="flex-1 border-2 font-mono text-sm transition-all duration-200 focus:outline-none"
+                  style={{
+                    borderColor: "var(--light-gray)",
+                    backgroundColor: "var(--off-white)",
+                    color: "var(--off-black)",
+                    padding: "0.5rem",
+                  }}
+                  placeholder={`Item ${index + 1}...`}
+                />
+                <button
+                  type="button"
+                  onClick={() => removeOption("items", index)}
+                  className="px-2 py-1 font-mono text-xs transition-colors"
+                  style={{
+                    backgroundColor: "var(--warm-gray)",
+                    color: "var(--off-white)",
+                  }}
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+
+    case "ab-test":
+      return (
+        <div className="space-y-4">
+          <div className="font-mono text-sm font-medium" style={{ color: "var(--off-black)" }}>
+            AB_TEST_OPTIONS
+          </div>
+          <div className="space-y-4">
+            <div>
+              <label className="mb-2 block font-mono text-xs" style={{ color: "var(--warm-gray)" }}>
+                OPTION_A_TITLE
+              </label>
+              <input
+                type="text"
+                value={(config.optionA as { title: string })?.title || ""}
+                onChange={(e) =>
+                  updateConfig({
+                    optionA: {
+                      ...((config.optionA as object) || {}),
+                      title: e.target.value,
+                    },
+                  })
+                }
+                className="w-full border-2 font-mono text-sm transition-all duration-200 focus:outline-none"
+                style={{
+                  borderColor: "var(--light-gray)",
+                  backgroundColor: "var(--off-white)",
+                  color: "var(--off-black)",
+                  padding: "0.5rem",
+                }}
+                placeholder="Option A Title..."
+              />
+              <textarea
+                value={(config.optionA as { description: string })?.description || ""}
+                onChange={(e) =>
+                  updateConfig({
+                    optionA: {
+                      ...((config.optionA as object) || {}),
+                      description: e.target.value,
+                    },
+                  })
+                }
+                rows={2}
+                className="mt-2 w-full border-2 font-mono text-sm transition-all duration-200 focus:outline-none"
+                style={{
+                  borderColor: "var(--light-gray)",
+                  backgroundColor: "var(--off-white)",
+                  color: "var(--off-black)",
+                  padding: "0.5rem",
+                }}
+                placeholder="Option A Description..."
+              />
+            </div>
+            <div>
+              <label className="mb-2 block font-mono text-xs" style={{ color: "var(--warm-gray)" }}>
+                OPTION_B_TITLE
+              </label>
+              <input
+                type="text"
+                value={(config.optionB as { title: string })?.title || ""}
+                onChange={(e) =>
+                  updateConfig({
+                    optionB: {
+                      ...((config.optionB as object) || {}),
+                      title: e.target.value,
+                    },
+                  })
+                }
+                className="w-full border-2 font-mono text-sm transition-all duration-200 focus:outline-none"
+                style={{
+                  borderColor: "var(--light-gray)",
+                  backgroundColor: "var(--off-white)",
+                  color: "var(--off-black)",
+                  padding: "0.5rem",
+                }}
+                placeholder="Option B Title..."
+              />
+              <textarea
+                value={(config.optionB as { description: string })?.description || ""}
+                onChange={(e) =>
+                  updateConfig({
+                    optionB: {
+                      ...((config.optionB as object) || {}),
+                      description: e.target.value,
+                    },
+                  })
+                }
+                rows={2}
+                className="mt-2 w-full border-2 font-mono text-sm transition-all duration-200 focus:outline-none"
+                style={{
+                  borderColor: "var(--light-gray)",
+                  backgroundColor: "var(--off-white)",
+                  color: "var(--off-black)",
+                  padding: "0.5rem",
+                }}
+                placeholder="Option B Description..."
+              />
+            </div>
+          </div>
+        </div>
+      );
+
+    default:
+      return null;
+  }
+}
+
 export default function NewQuestionnairePage() {
   const searchParams = useSearchParams();
   const [questionnaire, setQuestionnaire] = useState({
@@ -77,12 +546,60 @@ export default function NewQuestionnairePage() {
   ];
 
   const addQuestion = (type: string) => {
+    // Initialize with default config based on question type
+    let defaultConfig = {};
+    switch (type) {
+      case "binary":
+        defaultConfig = {
+          optionA: { id: "a", text: "Yes" },
+          optionB: { id: "b", text: "No" },
+        };
+        break;
+      case "multi-choice":
+        defaultConfig = {
+          options: [
+            { id: "opt1", text: "Option 1" },
+            { id: "opt2", text: "Option 2" },
+          ],
+          maxSelections: 1,
+        };
+        break;
+      case "rating-scale":
+        defaultConfig = {
+          scale: 5,
+          variant: "numbers",
+          labels: { min: "Poor", max: "Excellent" },
+        };
+        break;
+      case "text-response":
+        defaultConfig = {
+          maxLength: 500,
+          placeholder: "Enter your response...",
+          multiline: false,
+        };
+        break;
+      case "ranking":
+        defaultConfig = {
+          items: [
+            { id: "item1", text: "Item 1" },
+            { id: "item2", text: "Item 2" },
+          ],
+        };
+        break;
+      case "ab-test":
+        defaultConfig = {
+          optionA: { title: "Option A", description: "Description A" },
+          optionB: { title: "Option B", description: "Description B" },
+        };
+        break;
+    }
+
     const newQuestion: Question = {
       id: `q_${Date.now()}`,
       type,
       title: "New Question",
       required: true,
-      config: {},
+      config: defaultConfig,
     };
     setEditingQuestion(newQuestion);
     setShowQuestionModal(true);
@@ -140,60 +657,85 @@ export default function NewQuestionnairePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{ backgroundColor: "var(--off-white)" }}>
       {/* Loading Template State */}
       {isLoadingTemplate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/80">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          style={{ backgroundColor: "rgba(250, 250, 250, 0.9)" }}
+        >
           <div className="text-center">
-            <div className="mx-auto mb-4 size-12 animate-spin rounded-full border-b-2 border-blue-600"></div>
-            <p className="text-gray-600">Loading template...</p>
+            <div
+              className="mx-auto mb-4 size-12 animate-spin rounded-full border-b-2"
+              style={{ borderColor: "var(--primary)" }}
+            ></div>
+            <p className="font-mono text-sm" style={{ color: "var(--warm-gray)" }}>
+              LOADING_TEMPLATE...
+            </p>
           </div>
         </div>
       )}
 
-      {/* Header */}
-      <div className="border-b border-gray-200 bg-white">
+      {/* Terminal-style Header */}
+      <div
+        className="border-b-2"
+        style={{
+          backgroundColor: "var(--off-black)",
+          borderColor: "var(--off-black)",
+        }}
+      >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between py-6">
             <div>
-              <nav className="mb-2 flex space-x-4 text-sm text-gray-500">
-                <Link href="/admin" className="hover:text-gray-700">
-                  Admin
-                </Link>
-                <span>/</span>
-                <Link href="/admin/questionnaires" className="hover:text-gray-700">
-                  Questionnaires
-                </Link>
-                <span>/</span>
-                <span className="text-gray-900">New</span>
-              </nav>
-              <h1 className="text-3xl font-bold text-gray-900">Create Questionnaire</h1>
-              <p className="mt-1 text-sm text-gray-500">
+              <div className="mb-2 font-mono text-sm" style={{ color: "var(--primary)" }}>
+                $ admin/questionnaires/new --create
+              </div>
+              <h1
+                className="font-mono text-3xl font-bold uppercase tracking-wide"
+                style={{ color: "var(--off-white)" }}
+              >
+                CREATE_QUESTIONNAIRE
+              </h1>
+              <p className="mt-1 font-mono text-sm" style={{ color: "var(--warm-gray)" }}>
                 Build a multi-question survey for your research
               </p>
             </div>
             <div className="flex space-x-4">
               <Link
                 href="/admin/questionnaires/templates"
-                className="inline-flex items-center rounded-md bg-green-600 px-4 py-2 text-white transition-colors hover:bg-green-700"
+                className="inline-flex items-center px-4 py-2 font-mono text-sm font-medium transition-colors hover:opacity-90"
+                style={{
+                  backgroundColor: "var(--primary)",
+                  color: "var(--off-white)",
+                }}
               >
-                📋 Use Template
+                USE_TEMPLATE
               </Link>
               <button
-                className="rounded-md bg-gray-600 px-4 py-2 text-white transition-colors hover:bg-gray-700"
+                type="button"
+                className="px-4 py-2 font-mono text-sm font-medium transition-colors hover:opacity-90"
+                style={{
+                  backgroundColor: "var(--warm-gray)",
+                  color: "var(--off-white)",
+                }}
                 onClick={() => {
                   /* Save as draft */
                 }}
               >
-                Save Draft
+                SAVE_DRAFT
               </button>
               <button
-                className="rounded-md bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
+                type="button"
+                className="px-4 py-2 font-mono text-sm font-medium transition-colors hover:opacity-90"
+                style={{
+                  backgroundColor: "var(--primary)",
+                  color: "var(--off-white)",
+                }}
                 onClick={() => {
                   /* Publish */
                 }}
               >
-                Publish
+                PUBLISH
               </button>
             </div>
           </div>
@@ -205,31 +747,59 @@ export default function NewQuestionnairePage() {
           {/* Main Content */}
           <div className="space-y-6 lg:col-span-2">
             {/* Questionnaire Info */}
-            <div className="rounded-lg bg-white p-6 shadow">
+            <div
+              className="border-2 p-6 shadow"
+              style={{
+                backgroundColor: "var(--off-white)",
+                borderColor: "var(--light-gray)",
+              }}
+            >
               <div className="mb-4 flex items-center justify-between">
-                <h2 className="text-lg font-medium text-gray-900">Questionnaire Details</h2>
+                <h2 className="font-mono text-lg font-medium" style={{ color: "var(--off-black)" }}>
+                  QUESTIONNAIRE_DETAILS
+                </h2>
                 {searchParams.get("template") && (
-                  <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700">
-                    📋 From Template
+                  <span
+                    className="px-3 py-1 font-mono text-sm font-medium"
+                    style={{
+                      backgroundColor: "var(--primary)",
+                      color: "var(--off-white)",
+                    }}
+                  >
+                    FROM_TEMPLATE
                   </span>
                 )}
               </div>
               <div className="space-y-4">
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">Title *</label>
+                  <label
+                    className="mb-1 block font-mono text-sm font-medium"
+                    style={{ color: "var(--off-black)" }}
+                  >
+                    TITLE *
+                  </label>
                   <input
                     type="text"
                     value={questionnaire.title}
                     onChange={(e) =>
                       setQuestionnaire((prev) => ({ ...prev, title: e.target.value }))
                     }
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border-2 font-mono text-sm transition-all duration-200 focus:outline-none"
+                    style={{
+                      borderColor: "var(--off-black)",
+                      backgroundColor: "var(--off-white)",
+                      color: "var(--off-black)",
+                      padding: "0.75rem",
+                    }}
                     placeholder="e.g., Product Feature Research Survey"
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">
-                    Description
+                  <label
+                    className="mb-1 block font-mono text-sm font-medium"
+                    style={{ color: "var(--off-black)" }}
+                  >
+                    DESCRIPTION
                   </label>
                   <textarea
                     value={questionnaire.description}
@@ -237,18 +807,35 @@ export default function NewQuestionnairePage() {
                       setQuestionnaire((prev) => ({ ...prev, description: e.target.value }))
                     }
                     rows={3}
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border-2 font-mono text-sm transition-all duration-200 focus:outline-none"
+                    style={{
+                      borderColor: "var(--off-black)",
+                      backgroundColor: "var(--off-white)",
+                      color: "var(--off-black)",
+                      padding: "0.75rem",
+                    }}
                     placeholder="Brief description of what this questionnaire is about..."
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">Category</label>
+                  <label
+                    className="mb-1 block font-mono text-sm font-medium"
+                    style={{ color: "var(--off-black)" }}
+                  >
+                    CATEGORY
+                  </label>
                   <select
                     value={questionnaire.category}
                     onChange={(e) =>
                       setQuestionnaire((prev) => ({ ...prev, category: e.target.value }))
                     }
-                    className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border-2 font-mono text-sm transition-all duration-200 focus:outline-none"
+                    style={{
+                      borderColor: "var(--off-black)",
+                      backgroundColor: "var(--off-white)",
+                      color: "var(--off-black)",
+                      padding: "0.75rem",
+                    }}
                   >
                     <option value="research">Research</option>
                     <option value="feedback">Feedback</option>
@@ -260,17 +847,31 @@ export default function NewQuestionnairePage() {
             </div>
 
             {/* Questions */}
-            <div className="rounded-lg bg-white shadow">
-              <div className="border-b border-gray-200 px-6 py-4">
+            <div
+              className="border-2 shadow"
+              style={{
+                backgroundColor: "var(--off-white)",
+                borderColor: "var(--light-gray)",
+              }}
+            >
+              <div className="border-b-2 px-6 py-4" style={{ borderColor: "var(--light-gray)" }}>
                 <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-medium text-gray-900">
-                    Questions ({questionnaire.questions.length})
+                  <h2
+                    className="font-mono text-lg font-medium"
+                    style={{ color: "var(--off-black)" }}
+                  >
+                    QUESTIONS ({questionnaire.questions.length})
                   </h2>
                   <button
+                    type="button"
                     onClick={() => setShowQuestionModal(true)}
-                    className="rounded-md bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
+                    className="px-4 py-2 font-mono text-sm font-medium transition-colors hover:opacity-90"
+                    style={{
+                      backgroundColor: "var(--primary)",
+                      color: "var(--off-white)",
+                    }}
                   >
-                    Add Question
+                    ADD_QUESTION
                   </button>
                 </div>
               </div>
@@ -409,60 +1010,175 @@ export default function NewQuestionnairePage() {
         </div>
       </div>
 
-      {/* Question Modal (simplified for now) */}
+      {/* Question Modal with Full Configuration */}
       {showQuestionModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="w-full max-w-md rounded-lg bg-white p-6">
-            <h3 className="mb-4 text-lg font-medium text-gray-900">
-              {editingQuestion?.id.startsWith("q_") ? "Add Question" : "Edit Question"}
-            </h3>
-            <div className="space-y-4">
-              <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
-                  Question Text
-                </label>
-                <input
-                  type="text"
-                  value={editingQuestion?.title || ""}
-                  onChange={(e) =>
-                    setEditingQuestion((prev) => (prev ? { ...prev, title: e.target.value } : null))
-                  }
-                  className="w-full rounded-md border border-gray-300 px-3 py-2"
-                  placeholder="Enter your question..."
-                />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div
+            className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg shadow-xl"
+            style={{ backgroundColor: "var(--off-white)" }}
+          >
+            {/* Terminal-style Header */}
+            <div
+              className="border-b-2 p-4"
+              style={{
+                backgroundColor: "var(--off-black)",
+                borderColor: "var(--off-black)",
+              }}
+            >
+              <div className="font-mono text-sm" style={{ color: "var(--primary)" }}>
+                $ admin/questionnaires/questions --config
               </div>
-              <div>
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={editingQuestion?.required || false}
-                    onChange={(e) =>
-                      setEditingQuestion((prev) =>
-                        prev ? { ...prev, required: e.target.checked } : null
-                      )
-                    }
-                    className="mr-2"
-                  />
-                  Required question
-                </label>
+              <div
+                className="font-mono font-bold uppercase tracking-wide"
+                style={{ color: "var(--off-white)" }}
+              >
+                QUESTION_EDITOR
               </div>
             </div>
-            <div className="mt-6 flex space-x-4">
-              <button
-                onClick={() => {
-                  setShowQuestionModal(false);
-                  setEditingQuestion(null);
-                }}
-                className="flex-1 rounded-md bg-gray-200 px-4 py-2 text-gray-800 hover:bg-gray-300"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => editingQuestion && saveQuestion(editingQuestion)}
-                className="flex-1 rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-              >
-                Save Question
-              </button>
+
+            <div className="p-6">
+              <div className="space-y-6">
+                {/* Question Type Selection */}
+                <div>
+                  <label
+                    className="mb-2 block font-mono text-sm font-medium"
+                    style={{ color: "var(--off-black)" }}
+                  >
+                    QUESTION_TYPE
+                  </label>
+                  <select
+                    value={editingQuestion?.type || "binary"}
+                    onChange={(e) =>
+                      setEditingQuestion((prev) =>
+                        prev ? { ...prev, type: e.target.value, config: {} } : null
+                      )
+                    }
+                    className="w-full border-2 font-mono text-sm transition-all duration-200 focus:outline-none"
+                    style={{
+                      borderColor: "var(--off-black)",
+                      backgroundColor: "var(--off-white)",
+                      color: "var(--off-black)",
+                      padding: "0.75rem",
+                    }}
+                  >
+                    {questionTypes.map((type) => (
+                      <option key={type.id} value={type.id}>
+                        {type.name} - {type.description}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Question Title */}
+                <div>
+                  <label
+                    className="mb-2 block font-mono text-sm font-medium"
+                    style={{ color: "var(--off-black)" }}
+                  >
+                    QUESTION_TEXT *
+                  </label>
+                  <input
+                    type="text"
+                    value={editingQuestion?.title || ""}
+                    onChange={(e) =>
+                      setEditingQuestion((prev) =>
+                        prev ? { ...prev, title: e.target.value } : null
+                      )
+                    }
+                    className="w-full border-2 font-mono text-sm transition-all duration-200 focus:outline-none"
+                    style={{
+                      borderColor: "var(--off-black)",
+                      backgroundColor: "var(--off-white)",
+                      color: "var(--off-black)",
+                      padding: "0.75rem",
+                    }}
+                    placeholder="Enter your question..."
+                  />
+                </div>
+
+                {/* Question Description */}
+                <div>
+                  <label
+                    className="mb-2 block font-mono text-sm font-medium"
+                    style={{ color: "var(--off-black)" }}
+                  >
+                    DESCRIPTION
+                  </label>
+                  <textarea
+                    value={editingQuestion?.description || ""}
+                    onChange={(e) =>
+                      setEditingQuestion((prev) =>
+                        prev ? { ...prev, description: e.target.value } : null
+                      )
+                    }
+                    rows={3}
+                    className="w-full border-2 font-mono text-sm transition-all duration-200 focus:outline-none"
+                    style={{
+                      borderColor: "var(--off-black)",
+                      backgroundColor: "var(--off-white)",
+                      color: "var(--off-black)",
+                      padding: "0.75rem",
+                    }}
+                    placeholder="Optional description or help text..."
+                  />
+                </div>
+
+                {/* Question Configuration - Dynamic based on type */}
+                {editingQuestion && (
+                  <QuestionConfigurationPanel
+                    question={editingQuestion}
+                    onConfigChange={(config) =>
+                      setEditingQuestion((prev) => (prev ? { ...prev, config } : null))
+                    }
+                  />
+                )}
+
+                {/* Required Checkbox */}
+                <div>
+                  <label className="flex items-center font-mono text-sm">
+                    <input
+                      type="checkbox"
+                      checked={editingQuestion?.required || false}
+                      onChange={(e) =>
+                        setEditingQuestion((prev) =>
+                          prev ? { ...prev, required: e.target.checked } : null
+                        )
+                      }
+                      className="mr-3 size-4"
+                    />
+                    <span style={{ color: "var(--off-black)" }}>REQUIRED_QUESTION</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="mt-8 flex space-x-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowQuestionModal(false);
+                    setEditingQuestion(null);
+                  }}
+                  className="flex-1 px-6 py-3 font-mono text-sm transition-colors"
+                  style={{
+                    backgroundColor: "var(--warm-gray)",
+                    color: "var(--off-white)",
+                  }}
+                >
+                  CANCEL
+                </button>
+                <button
+                  type="button"
+                  onClick={() => editingQuestion && saveQuestion(editingQuestion)}
+                  className="flex-1 px-6 py-3 font-mono text-sm transition-colors hover:opacity-90"
+                  style={{
+                    backgroundColor: "var(--primary)",
+                    color: "var(--off-white)",
+                  }}
+                >
+                  SAVE_QUESTION
+                </button>
+              </div>
             </div>
           </div>
         </div>
