@@ -3,6 +3,17 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import {
+  ToggleLeft,
+  List,
+  Star,
+  Type,
+  ArrowUpDown,
+  Split,
+  Plus,
+  Trash2,
+  GripVertical,
+} from "lucide-react";
 import type { QuestionnaireTemplate } from "@/lib/questionnaire-templates-detailed";
 
 interface Question {
@@ -13,6 +24,59 @@ interface Question {
   config: Record<string, unknown>;
   required: boolean;
 }
+
+interface QuestionType {
+  id: string;
+  name: string;
+  description: string;
+  icon: React.ComponentType<{ size?: number; style?: React.CSSProperties }>;
+  category: string;
+}
+
+const questionTypes: QuestionType[] = [
+  {
+    id: "binary",
+    name: "Yes/No",
+    description: "Simple binary choice",
+    icon: ToggleLeft,
+    category: "basic",
+  },
+  {
+    id: "multi-choice",
+    name: "Multiple Choice",
+    description: "Select one or multiple options",
+    icon: List,
+    category: "basic",
+  },
+  {
+    id: "rating-scale",
+    name: "Rating Scale",
+    description: "1-10 numerical rating",
+    icon: Star,
+    category: "advanced",
+  },
+  {
+    id: "text-response",
+    name: "Text Response",
+    description: "Open-ended text input",
+    icon: Type,
+    category: "basic",
+  },
+  {
+    id: "ranking",
+    name: "Ranking",
+    description: "Drag to reorder items",
+    icon: ArrowUpDown,
+    category: "advanced",
+  },
+  {
+    id: "ab-test",
+    name: "A/B Test",
+    description: "Compare two options",
+    icon: Split,
+    category: "advanced",
+  },
+];
 
 // Configuration panel for different question types
 function QuestionConfigurationPanel({
@@ -483,6 +547,151 @@ function QuestionConfigurationPanel({
   }
 }
 
+// Card-based question type selector
+function QuestionTypeSelector({
+  onSelectType,
+  onClose,
+}: {
+  onSelectType: (type: string) => void;
+  onClose: () => void;
+}) {
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+
+  const categories = [
+    { id: "all", name: "All Types" },
+    { id: "basic", name: "Basic" },
+    { id: "advanced", name: "Advanced" },
+  ];
+
+  const filteredTypes =
+    selectedCategory === "all"
+      ? questionTypes
+      : questionTypes.filter((type) => type.category === selectedCategory);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+      <div
+        className="max-h-[90vh] w-full max-w-5xl overflow-hidden shadow-xl"
+        style={{ backgroundColor: "var(--off-white)" }}
+      >
+        {/* Header */}
+        <div
+          className="border-b-2 px-6 py-4"
+          style={{
+            backgroundColor: "var(--off-black)",
+            borderColor: "var(--off-black)",
+          }}
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-bold" style={{ color: "var(--off-white)" }}>
+                Add Question
+              </h2>
+              <p className="mt-1 text-sm" style={{ color: "var(--warm-gray)" }}>
+                Choose a question type to add to your questionnaire
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={onClose}
+              className="transition-colors hover:opacity-75"
+              style={{ color: "var(--warm-gray)" }}
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+
+        {/* Category Tabs */}
+        <div className="border-b-2 px-6" style={{ borderColor: "var(--light-gray)" }}>
+          <nav className="-mb-px flex space-x-8">
+            {categories.map((category) => {
+              const isActive = selectedCategory === category.id;
+              const count =
+                category.id === "all"
+                  ? questionTypes.length
+                  : questionTypes.filter((t) => t.category === category.id).length;
+
+              return (
+                <button
+                  key={category.id}
+                  type="button"
+                  onClick={() => setSelectedCategory(category.id)}
+                  className={`border-b-2 px-1 py-3 text-sm font-medium transition-colors ${
+                    isActive ? "border-current" : "border-transparent hover:opacity-75"
+                  }`}
+                  style={{
+                    color: isActive ? "var(--primary)" : "var(--warm-gray)",
+                  }}
+                >
+                  {category.name}
+                  <span
+                    className="ml-2 px-2 py-1 text-xs"
+                    style={{
+                      backgroundColor: "var(--light-gray)",
+                      color: "var(--off-black)",
+                    }}
+                  >
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* Question Type Cards */}
+        <div className="max-h-[60vh] overflow-y-auto p-6">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {filteredTypes.map((questionType) => (
+              <div
+                key={questionType.id}
+                className="cursor-pointer overflow-hidden border-2 shadow-sm transition-all duration-200 hover:shadow-md"
+                style={{
+                  backgroundColor: "var(--off-white)",
+                  borderColor: "var(--light-gray)",
+                }}
+                onClick={() => onSelectType(questionType.id)}
+              >
+                <div className="p-6">
+                  <div className="mb-3 flex items-center justify-between">
+                    <questionType.icon size={32} style={{ color: "var(--primary)" }} />
+                    <span
+                      className="px-2 py-1 text-xs font-medium"
+                      style={{
+                        backgroundColor: "var(--primary)",
+                        color: "var(--off-white)",
+                      }}
+                    >
+                      {questionType.category}
+                    </span>
+                  </div>
+
+                  <h3 className="mb-2 text-lg font-semibold" style={{ color: "var(--off-black)" }}>
+                    {questionType.name}
+                  </h3>
+                  <p className="text-sm" style={{ color: "var(--warm-gray)" }}>
+                    {questionType.description}
+                  </p>
+                </div>
+
+                <div
+                  className="px-6 py-3 text-center"
+                  style={{ backgroundColor: "var(--light-gray)" }}
+                >
+                  <span className="text-sm font-medium" style={{ color: "var(--primary)" }}>
+                    Select
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function NewQuestionnairePage() {
   const searchParams = useSearchParams();
   const [questionnaire, setQuestionnaire] = useState({
@@ -492,6 +701,7 @@ export default function NewQuestionnairePage() {
     questions: [] as Question[],
   });
 
+  const [showQuestionTypeSelector, setShowQuestionTypeSelector] = useState(false);
   const [showQuestionModal, setShowQuestionModal] = useState(false);
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
   const [isLoadingTemplate, setIsLoadingTemplate] = useState(false);
@@ -621,6 +831,21 @@ export default function NewQuestionnairePage() {
     }
     setShowQuestionModal(false);
     setEditingQuestion(null);
+  };
+
+  // Handler for question type selection
+  const handleSelectQuestionType = (type: string) => {
+    setShowQuestionTypeSelector(false);
+
+    // Create new question with selected type
+    const newQuestion = addQuestion(type);
+    setEditingQuestion(newQuestion);
+    setShowQuestionModal(true);
+  };
+
+  // Start new question flow
+  const startNewQuestion = () => {
+    setShowQuestionTypeSelector(true);
   };
 
   const removeQuestion = (id: string) => {
@@ -864,7 +1089,7 @@ export default function NewQuestionnairePage() {
                   </h2>
                   <button
                     type="button"
-                    onClick={() => setShowQuestionModal(true)}
+                    onClick={startNewQuestion}
                     className="px-4 py-2 font-mono text-sm font-medium transition-colors hover:opacity-90"
                     style={{
                       backgroundColor: "var(--primary)",
@@ -879,83 +1104,168 @@ export default function NewQuestionnairePage() {
               <div className="p-6">
                 {questionnaire.questions.length === 0 ? (
                   <div className="py-12 text-center">
-                    <div className="mb-4 text-6xl text-gray-400">📝</div>
-                    <h3 className="mb-2 text-lg font-medium text-gray-900">No questions yet</h3>
-                    <p className="mb-4 text-gray-500">Add your first question to get started</p>
+                    <div className="mb-4 flex justify-center" style={{ color: "var(--warm-gray)" }}>
+                      <Type size={64} />
+                    </div>
+                    <h3 className="mb-2 text-lg font-medium" style={{ color: "var(--off-black)" }}>
+                      No questions yet
+                    </h3>
+                    <p className="mb-4 text-sm" style={{ color: "var(--warm-gray)" }}>
+                      Add your first question to get started
+                    </p>
                     <button
-                      onClick={() => setShowQuestionModal(true)}
-                      className="rounded-md bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
+                      onClick={startNewQuestion}
+                      className="px-6 py-3 font-mono text-sm font-medium transition-colors hover:opacity-90"
+                      style={{
+                        backgroundColor: "var(--primary)",
+                        color: "var(--off-white)",
+                      }}
                     >
                       Add First Question
                     </button>
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {questionnaire.questions.map((question, index) => (
-                      <div key={question.id} className="rounded-lg border border-gray-200 p-4">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <div className="mb-2 flex items-center space-x-2">
-                              <span className="rounded bg-gray-100 px-2 py-1 text-sm font-medium text-gray-700">
-                                Q{index + 1}
-                              </span>
-                              <span className="rounded bg-blue-100 px-2 py-1 text-sm text-blue-700">
-                                {questionTypes.find((t) => t.id === question.type)?.name}
-                              </span>
-                              {question.required && (
-                                <span className="rounded bg-red-100 px-2 py-1 text-sm text-red-700">
-                                  Required
-                                </span>
-                              )}
+                    {questionnaire.questions.map((question, index) => {
+                      const questionType = questionTypes.find((t) => t.id === question.type);
+                      const QuestionIcon = questionType?.icon || Type;
+
+                      return (
+                        <div
+                          key={question.id}
+                          className="overflow-hidden border-2 shadow-sm transition-all duration-200 hover:shadow-md"
+                          style={{
+                            backgroundColor: "var(--off-white)",
+                            borderColor: "var(--light-gray)",
+                          }}
+                        >
+                          <div className="p-6">
+                            <div className="flex items-start justify-between">
+                              <div className="flex items-start space-x-4">
+                                <div className="shrink-0">
+                                  <QuestionIcon size={24} style={{ color: "var(--primary)" }} />
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                  <div className="mb-2 flex items-center space-x-2">
+                                    <span
+                                      className="px-2 py-1 font-mono text-xs font-medium"
+                                      style={{
+                                        backgroundColor: "var(--light-gray)",
+                                        color: "var(--off-black)",
+                                      }}
+                                    >
+                                      Q{index + 1}
+                                    </span>
+                                    <span
+                                      className="px-2 py-1 font-mono text-xs"
+                                      style={{
+                                        backgroundColor: "var(--primary)",
+                                        color: "var(--off-white)",
+                                      }}
+                                    >
+                                      {questionType?.name}
+                                    </span>
+                                    {question.required && (
+                                      <span
+                                        className="px-2 py-1 font-mono text-xs"
+                                        style={{
+                                          backgroundColor: "var(--warm-gray)",
+                                          color: "var(--off-white)",
+                                        }}
+                                      >
+                                        REQUIRED
+                                      </span>
+                                    )}
+                                  </div>
+                                  <h3
+                                    className="mb-1 font-medium"
+                                    style={{ color: "var(--off-black)" }}
+                                  >
+                                    {question.title}
+                                  </h3>
+                                  {question.description && (
+                                    <p className="text-sm" style={{ color: "var(--warm-gray)" }}>
+                                      {question.description}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+
+                              {/* Drag Handle */}
+                              <div className="ml-4 flex items-center space-x-2">
+                                <button
+                                  className="p-1 transition-colors hover:opacity-75"
+                                  style={{ color: "var(--warm-gray)" }}
+                                  title="Drag to reorder"
+                                >
+                                  <GripVertical size={16} />
+                                </button>
+                              </div>
                             </div>
-                            <h3 className="font-medium text-gray-900">{question.title}</h3>
-                            {question.description && (
-                              <p className="mt-1 text-sm text-gray-500">{question.description}</p>
-                            )}
                           </div>
-                          <div className="ml-4 flex space-x-2">
-                            <button
-                              onClick={() => moveQuestion(question.id, "up")}
-                              disabled={index === 0}
-                              className="text-gray-400 hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
-                            >
-                              ↑
-                            </button>
-                            <button
-                              onClick={() => moveQuestion(question.id, "down")}
-                              disabled={index === questionnaire.questions.length - 1}
-                              className="text-gray-400 hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
-                            >
-                              ↓
-                            </button>
-                            <button
-                              onClick={() => duplicateQuestion(question.id)}
-                              className="text-green-600 hover:text-green-800"
-                              title="Duplicate question"
-                            >
-                              📋
-                            </button>
-                            <button
-                              onClick={() => {
-                                setEditingQuestion(question);
-                                setShowQuestionModal(true);
-                              }}
-                              className="text-blue-600 hover:text-blue-800"
-                              title="Edit question"
-                            >
-                              ✏️
-                            </button>
-                            <button
-                              onClick={() => removeQuestion(question.id)}
-                              className="text-red-600 hover:text-red-800"
-                              title="Delete question"
-                            >
-                              🗑️
-                            </button>
+
+                          {/* Actions */}
+                          <div
+                            className="flex items-center justify-between px-6 py-3"
+                            style={{ backgroundColor: "var(--light-gray)" }}
+                          >
+                            <div className="flex items-center space-x-2">
+                              <button
+                                onClick={() => moveQuestion(question.id, "up")}
+                                disabled={index === 0}
+                                className="p-1 transition-colors hover:opacity-75 disabled:cursor-not-allowed disabled:opacity-25"
+                                style={{ color: "var(--warm-gray)" }}
+                                title="Move up"
+                              >
+                                ↑
+                              </button>
+                              <button
+                                onClick={() => moveQuestion(question.id, "down")}
+                                disabled={index === questionnaire.questions.length - 1}
+                                className="p-1 transition-colors hover:opacity-75 disabled:cursor-not-allowed disabled:opacity-25"
+                                style={{ color: "var(--warm-gray)" }}
+                                title="Move down"
+                              >
+                                ↓
+                              </button>
+                            </div>
+
+                            <div className="flex items-center space-x-2">
+                              <button
+                                onClick={() => duplicateQuestion(question.id)}
+                                className="p-1 transition-colors hover:opacity-75"
+                                style={{ color: "var(--primary)" }}
+                                title="Duplicate question"
+                              >
+                                <Plus size={16} />
+                              </button>
+                              <button
+                                onClick={() => {
+                                  setEditingQuestion(question);
+                                  setShowQuestionModal(true);
+                                }}
+                                className="px-3 py-1 text-xs font-medium transition-colors hover:opacity-90"
+                                style={{
+                                  backgroundColor: "var(--primary)",
+                                  color: "var(--off-white)",
+                                }}
+                                title="Edit question"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => removeQuestion(question.id)}
+                                className="p-1 transition-colors hover:opacity-75"
+                                style={{ color: "var(--warm-gray)" }}
+                                title="Delete question"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -1009,6 +1319,14 @@ export default function NewQuestionnairePage() {
           </div>
         </div>
       </div>
+
+      {/* Question Type Selector Modal */}
+      {showQuestionTypeSelector && (
+        <QuestionTypeSelector
+          onSelectType={handleSelectQuestionType}
+          onClose={() => setShowQuestionTypeSelector(false)}
+        />
+      )}
 
       {/* Question Modal with Full Configuration */}
       {showQuestionModal && (
