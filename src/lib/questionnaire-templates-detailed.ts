@@ -1,0 +1,1427 @@
+/**
+ * Comprehensive Questionnaire Templates Based on Research Best Practices
+ *
+ * Categories:
+ * - Product Research (Feature heat-map, pricing, pain-points)
+ * - UX Research (Task completion, prototype feedback)
+ * - Market Research (Demographics, purchase intent)
+ * - Customer Satisfaction (NPS, support experience)
+ * - Feature Prioritization
+ */
+
+export interface QuestionTemplate {
+  id: string;
+  title: string;
+  description?: string;
+  questionType:
+    | "binary"
+    | "multi-choice"
+    | "rating-scale"
+    | "text-response"
+    | "ranking"
+    | "ab-test";
+  category: "general" | "technical" | "design" | "business" | "research";
+  questionData: Record<string, unknown>;
+  isRequired: boolean;
+  isLocked?: boolean; // For standardized questions like NPS
+  displayOrder: number;
+  tags: string[];
+  bestPracticeNote?: string;
+}
+
+export interface QuestionnaireTemplate {
+  id: string;
+  title: string;
+  description: string;
+  category:
+    | "product-research"
+    | "ux-research"
+    | "market-research"
+    | "customer-satisfaction"
+    | "feature-prioritization";
+  estimatedTime: string;
+  targetAudience: string;
+  questions: QuestionTemplate[];
+  isLocked?: boolean;
+  tags: string[];
+  bestPractices: string[];
+}
+
+export const questionnaireTemplates: QuestionnaireTemplate[] = [
+  // ========================
+  // PRODUCT RESEARCH TEMPLATES
+  // ========================
+  {
+    id: "feature-heatmap-survey",
+    title: "Feature Heat-map Survey",
+    description: "Comprehensive feature prioritization using importance vs satisfaction analysis",
+    category: "product-research",
+    estimatedTime: "8-12 minutes",
+    targetAudience: "Current users and prospects",
+    tags: ["features", "prioritization", "product-planning"],
+    bestPractices: [
+      "Start with broad categories before drilling down",
+      "Include both current usage and future needs",
+      "Use importance vs satisfaction matrix for prioritization",
+      "End with open feedback for innovation opportunities",
+    ],
+    questions: [
+      {
+        id: "current-usage-frequency",
+        title: "How frequently do you use our product?",
+        questionType: "multi-choice",
+        category: "research",
+        questionData: {
+          options: [
+            { id: "daily", text: "Daily" },
+            { id: "weekly", text: "Weekly" },
+            { id: "monthly", text: "Monthly" },
+            { id: "rarely", text: "Rarely" },
+            { id: "never", text: "Never used it" },
+          ],
+          maxSelections: 1,
+        },
+        isRequired: true,
+        displayOrder: 1,
+        tags: ["usage", "frequency"],
+        bestPracticeNote: "Establish baseline usage to segment responses",
+      },
+      {
+        id: "feature-importance-rating",
+        title: "Rate the importance of each feature to your workflow",
+        description: "Consider how critical each feature is to achieving your goals",
+        questionType: "rating-scale",
+        category: "research",
+        questionData: {
+          scale: 5,
+          variant: "numbers",
+          labels: { min: "Not Important", max: "Critical" },
+          features: [
+            "Dashboard Overview",
+            "Data Export",
+            "Team Collaboration",
+            "Mobile Access",
+            "Integration APIs",
+            "Advanced Analytics",
+            "Automated Reporting",
+            "Custom Workflows",
+          ],
+        },
+        isRequired: true,
+        displayOrder: 2,
+        tags: ["importance", "features", "prioritization"],
+        bestPracticeNote: "Use 5-point scale for better discrimination than 3-point",
+      },
+      {
+        id: "feature-satisfaction-rating",
+        title: "Rate your satisfaction with each feature's current implementation",
+        description: "How well does each feature meet your needs in its current state?",
+        questionType: "rating-scale",
+        category: "research",
+        questionData: {
+          scale: 5,
+          variant: "numbers",
+          labels: { min: "Very Dissatisfied", max: "Very Satisfied" },
+          features: [
+            "Dashboard Overview",
+            "Data Export",
+            "Team Collaboration",
+            "Mobile Access",
+            "Integration APIs",
+            "Advanced Analytics",
+            "Automated Reporting",
+            "Custom Workflows",
+          ],
+        },
+        isRequired: true,
+        displayOrder: 3,
+        tags: ["satisfaction", "features", "performance"],
+        bestPracticeNote: "Pair with importance ratings for gap analysis",
+      },
+      {
+        id: "feature-priority-ranking",
+        title: "Rank these potential new features by priority for your use case",
+        questionType: "ranking",
+        category: "research",
+        questionData: {
+          items: [
+            { id: "ai-insights", text: "AI-powered insights and recommendations" },
+            { id: "advanced-permissions", text: "Advanced user permissions and roles" },
+            { id: "workflow-automation", text: "Workflow automation and triggers" },
+            { id: "enhanced-mobile", text: "Enhanced mobile application" },
+            { id: "third-party-integrations", text: "More third-party integrations" },
+            { id: "white-label", text: "White-label/custom branding options" },
+          ],
+        },
+        isRequired: true,
+        displayOrder: 4,
+        tags: ["ranking", "new-features", "roadmap"],
+        bestPracticeNote: "Limit to 6-8 items for cognitive load management",
+      },
+      {
+        id: "feature-innovation-feedback",
+        title: "What features or capabilities do you wish our product had that it currently lacks?",
+        questionType: "text-response",
+        category: "research",
+        questionData: {
+          maxLength: 800,
+          placeholder: "Describe any features, integrations, or capabilities you'd like to see...",
+          multiline: true,
+        },
+        isRequired: false,
+        displayOrder: 5,
+        tags: ["innovation", "feedback", "feature-requests"],
+        bestPracticeNote: "Open-ended for discovering unexpected opportunities",
+      },
+    ],
+  },
+
+  {
+    id: "pricing-research-survey",
+    title: "Pricing Research Survey",
+    description: "Van Westendorp Price Sensitivity analysis with value perception",
+    category: "product-research",
+    estimatedTime: "5-7 minutes",
+    targetAudience: "Prospects and current users",
+    tags: ["pricing", "value", "willingness-to-pay"],
+    bestPractices: [
+      "Use Van Westendorp Price Sensitivity Meter methodology",
+      "Include value perception before price questions",
+      "Provide competitive context",
+      "Test multiple pricing models",
+    ],
+    questions: [
+      {
+        id: "current-solution-cost",
+        title: "What do you currently spend per month on similar solutions?",
+        questionType: "multi-choice",
+        category: "business",
+        questionData: {
+          options: [
+            { id: "free", text: "Free/Open source only" },
+            { id: "under-50", text: "Under $50/month" },
+            { id: "50-200", text: "$50-$200/month" },
+            { id: "200-500", text: "$200-$500/month" },
+            { id: "500-1000", text: "$500-$1,000/month" },
+            { id: "over-1000", text: "Over $1,000/month" },
+            { id: "dont-know", text: "Don't know/Not applicable" },
+          ],
+          maxSelections: 1,
+        },
+        isRequired: true,
+        displayOrder: 1,
+        tags: ["current-spend", "baseline"],
+        bestPracticeNote: "Establish spending baseline for context",
+      },
+      {
+        id: "value-perception-rating",
+        title: "Rate the value our solution would provide to your organization",
+        questionType: "rating-scale",
+        category: "business",
+        questionData: {
+          scale: 10,
+          variant: "numbers",
+          labels: { min: "No Value", max: "Extremely Valuable" },
+        },
+        isRequired: true,
+        displayOrder: 2,
+        tags: ["value", "perception"],
+        bestPracticeNote: "Measure value perception before revealing price",
+      },
+      {
+        id: "price-too-expensive",
+        title: "At what price would you consider our solution to be too expensive to consider?",
+        questionType: "text-response",
+        category: "business",
+        questionData: {
+          maxLength: 100,
+          placeholder: "e.g., $500/month",
+          multiline: false,
+        },
+        isRequired: true,
+        displayOrder: 3,
+        tags: ["price-sensitivity", "van-westendorp"],
+        bestPracticeNote: "Van Westendorp: Too expensive threshold",
+      },
+      {
+        id: "price-too-cheap",
+        title:
+          "At what price would you consider our solution to be so cheap that you'd question its quality?",
+        questionType: "text-response",
+        category: "business",
+        questionData: {
+          maxLength: 100,
+          placeholder: "e.g., $10/month",
+          multiline: false,
+        },
+        isRequired: true,
+        displayOrder: 4,
+        tags: ["price-sensitivity", "van-westendorp"],
+        bestPracticeNote: "Van Westendorp: Too cheap threshold",
+      },
+      {
+        id: "price-expensive",
+        title:
+          "At what price would you consider our solution to be expensive but still worth considering?",
+        questionType: "text-response",
+        category: "business",
+        questionData: {
+          maxLength: 100,
+          placeholder: "e.g., $300/month",
+          multiline: false,
+        },
+        isRequired: true,
+        displayOrder: 5,
+        tags: ["price-sensitivity", "van-westendorp"],
+        bestPracticeNote: "Van Westendorp: Expensive but acceptable",
+      },
+      {
+        id: "price-bargain",
+        title: "At what price would you consider our solution to be a bargain?",
+        questionType: "text-response",
+        category: "business",
+        questionData: {
+          maxLength: 100,
+          placeholder: "e.g., $100/month",
+          multiline: false,
+        },
+        isRequired: true,
+        displayOrder: 6,
+        tags: ["price-sensitivity", "van-westendorp"],
+        bestPracticeNote: "Van Westendorp: Bargain threshold",
+      },
+    ],
+  },
+
+  {
+    id: "pain-points-discovery",
+    title: "Pain Points Discovery Survey",
+    description: "Jobs-to-be-done framework for identifying user frustrations and opportunities",
+    category: "product-research",
+    estimatedTime: "10-15 minutes",
+    targetAudience: "Current users and prospects",
+    tags: ["pain-points", "jobs-to-be-done", "user-research"],
+    bestPractices: [
+      "Use Jobs-to-be-done framework",
+      "Focus on frequency and severity of pain points",
+      "Explore current workarounds and solutions",
+      "Measure emotional impact for prioritization",
+    ],
+    questions: [
+      {
+        id: "primary-job-to-be-done",
+        title: "What is the primary job you're trying to accomplish with tools like ours?",
+        questionType: "text-response",
+        category: "research",
+        questionData: {
+          maxLength: 500,
+          placeholder: "Describe the main task or goal you're trying to achieve...",
+          multiline: true,
+        },
+        isRequired: true,
+        displayOrder: 1,
+        tags: ["jobs-to-be-done", "primary-goal"],
+        bestPracticeNote: "Focus on the job, not the features",
+      },
+      {
+        id: "current-pain-points",
+        title: "What are your biggest frustrations with your current approach?",
+        questionType: "multi-choice",
+        category: "research",
+        questionData: {
+          options: [
+            { id: "too-slow", text: "Takes too much time" },
+            { id: "too-complex", text: "Too complex/difficult to use" },
+            { id: "unreliable", text: "Unreliable or inconsistent results" },
+            { id: "lack-integration", text: "Doesn't integrate with other tools" },
+            { id: "poor-collaboration", text: "Difficult to collaborate with team" },
+            { id: "limited-customization", text: "Limited customization options" },
+            { id: "poor-support", text: "Poor customer support" },
+            { id: "expensive", text: "Too expensive" },
+            { id: "other", text: "Other (please specify)" },
+          ],
+          maxSelections: 3,
+        },
+        isRequired: true,
+        displayOrder: 2,
+        tags: ["pain-points", "frustrations"],
+        bestPracticeNote: "Limit selections to force prioritization",
+      },
+      {
+        id: "pain-point-frequency",
+        title: "How often do you encounter these frustrations?",
+        questionType: "multi-choice",
+        category: "research",
+        questionData: {
+          options: [
+            { id: "daily", text: "Daily" },
+            { id: "weekly", text: "Weekly" },
+            { id: "monthly", text: "Monthly" },
+            { id: "rarely", text: "Rarely" },
+            { id: "never", text: "Never" },
+          ],
+          maxSelections: 1,
+        },
+        isRequired: true,
+        displayOrder: 3,
+        tags: ["frequency", "pain-points"],
+        bestPracticeNote: "Frequency helps prioritize impact",
+      },
+      {
+        id: "pain-point-severity",
+        title: "Rate the severity of impact when these frustrations occur",
+        questionType: "rating-scale",
+        category: "research",
+        questionData: {
+          scale: 5,
+          variant: "numbers",
+          labels: { min: "Minor Annoyance", max: "Major Blocker" },
+        },
+        isRequired: true,
+        displayOrder: 4,
+        tags: ["severity", "impact"],
+        bestPracticeNote: "Severity × Frequency = Priority",
+      },
+      {
+        id: "current-workarounds",
+        title: "What workarounds or alternative solutions do you currently use?",
+        questionType: "text-response",
+        category: "research",
+        questionData: {
+          maxLength: 600,
+          placeholder: "Describe any workarounds, alternative tools, or manual processes...",
+          multiline: true,
+        },
+        isRequired: false,
+        displayOrder: 5,
+        tags: ["workarounds", "alternatives"],
+        bestPracticeNote: "Reveals competitive landscape and solution gaps",
+      },
+      {
+        id: "emotional-impact",
+        title: "How do these frustrations make you feel?",
+        questionType: "multi-choice",
+        category: "research",
+        questionData: {
+          options: [
+            { id: "stressed", text: "Stressed or anxious" },
+            { id: "frustrated", text: "Frustrated or annoyed" },
+            { id: "disappointed", text: "Disappointed" },
+            { id: "worried", text: "Worried about outcomes" },
+            { id: "confident", text: "Still confident in my approach" },
+            { id: "neutral", text: "Neutral/no strong feelings" },
+          ],
+          maxSelections: 2,
+        },
+        isRequired: true,
+        displayOrder: 6,
+        tags: ["emotional-impact", "user-sentiment"],
+        bestPracticeNote: "Emotional impact drives urgency and willingness to change",
+      },
+    ],
+  },
+
+  // ========================
+  // UX RESEARCH TEMPLATES
+  // ========================
+  {
+    id: "task-completion-study",
+    title: "Task Completion Study",
+    description: "System Usability Scale (SUS) with task-specific feedback",
+    category: "ux-research",
+    estimatedTime: "5-8 minutes",
+    targetAudience: "Users who completed specific tasks",
+    tags: ["usability", "task-completion", "SUS"],
+    bestPractices: [
+      "Use standardized SUS questions for benchmarking",
+      "Include task-specific difficulty ratings",
+      "Measure perceived vs actual completion time",
+      "Focus on error recovery experience",
+    ],
+    questions: [
+      {
+        id: "task-completion-success",
+        title: "Were you able to complete the task successfully?",
+        questionType: "binary",
+        category: "design",
+        questionData: {
+          optionA: { id: "yes", text: "Yes, completely" },
+          optionB: { id: "no", text: "No, or only partially" },
+        },
+        isRequired: true,
+        displayOrder: 1,
+        tags: ["completion", "success"],
+        bestPracticeNote: "Baseline success rate measurement",
+      },
+      {
+        id: "task-difficulty",
+        title: "How difficult was it to complete this task?",
+        questionType: "rating-scale",
+        category: "design",
+        questionData: {
+          scale: 5,
+          variant: "numbers",
+          labels: { min: "Very Easy", max: "Very Difficult" },
+        },
+        isRequired: true,
+        displayOrder: 2,
+        tags: ["difficulty", "usability"],
+        bestPracticeNote: "Task-specific difficulty assessment",
+      },
+      {
+        id: "sus-system-use-frequency",
+        title: "I think that I would like to use this system frequently",
+        questionType: "rating-scale",
+        category: "design",
+        questionData: {
+          scale: 5,
+          variant: "numbers",
+          labels: { min: "Strongly Disagree", max: "Strongly Agree" },
+        },
+        isRequired: true,
+        isLocked: true,
+        displayOrder: 3,
+        tags: ["SUS", "usability", "standardized"],
+        bestPracticeNote: "Standard SUS Question 1 - Do not modify",
+      },
+      {
+        id: "sus-system-complexity",
+        title: "I found the system unnecessarily complex",
+        questionType: "rating-scale",
+        category: "design",
+        questionData: {
+          scale: 5,
+          variant: "numbers",
+          labels: { min: "Strongly Disagree", max: "Strongly Agree" },
+        },
+        isRequired: true,
+        isLocked: true,
+        displayOrder: 4,
+        tags: ["SUS", "usability", "standardized"],
+        bestPracticeNote: "Standard SUS Question 2 - Do not modify",
+      },
+      {
+        id: "sus-system-ease",
+        title: "I thought the system was easy to use",
+        questionType: "rating-scale",
+        category: "design",
+        questionData: {
+          scale: 5,
+          variant: "numbers",
+          labels: { min: "Strongly Disagree", max: "Strongly Agree" },
+        },
+        isRequired: true,
+        isLocked: true,
+        displayOrder: 5,
+        tags: ["SUS", "usability", "standardized"],
+        bestPracticeNote: "Standard SUS Question 3 - Do not modify",
+      },
+      {
+        id: "error-recovery",
+        title: "If you encountered any errors or issues, how easy was it to recover?",
+        questionType: "rating-scale",
+        category: "design",
+        questionData: {
+          scale: 5,
+          variant: "numbers",
+          labels: { min: "Very Difficult", max: "Very Easy" },
+        },
+        isRequired: false,
+        displayOrder: 6,
+        tags: ["error-recovery", "resilience"],
+        bestPracticeNote: "Error recovery is crucial for user confidence",
+      },
+      {
+        id: "improvement-suggestions",
+        title: "What would make this task easier to complete?",
+        questionType: "text-response",
+        category: "design",
+        questionData: {
+          maxLength: 500,
+          placeholder: "Suggest specific improvements to the interface or process...",
+          multiline: true,
+        },
+        isRequired: false,
+        displayOrder: 7,
+        tags: ["improvements", "suggestions"],
+        bestPracticeNote: "Collect actionable improvement ideas",
+      },
+    ],
+  },
+
+  {
+    id: "prototype-feedback",
+    title: "Prototype Feedback Survey",
+    description: "Comprehensive feedback on design prototypes and mockups",
+    category: "ux-research",
+    estimatedTime: "8-12 minutes",
+    targetAudience: "Users reviewing prototypes",
+    tags: ["prototype", "design-feedback", "visual-design"],
+    bestPractices: [
+      "Use think-aloud protocol questions",
+      "Include before/after preference comparisons",
+      "Focus on specific interaction feedback",
+      "Assess visual design separately from functionality",
+    ],
+    questions: [
+      {
+        id: "first-impression",
+        title: "What was your first impression when you saw this prototype?",
+        questionType: "text-response",
+        category: "design",
+        questionData: {
+          maxLength: 400,
+          placeholder: "Describe your initial thoughts and feelings...",
+          multiline: true,
+        },
+        isRequired: true,
+        displayOrder: 1,
+        tags: ["first-impression", "initial-reaction"],
+        bestPracticeNote: "First impressions are crucial for user adoption",
+      },
+      {
+        id: "prototype-vs-current",
+        title: "How does this prototype compare to the current version?",
+        questionType: "ab-test",
+        category: "design",
+        questionData: {
+          optionA: {
+            title: "Current Version",
+            description: "The existing interface you're familiar with",
+          },
+          optionB: {
+            title: "New Prototype",
+            description: "The proposed new design you just reviewed",
+          },
+        },
+        isRequired: true,
+        displayOrder: 2,
+        tags: ["comparison", "preference"],
+        bestPracticeNote: "Direct comparison reveals preference strength",
+      },
+      {
+        id: "visual-appeal",
+        title: "Rate the visual appeal of this prototype",
+        questionType: "rating-scale",
+        category: "design",
+        questionData: {
+          scale: 10,
+          variant: "stars",
+          labels: { min: "Unappealing", max: "Very Appealing" },
+        },
+        isRequired: true,
+        displayOrder: 3,
+        tags: ["visual-appeal", "aesthetics"],
+        bestPracticeNote: "Visual appeal affects user engagement and trust",
+      },
+      {
+        id: "navigation-clarity",
+        title: "How clear and intuitive is the navigation?",
+        questionType: "rating-scale",
+        category: "design",
+        questionData: {
+          scale: 5,
+          variant: "numbers",
+          labels: { min: "Very Confusing", max: "Very Clear" },
+        },
+        isRequired: true,
+        displayOrder: 4,
+        tags: ["navigation", "clarity"],
+        bestPracticeNote: "Navigation clarity is fundamental to usability",
+      },
+      {
+        id: "interaction-feedback",
+        title: "Which interactions felt most natural and which felt awkward?",
+        questionType: "text-response",
+        category: "design",
+        questionData: {
+          maxLength: 600,
+          placeholder: "Describe specific interactions that worked well or poorly...",
+          multiline: true,
+        },
+        isRequired: true,
+        displayOrder: 5,
+        tags: ["interactions", "feedback"],
+        bestPracticeNote: "Specific interaction feedback guides refinement",
+      },
+      {
+        id: "missing-features",
+        title: "What features or elements do you feel are missing?",
+        questionType: "text-response",
+        category: "design",
+        questionData: {
+          maxLength: 500,
+          placeholder: "List any missing features, buttons, or information...",
+          multiline: true,
+        },
+        isRequired: false,
+        displayOrder: 6,
+        tags: ["missing-features", "gaps"],
+        bestPracticeNote: "Identify gaps in prototype coverage",
+      },
+      {
+        id: "prototype-concerns",
+        title: "Do you have any concerns about this new design?",
+        questionType: "text-response",
+        category: "design",
+        questionData: {
+          maxLength: 500,
+          placeholder: "Share any concerns or potential issues you foresee...",
+          multiline: true,
+        },
+        isRequired: false,
+        displayOrder: 7,
+        tags: ["concerns", "risks"],
+        bestPracticeNote: "Early identification of concerns prevents later issues",
+      },
+    ],
+  },
+
+  // ========================
+  // MARKET RESEARCH TEMPLATES
+  // ========================
+  {
+    id: "demographics-profile",
+    title: "Demographics & Profile Survey",
+    description: "Comprehensive demographic and behavioral segmentation",
+    category: "market-research",
+    estimatedTime: "5-8 minutes",
+    targetAudience: "General audience or customer base",
+    tags: ["demographics", "segmentation", "profile"],
+    bestPractices: [
+      "Use standard demographic categories for benchmarking",
+      "Include behavioral segmentation beyond demographics",
+      "Assess technology adoption patterns",
+      "Understand communication preferences",
+    ],
+    questions: [
+      {
+        id: "company-size",
+        title: "What is the size of your organization?",
+        questionType: "multi-choice",
+        category: "business",
+        questionData: {
+          options: [
+            { id: "solo", text: "Solo entrepreneur/Freelancer" },
+            { id: "small", text: "Small business (2-50 employees)" },
+            { id: "medium", text: "Medium business (51-500 employees)" },
+            { id: "large", text: "Large business (501-5000 employees)" },
+            { id: "enterprise", text: "Enterprise (5000+ employees)" },
+          ],
+          maxSelections: 1,
+        },
+        isRequired: true,
+        displayOrder: 1,
+        tags: ["company-size", "business-segment"],
+        bestPracticeNote: "Company size affects needs and buying behavior",
+      },
+      {
+        id: "industry",
+        title: "What industry best describes your organization?",
+        questionType: "multi-choice",
+        category: "business",
+        questionData: {
+          options: [
+            { id: "tech", text: "Technology/Software" },
+            { id: "finance", text: "Finance/Banking" },
+            { id: "healthcare", text: "Healthcare" },
+            { id: "retail", text: "Retail/E-commerce" },
+            { id: "manufacturing", text: "Manufacturing" },
+            { id: "education", text: "Education" },
+            { id: "government", text: "Government/Public Sector" },
+            { id: "nonprofit", text: "Non-profit" },
+            { id: "consulting", text: "Consulting/Services" },
+            { id: "other", text: "Other" },
+          ],
+          maxSelections: 1,
+        },
+        isRequired: true,
+        displayOrder: 2,
+        tags: ["industry", "vertical"],
+        bestPracticeNote: "Industry context shapes feature requirements",
+      },
+      {
+        id: "role",
+        title: "What is your role in the organization?",
+        questionType: "multi-choice",
+        category: "business",
+        questionData: {
+          options: [
+            { id: "executive", text: "Executive/C-Level" },
+            { id: "director", text: "Director/VP" },
+            { id: "manager", text: "Manager/Team Lead" },
+            { id: "specialist", text: "Specialist/Individual Contributor" },
+            { id: "admin", text: "Admin/Support" },
+            { id: "other", text: "Other" },
+          ],
+          maxSelections: 1,
+        },
+        isRequired: true,
+        displayOrder: 3,
+        tags: ["role", "job-function"],
+        bestPracticeNote: "Role influences decision-making authority and needs",
+      },
+      {
+        id: "tech-adoption",
+        title: "How would you describe your approach to adopting new technology?",
+        questionType: "multi-choice",
+        category: "technical",
+        questionData: {
+          options: [
+            {
+              id: "early-adopter",
+              text: "Early adopter - I try new tools as soon as they're available",
+            },
+            {
+              id: "fast-follower",
+              text: "Fast follower - I adopt tools after seeing initial success",
+            },
+            { id: "mainstream", text: "Mainstream - I adopt tools when they become widely used" },
+            { id: "late-adopter", text: "Late adopter - I prefer proven, stable solutions" },
+            {
+              id: "skeptical",
+              text: "Skeptical - I resist new technology unless absolutely necessary",
+            },
+          ],
+          maxSelections: 1,
+        },
+        isRequired: true,
+        displayOrder: 4,
+        tags: ["tech-adoption", "innovation"],
+        bestPracticeNote: "Technology adoption pattern affects feature rollout strategy",
+      },
+      {
+        id: "communication-preference",
+        title: "How do you prefer to receive product updates and communications?",
+        questionType: "multi-choice",
+        category: "general",
+        questionData: {
+          options: [
+            { id: "email", text: "Email newsletters" },
+            { id: "in-app", text: "In-app notifications" },
+            { id: "blog", text: "Blog posts" },
+            { id: "webinar", text: "Webinars/Events" },
+            { id: "social", text: "Social media" },
+            { id: "slack", text: "Slack/Team chat" },
+            { id: "none", text: "Prefer minimal communication" },
+          ],
+          maxSelections: 2,
+        },
+        isRequired: true,
+        displayOrder: 5,
+        tags: ["communication", "preferences"],
+        bestPracticeNote: "Communication preferences guide marketing and support strategies",
+      },
+      {
+        id: "geographic-location",
+        title: "What geographic region are you located in?",
+        questionType: "multi-choice",
+        category: "general",
+        questionData: {
+          options: [
+            { id: "north-america", text: "North America" },
+            { id: "europe", text: "Europe" },
+            { id: "asia-pacific", text: "Asia Pacific" },
+            { id: "latin-america", text: "Latin America" },
+            { id: "middle-east-africa", text: "Middle East/Africa" },
+            { id: "other", text: "Other" },
+          ],
+          maxSelections: 1,
+        },
+        isRequired: true,
+        displayOrder: 6,
+        tags: ["geography", "location"],
+        bestPracticeNote: "Geographic location affects feature needs and compliance requirements",
+      },
+    ],
+  },
+
+  {
+    id: "purchase-intent-study",
+    title: "Purchase Intent Study",
+    description: "Comprehensive purchase intent analysis with decision factors",
+    category: "market-research",
+    estimatedTime: "6-10 minutes",
+    targetAudience: "Prospects and evaluators",
+    tags: ["purchase-intent", "decision-making", "sales"],
+    bestPractices: [
+      "Use standard 5-point purchase intent scale",
+      "Explore timing and urgency factors",
+      "Identify key decision-making criteria",
+      "Understand influence factors and stakeholders",
+    ],
+    questions: [
+      {
+        id: "purchase-intent-scale",
+        title: "How likely are you to purchase our solution in the next 6 months?",
+        questionType: "rating-scale",
+        category: "business",
+        questionData: {
+          scale: 5,
+          variant: "numbers",
+          labels: { min: "Definitely Will Not Purchase", max: "Definitely Will Purchase" },
+        },
+        isRequired: true,
+        displayOrder: 1,
+        tags: ["purchase-intent", "likelihood"],
+        bestPracticeNote: "Standard 5-point purchase intent scale for benchmarking",
+      },
+      {
+        id: "purchase-timeframe",
+        title: "What is your expected timeframe for making a purchase decision?",
+        questionType: "multi-choice",
+        category: "business",
+        questionData: {
+          options: [
+            { id: "immediate", text: "Immediate (within 30 days)" },
+            { id: "short-term", text: "Short-term (1-3 months)" },
+            { id: "medium-term", text: "Medium-term (3-6 months)" },
+            { id: "long-term", text: "Long-term (6-12 months)" },
+            { id: "no-timeframe", text: "No specific timeframe" },
+            { id: "not-planning", text: "Not currently planning to purchase" },
+          ],
+          maxSelections: 1,
+        },
+        isRequired: true,
+        displayOrder: 2,
+        tags: ["timeframe", "urgency"],
+        bestPracticeNote: "Timeframe affects sales strategy and follow-up approach",
+      },
+      {
+        id: "decision-criteria",
+        title: "Rank these factors by importance in your purchase decision",
+        questionType: "ranking",
+        category: "business",
+        questionData: {
+          items: [
+            { id: "price", text: "Price/Cost" },
+            { id: "features", text: "Features/Functionality" },
+            { id: "ease-of-use", text: "Ease of use" },
+            { id: "support", text: "Customer support" },
+            { id: "security", text: "Security/Compliance" },
+            { id: "integration", text: "Integration capabilities" },
+            { id: "reputation", text: "Vendor reputation" },
+            { id: "scalability", text: "Scalability" },
+          ],
+        },
+        isRequired: true,
+        displayOrder: 3,
+        tags: ["decision-criteria", "priorities"],
+        bestPracticeNote: "Decision criteria ranking guides sales messaging and positioning",
+      },
+      {
+        id: "budget-authority",
+        title: "Do you have budget authority for this type of purchase?",
+        questionType: "multi-choice",
+        category: "business",
+        questionData: {
+          options: [
+            { id: "full-authority", text: "Yes, I have full budget authority" },
+            { id: "recommend", text: "I can recommend, but others approve" },
+            { id: "influence", text: "I can influence the decision" },
+            { id: "no-authority", text: "No, I don't have budget authority" },
+            { id: "unsure", text: "I'm not sure" },
+          ],
+          maxSelections: 1,
+        },
+        isRequired: true,
+        displayOrder: 4,
+        tags: ["budget-authority", "decision-making"],
+        bestPracticeNote: "Budget authority affects sales approach and qualification",
+      },
+      {
+        id: "decision-stakeholders",
+        title: "Who else would be involved in the purchase decision?",
+        questionType: "multi-choice",
+        category: "business",
+        questionData: {
+          options: [
+            { id: "it-team", text: "IT/Technical team" },
+            { id: "finance", text: "Finance/Procurement" },
+            { id: "legal", text: "Legal/Compliance" },
+            { id: "executives", text: "Executive leadership" },
+            { id: "end-users", text: "End users/Team members" },
+            { id: "just-me", text: "Just me" },
+            { id: "other", text: "Other stakeholders" },
+          ],
+          maxSelections: 3,
+        },
+        isRequired: true,
+        displayOrder: 5,
+        tags: ["stakeholders", "decision-making"],
+        bestPracticeNote: "Understanding stakeholders helps identify all decision influencers",
+      },
+      {
+        id: "purchase-barriers",
+        title: "What factors might prevent you from purchasing?",
+        questionType: "multi-choice",
+        category: "business",
+        questionData: {
+          options: [
+            { id: "budget", text: "Budget constraints" },
+            { id: "timing", text: "Wrong timing" },
+            { id: "features", text: "Missing features" },
+            { id: "integration", text: "Integration concerns" },
+            { id: "support", text: "Support concerns" },
+            { id: "security", text: "Security/Compliance issues" },
+            { id: "change-management", text: "Change management challenges" },
+            { id: "alternatives", text: "Considering alternatives" },
+            { id: "none", text: "No significant barriers" },
+          ],
+          maxSelections: 3,
+        },
+        isRequired: true,
+        displayOrder: 6,
+        tags: ["barriers", "objections"],
+        bestPracticeNote: "Identifying barriers early allows for proactive objection handling",
+      },
+    ],
+  },
+
+  // ========================
+  // CUSTOMER SATISFACTION TEMPLATES
+  // ========================
+  {
+    id: "nps-survey",
+    title: "Net Promoter Score (NPS) Survey",
+    description: "Standardized NPS survey with follow-up questions",
+    category: "customer-satisfaction",
+    estimatedTime: "3-5 minutes",
+    targetAudience: "Existing customers",
+    tags: ["NPS", "loyalty", "satisfaction"],
+    isLocked: true,
+    bestPractices: [
+      "Use standard NPS question exactly as written",
+      "Include follow-up questions for context",
+      "Segment responses by promoters/passives/detractors",
+      "Follow up with specific improvement actions",
+    ],
+    questions: [
+      {
+        id: "nps-score",
+        title: "How likely are you to recommend our product to a friend or colleague?",
+        questionType: "rating-scale",
+        category: "business",
+        questionData: {
+          scale: 10,
+          variant: "numbers",
+          labels: { min: "Not at all likely", max: "Extremely likely" },
+        },
+        isRequired: true,
+        isLocked: true,
+        displayOrder: 1,
+        tags: ["NPS", "recommendation", "standardized"],
+        bestPracticeNote: "Standard NPS question - never modify for benchmarking",
+      },
+      {
+        id: "nps-reason",
+        title: "What is the primary reason for your score?",
+        questionType: "text-response",
+        category: "business",
+        questionData: {
+          maxLength: 500,
+          placeholder: "Please explain why you gave this score...",
+          multiline: true,
+        },
+        isRequired: true,
+        displayOrder: 2,
+        tags: ["NPS", "reasoning", "feedback"],
+        bestPracticeNote: "Essential for understanding the 'why' behind NPS scores",
+      },
+      {
+        id: "most-valuable-feature",
+        title: "What do you find most valuable about our product?",
+        questionType: "text-response",
+        category: "business",
+        questionData: {
+          maxLength: 400,
+          placeholder: "Describe what you value most...",
+          multiline: true,
+        },
+        isRequired: true,
+        displayOrder: 3,
+        tags: ["value", "features", "strengths"],
+        bestPracticeNote: "Identifies key value drivers for promoters",
+      },
+      {
+        id: "improvement-priority",
+        title: "What should we improve first to better serve you?",
+        questionType: "text-response",
+        category: "business",
+        questionData: {
+          maxLength: 400,
+          placeholder: "Suggest specific improvements...",
+          multiline: true,
+        },
+        isRequired: true,
+        displayOrder: 4,
+        tags: ["improvement", "priorities", "feedback"],
+        bestPracticeNote: "Actionable feedback for product development",
+      },
+      {
+        id: "customer-effort-score",
+        title: "How easy was it to accomplish what you wanted with our product today?",
+        questionType: "rating-scale",
+        category: "business",
+        questionData: {
+          scale: 5,
+          variant: "numbers",
+          labels: { min: "Very Difficult", max: "Very Easy" },
+        },
+        isRequired: true,
+        displayOrder: 5,
+        tags: ["effort", "ease-of-use", "CES"],
+        bestPracticeNote: "Customer Effort Score complements NPS data",
+      },
+    ],
+  },
+
+  {
+    id: "support-experience",
+    title: "Support Experience Survey",
+    description: "CSAT and Customer Effort Score for support interactions",
+    category: "customer-satisfaction",
+    estimatedTime: "4-6 minutes",
+    targetAudience: "Customers who contacted support",
+    tags: ["support", "CSAT", "CES"],
+    bestPractices: [
+      "Use CSAT + CES combination for complete picture",
+      "Assess channel effectiveness",
+      "Measure resolution satisfaction",
+      "Collect improvement suggestions",
+    ],
+    questions: [
+      {
+        id: "support-satisfaction",
+        title: "How satisfied are you with the support you received?",
+        questionType: "rating-scale",
+        category: "business",
+        questionData: {
+          scale: 5,
+          variant: "emoji",
+          labels: { min: "Very Dissatisfied", max: "Very Satisfied" },
+        },
+        isRequired: true,
+        displayOrder: 1,
+        tags: ["CSAT", "satisfaction", "support"],
+        bestPracticeNote: "Standard CSAT question for support interactions",
+      },
+      {
+        id: "support-effort",
+        title: "How much effort did you have to put forth to get your issue resolved?",
+        questionType: "rating-scale",
+        category: "business",
+        questionData: {
+          scale: 5,
+          variant: "numbers",
+          labels: { min: "Very Low Effort", max: "Very High Effort" },
+        },
+        isRequired: true,
+        displayOrder: 2,
+        tags: ["effort", "CES", "support"],
+        bestPracticeNote: "Customer Effort Score is crucial for support experience",
+      },
+      {
+        id: "support-channel",
+        title: "How did you contact support?",
+        questionType: "multi-choice",
+        category: "business",
+        questionData: {
+          options: [
+            { id: "email", text: "Email" },
+            { id: "chat", text: "Live chat" },
+            { id: "phone", text: "Phone call" },
+            { id: "help-center", text: "Help center/Documentation" },
+            { id: "community", text: "Community forum" },
+            { id: "other", text: "Other" },
+          ],
+          maxSelections: 1,
+        },
+        isRequired: true,
+        displayOrder: 3,
+        tags: ["channel", "support-method"],
+        bestPracticeNote: "Channel effectiveness analysis for resource allocation",
+      },
+      {
+        id: "issue-resolution",
+        title: "Was your issue completely resolved?",
+        questionType: "binary",
+        category: "business",
+        questionData: {
+          optionA: { id: "yes", text: "Yes, completely resolved" },
+          optionB: { id: "no", text: "No, still have issues" },
+        },
+        isRequired: true,
+        displayOrder: 4,
+        tags: ["resolution", "completion"],
+        bestPracticeNote: "Resolution rate is key support metric",
+      },
+      {
+        id: "response-time",
+        title: "How satisfied are you with the response time?",
+        questionType: "rating-scale",
+        category: "business",
+        questionData: {
+          scale: 5,
+          variant: "numbers",
+          labels: { min: "Much too slow", max: "Very fast" },
+        },
+        isRequired: true,
+        displayOrder: 5,
+        tags: ["response-time", "speed"],
+        bestPracticeNote: "Response time significantly impacts satisfaction",
+      },
+      {
+        id: "support-improvement",
+        title: "How could we improve our support experience?",
+        questionType: "text-response",
+        category: "business",
+        questionData: {
+          maxLength: 500,
+          placeholder: "Suggest specific improvements to our support process...",
+          multiline: true,
+        },
+        isRequired: false,
+        displayOrder: 6,
+        tags: ["improvement", "feedback", "support"],
+        bestPracticeNote: "Actionable feedback for support process improvement",
+      },
+    ],
+  },
+
+  // ========================
+  // FEATURE PRIORITIZATION TEMPLATE
+  // ========================
+  {
+    id: "feature-prioritization",
+    title: "Feature Prioritization Survey",
+    description: "Kano model analysis with MoSCoW prioritization",
+    category: "feature-prioritization",
+    estimatedTime: "10-15 minutes",
+    targetAudience: "Product users and stakeholders",
+    tags: ["prioritization", "kano-model", "moscow"],
+    bestPractices: [
+      "Use Kano model for feature satisfaction analysis",
+      "Include MoSCoW prioritization framework",
+      "Assess impact vs effort for roadmap planning",
+      "Collect user story value feedback",
+    ],
+    questions: [
+      {
+        id: "feature-satisfaction-functional",
+        title: "How would you feel if we added advanced search and filtering capabilities?",
+        questionType: "multi-choice",
+        category: "research",
+        questionData: {
+          options: [
+            { id: "like", text: "I would like it" },
+            { id: "expect", text: "I would expect it" },
+            { id: "neutral", text: "I would be neutral" },
+            { id: "live-with", text: "I would live with it" },
+            { id: "dislike", text: "I would dislike it" },
+          ],
+          maxSelections: 1,
+        },
+        isRequired: true,
+        displayOrder: 1,
+        tags: ["kano", "functional", "satisfaction"],
+        bestPracticeNote: "Kano functional question - measures satisfaction if feature exists",
+      },
+      {
+        id: "feature-satisfaction-dysfunctional",
+        title: "How would you feel if we did NOT add advanced search and filtering capabilities?",
+        questionType: "multi-choice",
+        category: "research",
+        questionData: {
+          options: [
+            { id: "like", text: "I would like it" },
+            { id: "expect", text: "I would expect it" },
+            { id: "neutral", text: "I would be neutral" },
+            { id: "live-with", text: "I would live with it" },
+            { id: "dislike", text: "I would dislike it" },
+          ],
+          maxSelections: 1,
+        },
+        isRequired: true,
+        displayOrder: 2,
+        tags: ["kano", "dysfunctional", "satisfaction"],
+        bestPracticeNote:
+          "Kano dysfunctional question - measures satisfaction if feature doesn't exist",
+      },
+      {
+        id: "moscow-prioritization",
+        title: "Categorize these features using the MoSCoW framework",
+        description: "Must have, Should have, Could have, Won't have",
+        questionType: "ranking",
+        category: "research",
+        questionData: {
+          items: [
+            { id: "advanced-search", text: "Advanced search and filtering" },
+            { id: "bulk-operations", text: "Bulk operations and batch processing" },
+            { id: "api-access", text: "API access and integrations" },
+            { id: "mobile-app", text: "Mobile application" },
+            { id: "advanced-analytics", text: "Advanced analytics and reporting" },
+            { id: "white-label", text: "White-label customization" },
+          ],
+        },
+        isRequired: true,
+        displayOrder: 3,
+        tags: ["moscow", "prioritization", "framework"],
+        bestPracticeNote: "MoSCoW helps stakeholders prioritize features systematically",
+      },
+      {
+        id: "impact-effort-matrix",
+        title: "Rate the expected impact and effort for each feature",
+        questionType: "rating-scale",
+        category: "research",
+        questionData: {
+          scale: 5,
+          variant: "numbers",
+          labels: { min: "Low Impact/Effort", max: "High Impact/Effort" },
+          features: [
+            "Advanced search and filtering",
+            "Bulk operations and batch processing",
+            "API access and integrations",
+            "Mobile application",
+            "Advanced analytics and reporting",
+            "White-label customization",
+          ],
+        },
+        isRequired: true,
+        displayOrder: 4,
+        tags: ["impact", "effort", "matrix"],
+        bestPracticeNote: "Impact vs effort matrix guides development resource allocation",
+      },
+      {
+        id: "user-story-value",
+        title:
+          "Complete this user story: 'As a user, I want advanced search capabilities so that...'",
+        questionType: "text-response",
+        category: "research",
+        questionData: {
+          maxLength: 300,
+          placeholder: "...I can find exactly what I need without browsing through everything",
+          multiline: true,
+        },
+        isRequired: true,
+        displayOrder: 5,
+        tags: ["user-story", "value", "needs"],
+        bestPracticeNote: "User stories help understand the 'why' behind feature requests",
+      },
+      {
+        id: "feature-usage-frequency",
+        title: "How frequently would you use these features if they were available?",
+        questionType: "rating-scale",
+        category: "research",
+        questionData: {
+          scale: 5,
+          variant: "numbers",
+          labels: { min: "Never", max: "Daily" },
+          features: [
+            "Advanced search and filtering",
+            "Bulk operations and batch processing",
+            "API access and integrations",
+            "Mobile application",
+            "Advanced analytics and reporting",
+            "White-label customization",
+          ],
+        },
+        isRequired: true,
+        displayOrder: 6,
+        tags: ["usage", "frequency", "adoption"],
+        bestPracticeNote: "Frequency predictions help estimate feature adoption and value",
+      },
+    ],
+  },
+];
+
+// Individual Question Templates for Quick Access
+export const individualQuestionTemplates: QuestionTemplate[] = [
+  // Standard NPS Question
+  {
+    id: "nps-standard",
+    title: "How likely are you to recommend our product to a friend or colleague?",
+    questionType: "rating-scale",
+    category: "business",
+    questionData: {
+      scale: 10,
+      variant: "numbers",
+      labels: { min: "Not at all likely", max: "Extremely likely" },
+    },
+    isRequired: true,
+    isLocked: true,
+    displayOrder: 1,
+    tags: ["NPS", "recommendation", "standardized"],
+    bestPracticeNote: "Standard NPS question - never modify for benchmarking",
+  },
+
+  // Standard CSAT Question
+  {
+    id: "csat-standard",
+    title: "How satisfied are you with your overall experience?",
+    questionType: "rating-scale",
+    category: "business",
+    questionData: {
+      scale: 5,
+      variant: "emoji",
+      labels: { min: "Very Dissatisfied", max: "Very Satisfied" },
+    },
+    isRequired: true,
+    displayOrder: 1,
+    tags: ["CSAT", "satisfaction", "standardized"],
+    bestPracticeNote: "Standard CSAT question with emoji scale for emotional response",
+  },
+
+  // Standard CES Question
+  {
+    id: "ces-standard",
+    title: "How much effort did you have to put forth to accomplish what you wanted?",
+    questionType: "rating-scale",
+    category: "business",
+    questionData: {
+      scale: 5,
+      variant: "numbers",
+      labels: { min: "Very Low Effort", max: "Very High Effort" },
+    },
+    isRequired: true,
+    displayOrder: 1,
+    tags: ["CES", "effort", "standardized"],
+    bestPracticeNote: "Customer Effort Score - measures difficulty of task completion",
+  },
+
+  // Feature Importance Rating
+  {
+    id: "feature-importance",
+    title: "Rate the importance of this feature to your workflow",
+    questionType: "rating-scale",
+    category: "research",
+    questionData: {
+      scale: 5,
+      variant: "numbers",
+      labels: { min: "Not Important", max: "Critical" },
+    },
+    isRequired: true,
+    displayOrder: 1,
+    tags: ["importance", "features", "prioritization"],
+    bestPracticeNote: "Use 5-point scale for better discrimination than 3-point",
+  },
+
+  // Open Feedback
+  {
+    id: "open-feedback",
+    title: "What additional feedback would you like to share?",
+    questionType: "text-response",
+    category: "general",
+    questionData: {
+      maxLength: 800,
+      placeholder: "Share any additional thoughts, suggestions, or concerns...",
+      multiline: true,
+    },
+    isRequired: false,
+    displayOrder: 99,
+    tags: ["feedback", "open-ended", "general"],
+    bestPracticeNote: "Place at end of survey for additional insights",
+  },
+];
+
+export default questionnaireTemplates;

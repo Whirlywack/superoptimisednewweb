@@ -307,10 +307,89 @@ const toggleMutation = api.admin.toggleQuestionStatus.useMutation({
 
 **What's Not Functional:**
 
-- ❌ Question modal in builder is oversimplified
-- ❌ No backend integration for questionnaire creation
-- ❌ Templates are not connected to UI
+- ❌ Question modal in builder is oversimplified (only title + required checkbox)
+- ❌ No backend integration for questionnaire creation (Save/Publish buttons don't work)
+- ❌ Templates are not connected to UI (no template dropdown)
+- ❌ No question duplication functionality (must create each question manually)
 - ❌ No questionnaire management interface
+
+**Root Cause Analysis:**
+The current questionnaire builder at `/admin/questionnaires/new` creates poor UX because:
+
+1. **185 actions for 10 questions** due to manual question creation
+2. **Oversimplified modal** lacks question type configurations
+3. **No template system** to jumpstart questionnaire creation
+4. **No duplication** forces repetitive configuration
+
+**Solution: Card-Based Template Gallery System**
+
+**Contemporary UI Approach:**
+
+- **Template Cards** instead of dropdown for visual scanning
+- **Category Tabs** (Product Research, UX Research, Market Research, Customer Satisfaction, Feature Prioritization)
+- **Visual Preview** with icons, question count, estimated time
+- **Search/Filter** functionality for quick template discovery
+- **Hover Effects** and smooth transitions for modern feel
+
+**Template Gallery Layout:**
+
+```
+┌─────────────────────────────┐  ┌─────────────────────────────┐
+│ 📊 Feature Heat-map Survey  │  │ 📋 NPS Survey              │
+│                             │  │                             │
+│ Importance vs satisfaction  │  │ Standardized Net Promoter   │
+│ analysis for feature        │  │ Score with follow-ups       │
+│ prioritization              │  │                             │
+│                             │  │                             │
+│ 🕐 8-12 min  📝 5 questions │  │ 🕐 3-5 min  📝 5 questions │
+│ ⭐ Product Research         │  │ ⭐ Customer Satisfaction    │
+│                             │  │                             │
+│ [Use Template] [Preview]    │  │ [Use Template] [Preview]    │
+└─────────────────────────────┘  └─────────────────────────────┘
+```
+
+**Implementation Strategy:**
+
+1. **Template Selection First** - Show template gallery before questionnaire builder
+2. **Start from Template** - Load pre-configured questions with full configurations
+3. **Start from Scratch** - Option for custom questionnaires
+4. **Template Preview** - Show questions without leaving the page
+
+### Comprehensive Questionnaire Templates
+
+**10 Research-Grade Templates Based on Industry Best Practices:**
+
+**Template Categories:**
+
+1. **Product Research (3 templates)**
+   - Feature Heat-map Survey - Importance vs satisfaction analysis
+   - Pricing Research - Van Westendorp Price Sensitivity analysis
+   - Pain Points Discovery - Jobs-to-be-done framework
+
+2. **UX Research (2 templates)**
+   - Task Completion Study - System Usability Scale (SUS) integration
+   - Prototype Feedback - Think-aloud protocol questions
+
+3. **Market Research (2 templates)**
+   - Demographics Profile - Behavioral segmentation
+   - Purchase Intent Study - 5-point scale with decision factors
+
+4. **Customer Satisfaction (2 templates)**
+   - NPS Survey - Standardized NPS with follow-ups (locked template)
+   - Support Experience - CSAT + Customer Effort Score
+
+5. **Feature Prioritization (1 template)**
+   - Feature Prioritization - Kano model + MoSCoW framework
+
+**Template Features:**
+
+- **Pre-filled but fully editable** (primary approach)
+- **Locked structure** for standardized questions like NPS (`isLocked=true`)
+- **Required + optional** question mix via `isRequired` boolean
+- **Best practices integration** with notes and methodologies
+- **Individual question templates** for quick access to common questions
+
+**Template File Location:** `/src/lib/questionnaire-templates-detailed.ts`
 
 ### Database Schema
 

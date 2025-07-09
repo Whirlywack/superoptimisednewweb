@@ -227,17 +227,54 @@
 
 **Priority 1: Fix Questionnaire Builder (High Impact)**
 
-- **Task 8.2.5.1**: Connect questionnaire UI to backend - Make the existing UI actually functional
-- **Task 8.2.5.2**: Improve question modal - Add full configuration support for all question types
-- **Task 8.2.5.3**: Integrate templates - Connect the existing templates to the UI
+- **Task 8.2.5.1**: Create card-based template gallery - Contemporary UI with visual template cards (4-5 hours)
+- **Task 8.2.5.2**: Add question duplication functionality - Copy/paste questions with "Duplicate" button (2-3 hours)
+- **Task 8.2.5.3**: Improve question modal - Add full configuration support for all 6 question types (4-6 hours)
+- **Task 8.2.5.4**: Connect questionnaire UI to backend - Make Save/Publish buttons functional (3-4 hours)
 
 **Priority 2: Efficiency Improvements (High ROI)**
 
-- **Task 8.2.5.4**: Add question duplication - Copy/paste questions to reduce repetitive work
-- **Task 8.2.5.5**: Better question type selector - Visual cards instead of dropdown
-- **Task 8.2.5.6**: Question templates - Pre-configured common questions
+- **Task 8.2.5.5**: Better question type selector - Visual cards instead of dropdown (2-3 hours)
+- **Task 8.2.5.6**: Pre-configured individual question templates - Quick-add common questions (2-3 hours)
 
 **Expected Result:** 10-question questionnaire creation drops from 185 actions to ~25 actions
+
+**Card-Based Template Gallery Features:**
+
+- **Visual Template Cards** with icons, descriptions, and quick stats
+- **Category Tabs** (Product Research, UX Research, Market Research, Customer Satisfaction, Feature Prioritization)
+- **Template Preview** modal showing all questions before selection
+- **Search/Filter** functionality for quick template discovery
+- **Contemporary UI** with hover effects and smooth transitions
+- **Start from Template** vs "Start from Scratch" options
+
+**Template Gallery Layout:**
+
+```
+[Product Research] [UX Research] [Market Research] [Customer Satisfaction] [Feature Prioritization]
+
+┌─────────────────────────────┐  ┌─────────────────────────────┐  ┌─────────────────────────────┐
+│ 📊 Feature Heat-map Survey  │  │ 📋 NPS Survey              │  │ 👥 Demographics Profile     │
+│                             │  │                             │  │                             │
+│ Importance vs satisfaction  │  │ Standardized Net Promoter   │  │ Comprehensive demographic   │
+│ analysis for feature        │  │ Score with follow-ups       │  │ and behavioral segmentation │
+│ prioritization              │  │                             │  │                             │
+│                             │  │                             │  │                             │
+│ 🕐 8-12 min  📝 5 questions │  │ 🕐 3-5 min  📝 5 questions │  │ 🕐 5-8 min  📝 6 questions │
+│ ⭐ Product Research         │  │ ⭐ Customer Satisfaction    │  │ ⭐ Market Research          │
+│                             │  │                             │  │                             │
+│ [Use Template] [Preview]    │  │ [Use Template] [Preview]    │  │ [Use Template] [Preview]    │
+└─────────────────────────────┘  └─────────────────────────────┘  └─────────────────────────────┘
+```
+
+**Implementation Priority (Week 1):**
+
+1. **Template card gallery** (immediate 70% reduction in actions)
+2. **Question duplication** (eliminates repetitive configuration)
+3. **Better question modal** (reduces per-question setup time)
+4. **Backend integration** (makes it actually functional)
+
+**No new packages required** - Use existing React state management and tRPC API
 
 **Phase 2: Enhanced User Experience (2-3 weeks)**
 

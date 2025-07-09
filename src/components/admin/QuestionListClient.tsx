@@ -25,7 +25,10 @@ interface QuestionListClientProps {
   userEmail?: string;
 }
 
-export function QuestionListClient({ initialQuestions, userEmail: _userEmail }: QuestionListClientProps) {
+export function QuestionListClient({
+  initialQuestions,
+  userEmail: _userEmail,
+}: QuestionListClientProps) {
   const [questions, setQuestions] = useState(initialQuestions);
   const [isToggling, setIsToggling] = useState<string | null>(null);
   const [filterCategory, setFilterCategory] = useState<string>("all");
@@ -54,11 +57,7 @@ export function QuestionListClient({ initialQuestions, userEmail: _userEmail }: 
     },
     onError: (error, { id }) => {
       setIsToggling(null);
-      setQuestions((prev) =>
-        prev.map((q) =>
-          q.id === id ? { ...q, isActive: !q.isActive } : q
-        )
-      );
+      setQuestions((prev) => prev.map((q) => (q.id === id ? { ...q, isActive: !q.isActive } : q)));
       console.error("Failed to toggle question status:", error);
     },
   });
@@ -103,55 +102,56 @@ export function QuestionListClient({ initialQuestions, userEmail: _userEmail }: 
   });
 
   // Get unique categories and types for filters
-  const categories = Array.from(new Set(questions.map(q => q.category)));
-  const questionTypes = Array.from(new Set(questions.map(q => q.questionType)));
+  const categories = Array.from(new Set(questions.map((q) => q.category)));
+  const questionTypes = Array.from(new Set(questions.map((q) => q.questionType)));
 
   return (
-    <div style={{ backgroundColor: 'var(--off-white)' }}>
+    <div style={{ backgroundColor: "var(--off-white)" }}>
       {/* Hero Section - Dramatic Typography */}
-      <section style={{ marginBottom: 'var(--space-2xl)' }}>
-        <h1 
+      <section style={{ marginBottom: "var(--space-2xl)" }}>
+        <h1
           className="font-bold uppercase tracking-tight"
-          style={{ 
-            fontSize: 'var(--text-hero)', 
-            color: 'var(--off-black)',
-            letterSpacing: '-0.02em',
-            lineHeight: '1.1',
-            marginBottom: 'var(--space-md)'
+          style={{
+            fontSize: "var(--text-hero)",
+            color: "var(--off-black)",
+            letterSpacing: "-0.02em",
+            lineHeight: "1.1",
+            marginBottom: "var(--space-md)",
           }}
         >
           QUESTION DATABASE
         </h1>
         <div className="flex items-center justify-between">
-          <p 
+          <p
             className="font-medium"
-            style={{ 
-              fontSize: 'var(--text-lg)', 
-              color: 'var(--warm-gray)',
-              maxWidth: '65ch'
+            style={{
+              fontSize: "var(--text-lg)",
+              color: "var(--warm-gray)",
+              maxWidth: "65ch",
             }}
           >
-            Manage research questions across all categories and question types. Activate, schedule, and analyze community feedback.
+            Manage research questions across all categories and question types. Activate, schedule,
+            and analyze community feedback.
           </p>
-          
-          <Link 
+
+          <Link
             href="/admin/questions/new"
             className="inline-block font-bold uppercase transition-all duration-200 ease-out"
             style={{
-              fontSize: 'var(--text-lg)',
-              color: 'var(--off-white)',
-              backgroundColor: 'var(--primary)',
-              padding: 'var(--space-md) var(--space-lg)',
-              border: '2px solid var(--primary)',
-              textDecoration: 'none'
+              fontSize: "var(--text-lg)",
+              color: "var(--off-white)",
+              backgroundColor: "var(--primary)",
+              padding: "var(--space-md) var(--space-lg)",
+              border: "2px solid var(--primary)",
+              textDecoration: "none",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--off-black)';
-              e.currentTarget.style.borderColor = 'var(--off-black)';
+              e.currentTarget.style.backgroundColor = "var(--off-black)";
+              e.currentTarget.style.borderColor = "var(--off-black)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--primary)';
-              e.currentTarget.style.borderColor = 'var(--primary)';
+              e.currentTarget.style.backgroundColor = "var(--primary)";
+              e.currentTarget.style.borderColor = "var(--primary)";
             }}
           >
             Create Question
@@ -160,28 +160,28 @@ export function QuestionListClient({ initialQuestions, userEmail: _userEmail }: 
       </section>
 
       {/* Filters - Brutalist Button Groups */}
-      <section style={{ marginBottom: 'var(--space-2xl)' }}>
-        <h2 
+      <section style={{ marginBottom: "var(--space-2xl)" }}>
+        <h2
           className="font-bold uppercase"
-          style={{ 
-            fontSize: 'var(--text-xl)', 
-            color: 'var(--off-black)',
-            marginBottom: 'var(--space-lg)'
+          style={{
+            fontSize: "var(--text-xl)",
+            color: "var(--off-black)",
+            marginBottom: "var(--space-lg)",
           }}
         >
           FILTER CONTROLS
         </h2>
-        
+
         <div className="space-y-6">
           {/* Category Filter */}
           <div>
-            <div 
+            <div
               className="font-medium uppercase"
-              style={{ 
-                fontSize: 'var(--text-sm)', 
-                color: 'var(--warm-gray)',
-                marginBottom: 'var(--space-sm)',
-                letterSpacing: '0.05em'
+              style={{
+                fontSize: "var(--text-sm)",
+                color: "var(--warm-gray)",
+                marginBottom: "var(--space-sm)",
+                letterSpacing: "0.05em",
               }}
             >
               BY CATEGORY
@@ -191,11 +191,11 @@ export function QuestionListClient({ initialQuestions, userEmail: _userEmail }: 
                 onClick={() => setFilterCategory("all")}
                 className="px-4 py-2 font-medium uppercase transition-all duration-200 ease-out"
                 style={{
-                  fontSize: 'var(--text-sm)',
-                  color: filterCategory === "all" ? 'var(--off-white)' : 'var(--off-black)',
-                  backgroundColor: filterCategory === "all" ? 'var(--primary)' : 'var(--off-white)',
-                  border: '2px solid var(--off-black)',
-                  borderRight: '1px solid var(--off-black)'
+                  fontSize: "var(--text-sm)",
+                  color: filterCategory === "all" ? "var(--off-white)" : "var(--off-black)",
+                  backgroundColor: filterCategory === "all" ? "var(--primary)" : "var(--off-white)",
+                  border: "2px solid var(--off-black)",
+                  borderRight: "1px solid var(--off-black)",
                 }}
               >
                 All
@@ -206,12 +206,13 @@ export function QuestionListClient({ initialQuestions, userEmail: _userEmail }: 
                   onClick={() => setFilterCategory(category)}
                   className="px-4 py-2 font-medium uppercase transition-all duration-200 ease-out"
                   style={{
-                    fontSize: 'var(--text-sm)',
-                    color: filterCategory === category ? 'var(--off-white)' : 'var(--off-black)',
-                    backgroundColor: filterCategory === category ? 'var(--primary)' : 'var(--off-white)',
-                    border: '2px solid var(--off-black)',
-                    borderLeft: '1px solid var(--off-black)',
-                    borderRight: '1px solid var(--off-black)'
+                    fontSize: "var(--text-sm)",
+                    color: filterCategory === category ? "var(--off-white)" : "var(--off-black)",
+                    backgroundColor:
+                      filterCategory === category ? "var(--primary)" : "var(--off-white)",
+                    border: "2px solid var(--off-black)",
+                    borderLeft: "1px solid var(--off-black)",
+                    borderRight: "1px solid var(--off-black)",
                   }}
                 >
                   {category}
@@ -222,13 +223,13 @@ export function QuestionListClient({ initialQuestions, userEmail: _userEmail }: 
 
           {/* Type Filter */}
           <div>
-            <div 
+            <div
               className="font-medium uppercase"
-              style={{ 
-                fontSize: 'var(--text-sm)', 
-                color: 'var(--warm-gray)',
-                marginBottom: 'var(--space-sm)',
-                letterSpacing: '0.05em'
+              style={{
+                fontSize: "var(--text-sm)",
+                color: "var(--warm-gray)",
+                marginBottom: "var(--space-sm)",
+                letterSpacing: "0.05em",
               }}
             >
               BY TYPE
@@ -238,11 +239,11 @@ export function QuestionListClient({ initialQuestions, userEmail: _userEmail }: 
                 onClick={() => setFilterType("all")}
                 className="px-4 py-2 font-medium uppercase transition-all duration-200 ease-out"
                 style={{
-                  fontSize: 'var(--text-sm)',
-                  color: filterType === "all" ? 'var(--off-white)' : 'var(--off-black)',
-                  backgroundColor: filterType === "all" ? 'var(--primary)' : 'var(--off-white)',
-                  border: '2px solid var(--off-black)',
-                  borderRight: '1px solid var(--off-black)'
+                  fontSize: "var(--text-sm)",
+                  color: filterType === "all" ? "var(--off-white)" : "var(--off-black)",
+                  backgroundColor: filterType === "all" ? "var(--primary)" : "var(--off-white)",
+                  border: "2px solid var(--off-black)",
+                  borderRight: "1px solid var(--off-black)",
                 }}
               >
                 All
@@ -253,15 +254,15 @@ export function QuestionListClient({ initialQuestions, userEmail: _userEmail }: 
                   onClick={() => setFilterType(type)}
                   className="px-4 py-2 font-medium uppercase transition-all duration-200 ease-out"
                   style={{
-                    fontSize: 'var(--text-sm)',
-                    color: filterType === type ? 'var(--off-white)' : 'var(--off-black)',
-                    backgroundColor: filterType === type ? 'var(--primary)' : 'var(--off-white)',
-                    border: '2px solid var(--off-black)',
-                    borderLeft: '1px solid var(--off-black)',
-                    borderRight: '1px solid var(--off-black)'
+                    fontSize: "var(--text-sm)",
+                    color: filterType === type ? "var(--off-white)" : "var(--off-black)",
+                    backgroundColor: filterType === type ? "var(--primary)" : "var(--off-white)",
+                    border: "2px solid var(--off-black)",
+                    borderLeft: "1px solid var(--off-black)",
+                    borderRight: "1px solid var(--off-black)",
                   }}
                 >
-                  {type.replace('-', ' ')}
+                  {type.replace("-", " ")}
                 </button>
               ))}
             </div>
@@ -270,123 +271,123 @@ export function QuestionListClient({ initialQuestions, userEmail: _userEmail }: 
       </section>
 
       {/* Stats Display */}
-      <section style={{ marginBottom: 'var(--space-2xl)' }}>
-        <div 
+      <section style={{ marginBottom: "var(--space-2xl)" }}>
+        <div
           className="grid gap-0"
-          style={{ 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
-            border: '2px solid var(--off-black)'
+          style={{
+            gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
+            border: "2px solid var(--off-black)",
           }}
         >
-          <div 
+          <div
             className="border-r-2 p-4 text-center"
-            style={{ 
-              borderColor: 'var(--off-black)',
-              backgroundColor: 'var(--off-white)'
+            style={{
+              borderColor: "var(--off-black)",
+              backgroundColor: "var(--off-white)",
             }}
           >
-            <div 
+            <div
               className="font-mono font-bold"
-              style={{ 
-                fontSize: 'var(--text-lg)', 
-                color: 'var(--off-black)',
-                marginBottom: 'var(--space-xs)'
+              style={{
+                fontSize: "var(--text-lg)",
+                color: "var(--off-black)",
+                marginBottom: "var(--space-xs)",
               }}
             >
               {filteredQuestions.length}
             </div>
-            <div 
+            <div
               className="font-medium uppercase"
-              style={{ 
-                fontSize: 'var(--text-xs)', 
-                color: 'var(--warm-gray)',
-                letterSpacing: '0.05em'
+              style={{
+                fontSize: "var(--text-xs)",
+                color: "var(--warm-gray)",
+                letterSpacing: "0.05em",
               }}
             >
               Showing
             </div>
           </div>
-          
-          <div 
+
+          <div
             className="border-r-2 p-4 text-center"
-            style={{ 
-              borderColor: 'var(--off-black)',
-              backgroundColor: 'var(--off-white)'
+            style={{
+              borderColor: "var(--off-black)",
+              backgroundColor: "var(--off-white)",
             }}
           >
-            <div 
+            <div
               className="font-mono font-bold"
-              style={{ 
-                fontSize: 'var(--text-lg)', 
-                color: 'var(--primary)',
-                marginBottom: 'var(--space-xs)'
+              style={{
+                fontSize: "var(--text-lg)",
+                color: "var(--primary)",
+                marginBottom: "var(--space-xs)",
               }}
             >
-              {filteredQuestions.filter(q => q.isActive).length}
+              {filteredQuestions.filter((q) => q.isActive).length}
             </div>
-            <div 
+            <div
               className="font-medium uppercase"
-              style={{ 
-                fontSize: 'var(--text-xs)', 
-                color: 'var(--warm-gray)',
-                letterSpacing: '0.05em'
+              style={{
+                fontSize: "var(--text-xs)",
+                color: "var(--warm-gray)",
+                letterSpacing: "0.05em",
               }}
             >
               Active
             </div>
           </div>
-          
-          <div 
+
+          <div
             className="border-r-2 p-4 text-center"
-            style={{ 
-              borderColor: 'var(--off-black)',
-              backgroundColor: 'var(--off-white)'
+            style={{
+              borderColor: "var(--off-black)",
+              backgroundColor: "var(--off-white)",
             }}
           >
-            <div 
+            <div
               className="font-mono font-bold"
-              style={{ 
-                fontSize: 'var(--text-lg)', 
-                color: 'var(--off-black)',
-                marginBottom: 'var(--space-xs)'
+              style={{
+                fontSize: "var(--text-lg)",
+                color: "var(--off-black)",
+                marginBottom: "var(--space-xs)",
               }}
             >
               {filteredQuestions.reduce((total, q) => total + q.responseCount, 0)}
             </div>
-            <div 
+            <div
               className="font-medium uppercase"
-              style={{ 
-                fontSize: 'var(--text-xs)', 
-                color: 'var(--warm-gray)',
-                letterSpacing: '0.05em'
+              style={{
+                fontSize: "var(--text-xs)",
+                color: "var(--warm-gray)",
+                letterSpacing: "0.05em",
               }}
             >
               Responses
             </div>
           </div>
-          
-          <div 
+
+          <div
             className="p-4 text-center"
-            style={{ 
-              backgroundColor: 'var(--off-white)'
+            style={{
+              backgroundColor: "var(--off-white)",
             }}
           >
-            <div 
+            <div
               className="font-mono font-bold"
-              style={{ 
-                fontSize: 'var(--text-lg)', 
-                color: 'var(--off-black)',
-                marginBottom: 'var(--space-xs)'
+              style={{
+                fontSize: "var(--text-lg)",
+                color: "var(--off-black)",
+                marginBottom: "var(--space-xs)",
               }}
             >
               {questions.length}
             </div>
-            <div 
+            <div
               className="font-medium uppercase"
-              style={{ 
-                fontSize: 'var(--text-xs)', 
-                color: 'var(--warm-gray)',
-                letterSpacing: '0.05em'
+              style={{
+                fontSize: "var(--text-xs)",
+                color: "var(--warm-gray)",
+                letterSpacing: "0.05em",
               }}
             >
               Total
@@ -397,30 +398,30 @@ export function QuestionListClient({ initialQuestions, userEmail: _userEmail }: 
 
       {/* Questions List */}
       <section>
-        <h2 
+        <h2
           className="font-bold uppercase"
-          style={{ 
-            fontSize: 'var(--text-xl)', 
-            color: 'var(--off-black)',
-            marginBottom: 'var(--space-lg)'
+          style={{
+            fontSize: "var(--text-xl)",
+            color: "var(--off-black)",
+            marginBottom: "var(--space-lg)",
           }}
         >
           QUESTIONS
         </h2>
-        
+
         {filteredQuestions.length === 0 ? (
-          <div 
+          <div
             className="border-2 p-8 text-center"
-            style={{ 
-              borderColor: 'var(--off-black)',
-              backgroundColor: 'var(--light-gray)'
+            style={{
+              borderColor: "var(--off-black)",
+              backgroundColor: "var(--light-gray)",
             }}
           >
-            <p 
+            <p
               className="font-medium"
-              style={{ 
-                fontSize: 'var(--text-lg)', 
-                color: 'var(--warm-gray)'
+              style={{
+                fontSize: "var(--text-lg)",
+                color: "var(--warm-gray)",
               }}
             >
               No questions match current filters
@@ -429,115 +430,117 @@ export function QuestionListClient({ initialQuestions, userEmail: _userEmail }: 
         ) : (
           <div className="space-y-0">
             {filteredQuestions.map((question) => (
-              <div 
+              <div
                 key={question.id}
                 className="border-2 border-b-0 p-6 last:border-b-2"
-                style={{ 
-                  borderColor: 'var(--off-black)',
-                  backgroundColor: 'var(--off-white)'
+                style={{
+                  borderColor: "var(--off-black)",
+                  backgroundColor: "var(--off-white)",
                 }}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <div className="flex items-center gap-4 mb-3">
-                      <h3 
+                    <div className="mb-3 flex items-center gap-4">
+                      <h3
                         className="font-bold"
-                        style={{ 
-                          fontSize: 'var(--text-lg)', 
-                          color: 'var(--off-black)'
+                        style={{
+                          fontSize: "var(--text-lg)",
+                          color: "var(--off-black)",
                         }}
                       >
                         {question.title}
                       </h3>
-                      
+
                       <div className="flex items-center gap-2">
-                        <span 
-                          className="font-mono px-2 py-1 text-xs uppercase"
-                          style={{ 
-                            backgroundColor: 'var(--light-gray)',
-                            color: 'var(--warm-gray)',
-                            border: '1px solid var(--warm-gray)'
+                        <span
+                          className="px-2 py-1 font-mono text-xs uppercase"
+                          style={{
+                            backgroundColor: "var(--light-gray)",
+                            color: "var(--warm-gray)",
+                            border: "1px solid var(--warm-gray)",
                           }}
                         >
-                          {question.questionType.replace('-', ' ')}
+                          {question.questionType.replace("-", " ")}
                         </span>
-                        
-                        <span 
-                          className="font-mono px-2 py-1 text-xs uppercase"
-                          style={{ 
-                            backgroundColor: 'var(--light-gray)',
-                            color: 'var(--warm-gray)',
-                            border: '1px solid var(--warm-gray)'
+
+                        <span
+                          className="px-2 py-1 font-mono text-xs uppercase"
+                          style={{
+                            backgroundColor: "var(--light-gray)",
+                            color: "var(--warm-gray)",
+                            border: "1px solid var(--warm-gray)",
                           }}
                         >
                           {question.category}
                         </span>
-                        
-                        <span 
-                          className="font-mono px-2 py-1 text-xs uppercase"
-                          style={{ 
-                            backgroundColor: question.isActive ? 'var(--primary)' : 'var(--warm-gray)',
-                            color: 'var(--off-white)',
-                            border: `1px solid ${question.isActive ? 'var(--primary)' : 'var(--warm-gray)'}`
+
+                        <span
+                          className="px-2 py-1 font-mono text-xs uppercase"
+                          style={{
+                            backgroundColor: question.isActive
+                              ? "var(--primary)"
+                              : "var(--warm-gray)",
+                            color: "var(--off-white)",
+                            border: `1px solid ${question.isActive ? "var(--primary)" : "var(--warm-gray)"}`,
                           }}
                         >
-                          {question.isActive ? 'Active' : 'Inactive'}
+                          {question.isActive ? "Active" : "Inactive"}
                         </span>
                       </div>
                     </div>
-                    
+
                     {question.description && (
-                      <p 
+                      <p
                         className="font-medium"
-                        style={{ 
-                          fontSize: 'var(--text-sm)', 
-                          color: 'var(--warm-gray)',
-                          marginBottom: 'var(--space-sm)'
+                        style={{
+                          fontSize: "var(--text-sm)",
+                          color: "var(--warm-gray)",
+                          marginBottom: "var(--space-sm)",
                         }}
                       >
                         {question.description}
                       </p>
                     )}
-                    
+
                     <div className="flex items-center gap-4">
-                      <div 
+                      <div
                         className="font-mono"
-                        style={{ 
-                          fontSize: 'var(--text-xs)', 
-                          color: 'var(--warm-gray)'
+                        style={{
+                          fontSize: "var(--text-xs)",
+                          color: "var(--warm-gray)",
                         }}
                       >
                         {question.responseCount} responses
                       </div>
-                      
-                      <div 
+
+                      <div
                         className="font-mono"
-                        style={{ 
-                          fontSize: 'var(--text-xs)', 
-                          color: 'var(--warm-gray)'
+                        style={{
+                          fontSize: "var(--text-xs)",
+                          color: "var(--warm-gray)",
                         }}
                       >
                         Created: {new Date(question.createdAt).toLocaleDateString()}
                       </div>
-                      
+
                       {question.startDate && (
-                        <div 
+                        <div
                           className="font-mono"
-                          style={{ 
-                            fontSize: 'var(--text-xs)', 
-                            color: 'var(--warm-gray)'
+                          style={{
+                            fontSize: "var(--text-xs)",
+                            color: "var(--warm-gray)",
                           }}
                         >
                           Start: {new Date(question.startDate).toLocaleDateString()}
                         </div>
                       )}
-                      
+
                       {question.endDate && (
-                        <div 
+                        <div
                           className="font-mono"
-                          style={{ 
-                            fontSize: 'var(--text-xs)', 
-                            color: 'var(--warm-gray)'
+                          style={{
+                            fontSize: "var(--text-xs)",
+                            color: "var(--warm-gray)",
                           }}
                         >
                           End: {new Date(question.endDate).toLocaleDateString()}
@@ -545,54 +548,54 @@ export function QuestionListClient({ initialQuestions, userEmail: _userEmail }: 
                       )}
                     </div>
                   </div>
-                  
+
                   {/* Action Buttons */}
-                  <div className="flex items-center gap-0 ml-6">
+                  <div className="ml-6 flex items-center gap-0">
                     <button
                       onClick={() => handleToggleStatus(question.id, question.isActive)}
                       disabled={isToggling === question.id}
                       className="px-4 py-2 font-medium uppercase transition-all duration-200 ease-out"
                       style={{
-                        fontSize: 'var(--text-sm)',
-                        color: 'var(--off-black)',
-                        backgroundColor: 'var(--off-white)',
-                        border: '2px solid var(--off-black)',
-                        borderRight: '1px solid var(--off-black)',
-                        opacity: isToggling === question.id ? 0.5 : 1
+                        fontSize: "var(--text-sm)",
+                        color: "var(--off-black)",
+                        backgroundColor: "var(--off-white)",
+                        border: "2px solid var(--off-black)",
+                        borderRight: "1px solid var(--off-black)",
+                        opacity: isToggling === question.id ? 0.5 : 1,
                       }}
                       onMouseEnter={(e) => {
                         if (isToggling !== question.id) {
-                          e.currentTarget.style.backgroundColor = 'var(--primary)';
-                          e.currentTarget.style.color = 'var(--off-white)';
+                          e.currentTarget.style.backgroundColor = "var(--primary)";
+                          e.currentTarget.style.color = "var(--off-white)";
                         }
                       }}
                       onMouseLeave={(e) => {
                         if (isToggling !== question.id) {
-                          e.currentTarget.style.backgroundColor = 'var(--off-white)';
-                          e.currentTarget.style.color = 'var(--off-black)';
+                          e.currentTarget.style.backgroundColor = "var(--off-white)";
+                          e.currentTarget.style.color = "var(--off-black)";
                         }
                       }}
                     >
-                      {question.isActive ? 'Deactivate' : 'Activate'}
+                      {question.isActive ? "Deactivate" : "Activate"}
                     </button>
-                    
+
                     <button
                       onClick={() => handleOpenScheduleModal(question)}
                       className="px-4 py-2 font-medium uppercase transition-all duration-200 ease-out"
                       style={{
-                        fontSize: 'var(--text-sm)',
-                        color: 'var(--off-black)',
-                        backgroundColor: 'var(--off-white)',
-                        border: '2px solid var(--off-black)',
-                        borderLeft: '1px solid var(--off-black)'
+                        fontSize: "var(--text-sm)",
+                        color: "var(--off-black)",
+                        backgroundColor: "var(--off-white)",
+                        border: "2px solid var(--off-black)",
+                        borderLeft: "1px solid var(--off-black)",
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = 'var(--primary)';
-                        e.currentTarget.style.color = 'var(--off-white)';
+                        e.currentTarget.style.backgroundColor = "var(--primary)";
+                        e.currentTarget.style.color = "var(--off-white)";
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'var(--off-white)';
-                        e.currentTarget.style.color = 'var(--off-black)';
+                        e.currentTarget.style.backgroundColor = "var(--off-white)";
+                        e.currentTarget.style.color = "var(--off-black)";
                       }}
                     >
                       Schedule
