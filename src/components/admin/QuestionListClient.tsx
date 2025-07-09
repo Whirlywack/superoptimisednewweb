@@ -4,6 +4,24 @@ import { useState } from "react";
 import Link from "next/link";
 import { api } from "@/lib/trpc/react";
 import { QuestionScheduleModal } from "./QuestionScheduleModal";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { GripVertical } from "lucide-react";
 
 interface Question {
   id: string;
@@ -94,16 +112,214 @@ export function QuestionListClient({
     );
   };
 
-  // Filter questions
-  const filteredQuestions = questions.filter((question) => {
-    const categoryMatch = filterCategory === "all" || question.category === filterCategory;
-    const typeMatch = filterType === "all" || question.questionType === filterType;
-    return categoryMatch && typeMatch;
+  // Drag and drop functionality
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const reorderMutation = api.admin.reorderQuestions.useMutation({
+    onError: (error) => {
+      console.error("Failed to reorder questions:", error);
+      // Revert the local state on error
+      setQuestions(initialQuestions);
+    },
   });
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (active.id !== over?.id) {
+      const oldIndex = filteredQuestions.findIndex((q) => q.id === active.id);
+      const newIndex = filteredQuestions.findIndex((q) => q.id === over?.id);
+
+      if (oldIndex !== -1 && newIndex !== -1) {
+        const reorderedQuestions = arrayMove(filteredQuestions, oldIndex, newIndex);
+
+        // Update displayOrder for all questions
+        const updatedQuestions = reorderedQuestions.map((question, index) => ({
+          ...question,
+          displayOrder: index,
+        }));
+
+        // Update local state immediately
+        setQuestions((prev) => {
+          const newQuestions = [...prev];
+          updatedQuestions.forEach((updatedQ) => {
+            const index = newQuestions.findIndex((q) => q.id === updatedQ.id);
+            if (index !== -1) {
+              newQuestions[index] = updatedQ;
+            }
+          });
+          return newQuestions;
+        });
+
+        // Send update to server
+        const questionUpdates = updatedQuestions.map((question) => ({
+          id: question.id,
+          displayOrder: question.displayOrder,
+        }));
+
+        reorderMutation.mutate(questionUpdates);
+      }
+    }
+  };
+
+  // Filter questions and sort by displayOrder
+  const filteredQuestions = questions
+    .filter((question) => {
+      const categoryMatch = filterCategory === "all" || question.category === filterCategory;
+      const typeMatch = filterType === "all" || question.questionType === filterType;
+      return categoryMatch && typeMatch;
+    })
+    .sort((a, b) => a.displayOrder - b.displayOrder);
 
   // Get unique categories and types for filters
   const categories = Array.from(new Set(questions.map((q) => q.category)));
   const questionTypes = Array.from(new Set(questions.map((q) => q.questionType)));
+
+  // Sortable Question Item Component
+  const SortableQuestionItem = ({ question }: { question: Question }) => {
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+      id: question.id,
+    });
+
+    const style = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+      opacity: isDragging ? 0.5 : 1,
+    };
+
+    return (
+      <div
+        ref={setNodeRef}
+        className="border-2 border-b-0 p-6 last:border-b-2"
+        style={{
+          borderColor: "var(--off-black)",
+          backgroundColor: "var(--off-white)",
+          ...style,
+        }}
+      >
+        <div className="flex items-start justify-between">
+          {/* Drag Handle */}
+          <div
+            {...attributes}
+            {...listeners}
+            className="mr-4 cursor-grab active:cursor-grabbing"
+            style={{
+              color: "var(--warm-gray)",
+              fontSize: "var(--text-lg)",
+            }}
+          >
+            <GripVertical size={20} />
+          </div>
+
+          <div className="flex-1">
+            <div className="mb-3 flex items-center gap-4">
+              <h3
+                className="font-bold"
+                style={{
+                  fontSize: "var(--text-lg)",
+                  color: "var(--off-black)",
+                }}
+              >
+                {question.title}
+              </h3>
+              <div className="flex items-center gap-2">
+                <span
+                  className="rounded px-2 py-1 text-xs font-medium uppercase"
+                  style={{
+                    backgroundColor: "var(--light-gray)",
+                    color: "var(--warm-gray)",
+                  }}
+                >
+                  {question.category}
+                </span>
+                <span
+                  className="rounded px-2 py-1 text-xs font-medium uppercase"
+                  style={{
+                    backgroundColor: "var(--light-gray)",
+                    color: "var(--warm-gray)",
+                  }}
+                >
+                  {question.questionType}
+                </span>
+                <span
+                  className={`rounded px-2 py-1 text-xs font-medium uppercase`}
+                  style={{
+                    backgroundColor: question.isActive ? "var(--primary)" : "var(--light-gray)",
+                    color: question.isActive ? "var(--off-white)" : "var(--warm-gray)",
+                  }}
+                >
+                  {question.isActive ? "ACTIVE" : "INACTIVE"}
+                </span>
+              </div>
+            </div>
+
+            {question.description && (
+              <p
+                className="mb-3"
+                style={{
+                  fontSize: "var(--text-sm)",
+                  color: "var(--warm-gray)",
+                  lineHeight: "1.6",
+                }}
+              >
+                {question.description}
+              </p>
+            )}
+
+            <div className="flex items-center gap-6 text-sm">
+              <span style={{ color: "var(--warm-gray)" }}>
+                Responses: {question.responseCount || 0}
+              </span>
+              <span style={{ color: "var(--warm-gray)" }}>
+                Created: {new Date(question.createdAt).toLocaleDateString()}
+              </span>
+              {question.startDate && (
+                <span style={{ color: "var(--warm-gray)" }}>
+                  Start: {new Date(question.startDate).toLocaleDateString()}
+                </span>
+              )}
+              {question.endDate && (
+                <span style={{ color: "var(--warm-gray)" }}>
+                  End: {new Date(question.endDate).toLocaleDateString()}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => handleToggleStatus(question.id, question.isActive)}
+              disabled={isToggling === question.id}
+              className="border-2 px-4 py-2 font-medium uppercase transition-colors hover:bg-gray-100 disabled:opacity-50"
+              style={{
+                borderColor: "var(--off-black)",
+                color: "var(--off-black)",
+                fontSize: "var(--text-xs)",
+              }}
+            >
+              {isToggling === question.id ? "..." : question.isActive ? "DEACTIVATE" : "ACTIVATE"}
+            </button>
+            <button
+              onClick={() => handleOpenScheduleModal(question)}
+              className="border-2 px-4 py-2 font-medium uppercase transition-colors hover:bg-gray-100"
+              style={{
+                borderColor: "var(--off-black)",
+                color: "var(--off-black)",
+                fontSize: "var(--text-xs)",
+              }}
+            >
+              SCHEDULE
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div style={{ backgroundColor: "var(--off-white)" }}>
@@ -428,183 +644,22 @@ export function QuestionListClient({
             </p>
           </div>
         ) : (
-          <div className="space-y-0">
-            {filteredQuestions.map((question) => (
-              <div
-                key={question.id}
-                className="border-2 border-b-0 p-6 last:border-b-2"
-                style={{
-                  borderColor: "var(--off-black)",
-                  backgroundColor: "var(--off-white)",
-                }}
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="mb-3 flex items-center gap-4">
-                      <h3
-                        className="font-bold"
-                        style={{
-                          fontSize: "var(--text-lg)",
-                          color: "var(--off-black)",
-                        }}
-                      >
-                        {question.title}
-                      </h3>
-
-                      <div className="flex items-center gap-2">
-                        <span
-                          className="px-2 py-1 font-mono text-xs uppercase"
-                          style={{
-                            backgroundColor: "var(--light-gray)",
-                            color: "var(--warm-gray)",
-                            border: "1px solid var(--warm-gray)",
-                          }}
-                        >
-                          {question.questionType.replace("-", " ")}
-                        </span>
-
-                        <span
-                          className="px-2 py-1 font-mono text-xs uppercase"
-                          style={{
-                            backgroundColor: "var(--light-gray)",
-                            color: "var(--warm-gray)",
-                            border: "1px solid var(--warm-gray)",
-                          }}
-                        >
-                          {question.category}
-                        </span>
-
-                        <span
-                          className="px-2 py-1 font-mono text-xs uppercase"
-                          style={{
-                            backgroundColor: question.isActive
-                              ? "var(--primary)"
-                              : "var(--warm-gray)",
-                            color: "var(--off-white)",
-                            border: `1px solid ${question.isActive ? "var(--primary)" : "var(--warm-gray)"}`,
-                          }}
-                        >
-                          {question.isActive ? "Active" : "Inactive"}
-                        </span>
-                      </div>
-                    </div>
-
-                    {question.description && (
-                      <p
-                        className="font-medium"
-                        style={{
-                          fontSize: "var(--text-sm)",
-                          color: "var(--warm-gray)",
-                          marginBottom: "var(--space-sm)",
-                        }}
-                      >
-                        {question.description}
-                      </p>
-                    )}
-
-                    <div className="flex items-center gap-4">
-                      <div
-                        className="font-mono"
-                        style={{
-                          fontSize: "var(--text-xs)",
-                          color: "var(--warm-gray)",
-                        }}
-                      >
-                        {question.responseCount} responses
-                      </div>
-
-                      <div
-                        className="font-mono"
-                        style={{
-                          fontSize: "var(--text-xs)",
-                          color: "var(--warm-gray)",
-                        }}
-                      >
-                        Created: {new Date(question.createdAt).toLocaleDateString()}
-                      </div>
-
-                      {question.startDate && (
-                        <div
-                          className="font-mono"
-                          style={{
-                            fontSize: "var(--text-xs)",
-                            color: "var(--warm-gray)",
-                          }}
-                        >
-                          Start: {new Date(question.startDate).toLocaleDateString()}
-                        </div>
-                      )}
-
-                      {question.endDate && (
-                        <div
-                          className="font-mono"
-                          style={{
-                            fontSize: "var(--text-xs)",
-                            color: "var(--warm-gray)",
-                          }}
-                        >
-                          End: {new Date(question.endDate).toLocaleDateString()}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="ml-6 flex items-center gap-0">
-                    <button
-                      onClick={() => handleToggleStatus(question.id, question.isActive)}
-                      disabled={isToggling === question.id}
-                      className="px-4 py-2 font-medium uppercase transition-all duration-200 ease-out"
-                      style={{
-                        fontSize: "var(--text-sm)",
-                        color: "var(--off-black)",
-                        backgroundColor: "var(--off-white)",
-                        border: "2px solid var(--off-black)",
-                        borderRight: "1px solid var(--off-black)",
-                        opacity: isToggling === question.id ? 0.5 : 1,
-                      }}
-                      onMouseEnter={(e) => {
-                        if (isToggling !== question.id) {
-                          e.currentTarget.style.backgroundColor = "var(--primary)";
-                          e.currentTarget.style.color = "var(--off-white)";
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (isToggling !== question.id) {
-                          e.currentTarget.style.backgroundColor = "var(--off-white)";
-                          e.currentTarget.style.color = "var(--off-black)";
-                        }
-                      }}
-                    >
-                      {question.isActive ? "Deactivate" : "Activate"}
-                    </button>
-
-                    <button
-                      onClick={() => handleOpenScheduleModal(question)}
-                      className="px-4 py-2 font-medium uppercase transition-all duration-200 ease-out"
-                      style={{
-                        fontSize: "var(--text-sm)",
-                        color: "var(--off-black)",
-                        backgroundColor: "var(--off-white)",
-                        border: "2px solid var(--off-black)",
-                        borderLeft: "1px solid var(--off-black)",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = "var(--primary)";
-                        e.currentTarget.style.color = "var(--off-white)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = "var(--off-white)";
-                        e.currentTarget.style.color = "var(--off-black)";
-                      }}
-                    >
-                      Schedule
-                    </button>
-                  </div>
-                </div>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={filteredQuestions.map((q) => q.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              <div className="space-y-0">
+                {filteredQuestions.map((question) => (
+                  <SortableQuestionItem key={question.id} question={question} />
+                ))}
               </div>
-            ))}
-          </div>
+            </SortableContext>
+          </DndContext>
         )}
       </section>
 
@@ -616,7 +671,9 @@ export function QuestionListClient({
         questionTitle={scheduleModal.questionTitle}
         initialStartDate={scheduleModal.startDate}
         initialEndDate={scheduleModal.endDate}
-        onSuccess={(updatedSchedule) => handleScheduleSuccess(scheduleModal.questionId, updatedSchedule)}
+        onSuccess={(updatedSchedule) =>
+          handleScheduleSuccess(scheduleModal.questionId, updatedSchedule)
+        }
       />
     </div>
   );

@@ -17,7 +17,7 @@ const dotSizes = {
     touch: "min-w-[44px] min-h-[44px] -m-2 p-2", // Extended touch target
   },
   md: {
-    container: "w-10 h-10 text-sm", 
+    container: "w-10 h-10 text-sm",
     touch: "min-w-[44px] min-h-[44px] -m-1 p-1",
   },
   lg: {
@@ -83,8 +83,16 @@ export function RatingInput({
       case "emoji":
         // Return different emojis based on value (1-10 scale)
         const emojiMap = {
-          1: "😢", 2: "😞", 3: "😐", 4: "🙂", 5: "😊",
-          6: "😀", 7: "😃", 8: "😄", 9: "😍", 10: "🤩"
+          1: "😢",
+          2: "😞",
+          3: "😐",
+          4: "🙂",
+          5: "😊",
+          6: "😀",
+          7: "😃",
+          8: "😄",
+          9: "😍",
+          10: "🤩",
         };
         return emojiMap[value as keyof typeof emojiMap] || "⭐";
       default:
@@ -107,18 +115,20 @@ export function RatingInput({
       aria-pressed={selected}
       {...props}
     >
-      <div className={cn(
-        "flex items-center justify-center rounded-full transition-all duration-200",
-        sizeConfig.container,
-        getColorClass()
-      )}>
+      <div
+        className={cn(
+          "flex items-center justify-center rounded-full transition-all duration-200",
+          sizeConfig.container,
+          getColorClass()
+        )}
+      >
         {renderContent()}
       </div>
     </button>
   );
 }
 
-interface RatingScaleProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
+interface RatingScaleProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
   min?: number;
   max?: number;
   value?: number;
@@ -141,14 +151,14 @@ export function RatingScale({
   size = "md",
   variant = "number",
   color = "default",
-  allowHalf = false,
+  allowHalf: _allowHalf = false,
   showValue = false,
   disabled = false,
   className,
   ...props
 }: RatingScaleProps) {
   const [hoveredValue, setHoveredValue] = React.useState<number | null>(null);
-  
+
   const range = max - min + 1;
   const values = Array.from({ length: range }, (_, i) => min + i);
 
@@ -169,7 +179,7 @@ export function RatingScale({
   return (
     <div className={cn("space-y-3", className)} {...props}>
       {/* Rating Dots */}
-      <div 
+      <div
         className="flex flex-wrap items-center justify-center gap-2"
         role="radiogroup"
         aria-label="Rating scale"
@@ -179,7 +189,9 @@ export function RatingScale({
             key={dotValue}
             value={dotValue}
             selected={value === dotValue}
-            hovered={hoveredValue === dotValue || (hoveredValue !== null && dotValue <= hoveredValue)}
+            hovered={
+              hoveredValue === dotValue || (hoveredValue !== null && dotValue <= hoveredValue)
+            }
             size={size}
             variant={variant}
             color={color}
@@ -195,9 +207,7 @@ export function RatingScale({
       {labels && (
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <span>{labels.min}</span>
-          {labels.mid && range > 6 && (
-            <span className="hidden sm:inline">{labels.mid}</span>
-          )}
+          {labels.mid && range > 6 && <span className="hidden sm:inline">{labels.mid}</span>}
           <span>{labels.max}</span>
         </div>
       )}
@@ -214,7 +224,7 @@ export function RatingScale({
   );
 }
 
-interface LikertScaleProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
+interface LikertScaleProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
   options: Array<{
     value: string;
     label: string;
@@ -238,16 +248,10 @@ export function LikertScale({
   ...props
 }: LikertScaleProps) {
   const isVertical = layout === "vertical";
-  
+
   return (
-    <div 
-      className={cn(
-        "space-y-3",
-        className
-      )} 
-      {...props}
-    >
-      <div 
+    <div className={cn("space-y-3", className)} {...props}>
+      <div
         className={cn(
           "flex gap-2",
           isVertical ? "flex-col" : "flex-row flex-wrap items-center justify-center"
@@ -257,8 +261,8 @@ export function LikertScale({
       >
         {options.map((option, index) => {
           const isSelected = value === option.value;
-          const isMiddle = Math.floor(options.length / 2) === index;
-          
+          const _isMiddle = Math.floor(options.length / 2) === index;
+
           return (
             <button
               key={option.value}
@@ -279,16 +283,10 @@ export function LikertScale({
               onClick={() => onChange?.(option.value)}
               aria-pressed={isSelected}
             >
-              <span className={cn(
-                "font-medium",
-                !isVertical && "sm:hidden"
-              )}>
+              <span className={cn("font-medium", !isVertical && "sm:hidden")}>
                 {option.shortLabel || option.label}
               </span>
-              <span className={cn(
-                "font-medium",
-                !isVertical && "hidden sm:inline"
-              )}>
+              <span className={cn("font-medium", !isVertical && "hidden sm:inline")}>
                 {option.label}
               </span>
             </button>

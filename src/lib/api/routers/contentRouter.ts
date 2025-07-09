@@ -366,13 +366,14 @@ export const contentRouter = createTRPCRouter({
     return safeExecute(async () => {
       try {
         // Get content block statistics
-        const [totalBlocks, activeBlocks, blogPosts, publishedPosts, draftPosts] = await Promise.all([
-          prisma.contentBlock.count(),
-          prisma.contentBlock.count({ where: { isActive: true } }),
-          prisma.post.count(),
-          prisma.post.count({ where: { status: "published" } }),
-          prisma.post.count({ where: { status: "draft" } }),
-        ]);
+        const [totalBlocks, activeBlocks, blogPosts, publishedPosts, draftPosts] =
+          await Promise.all([
+            prisma.contentBlock.count(),
+            prisma.contentBlock.count({ where: { isActive: true } }),
+            prisma.post.count(),
+            prisma.post.count({ where: { status: "published" } }),
+            prisma.post.count({ where: { status: "draft" } }),
+          ]);
 
         // Get recent content activity
         const recentContentBlocks = await prisma.contentBlock.findMany({
@@ -414,7 +415,7 @@ export const contentRouter = createTRPCRouter({
         };
       } catch (error) {
         console.error("Error fetching content stats:", error);
-        
+
         // Return fallback data
         return {
           totalBlocks: 0,
@@ -435,96 +436,113 @@ export const contentRouter = createTRPCRouter({
 
   getContentTemplates: publicProcedure.query(async () => {
     return safeExecute(async () => {
-      // For now, return static templates - could be moved to database later
-      const templates = [
-        {
-          id: "blog-post",
-          title: "Blog Post",
-          description: "Standard article format with header, content, and metadata",
-          category: "Blog",
-          contentType: "markdown",
-          defaultContent: `# Post Title
+      try {
+        // Get templates from database
+        const templates = await prisma.contentTemplate.findMany({
+          where: { isActive: true },
+          orderBy: [{ usage: "desc" }, { lastUsed: "desc" }],
+        });
 
-## Introduction
+        // Get unique categories
+        const categories = [...new Set(templates.map((t) => t.category))].sort();
 
-Your introduction here...
+        return {
+          templates,
+          categories,
+          totalTemplates: templates.length,
+          lastUpdated: new Date(),
+        };
+      } catch (error) {
+        console.error("Error fetching content templates:", error);
 
-## Main Content
-
-Write your main content here.
-
-## Conclusion
-
-Wrap up your thoughts...`,
-          usage: 89,
-          lastUsed: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
-        },
-        {
-          id: "case-study",
-          title: "Case Study",
-          description: "Project showcase format with problem, solution, and results",
-          category: "Portfolio",
-          contentType: "markdown",
-          defaultContent: `# Case Study: Project Name
-
-## The Challenge
-
-Describe the problem you were solving...
-
-## The Solution
-
-Explain your approach...
-
-## Results
-
-Share the outcomes and metrics...`,
-          usage: 34,
-          lastUsed: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
-        },
-        {
-          id: "feature-announcement",
-          title: "Feature Announcement",
-          description: "Template for announcing new features or updates",
-          category: "News",
-          contentType: "markdown",
-          defaultContent: `# New Feature: Feature Name
-
-We're excited to announce...
-
-## What's New
-
-- Feature 1
-- Feature 2
-- Feature 3
-
-## How to Use
-
-Step-by-step instructions...`,
-          usage: 12,
-          lastUsed: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000), // 2 weeks ago
-        },
-        {
-          id: "landing-page",
-          title: "Landing Page",
-          description: "Hero section template for landing pages",
-          category: "Marketing",
-          contentType: "html",
-          defaultContent: `<div class="hero-section">
-  <h1>Compelling Headline</h1>
-  <p>Supporting description text...</p>
-  <button class="cta-button">Get Started</button>
-</div>`,
-          usage: 23,
-          lastUsed: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 1 week ago
-        },
-      ];
-
-      return {
-        templates,
-        categories: ["Blog", "Portfolio", "News", "Marketing"],
-        totalTemplates: templates.length,
-        lastUpdated: new Date(),
-      };
+        // Return empty state if database query fails
+        return {
+          templates: [],
+          categories: [],
+          totalTemplates: 0,
+          lastUpdated: new Date(),
+        };
+      }
     }, "getContentTemplates");
   }),
+
+  // Content Template CRUD operations
+  createContentTemplate: publicProcedure
+    .input(
+      z.object({
+        title: z.string().min(1).max(200),
+        description: z.string().optional(),
+        category: z.string().min(1).max(50),
+        contentType: z.enum(["markdown", "html", "text", "tsx"]),
+        defaultContent: z.string().min(1),
+      })
+    )
+    .mutation(async ({ input }) => {
+      return safeExecute(async () => {
+        const template = await prisma.contentTemplate.create({
+          data: {
+            title: input.title,
+            description: input.description,
+            category: input.category,
+            contentType: input.contentType,
+            defaultContent: input.defaultContent,
+          },
+        });
+
+        return template;
+      }, "createContentTemplate");
+    }),
+
+  updateContentTemplate: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        title: z.string().min(1).max(200).optional(),
+        description: z.string().optional(),
+        category: z.string().min(1).max(50).optional(),
+        contentType: z.enum(["markdown", "html", "text", "tsx"]).optional(),
+        defaultContent: z.string().min(1).optional(),
+        isActive: z.boolean().optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      return safeExecute(async () => {
+        const { id, ...updateData } = input;
+
+        const template = await prisma.contentTemplate.update({
+          where: { id },
+          data: updateData,
+        });
+
+        return template;
+      }, "updateContentTemplate");
+    }),
+
+  deleteContentTemplate: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input }) => {
+      return safeExecute(async () => {
+        await prisma.contentTemplate.delete({
+          where: { id: input.id },
+        });
+
+        return { success: true };
+      }, "deleteContentTemplate");
+    }),
+
+  useContentTemplate: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input }) => {
+      return safeExecute(async () => {
+        const template = await prisma.contentTemplate.update({
+          where: { id: input.id },
+          data: {
+            usage: { increment: 1 },
+            lastUsed: new Date(),
+          },
+        });
+
+        return template;
+      }, "useContentTemplate");
+    }),
 });

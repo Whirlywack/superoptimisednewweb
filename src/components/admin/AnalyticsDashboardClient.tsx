@@ -1,16 +1,8 @@
 "use client";
 
-import {
-  BarChart3,
-  TrendingUp,
-  Users,
-  Eye,
-  Clock,
-  Target,
-  ArrowUp,
-  Download,
-} from "lucide-react";
+import { BarChart3, TrendingUp, Users, Eye, Clock, Target, ArrowUp, Download } from "lucide-react";
 import { useState } from "react";
+import { api } from "@/lib/trpc/react";
 import dynamic from "next/dynamic";
 
 // Dynamically import Chart.js components to avoid SSR issues
@@ -56,38 +48,33 @@ interface AnalyticsDashboardClientProps {
 
 export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDashboardClientProps) {
   const [selectedTimeRange, setSelectedTimeRange] = useState("7d");
-  
-  // Check if we're in development mode
-  const isDevelopment = process.env.NODE_ENV === 'development';
 
-  // Demo analytics data (clearly marked as demo)
-  const demoAnalyticsData = {
+  // Real analytics data from tRPC
+  const { data: websiteStats } = api.analytics.getWebsiteStats.useQuery();
+  const { data: questionnaireAnalytics } = api.analytics.getQuestionnaireAnalytics.useQuery();
+  const { data: _trafficData } = api.analytics.getTrafficOverTime.useQuery({
+    timeRange: selectedTimeRange as "24h" | "7d" | "30d" | "90d",
+  });
+  const { data: topPages } = api.analytics.getTopPages.useQuery();
+
+  // Real analytics data structure
+  const analyticsData = {
     websiteTraffic: {
-      pageViews: 1247,
-      uniqueVisitors: 1247,
-      sessions: 5890,
-      avgSessionDuration: "4m 32s",
-      bounceRate: "34.5%",
-      conversionRate: "73%",
+      pageViews: websiteStats?.pageViews || 0,
+      uniqueVisitors: websiteStats?.uniqueVisitors || 0,
+      sessions: websiteStats?.sessions || 0,
+      avgSessionDuration: websiteStats?.avgSessionDuration || "0m 0s",
+      bounceRate: websiteStats?.bounceRate || "0%",
+      conversionRate: websiteStats?.conversionRate || "0%",
     },
     questionnaireMetrics: {
-      totalQuestionnaires: 42,
-      totalResponses: 389,
-      avgCompletionRate: "73%",
-      avgResponseTime: "2m 15s",
+      totalQuestionnaires: questionnaireAnalytics?.totalQuestionnaires || 0,
+      totalResponses: questionnaireAnalytics?.totalResponses || 0,
+      avgCompletionRate: questionnaireAnalytics?.avgCompletionRate || "0%",
+      avgResponseTime: questionnaireAnalytics?.avgResponseTime || "0m 0s",
     },
-    topPages: [
-      { page: "/", views: 1247, change: "+12%" },
-      { page: "/journey", views: 834, change: "+8%" },
-      { page: "/about", views: 567, change: "+15%" },
-      { page: "/research", views: 342, change: "+23%" },
-      { page: "/admin", views: 189, change: "+31%" },
-    ],
-    topQuestionnaires: [
-      { title: "What's your experience level?", submissions: 156, completionRate: 89 },
-      { title: "Rate our service", submissions: 143, completionRate: 82 },
-      { title: "Additional feedback", submissions: 98, completionRate: 67 },
-    ],
+    topPages: topPages || [],
+    topQuestionnaires: questionnaireAnalytics?.topQuestionnaires || [],
   };
 
   const timeRanges = [
@@ -114,7 +101,7 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
           📊 DEMO MODE - Analytics data shown below is simulated for development purposes
         </div>
       )}
-      
+
       {/* Header */}
       <div
         style={{ backgroundColor: "var(--off-white)", borderBottom: "2px solid var(--light-gray)" }}
@@ -133,15 +120,13 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                   marginBottom: "var(--space-xs)",
                 }}
               >
-                Analytics Dashboard {isDevelopment && "(DEMO)"}
+                Analytics Dashboard
               </h1>
               <p style={{ fontSize: "var(--text-base)", color: "var(--warm-gray)" }}>
-                {isDevelopment 
-                  ? "Simulated analytics data for development and testing" 
-                  : "Website traffic, questionnaire performance, user engagement"}
+                Website traffic, questionnaire performance, user engagement
               </p>
             </div>
-            
+
             {/* Time Range Selector */}
             <div className="flex items-center" style={{ gap: "var(--space-sm)" }}>
               <div className="flex" style={{ gap: "0" }}>
@@ -152,18 +137,23 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                     className="font-medium uppercase transition-colors"
                     style={{
                       fontSize: "var(--text-sm)",
-                      color: selectedTimeRange === range.id ? "var(--off-white)" : "var(--off-black)",
-                      backgroundColor: selectedTimeRange === range.id ? "var(--off-black)" : "var(--light-gray)",
+                      color:
+                        selectedTimeRange === range.id ? "var(--off-white)" : "var(--off-black)",
+                      backgroundColor:
+                        selectedTimeRange === range.id ? "var(--off-black)" : "var(--light-gray)",
                       padding: "var(--space-sm) var(--space-md)",
                       border: "2px solid var(--light-gray)",
-                      borderRight: range.id === "90d" ? "2px solid var(--light-gray)" : "1px solid var(--light-gray)",
+                      borderRight:
+                        range.id === "90d"
+                          ? "2px solid var(--light-gray)"
+                          : "1px solid var(--light-gray)",
                     }}
                   >
                     {range.label}
                   </button>
                 ))}
               </div>
-              
+
               <button
                 className="flex items-center font-medium uppercase transition-colors"
                 style={{
@@ -205,7 +195,10 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
               padding: "var(--space-md)",
             }}
           >
-            <div className="flex items-center justify-center" style={{ marginBottom: "var(--space-sm)" }}>
+            <div
+              className="flex items-center justify-center"
+              style={{ marginBottom: "var(--space-sm)" }}
+            >
               <Eye size={20} style={{ color: "var(--primary)", marginRight: "var(--space-xs)" }} />
               <span
                 className="font-medium uppercase"
@@ -226,12 +219,20 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                 marginBottom: "var(--space-xs)",
               }}
             >
-              {demoAnalyticsData.websiteTraffic.pageViews.toLocaleString()}
+              {analyticsData.websiteTraffic.pageViews.toLocaleString()}
             </div>
-            <div className="flex items-center justify-center" style={{ gap: "var(--space-xs)" }}>
-              <ArrowUp size={12} style={{ color: "var(--primary)" }} />
-              <span style={{ fontSize: "var(--text-xs)", color: "var(--primary)" }}>+12.3%</span>
-            </div>
+            {analyticsData.websiteTraffic.pageViews === 0 ? (
+              <div className="flex items-center justify-center" style={{ gap: "var(--space-xs)" }}>
+                <span style={{ fontSize: "var(--text-xs)", color: "var(--warm-gray)" }}>
+                  No data yet
+                </span>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center" style={{ gap: "var(--space-xs)" }}>
+                <ArrowUp size={12} style={{ color: "var(--primary)" }} />
+                <span style={{ fontSize: "var(--text-xs)", color: "var(--primary)" }}>+12.3%</span>
+              </div>
+            )}
           </div>
 
           <div
@@ -242,8 +243,14 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
               padding: "var(--space-md)",
             }}
           >
-            <div className="flex items-center justify-center" style={{ marginBottom: "var(--space-sm)" }}>
-              <Users size={20} style={{ color: "var(--primary)", marginRight: "var(--space-xs)" }} />
+            <div
+              className="flex items-center justify-center"
+              style={{ marginBottom: "var(--space-sm)" }}
+            >
+              <Users
+                size={20}
+                style={{ color: "var(--primary)", marginRight: "var(--space-xs)" }}
+              />
               <span
                 className="font-medium uppercase"
                 style={{
@@ -263,12 +270,20 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                 marginBottom: "var(--space-xs)",
               }}
             >
-              {demoAnalyticsData.websiteTraffic.uniqueVisitors.toLocaleString()}
+              {analyticsData.websiteTraffic.uniqueVisitors.toLocaleString()}
             </div>
-            <div className="flex items-center justify-center" style={{ gap: "var(--space-xs)" }}>
-              <ArrowUp size={12} style={{ color: "var(--primary)" }} />
-              <span style={{ fontSize: "var(--text-xs)", color: "var(--primary)" }}>+8.7%</span>
-            </div>
+            {analyticsData.websiteTraffic.uniqueVisitors === 0 ? (
+              <div className="flex items-center justify-center" style={{ gap: "var(--space-xs)" }}>
+                <span style={{ fontSize: "var(--text-xs)", color: "var(--warm-gray)" }}>
+                  No data yet
+                </span>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center" style={{ gap: "var(--space-xs)" }}>
+                <ArrowUp size={12} style={{ color: "var(--primary)" }} />
+                <span style={{ fontSize: "var(--text-xs)", color: "var(--primary)" }}>+8.7%</span>
+              </div>
+            )}
           </div>
 
           <div
@@ -279,8 +294,14 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
               padding: "var(--space-md)",
             }}
           >
-            <div className="flex items-center justify-center" style={{ marginBottom: "var(--space-sm)" }}>
-              <Target size={20} style={{ color: "var(--primary)", marginRight: "var(--space-xs)" }} />
+            <div
+              className="flex items-center justify-center"
+              style={{ marginBottom: "var(--space-sm)" }}
+            >
+              <Target
+                size={20}
+                style={{ color: "var(--primary)", marginRight: "var(--space-xs)" }}
+              />
               <span
                 className="font-medium uppercase"
                 style={{
@@ -300,7 +321,7 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                 marginBottom: "var(--space-xs)",
               }}
             >
-              {demoAnalyticsData.websiteTraffic.conversionRate}
+              {analyticsData.websiteTraffic.conversionRate}
             </div>
             <div className="flex items-center justify-center" style={{ gap: "var(--space-xs)" }}>
               <ArrowUp size={12} style={{ color: "var(--primary)" }} />
@@ -315,8 +336,14 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
               padding: "var(--space-md)",
             }}
           >
-            <div className="flex items-center justify-center" style={{ marginBottom: "var(--space-sm)" }}>
-              <Clock size={20} style={{ color: "var(--primary)", marginRight: "var(--space-xs)" }} />
+            <div
+              className="flex items-center justify-center"
+              style={{ marginBottom: "var(--space-sm)" }}
+            >
+              <Clock
+                size={20}
+                style={{ color: "var(--primary)", marginRight: "var(--space-xs)" }}
+              />
               <span
                 className="font-medium uppercase"
                 style={{
@@ -336,7 +363,7 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                 marginBottom: "var(--space-xs)",
               }}
             >
-              {demoAnalyticsData.websiteTraffic.avgSessionDuration}
+              {analyticsData.websiteTraffic.avgSessionDuration}
             </div>
             <div className="flex items-center justify-center" style={{ gap: "var(--space-xs)" }}>
               <ArrowUp size={12} style={{ color: "var(--primary)" }} />
@@ -379,56 +406,62 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                 </h2>
               </div>
             </div>
-            
+
             <div style={{ padding: "var(--space-md)" }}>
               <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-xs)" }}>
-                {demoAnalyticsData.topPages.map((page, index) => (
-                  <div
-                    key={index}
-                    className="border-2"
-                    style={{
-                      borderColor: "var(--light-gray)",
-                      backgroundColor: "var(--off-white)",
-                      padding: "var(--space-sm)",
-                    }}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <h3
-                          className="font-mono"
-                          style={{
-                            fontSize: "var(--text-sm)",
-                            fontWeight: "bold",
-                            color: "var(--off-black)",
-                            marginBottom: "2px",
-                          }}
-                        >
-                          {page.page || (page as any).path}
-                        </h3>
-                        <div
-                          style={{
-                            fontSize: "var(--text-xs)",
-                            color: "var(--warm-gray)",
-                          }}
-                        >
-                          {(page.views || 0).toLocaleString()} views
+                {analyticsData.topPages.length === 0 ? (
+                  <div className="py-4 text-center" style={{ color: "var(--warm-gray)" }}>
+                    No page views yet
+                  </div>
+                ) : (
+                  analyticsData.topPages.map((page, index) => (
+                    <div
+                      key={index}
+                      className="border-2"
+                      style={{
+                        borderColor: "var(--light-gray)",
+                        backgroundColor: "var(--off-white)",
+                        padding: "var(--space-sm)",
+                      }}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <h3
+                            className="font-mono"
+                            style={{
+                              fontSize: "var(--text-sm)",
+                              fontWeight: "bold",
+                              color: "var(--off-black)",
+                              marginBottom: "2px",
+                            }}
+                          >
+                            {page.page || (page as any).path}
+                          </h3>
+                          <div
+                            style={{
+                              fontSize: "var(--text-xs)",
+                              color: "var(--warm-gray)",
+                            }}
+                          >
+                            {(page.views || 0).toLocaleString()} views
+                          </div>
+                        </div>
+                        <div className="flex items-center" style={{ gap: "var(--space-xs)" }}>
+                          <ArrowUp size={12} style={{ color: "var(--primary)" }} />
+                          <span
+                            style={{
+                              fontSize: "var(--text-xs)",
+                              fontWeight: "bold",
+                              color: "var(--primary)",
+                            }}
+                          >
+                            {page.change}
+                          </span>
                         </div>
                       </div>
-                      <div className="flex items-center" style={{ gap: "var(--space-xs)" }}>
-                        <ArrowUp size={12} style={{ color: "var(--primary)" }} />
-                        <span
-                          style={{
-                            fontSize: "var(--text-xs)",
-                            fontWeight: "bold",
-                            color: "var(--primary)",
-                          }}
-                        >
-                          {page.change}
-                        </span>
-                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
           </div>
@@ -462,7 +495,7 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                 </h2>
               </div>
             </div>
-            
+
             <div style={{ padding: "var(--space-md)" }}>
               {/* Questionnaire Metrics */}
               <div
@@ -488,7 +521,7 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                       marginBottom: "2px",
                     }}
                   >
-                    {demoAnalyticsData.questionnaireMetrics.totalResponses}
+                    {analyticsData.questionnaireMetrics.totalResponses}
                   </div>
                   <div
                     className="font-medium uppercase"
@@ -501,7 +534,7 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                     Total Responses
                   </div>
                 </div>
-                
+
                 <div
                   className="text-center"
                   style={{
@@ -517,7 +550,7 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                       marginBottom: "2px",
                     }}
                   >
-                    {demoAnalyticsData.questionnaireMetrics.avgCompletionRate}
+                    {analyticsData.questionnaireMetrics.avgCompletionRate}
                   </div>
                   <div
                     className="font-medium uppercase"
@@ -544,53 +577,64 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
               >
                 Top Performing
               </div>
-              
+
               <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-xs)" }}>
-                {demoAnalyticsData.topQuestionnaires.map((questionnaire, index) => (
-                  <div
-                    key={index}
-                    className="border-2"
-                    style={{
-                      borderColor: "var(--light-gray)",
-                      backgroundColor: "var(--off-white)",
-                      padding: "var(--space-sm)",
-                    }}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <h3
-                          style={{
-                            fontSize: "var(--text-sm)",
-                            fontWeight: "bold",
-                            color: "var(--off-black)",
-                            marginBottom: "2px",
-                          }}
-                        >
-                          {questionnaire.title.length > 20 ? questionnaire.title.substring(0, 20) + "..." : questionnaire.title}
-                        </h3>
+                {analyticsData.topQuestionnaires.length === 0 ? (
+                  <div className="py-4 text-center" style={{ color: "var(--warm-gray)" }}>
+                    No questionnaire responses yet
+                  </div>
+                ) : (
+                  analyticsData.topQuestionnaires.map((questionnaire, index) => (
+                    <div
+                      key={index}
+                      className="border-2"
+                      style={{
+                        borderColor: "var(--light-gray)",
+                        backgroundColor: "var(--off-white)",
+                        padding: "var(--space-sm)",
+                      }}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <h3
+                            style={{
+                              fontSize: "var(--text-sm)",
+                              fontWeight: "bold",
+                              color: "var(--off-black)",
+                              marginBottom: "2px",
+                            }}
+                          >
+                            {questionnaire.title.length > 20
+                              ? questionnaire.title.substring(0, 20) + "..."
+                              : questionnaire.title}
+                          </h3>
+                          <div
+                            style={{
+                              fontSize: "var(--text-xs)",
+                              color: "var(--warm-gray)",
+                            }}
+                          >
+                            {questionnaire.submissions || (questionnaire as any).responses || 0}{" "}
+                            {questionnaire.submissions ? "submissions" : "responses"}
+                          </div>
+                        </div>
                         <div
                           style={{
                             fontSize: "var(--text-xs)",
-                            color: "var(--warm-gray)",
+                            fontWeight: "bold",
+                            color: "var(--primary)",
+                            backgroundColor: "var(--light-gray)",
+                            padding: "2px var(--space-xs)",
                           }}
                         >
-                          {questionnaire.submissions || (questionnaire as any).responses || 0} {questionnaire.submissions ? 'submissions' : 'responses'}
+                          {questionnaire.completionRate
+                            ? `${questionnaire.completionRate}%`
+                            : (questionnaire as any).completion || "N/A"}
                         </div>
                       </div>
-                      <div
-                        style={{
-                          fontSize: "var(--text-xs)",
-                          fontWeight: "bold",
-                          color: "var(--primary)",
-                          backgroundColor: "var(--light-gray)",
-                          padding: "2px var(--space-xs)",
-                        }}
-                      >
-                        {questionnaire.completionRate ? `${questionnaire.completionRate}%` : (questionnaire as any).completion || "N/A"}
-                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
           </div>
@@ -630,7 +674,7 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                 </h2>
               </div>
             </div>
-            
+
             <div style={{ padding: "var(--space-md)", height: "300px" }}>
               <Line
                 data={{
@@ -653,8 +697,8 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                       borderWidth: 2,
                       fill: true,
                       tension: 0.4,
-                    }
-                  ]
+                    },
+                  ],
                 }}
                 options={{
                   responsive: true,
@@ -716,23 +760,25 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                 </h2>
               </div>
             </div>
-            
+
             <div style={{ padding: "var(--space-md)", height: "300px" }}>
               <Doughnut
                 data={{
                   labels: ["Multiple Choice", "Text Input", "Rating", "Yes/No", "Ranking"],
-                  datasets: [{
-                    data: [15, 12, 8, 5, 2],
-                    backgroundColor: [
-                      "#6366f1", // Multiple Choice
-                      "#10b981", // Text Input  
-                      "#f59e0b", // Rating
-                      "#ef4444", // Yes/No
-                      "#8b5cf6", // Ranking
-                    ],
-                    borderWidth: 2,
-                    borderColor: "#ffffff",
-                  }]
+                  datasets: [
+                    {
+                      data: [15, 12, 8, 5, 2],
+                      backgroundColor: [
+                        "#6366f1", // Multiple Choice
+                        "#10b981", // Text Input
+                        "#f59e0b", // Rating
+                        "#ef4444", // Yes/No
+                        "#8b5cf6", // Ranking
+                      ],
+                      borderWidth: 2,
+                      borderColor: "#ffffff",
+                    },
+                  ],
                 }}
                 options={{
                   responsive: true,
@@ -783,7 +829,7 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
               </h2>
             </div>
           </div>
-          
+
           <div style={{ padding: "var(--space-md)", height: "300px" }}>
             <Bar
               data={{
@@ -803,8 +849,8 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                     borderColor: "rgb(16, 185, 129)",
                     borderWidth: 2,
                     yAxisID: "y1",
-                  }
-                ]
+                  },
+                ],
               }}
               options={{
                 responsive: true,

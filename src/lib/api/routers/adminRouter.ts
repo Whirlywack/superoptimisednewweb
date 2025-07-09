@@ -368,4 +368,30 @@ export const adminRouter = createTRPCRouter({
       };
     }, "getQuestionAnalytics");
   }),
+
+  // Reorder questions by updating displayOrder
+  reorderQuestions: adminProcedure
+    .input(
+      z.array(
+        z.object({
+          id: z.string(),
+          displayOrder: z.number(),
+        })
+      )
+    )
+    .mutation(async ({ input }) => {
+      return safeExecute(async () => {
+        // Update all questions in a transaction
+        const updatePromises = input.map((item) =>
+          prisma.question.update({
+            where: { id: item.id },
+            data: { displayOrder: item.displayOrder },
+          })
+        );
+
+        await prisma.$transaction(updatePromises);
+
+        return { success: true };
+      }, "reorderQuestions");
+    }),
 });

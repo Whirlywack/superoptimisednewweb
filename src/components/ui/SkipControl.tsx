@@ -1,6 +1,6 @@
 import React from "react";
 import { cn } from "@/lib/utils";
-import { ChevronRight, SkipForward, ArrowRight, Clock } from "lucide-react";
+import { ChevronRight, Clock } from "lucide-react";
 
 interface SkipControlProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "default" | "subtle" | "link" | "outline";
@@ -15,7 +15,8 @@ interface SkipControlProps extends React.ButtonHTMLAttributes<HTMLButtonElement>
 
 const skipVariants = {
   default: {
-    button: "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground border border-border",
+    button:
+      "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground border border-border",
     focus: "focus:ring-muted-foreground",
   },
   subtle: {
@@ -27,7 +28,8 @@ const skipVariants = {
     focus: "focus:ring-primary",
   },
   outline: {
-    button: "bg-transparent border border-border text-muted-foreground hover:border-primary hover:text-foreground",
+    button:
+      "bg-transparent border border-border text-muted-foreground hover:border-primary hover:text-foreground",
     focus: "focus:ring-primary",
   },
 };
@@ -62,12 +64,12 @@ export function SkipControl({
       setShowConfirm(true);
       return;
     }
-    
+
     if (showConfirm && onConfirmSkip) {
       onConfirmSkip();
       setShowConfirm(false);
     }
-    
+
     onClick?.(e);
   };
 
@@ -164,7 +166,7 @@ export function SkipOptions({
         <SkipControl onClick={handleQuickSkip} variant="subtle">
           Skip
         </SkipControl>
-        
+
         <button
           type="button"
           onClick={() => setShowReasons(true)}
@@ -177,9 +179,12 @@ export function SkipOptions({
   }
 
   return (
-    <div className={cn("space-y-4 rounded-lg border border-border bg-muted/30 p-4", className)} {...props}>
+    <div
+      className={cn("space-y-4 rounded-lg border border-border bg-muted/30 p-4", className)}
+      {...props}
+    >
       <h4 className="text-sm font-medium">Why are you skipping this question?</h4>
-      
+
       <div className="space-y-2">
         {reasons.map((reason) => (
           <label key={reason.id} className="flex cursor-pointer items-start gap-3">
@@ -194,14 +199,12 @@ export function SkipOptions({
             <div className="flex-1">
               <div className="text-sm font-medium">{reason.label}</div>
               {reason.description && (
-                <div className="mt-1 text-xs text-muted-foreground">
-                  {reason.description}
-                </div>
+                <div className="mt-1 text-xs text-muted-foreground">{reason.description}</div>
               )}
             </div>
           </label>
         ))}
-        
+
         {showCustomReason && (
           <label className="flex cursor-pointer items-start gap-3">
             <input
@@ -226,7 +229,7 @@ export function SkipOptions({
           </label>
         )}
       </div>
-      
+
       <div className="flex items-center justify-between pt-2">
         <button
           type="button"
@@ -235,16 +238,12 @@ export function SkipOptions({
         >
           Cancel
         </button>
-        
+
         <div className="flex gap-2">
-          <SkipControl
-            onClick={handleQuickSkip}
-            variant="outline"
-            size="sm"
-          >
+          <SkipControl onClick={handleQuickSkip} variant="outline" size="sm">
             Skip anyway
           </SkipControl>
-          
+
           <SkipControl
             onClick={handleSkip}
             disabled={!selectedReason || (selectedReason === "custom" && !customReason.trim())}
@@ -303,40 +302,44 @@ export function TimeoutSkip({
   ...props
 }: TimeoutSkipProps) {
   const [secondsLeft, setSecondsLeft] = React.useState(timeoutSeconds);
-  
+
   React.useEffect(() => {
     if (secondsLeft <= 0) {
       onTimeout();
       return;
     }
-    
+
     const timer = setTimeout(() => {
-      setSecondsLeft(prev => prev - 1);
+      setSecondsLeft((prev) => prev - 1);
     }, 1000);
-    
+
     return () => clearTimeout(timer);
   }, [secondsLeft, onTimeout]);
 
   const progressPercentage = ((timeoutSeconds - secondsLeft) / timeoutSeconds) * 100;
 
   return (
-    <div className={cn("space-y-3 rounded-lg border border-warm-gray bg-light-gray p-4", className)} {...props}>
+    <div
+      className={cn("space-y-3 rounded-lg border border-warm-gray bg-light-gray p-4", className)}
+      {...props}
+    >
       <div className="flex items-center gap-2 text-off-black">
         <Clock className="size-4" />
         <span className="text-sm">
-          {message} <span className="font-mono font-bold">{secondsLeft}</span> second{secondsLeft !== 1 ? 's' : ''}
+          {message} <span className="font-mono font-bold">{secondsLeft}</span> second
+          {secondsLeft !== 1 ? "s" : ""}
         </span>
       </div>
-      
+
       {showProgress && (
         <div className="h-1 w-full rounded-full bg-warm-gray/30">
-          <div 
+          <div
             className="h-1 rounded-full bg-warm-gray transition-all duration-1000 ease-linear"
             style={{ width: `${progressPercentage}%` }}
           />
         </div>
       )}
-      
+
       {onCancel && (
         <button
           type="button"

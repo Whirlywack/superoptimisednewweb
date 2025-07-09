@@ -23,6 +23,8 @@ interface ContentDashboardClientProps {
 export function ContentDashboardClient({ userEmail: _userEmail }: ContentDashboardClientProps) {
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
+  const [showTemplatePreview, setShowTemplatePreview] = useState(false);
+  const [previewTemplate, setPreviewTemplate] = useState<any>(null);
 
   // Real content data from tRPC
   const { data: blogPosts, isLoading: postsLoading } = api.blog.getBlogPosts.useQuery({
@@ -32,7 +34,15 @@ export function ContentDashboardClient({ userEmail: _userEmail }: ContentDashboa
     status: undefined, // Get all posts (published and draft)
   });
   const { data: contentStats, isLoading: statsLoading } = api.content.getContentStats.useQuery();
-  const { data: contentTemplates } = api.content.getContentTemplates.useQuery();
+  const { data: contentTemplates, refetch: refetchTemplates } =
+    api.content.getContentTemplates.useQuery();
+
+  // tRPC mutations
+  const useTemplateMutation = api.content.useContentTemplate.useMutation({
+    onSuccess: () => {
+      refetchTemplates();
+    },
+  });
 
   // Real content data from database
   const contentData = {
@@ -43,16 +53,17 @@ export function ContentDashboardClient({ userEmail: _userEmail }: ContentDashboa
       totalViews: contentStats?.totalViews || 0,
     },
     contentTemplates: contentTemplates?.templates || [],
-    recentPosts: blogPosts?.posts.map(post => ({
-      id: post.id,
-      title: post.title,
-      status: post.publishedAt ? "published" : "draft",
-      author: post.author?.name || "Unknown",
-      publishedAt: post.publishedAt ? post.publishedAt.toISOString().split('T')[0] : undefined,
-      updatedAt: !post.publishedAt ? post.updatedAt.toISOString().split('T')[0] : undefined,
-      views: 0, // Will be replaced with real analytics when available
-      category: post.postType || "blog",
-    })) || [],
+    recentPosts:
+      blogPosts?.posts.map((post) => ({
+        id: post.id,
+        title: post.title,
+        status: post.publishedAt ? "published" : "draft",
+        author: post.author?.name || "Unknown",
+        publishedAt: post.publishedAt ? post.publishedAt.toISOString().split("T")[0] : undefined,
+        updatedAt: !post.publishedAt ? post.updatedAt.toISOString().split("T")[0] : undefined,
+        views: 0, // Will be replaced with real analytics when available
+        category: post.postType || "blog",
+      })) || [],
   };
 
   const filters = [
@@ -62,11 +73,36 @@ export function ContentDashboardClient({ userEmail: _userEmail }: ContentDashboa
     { id: "scheduled", label: "Scheduled" },
   ];
 
-  const filteredPosts = contentData.recentPosts.filter(post => {
+  const filteredPosts = contentData.recentPosts.filter((post) => {
     if (selectedFilter === "all") return true;
     if (selectedFilter === "scheduled") return false; // No scheduled posts yet
     return post.status === selectedFilter;
   });
+
+  // Handler functions
+  const handleTemplateUse = async (templateId: string) => {
+    try {
+      await useTemplateMutation.mutateAsync({ id: templateId });
+      const template = contentData.contentTemplates.find((t) => t.id === templateId);
+      if (template) {
+        // Store template in sessionStorage and redirect to new post
+        sessionStorage.setItem("selectedTemplate", JSON.stringify(template));
+        window.open("/admin/posts/new", "_blank");
+      }
+    } catch (error) {
+      console.error("Failed to use template:", error);
+      alert("Failed to use template");
+    }
+  };
+
+  const handleTemplatePreview = (template: any) => {
+    setPreviewTemplate(template);
+    setShowTemplatePreview(true);
+  };
+
+  const handlePostEdit = (postId: string) => {
+    window.open(`/admin/posts/edit/${postId}`, "_blank");
+  };
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--off-white)" }}>
@@ -94,7 +130,7 @@ export function ContentDashboardClient({ userEmail: _userEmail }: ContentDashboa
                 Blog posts, templates, and publishing workflow
               </p>
             </div>
-            
+
             {/* Quick Actions */}
             <div className="flex items-center" style={{ gap: "var(--space-sm)" }}>
               <button
@@ -111,7 +147,7 @@ export function ContentDashboardClient({ userEmail: _userEmail }: ContentDashboa
                 <Upload size={16} />
                 Import
               </button>
-              
+
               <button
                 className="flex items-center font-medium uppercase transition-colors"
                 style={{
@@ -122,6 +158,7 @@ export function ContentDashboardClient({ userEmail: _userEmail }: ContentDashboa
                   border: "2px solid var(--off-black)",
                   gap: "var(--space-xs)",
                 }}
+                onClick={() => window.open("/admin/posts/new", "_blank")}
               >
                 <Plus size={16} />
                 New Post
@@ -306,23 +343,29 @@ export function ContentDashboardClient({ userEmail: _userEmail }: ContentDashboa
                   cursor: "pointer",
                   gap: "var(--space-xs)",
                 }}
+                onClick={() => window.open("/admin/templates/new", "_blank")}
+                title="Create new template"
               >
                 <Plus size={16} />
               </button>
             </div>
-            
+
             <div style={{ padding: "var(--space-md)" }}>
               <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-xs)" }}>
                 {contentData.contentTemplates.map((template) => (
                   <div
                     key={template.id}
-                    className="border-2 cursor-pointer transition-all"
+                    className="cursor-pointer border-2 transition-all"
                     style={{
-                      borderColor: selectedTemplate === template.id ? "var(--off-black)" : "var(--light-gray)",
+                      borderColor:
+                        selectedTemplate === template.id ? "var(--off-black)" : "var(--light-gray)",
                       backgroundColor: "var(--off-white)",
                       padding: "var(--space-sm)",
                     }}
-                    onClick={() => setSelectedTemplate(template.id)}
+                    onClick={() => {
+                      setSelectedTemplate(template.id);
+                      handleTemplatePreview(template);
+                    }}
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
@@ -345,17 +388,38 @@ export function ContentDashboardClient({ userEmail: _userEmail }: ContentDashboa
                         >
                           {template.description}
                         </p>
-                        <div
-                          style={{
-                            fontSize: "var(--text-xs)",
-                            fontWeight: "bold",
-                            color: "var(--primary)",
-                            backgroundColor: "var(--light-gray)",
-                            padding: "2px var(--space-xs)",
-                            display: "inline-block",
-                          }}
-                        >
-                          {template.category}
+                        <div className="flex items-center" style={{ gap: "var(--space-xs)" }}>
+                          <div
+                            style={{
+                              fontSize: "var(--text-xs)",
+                              fontWeight: "bold",
+                              color: "var(--primary)",
+                              backgroundColor: "var(--light-gray)",
+                              padding: "2px var(--space-xs)",
+                              display: "inline-block",
+                            }}
+                          >
+                            {template.category}
+                          </div>
+                          <div
+                            style={{
+                              fontSize: "var(--text-xs)",
+                              fontWeight: "bold",
+                              color:
+                                template.contentType === "tsx"
+                                  ? "var(--off-white)"
+                                  : "var(--off-black)",
+                              backgroundColor:
+                                template.contentType === "tsx"
+                                  ? "var(--primary)"
+                                  : "var(--light-gray)",
+                              padding: "2px var(--space-xs)",
+                              display: "inline-block",
+                              textTransform: "uppercase",
+                            }}
+                          >
+                            {template.contentType}
+                          </div>
                         </div>
                       </div>
                       <button
@@ -369,8 +433,14 @@ export function ContentDashboardClient({ userEmail: _userEmail }: ContentDashboa
                           cursor: "pointer",
                           gap: "var(--space-xs)",
                         }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleTemplateUse(template.id);
+                        }}
+                        disabled={useTemplateMutation.isLoading}
                       >
                         <Copy size={12} />
+                        {useTemplateMutation.isLoading ? "..." : "Use"}
                       </button>
                     </div>
                   </div>
@@ -408,13 +478,13 @@ export function ContentDashboardClient({ userEmail: _userEmail }: ContentDashboa
                 </h2>
               </div>
             </div>
-            
+
             {/* Filter Tabs */}
             <div className="border-b-2" style={{ borderColor: "var(--light-gray)" }}>
               <nav className="flex" style={{ gap: "0" }}>
                 {filters.map((filter) => {
                   const isActive = selectedFilter === filter.id;
-                  
+
                   return (
                     <button
                       key={filter.id}
@@ -426,7 +496,9 @@ export function ContentDashboardClient({ userEmail: _userEmail }: ContentDashboa
                         backgroundColor: isActive ? "var(--off-black)" : "transparent",
                         padding: "var(--space-sm)",
                         border: "none",
-                        borderBottom: isActive ? "2px solid var(--off-black)" : "2px solid transparent",
+                        borderBottom: isActive
+                          ? "2px solid var(--off-black)"
+                          : "2px solid transparent",
                       }}
                     >
                       {filter.label}
@@ -435,15 +507,19 @@ export function ContentDashboardClient({ userEmail: _userEmail }: ContentDashboa
                 })}
               </nav>
             </div>
-            
+
             <div style={{ padding: "var(--space-md)" }}>
               {postsLoading ? (
                 <div className="py-4 text-center">
-                  <div style={{ color: "var(--warm-gray)", fontSize: "var(--text-sm)" }}>Loading posts...</div>
+                  <div style={{ color: "var(--warm-gray)", fontSize: "var(--text-sm)" }}>
+                    Loading posts...
+                  </div>
                 </div>
               ) : filteredPosts.length === 0 ? (
                 <div className="py-4 text-center">
-                  <div style={{ color: "var(--warm-gray)", fontSize: "var(--text-sm)" }}>No posts found</div>
+                  <div style={{ color: "var(--warm-gray)", fontSize: "var(--text-sm)" }}>
+                    No posts found
+                  </div>
                 </div>
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-xs)" }}>
@@ -467,7 +543,9 @@ export function ContentDashboardClient({ userEmail: _userEmail }: ContentDashboa
                               marginBottom: "2px",
                             }}
                           >
-                            {post.title.length > 25 ? post.title.substring(0, 25) + "..." : post.title}
+                            {post.title.length > 25
+                              ? post.title.substring(0, 25) + "..."
+                              : post.title}
                           </h3>
                           <div
                             className="flex items-center"
@@ -477,7 +555,10 @@ export function ContentDashboardClient({ userEmail: _userEmail }: ContentDashboa
                               style={{
                                 fontSize: "var(--text-xs)",
                                 fontWeight: "bold",
-                                color: post.status === 'published' ? "var(--primary)" : "var(--warm-gray)",
+                                color:
+                                  post.status === "published"
+                                    ? "var(--primary)"
+                                    : "var(--warm-gray)",
                                 backgroundColor: "var(--light-gray)",
                                 padding: "2px var(--space-xs)",
                                 textTransform: "uppercase",
@@ -492,7 +573,7 @@ export function ContentDashboardClient({ userEmail: _userEmail }: ContentDashboa
                                 color: "var(--warm-gray)",
                               }}
                             >
-                              {post.status === 'published' ? post.publishedAt : post.updatedAt}
+                              {post.status === "published" ? post.publishedAt : post.updatedAt}
                             </span>
                           </div>
                           <div
@@ -505,13 +586,21 @@ export function ContentDashboardClient({ userEmail: _userEmail }: ContentDashboa
                           </div>
                         </div>
                         <div className="flex" style={{ gap: "var(--space-xs)" }}>
-                          <button style={{ color: "var(--warm-gray)" }}>
+                          <button
+                            style={{ color: "var(--warm-gray)" }}
+                            onClick={() => handlePostEdit(post.id)}
+                            title="Edit post"
+                          >
                             <Edit size={14} />
                           </button>
-                          <button style={{ color: "var(--warm-gray)" }}>
+                          <button
+                            style={{ color: "var(--warm-gray)" }}
+                            onClick={() => window.open(`/journey/${post.id}`, "_blank")}
+                            title="View post"
+                          >
                             <Eye size={14} />
                           </button>
-                          <button style={{ color: "var(--warm-gray)" }}>
+                          <button style={{ color: "var(--warm-gray)" }} title="More options">
                             <MoreHorizontal size={14} />
                           </button>
                         </div>
@@ -552,7 +641,7 @@ export function ContentDashboardClient({ userEmail: _userEmail }: ContentDashboa
                 </h2>
               </div>
             </div>
-            
+
             <div style={{ padding: "var(--space-md)" }}>
               {/* Quick Actions */}
               <div
@@ -566,8 +655,15 @@ export function ContentDashboardClient({ userEmail: _userEmail }: ContentDashboa
               >
                 Quick Actions
               </div>
-              
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-xs)", marginBottom: "var(--space-md)" }}>
+
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "var(--space-xs)",
+                  marginBottom: "var(--space-md)",
+                }}
+              >
                 <button
                   className="border-2 text-left transition-colors"
                   style={{
@@ -680,7 +776,7 @@ export function ContentDashboardClient({ userEmail: _userEmail }: ContentDashboa
               >
                 External Links
               </div>
-              
+
               <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-xs)" }}>
                 <Link
                   href="/journey"
@@ -756,6 +852,182 @@ export function ContentDashboardClient({ userEmail: _userEmail }: ContentDashboa
           </div>
         </div>
       </div>
+
+      {/* Template Preview Modal */}
+      {showTemplatePreview && previewTemplate && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          style={{
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+          }}
+          onClick={() => setShowTemplatePreview(false)}
+        >
+          <div
+            className="relative max-h-[90vh] w-full max-w-4xl overflow-auto rounded-lg border-2 bg-white"
+            style={{
+              borderColor: "var(--light-gray)",
+              margin: "var(--space-lg)",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div
+              className="sticky top-0 flex items-center justify-between border-b-2 bg-white"
+              style={{
+                borderColor: "var(--light-gray)",
+                padding: "var(--space-md)",
+              }}
+            >
+              <div>
+                <h3
+                  className="font-bold"
+                  style={{
+                    fontSize: "var(--text-lg)",
+                    color: "var(--off-black)",
+                    marginBottom: "var(--space-xs)",
+                  }}
+                >
+                  {previewTemplate.title}
+                </h3>
+                <p
+                  style={{
+                    fontSize: "var(--text-sm)",
+                    color: "var(--warm-gray)",
+                  }}
+                >
+                  {previewTemplate.description}
+                </p>
+              </div>
+              <div className="flex items-center" style={{ gap: "var(--space-sm)" }}>
+                <button
+                  className="flex items-center font-medium transition-colors"
+                  style={{
+                    fontSize: "var(--text-sm)",
+                    color: "var(--off-white)",
+                    backgroundColor: "var(--primary)",
+                    padding: "var(--space-sm) var(--space-md)",
+                    border: "2px solid var(--primary)",
+                    gap: "var(--space-xs)",
+                  }}
+                  onClick={() => handleTemplateUse(previewTemplate.id)}
+                  disabled={useTemplateMutation.isLoading}
+                >
+                  <Copy size={16} />
+                  {useTemplateMutation.isLoading ? "Copying..." : "Use Template"}
+                </button>
+                <button
+                  className="flex items-center font-medium transition-colors"
+                  style={{
+                    fontSize: "var(--text-sm)",
+                    color: "var(--off-black)",
+                    backgroundColor: "var(--light-gray)",
+                    padding: "var(--space-sm) var(--space-md)",
+                    border: "2px solid var(--light-gray)",
+                  }}
+                  onClick={() => setShowTemplatePreview(false)}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Content */}
+            <div style={{ padding: "var(--space-lg)" }}>
+              {previewTemplate.contentType === "tsx" ? (
+                <div>
+                  <div
+                    className="mb-lg rounded-lg border-2 border-primary bg-primary/5 p-md"
+                    style={{
+                      marginBottom: "var(--space-lg)",
+                    }}
+                  >
+                    <h4 className="mb-sm text-sm font-semibold text-primary">
+                      TypeScript React Component Template
+                    </h4>
+                    <p className="text-sm text-warm-gray">
+                      This template creates a TypeScript React component with:
+                    </p>
+                    <ul className="mt-sm text-sm text-warm-gray" style={{ paddingLeft: "1.5rem" }}>
+                      <li>• Interactive polls and community engagement</li>
+                      <li>• Newsletter signup forms with XP rewards</li>
+                      <li>• Responsive two-column layout (content + sidebar)</li>
+                      <li>• Table of contents and post statistics</li>
+                      <li>• Customizable content sections with template variables</li>
+                      <li>• Elevated brutalism design system styling</li>
+                    </ul>
+                  </div>
+
+                  <div
+                    className="mb-md text-sm font-semibold"
+                    style={{ color: "var(--off-black)" }}
+                  >
+                    Template Variables (Replace with your content):
+                  </div>
+
+                  <div className="mb-lg rounded-lg border-2 border-light-gray bg-white p-md">
+                    <div className="grid grid-cols-2 gap-sm text-xs">
+                      {[
+                        "COMPONENT_NAME",
+                        "POST_INTRO",
+                        "POST_DESCRIPTION",
+                        "SECTION_1_TITLE",
+                        "SECTION_1_CONTENT",
+                        "QUOTE_TEXT",
+                        "POLL_QUESTION",
+                        "NEWSLETTER_TITLE",
+                        "NEWSLETTER_DESCRIPTION",
+                        "SECTION_2_TITLE",
+                        "SECTION_3_TITLE",
+                      ].map((variable) => (
+                        <div key={variable} className="font-mono text-primary">
+                          {`{{${variable}}}`}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <details>
+                    <summary className="mb-sm cursor-pointer text-sm font-medium text-warm-gray">
+                      View Template Source Code
+                    </summary>
+                    <div
+                      className="font-mono text-sm"
+                      style={{
+                        backgroundColor: "var(--light-gray)",
+                        padding: "var(--space-md)",
+                        borderRadius: "4px",
+                        maxHeight: "40vh",
+                        overflow: "auto",
+                        whiteSpace: "pre-wrap",
+                        fontSize: "var(--text-xs)",
+                        lineHeight: "1.4",
+                      }}
+                    >
+                      {previewTemplate.defaultContent}
+                    </div>
+                  </details>
+                </div>
+              ) : (
+                <div
+                  className="font-mono text-sm"
+                  style={{
+                    backgroundColor: "var(--light-gray)",
+                    padding: "var(--space-md)",
+                    borderRadius: "4px",
+                    maxHeight: "60vh",
+                    overflow: "auto",
+                    whiteSpace: "pre-wrap",
+                    fontSize: "var(--text-xs)",
+                    lineHeight: "1.4",
+                  }}
+                >
+                  {previewTemplate.defaultContent}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

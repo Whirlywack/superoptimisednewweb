@@ -23,15 +23,18 @@ interface QuestionnairesDashboardClientProps {
   userEmail: string;
 }
 
-export function QuestionnairesDashboardClient({ userEmail: _userEmail }: QuestionnairesDashboardClientProps) {
+export function QuestionnairesDashboardClient({
+  userEmail: _userEmail,
+}: QuestionnairesDashboardClientProps) {
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
 
   // Real questionnaire data via tRPC
-  const { data: questionnaires, isLoading: questionnairesLoading } = api.questionnaire.getAll.useQuery({
-    limit: 20,
-  });
-  
+  const { data: questionnaires, isLoading: questionnairesLoading } =
+    api.questionnaire.getAll.useQuery({
+      limit: 20,
+    });
+
   const { data: stats, isLoading: statsLoading } = api.questionnaire.getStats.useQuery();
 
   const filters = [
@@ -41,11 +44,12 @@ export function QuestionnairesDashboardClient({ userEmail: _userEmail }: Questio
     { id: "archived", label: "Archived" },
   ];
 
-  const filteredQuestionnaires = questionnaires?.questionnaires.filter(questionnaire => {
-    const matchesFilter = selectedFilter === "all" || questionnaire.status === selectedFilter;
-    const matchesSearch = questionnaire.title.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesFilter && matchesSearch;
-  }) || [];
+  const filteredQuestionnaires =
+    questionnaires?.questionnaires.filter((questionnaire) => {
+      const matchesFilter = selectedFilter === "all" || questionnaire.status === selectedFilter;
+      const matchesSearch = questionnaire.title.toLowerCase().includes(searchTerm.toLowerCase());
+      return matchesFilter && matchesSearch;
+    }) || [];
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--off-white)" }}>
@@ -73,7 +77,7 @@ export function QuestionnairesDashboardClient({ userEmail: _userEmail }: Questio
                 Manage questionnaires, templates, and surveys
               </p>
             </div>
-            
+
             {/* Quick Actions */}
             <div className="flex items-center" style={{ gap: "var(--space-sm)" }}>
               <Link
@@ -92,7 +96,7 @@ export function QuestionnairesDashboardClient({ userEmail: _userEmail }: Questio
                 <Zap size={16} />
                 Templates
               </Link>
-              
+
               <Link
                 href="/admin/questionnaires/new"
                 className="flex items-center font-medium uppercase transition-colors"
@@ -280,7 +284,7 @@ export function QuestionnairesDashboardClient({ userEmail: _userEmail }: Questio
           <div className="flex" style={{ gap: "0" }}>
             {filters.map((filter) => {
               const isActive = selectedFilter === filter.id;
-              
+
               return (
                 <button
                   key={filter.id}
@@ -292,7 +296,10 @@ export function QuestionnairesDashboardClient({ userEmail: _userEmail }: Questio
                     backgroundColor: isActive ? "var(--off-black)" : "var(--light-gray)",
                     padding: "var(--space-sm) var(--space-md)",
                     border: "2px solid var(--light-gray)",
-                    borderRight: filter.id === "archived" ? "2px solid var(--light-gray)" : "1px solid var(--light-gray)",
+                    borderRight:
+                      filter.id === "archived"
+                        ? "2px solid var(--light-gray)"
+                        : "1px solid var(--light-gray)",
                   }}
                 >
                   {filter.label}
@@ -312,7 +319,9 @@ export function QuestionnairesDashboardClient({ userEmail: _userEmail }: Questio
               padding: "var(--space-xl)",
             }}
           >
-            <div style={{ color: "var(--warm-gray)", fontSize: "var(--text-base)" }}>Loading questionnaires...</div>
+            <div style={{ color: "var(--warm-gray)", fontSize: "var(--text-base)" }}>
+              Loading questionnaires...
+            </div>
           </div>
         ) : filteredQuestionnaires.length === 0 ? (
           <div
@@ -342,7 +351,7 @@ export function QuestionnairesDashboardClient({ userEmail: _userEmail }: Questio
                     marginBottom: "var(--space-md)",
                   }}
                 >
-                  No questionnaires match "{searchTerm}"
+                  No questionnaires match &quot;{searchTerm}&quot;
                 </p>
                 <button
                   onClick={() => setSearchTerm("")}
@@ -360,7 +369,10 @@ export function QuestionnairesDashboardClient({ userEmail: _userEmail }: Questio
               </>
             ) : (
               <>
-                <FileText size={48} style={{ color: "var(--warm-gray)", margin: "0 auto var(--space-md)" }} />
+                <FileText
+                  size={48}
+                  style={{ color: "var(--warm-gray)", margin: "0 auto var(--space-md)" }}
+                />
                 <h3
                   className="font-bold uppercase"
                   style={{
@@ -434,8 +446,14 @@ export function QuestionnairesDashboardClient({ userEmail: _userEmail }: Questio
                         style={{
                           fontSize: "var(--text-xs)",
                           fontWeight: "bold",
-                          color: questionnaire.status === 'published' ? "var(--off-white)" : "var(--warm-gray)",
-                          backgroundColor: questionnaire.status === 'published' ? "var(--primary)" : "var(--light-gray)",
+                          color:
+                            questionnaire.status === "published"
+                              ? "var(--off-white)"
+                              : "var(--warm-gray)",
+                          backgroundColor:
+                            questionnaire.status === "published"
+                              ? "var(--primary)"
+                              : "var(--light-gray)",
                           padding: "2px var(--space-xs)",
                           textTransform: "uppercase",
                         }}
@@ -463,10 +481,9 @@ export function QuestionnairesDashboardClient({ userEmail: _userEmail }: Questio
                         color: "var(--warm-gray)",
                       }}
                     >
-                      {questionnaire.description.length > 80 
+                      {questionnaire.description.length > 80
                         ? questionnaire.description.substring(0, 80) + "..."
-                        : questionnaire.description
-                      }
+                        : questionnaire.description}
                     </p>
                   )}
 

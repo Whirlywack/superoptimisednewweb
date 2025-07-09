@@ -1,16 +1,6 @@
 import React from "react";
 import { cn } from "@/lib/utils";
-import { 
-  CheckCircle, 
-  Clock, 
-  Lightbulb, 
-  Pause, 
-  AlertCircle, 
-  Archive,
-  Zap,
-  Target,
-  Rocket
-} from "lucide-react";
+import { CheckCircle, Lightbulb, Pause, Archive, Zap, Target, Rocket } from "lucide-react";
 
 interface ProjectStatusProps extends React.HTMLAttributes<HTMLSpanElement> {
   status: "concept" | "planning" | "in-progress" | "paused" | "complete" | "archived" | "featured";
@@ -111,11 +101,8 @@ export function ProjectStatus({
       {...props}
     >
       {showIcon && (
-        <Icon 
-          className={cn(
-            sizeConfig.icon,
-            animated && status === "in-progress" && "animate-spin"
-          )} 
+        <Icon
+          className={cn(sizeConfig.icon, animated && status === "in-progress" && "animate-spin")}
         />
       )}
       {showLabel && config.label}
@@ -151,16 +138,12 @@ export function ProjectPhase({
   ];
 
   const phaseList = phases || defaultPhases;
-  const currentIndex = phaseList.findIndex(p => p.phase === currentPhase);
+  const currentIndex = phaseList.findIndex((p) => p.phase === currentPhase);
 
   if (compact) {
     return (
       <div className={cn("flex items-center gap-2", className)} {...props}>
-        <ProjectStatus 
-          status={currentPhase} 
-          size="sm" 
-          animated={currentPhase === "in-progress"}
-        />
+        <ProjectStatus status={currentPhase} size="sm" animated={currentPhase === "in-progress"} />
         {showProgress && (
           <span className="text-xs text-muted-foreground">
             {currentIndex + 1} of {phaseList.length}
@@ -180,7 +163,7 @@ export function ProjectPhase({
           </span>
         </div>
       )}
-      
+
       <div className="space-y-2">
         {phaseList.map((phase, index) => {
           const isCurrentPhase = phase.phase === currentPhase;
@@ -206,29 +189,27 @@ export function ProjectPhase({
               >
                 <Icon className="size-4" />
               </div>
-              
+
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
                   <span className={cn("text-sm font-medium", isCurrentPhase && "text-foreground")}>
                     {phase.label || config.label}
                   </span>
                   {isCurrentPhase && (
-                    <ProjectStatus 
-                      status={currentPhase} 
-                      size="sm" 
+                    <ProjectStatus
+                      status={currentPhase}
+                      size="sm"
                       showIcon={false}
                       animated={currentPhase === "in-progress"}
                     />
                   )}
                 </div>
-                
+
                 {phase.description && (
-                  <p className="text-xs text-muted-foreground">
-                    {phase.description}
-                  </p>
+                  <p className="text-xs text-muted-foreground">{phase.description}</p>
                 )}
-                
-                {'completedAt' in phase && phase.completedAt && isCompleted && (
+
+                {"completedAt" in phase && phase.completedAt && isCompleted && (
                   <p className="mt-1 text-xs text-muted-foreground">
                     Completed {phase.completedAt}
                   </p>
@@ -262,27 +243,21 @@ export function BuildingStatus({
   ...props
 }: BuildingStatusProps) {
   return (
-    <div 
+    <div
       className={cn(
         "space-y-3 rounded-lg border p-4",
         "bg-gradient-to-br from-background to-muted/30",
         className
-      )} 
+      )}
       {...props}
     >
       <div className="flex items-center justify-between">
         <div>
           <h3 className="font-semibold text-foreground">{project}</h3>
-          {showDetails && (
-            <p className="text-sm text-muted-foreground">Current building focus</p>
-          )}
+          {showDetails && <p className="text-sm text-muted-foreground">Current building focus</p>}
         </div>
-        
-        <ProjectStatus 
-          status={status} 
-          animated={status === "in-progress"}
-          size="lg"
-        />
+
+        <ProjectStatus status={status} animated={status === "in-progress"} size="lg" />
       </div>
 
       {showDetails && (
@@ -294,8 +269,8 @@ export function BuildingStatus({
                 <span className="text-muted-foreground">{progress}%</span>
               </div>
               <div className="h-2 w-full rounded-full bg-muted">
-                <div 
-                  className="h-2 rounded-full bg-primary transition-all duration-300" 
+                <div
+                  className="h-2 rounded-full bg-primary transition-all duration-300"
                   style={{ width: `${progress}%` }}
                 />
               </div>
@@ -309,7 +284,7 @@ export function BuildingStatus({
                 <span className="font-mono text-xs">{lastUpdated}</span>
               </div>
             )}
-            
+
             {nextMilestone && status === "in-progress" && (
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Next milestone:</span>

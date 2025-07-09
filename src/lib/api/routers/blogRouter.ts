@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { getBlogPostsSchema, getBlogPostBySlugSchema } from "@/lib/api/schemas";
 import { safeExecute } from "@/lib/api/errors";
 import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 
 export const blogRouter = createTRPCRouter({
   /**
@@ -241,5 +242,132 @@ export const blogRouter = createTRPCRouter({
         recentActivity,
       };
     }, "getBlogStats");
+  }),
+
+  /**
+   * Create a new blog post
+   */
+  createPost: publicProcedure
+    .input(
+      z.object({
+        title: z.string().min(1).max(200),
+        slug: z.string().min(1).max(100),
+        excerpt: z.string().optional(),
+        content: z.string().min(1),
+        contentType: z.enum(["markdown", "tsx"]).default("tsx"),
+        postType: z.string().default("blog"),
+        status: z.enum(["draft", "published"]).default("draft"),
+        featured: z.boolean().default(false),
+        authorId: z.string().optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      return safeExecute(async () => {
+        // Check if slug already exists
+        const existingPost = await prisma.post.findUnique({
+          where: { slug: input.slug },
+        });
+
+        if (existingPost) {
+          throw new TRPCError({
+            code: "CONFLICT",
+            message: "A post with this slug already exists",
+          });
+        }
+
+        const post = await prisma.post.create({
+          data: {
+            ...input,
+            publishedAt: input.status === "published" ? new Date() : null,
+          },
+        });
+
+        return post;
+      }, "createPost");
+    }),
+
+  /**
+   * Update an existing blog post
+   */
+  updatePost: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        title: z.string().min(1).max(200).optional(),
+        slug: z.string().min(1).max(100).optional(),
+        excerpt: z.string().optional(),
+        content: z.string().min(1).optional(),
+        contentType: z.enum(["markdown", "tsx"]).optional(),
+        postType: z.string().optional(),
+        status: z.enum(["draft", "published"]).optional(),
+        featured: z.boolean().optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      return safeExecute(async () => {
+        const { id, ...updateData } = input;
+
+        // If slug is being updated, check for conflicts
+        if (updateData.slug) {
+          const existingPost = await prisma.post.findUnique({
+            where: { slug: updateData.slug },
+          });
+
+          if (existingPost && existingPost.id !== id) {
+            throw new TRPCError({
+              code: "CONFLICT",
+              message: "A post with this slug already exists",
+            });
+          }
+        }
+
+        // Set publishedAt when status changes to published
+        if (updateData.status === "published") {
+          const currentPost = await prisma.post.findUnique({
+            where: { id },
+            select: { publishedAt: true },
+          });
+
+          if (!currentPost?.publishedAt) {
+            (updateData as any).publishedAt = new Date();
+          }
+        }
+
+        const post = await prisma.post.update({
+          where: { id },
+          data: updateData,
+        });
+
+        return post;
+      }, "updatePost");
+    }),
+
+  /**
+   * Get a single blog post by ID (for admin editing)
+   */
+  getPostById: publicProcedure.input(z.object({ id: z.string() })).query(async ({ input }) => {
+    return safeExecute(async () => {
+      const post = await prisma.post.findUnique({
+        where: { id: input.id },
+        include: {
+          author: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
+      });
+
+      if (!post) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Post not found",
+        });
+      }
+
+      return post;
+    }, "getPostById");
   }),
 });
