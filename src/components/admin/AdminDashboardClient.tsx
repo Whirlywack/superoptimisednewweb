@@ -4,20 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { api } from "@/lib/trpc/react";
 import { questionnaireTemplates } from "@/lib/questionnaire-templates";
-import { LoadingState, CardSkeleton } from "@/components/ui/LoadingState";
-import { RealTimeIndicator, CompactRealTimeIndicator, PulseIndicator } from "@/components/ui/RealTimeIndicator";
-import { useRealtimeStats } from "@/hooks/useRealtimeStats";
-import {
-  Plus,
-  BarChart3,
-  FileText,
-  Target,
-  Zap,
-  Eye,
-  Edit,
-  AlertCircle,
-  RefreshCw,
-} from "lucide-react";
+import { Plus, BarChart3, FileText, Target, Zap, Eye, Edit } from "lucide-react";
 
 interface AdminDashboardClientProps {
   userEmail: string;
@@ -26,38 +13,18 @@ interface AdminDashboardClientProps {
 export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardClientProps) {
   const [_activeQuickAction, _setActiveQuickAction] = useState<string | null>(null);
 
-  // Real-time stats hook
-  const realtimeStats = useRealtimeStats({ enabled: true });
-
-  // Error state component
-  const ErrorMessage = ({ error, title }: { error: any; title: string }) => (
-    <div
-      className="flex items-center border-2 p-4"
-      style={{
-        borderColor: "var(--primary)",
-        backgroundColor: "var(--off-white)",
-        color: "var(--primary)",
-      }}
-    >
-      <AlertCircle size={20} className="mr-2" />
-      <div>
-        <h3 className="font-medium">{title}</h3>
-        <p className="text-sm">{error?.message || "An error occurred"}</p>
-      </div>
-    </div>
-  );
-  
-  const { data: stats, isLoading: statsLoading, error: statsError } = api.questionnaire.getStats.useQuery();
-  const { data: questionnaires, isLoading: questionnairesLoading, error: questionnairesError } =
+  const { data: stats, isLoading: statsLoading } = api.questionnaire.getStats.useQuery();
+  const { data: questionnaires, isLoading: questionnairesLoading } =
     api.questionnaire.getAll.useQuery({
       limit: 4,
     });
 
   // Real data from tRPC APIs
-  const { data: analyticsData, isLoading: analyticsLoading, error: analyticsError } = api.analytics.getWebsiteStats.useQuery();
-  const { data: questionnaireAnalytics, error: questionnaireAnalyticsError } = api.analytics.getQuestionnaireAnalytics.useQuery();
-  const { data: contentStats, error: contentStatsError } = api.content.getContentStats.useQuery();
-  const { data: blogPosts, error: blogPostsError } = api.blog.getBlogPosts.useQuery({ limit: 3 });
+  const { data: analyticsData, isLoading: analyticsLoading } =
+    api.analytics.getWebsiteStats.useQuery();
+  const { data: questionnaireAnalytics } = api.analytics.getQuestionnaireAnalytics.useQuery();
+  const { data: contentStats } = api.content.getContentStats.useQuery();
+  const { data: blogPosts } = api.blog.getBlogPosts.useQuery({ limit: 3 });
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--off-white)" }}>
@@ -85,18 +52,9 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
                 Questionnaires • Analytics • Content
               </p>
             </div>
-            
-            {/* Real-time Status & Quick Action Bar */}
+
+            {/* Quick Action Bar */}
             <div className="flex items-center" style={{ gap: "var(--space-sm)" }}>
-              {/* Real-time Status Indicator */}
-              <RealTimeIndicator
-                isConnected={realtimeStats.isConnected}
-                isPolling={realtimeStats.isPolling}
-                lastUpdated={realtimeStats.stats?.lastUpdated}
-                onRefresh={() => window.location.reload()}
-              />
-              
-              {/* Quick Actions */}
               <Link
                 href="/admin/questionnaires/new"
                 className="flex items-center font-medium uppercase transition-colors"
@@ -113,7 +71,7 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
                 <Plus size={16} />
                 New Questionnaire
               </Link>
-              
+
               <Link
                 href="/admin/questionnaires/templates"
                 className="flex items-center font-medium uppercase transition-colors"
@@ -140,116 +98,75 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
         style={{ paddingTop: "var(--space-lg)", paddingBottom: "var(--space-lg)" }}
       >
         {/* Unified Stats Dashboard */}
-        {statsError || analyticsError ? (
-          <div style={{ marginBottom: "var(--space-xl)" }}>
-            <ErrorMessage error={statsError || analyticsError} title="Failed to load dashboard stats" />
+        <div
+          className="grid gap-0"
+          style={{
+            gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+            marginBottom: "var(--space-xl)",
+            border: "2px solid var(--light-gray)",
+          }}
+        >
+          {/* Questionnaire Stats */}
+          <div
+            className="border-r-2 text-center"
+            style={{
+              borderColor: "var(--light-gray)",
+              backgroundColor: "var(--off-white)",
+              padding: "var(--space-md)",
+            }}
+          >
+            <div
+              className="font-bold"
+              style={{
+                fontSize: "var(--text-lg)",
+                color: "var(--off-black)",
+                marginBottom: "var(--space-xs)",
+              }}
+            >
+              {statsLoading ? "..." : stats?.activeQuestionnaires || 0}
+            </div>
+            <div
+              className="font-medium uppercase"
+              style={{
+                fontSize: "var(--text-xs)",
+                color: "var(--warm-gray)",
+                letterSpacing: "0.05em",
+              }}
+            >
+              Active Surveys
+            </div>
           </div>
-        ) : (
-          <div style={{ marginBottom: "var(--space-xl)" }}>
-            {/* Real-time Update Indicator */}
+
+          <div
+            className="border-r-2 text-center"
+            style={{
+              borderColor: "var(--light-gray)",
+              backgroundColor: "var(--off-white)",
+              padding: "var(--space-md)",
+            }}
+          >
             <div
-              className="flex items-center justify-between border-b-2 px-4 py-2"
+              className="font-bold"
               style={{
-                borderColor: "var(--light-gray)",
-                backgroundColor: "var(--off-white)",
+                fontSize: "var(--text-lg)",
+                color: "var(--primary)",
+                marginBottom: "var(--space-xs)",
               }}
             >
-              <h2
-                className="font-medium uppercase"
-                style={{
-                  fontSize: "var(--text-sm)",
-                  color: "var(--off-black)",
-                  letterSpacing: "0.05em",
-                }}
-              >
-                Dashboard Statistics
-              </h2>
-              <div className="flex items-center" style={{ gap: "var(--space-sm)" }}>
-                <PulseIndicator isActive={realtimeStats.isLoading} />
-                <CompactRealTimeIndicator
-                  isConnected={realtimeStats.isConnected}
-                  isPolling={realtimeStats.isPolling}
-                />
-              </div>
+              {statsLoading ? "..." : stats?.totalResponses || 0}
             </div>
-            
             <div
-              className="grid gap-0"
+              className="font-medium uppercase"
               style={{
-                gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-                border: "2px solid var(--light-gray)",
-                borderTop: "none",
+                fontSize: "var(--text-xs)",
+                color: "var(--warm-gray)",
+                letterSpacing: "0.05em",
               }}
             >
-            {/* Questionnaire Stats */}
-            <div
-              className="border-r-2 text-center"
-              style={{
-                borderColor: "var(--light-gray)",
-                backgroundColor: "var(--off-white)",
-                padding: "var(--space-md)",
-              }}
-            >
-              <div
-                className="font-bold"
-                style={{
-                  fontSize: "var(--text-lg)",
-                  color: "var(--off-black)",
-                  marginBottom: "var(--space-xs)",
-                }}
-              >
-                {statsLoading ? (
-                  <div className="animate-pulse h-6 w-8 bg-light-gray rounded mx-auto"></div>
-                ) : (
-                  realtimeStats.stats?.activeQuestions || stats?.activeQuestionnaires || 0
-                )}
-              </div>
-              <div
-                className="font-medium uppercase"
-                style={{
-                  fontSize: "var(--text-xs)",
-                  color: "var(--warm-gray)",
-                  letterSpacing: "0.05em",
-                }}
-              >
-                Active Surveys
-              </div>
+              Total Responses
             </div>
-            
-            <div
-              className="border-r-2 text-center"
-              style={{
-                borderColor: "var(--light-gray)",
-                backgroundColor: "var(--off-white)",
-                padding: "var(--space-md)",
-              }}
-            >
-              <div
-                className="font-bold"
-                style={{
-                  fontSize: "var(--text-lg)",
-                  color: "var(--primary)",
-                  marginBottom: "var(--space-xs)",
-                }}
-              >
-                {statsLoading ? (
-                  <div className="animate-pulse h-6 w-8 bg-light-gray rounded mx-auto"></div>
-                ) : (
-                  realtimeStats.stats?.totalVotes || stats?.totalResponses || 0
-                )}
-              </div>
-              <div
-                className="font-medium uppercase"
-                style={{
-                  fontSize: "var(--text-xs)",
-                  color: "var(--warm-gray)",
-                  letterSpacing: "0.05em",
-                }}
-              >
-                Total Responses
-              </div>
-            </div>
-          
+          </div>
+
           {/* Analytics Stats */}
           <div
             className="border-r-2 text-center"
@@ -267,11 +184,7 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
                 marginBottom: "var(--space-xs)",
               }}
             >
-              {analyticsLoading ? (
-                <div className="animate-pulse h-6 w-12 bg-light-gray rounded mx-auto"></div>
-              ) : (
-                realtimeStats.stats?.uniqueVoters.toLocaleString() || analyticsData?.totalVisitors.toLocaleString() || 0
-              )}
+              {analyticsLoading ? "..." : analyticsData?.totalVisitors.toLocaleString() || 0}
             </div>
             <div
               className="font-medium uppercase"
@@ -281,10 +194,10 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
                 letterSpacing: "0.05em",
               }}
             >
-              Unique Visitors
+              Page Views
             </div>
           </div>
-          
+
           <div
             className="border-r-2 text-center"
             style={{
@@ -301,11 +214,7 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
                 marginBottom: "var(--space-xs)",
               }}
             >
-              {analyticsLoading ? (
-                <div className="animate-pulse h-6 w-12 bg-light-gray rounded mx-auto"></div>
-              ) : (
-                realtimeStats.stats?.totalXpEarned.toLocaleString() || analyticsData?.totalSubmissions.toLocaleString() || 0
-              )}
+              {analyticsLoading ? "..." : analyticsData?.totalSubmissions.toLocaleString() || 0}
             </div>
             <div
               className="font-medium uppercase"
@@ -315,10 +224,10 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
                 letterSpacing: "0.05em",
               }}
             >
-              XP Earned
+              Active Users
             </div>
           </div>
-          
+
           <div
             className="text-center"
             style={{
@@ -394,7 +303,7 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
                 <Plus size={16} />
               </Link>
             </div>
-            
+
             {/* Popular Templates - Direct Action */}
             <div style={{ padding: "var(--space-md)" }}>
               <div
@@ -408,7 +317,7 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
               >
                 Popular Templates
               </div>
-              
+
               <div style={{ marginBottom: "var(--space-md)" }}>
                 {questionnaireTemplates.slice(0, 2).map((template) => (
                   <div
@@ -461,7 +370,7 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
                   </div>
                 ))}
               </div>
-              
+
               {/* Recent Work */}
               <div
                 className="font-medium uppercase"
@@ -474,14 +383,18 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
               >
                 Recent Work
               </div>
-              
+
               {questionnairesLoading ? (
                 <div className="py-4 text-center">
-                  <div style={{ color: "var(--warm-gray)", fontSize: "var(--text-sm)" }}>Loading...</div>
+                  <div style={{ color: "var(--warm-gray)", fontSize: "var(--text-sm)" }}>
+                    Loading...
+                  </div>
                 </div>
               ) : questionnaires?.questionnaires.length === 0 ? (
                 <div className="py-4 text-center">
-                  <div style={{ color: "var(--warm-gray)", fontSize: "var(--text-sm)" }}>No questionnaires yet</div>
+                  <div style={{ color: "var(--warm-gray)", fontSize: "var(--text-sm)" }}>
+                    No questionnaires yet
+                  </div>
                   <Link
                     href="/admin/questionnaires/new"
                     className="mt-2 inline-flex items-center font-medium transition-colors"
@@ -518,12 +431,11 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
                               marginBottom: "2px",
                             }}
                           >
-                            {questionnaire.title.length > 20 ? questionnaire.title.substring(0, 20) + "..." : questionnaire.title}
+                            {questionnaire.title.length > 20
+                              ? questionnaire.title.substring(0, 20) + "..."
+                              : questionnaire.title}
                           </h3>
-                          <div
-                            className="flex items-center"
-                            style={{ gap: "var(--space-sm)" }}
-                          >
+                          <div className="flex items-center" style={{ gap: "var(--space-sm)" }}>
                             <span
                               className="font-mono"
                               style={{
@@ -537,7 +449,10 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
                               style={{
                                 fontSize: "var(--text-xs)",
                                 fontWeight: "bold",
-                                color: questionnaire.status === 'published' ? "var(--primary)" : "var(--warm-gray)",
+                                color:
+                                  questionnaire.status === "published"
+                                    ? "var(--primary)"
+                                    : "var(--warm-gray)",
                                 backgroundColor: "var(--light-gray)",
                                 padding: "2px var(--space-xs)",
                                 textTransform: "uppercase",
@@ -566,7 +481,7 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
                   ))}
                 </div>
               )}
-              
+
               <Link
                 href="/admin/questionnaires/templates"
                 className="mt-4 block text-center font-medium uppercase transition-colors"
@@ -613,7 +528,7 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
                 </h2>
               </div>
             </div>
-            
+
             <div style={{ padding: "var(--space-md)" }}>
               {/* Quick Metrics */}
               <div
@@ -652,7 +567,7 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
                     Conversion
                   </div>
                 </div>
-                
+
                 <div
                   className="text-center"
                   style={{
@@ -682,7 +597,7 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
                   </div>
                 </div>
               </div>
-              
+
               {/* Top Performing Content */}
               <div
                 className="font-medium uppercase"
@@ -695,60 +610,59 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
               >
                 Top Performing
               </div>
-              
+
               <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-xs)" }}>
                 {questionnaireAnalytics?.popularQuestions?.length ? (
                   questionnaireAnalytics.popularQuestions.slice(0, 3).map((item, index) => (
-                  <div
-                    key={index}
-                    className="border-2"
-                    style={{
-                      borderColor: "var(--light-gray)",
-                      backgroundColor: "var(--off-white)",
-                      padding: "var(--space-sm)",
-                    }}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <h3
-                          style={{
-                            fontSize: "var(--text-sm)",
-                            fontWeight: "bold",
-                            color: "var(--off-black)",
-                            marginBottom: "2px",
-                          }}
-                        >
-                          {item.title.length > 18 ? item.title.substring(0, 18) + "..." : item.title}
-                        </h3>
-                        <div
-                          className="flex items-center"
-                          style={{ gap: "var(--space-sm)" }}
-                        >
-                          <span
-                            className="font-mono"
+                    <div
+                      key={index}
+                      className="border-2"
+                      style={{
+                        borderColor: "var(--light-gray)",
+                        backgroundColor: "var(--off-white)",
+                        padding: "var(--space-sm)",
+                      }}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <h3
                             style={{
-                              fontSize: "var(--text-xs)",
-                              color: "var(--warm-gray)",
-                            }}
-                          >
-                            {item.submissions} responses
-                          </span>
-                          <span
-                            style={{
-                              fontSize: "var(--text-xs)",
+                              fontSize: "var(--text-sm)",
                               fontWeight: "bold",
-                              color: "var(--primary)",
-                              backgroundColor: "var(--light-gray)",
-                              padding: "2px var(--space-xs)",
+                              color: "var(--off-black)",
+                              marginBottom: "2px",
                             }}
                           >
-                            {item.completionRate}%
-                          </span>
+                            {item.title.length > 18
+                              ? item.title.substring(0, 18) + "..."
+                              : item.title}
+                          </h3>
+                          <div className="flex items-center" style={{ gap: "var(--space-sm)" }}>
+                            <span
+                              className="font-mono"
+                              style={{
+                                fontSize: "var(--text-xs)",
+                                color: "var(--warm-gray)",
+                              }}
+                            >
+                              {item.submissions} responses
+                            </span>
+                            <span
+                              style={{
+                                fontSize: "var(--text-xs)",
+                                fontWeight: "bold",
+                                color: "var(--primary)",
+                                backgroundColor: "var(--light-gray)",
+                                padding: "2px var(--space-xs)",
+                              }}
+                            >
+                              {item.completionRate}%
+                            </span>
+                          </div>
                         </div>
+                        <Eye size={14} style={{ color: "var(--warm-gray)" }} />
                       </div>
-                      <Eye size={14} style={{ color: "var(--warm-gray)" }} />
                     </div>
-                  </div>
                   ))
                 ) : (
                   <div className="py-4 text-center">
@@ -760,7 +674,7 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
               </div>
             </div>
           </div>
-          
+
           {/* Content Section */}
           <div
             className="border-2"
@@ -802,7 +716,7 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
                 <Plus size={16} />
               </button>
             </div>
-            
+
             <div style={{ padding: "var(--space-md)" }}>
               {/* Content Stats */}
               <div
@@ -841,7 +755,7 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
                     Total Posts
                   </div>
                 </div>
-                
+
                 <div
                   className="text-center"
                   style={{
@@ -871,7 +785,7 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
                   </div>
                 </div>
               </div>
-              
+
               {/* Recent Posts */}
               <div
                 className="font-medium uppercase"
@@ -884,7 +798,7 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
               >
                 Recent Posts
               </div>
-              
+
               <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-xs)" }}>
                 {blogPosts?.posts?.length ? (
                   blogPosts.posts.map((post) => (
@@ -907,17 +821,19 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
                               marginBottom: "2px",
                             }}
                           >
-                            {post.title.length > 16 ? post.title.substring(0, 16) + "..." : post.title}
+                            {post.title.length > 16
+                              ? post.title.substring(0, 16) + "..."
+                              : post.title}
                           </h3>
-                          <div
-                            className="flex items-center"
-                            style={{ gap: "var(--space-sm)" }}
-                          >
+                          <div className="flex items-center" style={{ gap: "var(--space-sm)" }}>
                             <span
                               style={{
                                 fontSize: "var(--text-xs)",
                                 fontWeight: "bold",
-                                color: post.status === 'published' ? "var(--primary)" : "var(--warm-gray)",
+                                color:
+                                  post.status === "published"
+                                    ? "var(--primary)"
+                                    : "var(--warm-gray)",
                                 backgroundColor: "var(--light-gray)",
                                 padding: "2px var(--space-xs)",
                                 textTransform: "uppercase",
