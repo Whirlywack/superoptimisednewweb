@@ -5,44 +5,49 @@ import { prisma } from "@/lib/db";
 export const analyticsRouter = createTRPCRouter({
   getWebsiteStats: publicProcedure.query(async () => {
     try {
-      // Get questionnaire submission count
-      const totalSubmissions = await prisma.questionnaireSubmission.count();
+      // Get actual questionnaire response count (completed only)
+      const totalSubmissions = await prisma.questionnaireResponse.count({
+        where: { status: "completed" }
+      });
       
       // Get question count
-      const totalQuestions = await prisma.question.count();
+      const totalQuestions = await prisma.question.count({
+        where: { isActive: true }
+      });
       
-      // Get user count
+      // Get user count (registered users)
       const totalUsers = await prisma.user.count();
       
-      // Calculate engagement rate based on submissions vs users
+      // Calculate engagement rate based on submissions vs users (if any users exist)
       const engagementRate = totalUsers > 0 ? Math.round((totalSubmissions / totalUsers) * 100) : 0;
       
       return {
-        totalVisitors: totalUsers,
+        totalVisitors: totalUsers, // NOTE: This is registered users, not website visitors
         totalSubmissions,
         totalQuestions,
         engagementRate: `${engagementRate}%`,
+        // NOTE: Trend data would require historical tracking - not implemented yet
         trendsData: {
-          visitors: { change: "+12%", trend: "up" as const },
-          submissions: { change: "+8%", trend: "up" as const },
-          questions: { change: "+15%", trend: "up" as const },
-          engagement: { change: "+3%", trend: "up" as const },
+          visitors: { change: "N/A", trend: "neutral" as const },
+          submissions: { change: "N/A", trend: "neutral" as const },
+          questions: { change: "N/A", trend: "neutral" as const },
+          engagement: { change: "N/A", trend: "neutral" as const },
         }
       };
     } catch (error) {
       console.error("Error fetching website stats:", error);
       
-      // Return fallback data if database query fails
+      // Return empty data if database query fails
       return {
-        totalVisitors: 1247,
-        totalSubmissions: 389,
-        totalQuestions: 42,
-        engagementRate: "73%",
+        totalVisitors: 0,
+        totalSubmissions: 0,
+        totalQuestions: 0,
+        engagementRate: "0%",
         trendsData: {
-          visitors: { change: "+12%", trend: "up" as const },
-          submissions: { change: "+8%", trend: "up" as const },
-          questions: { change: "+15%", trend: "up" as const },
-          engagement: { change: "+3%", trend: "up" as const },
+          visitors: { change: "N/A", trend: "neutral" as const },
+          submissions: { change: "N/A", trend: "neutral" as const },
+          questions: { change: "N/A", trend: "neutral" as const },
+          engagement: { change: "N/A", trend: "neutral" as const },
         }
       };
     }
@@ -59,13 +64,14 @@ export const analyticsRouter = createTRPCRouter({
         const { period } = input;
         
         const days = period === "7d" ? 7 : period === "30d" ? 30 : 90;
-        const submissions = await prisma.questionnaireSubmission.findMany({
+        const submissions = await prisma.questionnaireResponse.findMany({
           where: {
-            createdAt: {
+            completedAt: {
               gte: new Date(Date.now() - days * 24 * 60 * 60 * 1000)
-            }
+            },
+            status: "completed"
           },
-          orderBy: { createdAt: "asc" }
+          orderBy: { completedAt: "asc" }
         });
 
         // Group submissions by day
@@ -80,9 +86,11 @@ export const analyticsRouter = createTRPCRouter({
         
         // Count submissions per day
         submissions.forEach(submission => {
-          const dateKey = submission.createdAt.toISOString().split('T')[0];
-          const current = dailyData.get(dateKey) || 0;
-          dailyData.set(dateKey, current + 1);
+          const dateKey = submission.completedAt?.toISOString().split('T')[0];
+          if (dateKey) {
+            const current = dailyData.get(dateKey) || 0;
+            dailyData.set(dateKey, current + 1);
+          }
         });
 
         // Convert to chart format
@@ -156,10 +164,10 @@ export const analyticsRouter = createTRPCRouter({
       // Get question activity to determine popular pages
       const questions = await prisma.question.findMany({
         include: {
-          submissions: true
+          responses: true
         },
         orderBy: {
-          submissions: {
+          responses: {
             _count: "desc"
           }
         },
@@ -171,9 +179,9 @@ export const analyticsRouter = createTRPCRouter({
         { page: "/journey", views: 834, change: "+8%" },
         { page: "/about", views: 567, change: "+15%" },
         { page: "/research", views: 342, change: "+23%" },
-        ...questions.slice(0, 2).map((q, index) => ({
+        ...questions.slice(0, 2).map((q) => ({
           page: `/question/${q.id}`,
-          views: Math.max(50, q.submissions.length * (10 + Math.random() * 15)),
+          views: Math.max(50, q.responses.length * (10 + Math.random() * 15)),
           change: `+${Math.floor(Math.random() * 20) + 5}%`
         }))
       ];
@@ -199,12 +207,12 @@ export const analyticsRouter = createTRPCRouter({
       // Get questionnaire completion rates and popular questions
       const questions = await prisma.question.findMany({
         include: {
-          submissions: true
+          responses: true
         }
       });
 
       const totalQuestions = questions.length;
-      const totalSubmissions = questions.reduce((sum, q) => sum + q.submissions.length, 0);
+      const totalSubmissions = questions.reduce((sum, q) => sum + q.responses.length, 0);
       
       const avgCompletionRate = totalQuestions > 0 
         ? Math.round((totalSubmissions / totalQuestions) * 100) / 100
@@ -214,9 +222,9 @@ export const analyticsRouter = createTRPCRouter({
         .map(q => ({
           id: q.id,
           title: q.title,
-          type: q.type,
-          submissions: q.submissions.length,
-          completionRate: Math.round((q.submissions.length / Math.max(1, totalSubmissions / totalQuestions)) * 100)
+          type: q.questionType,
+          submissions: q.responses.length,
+          completionRate: Math.round((q.responses.length / Math.max(1, totalSubmissions / totalQuestions)) * 100)
         }))
         .sort((a, b) => b.submissions - a.submissions)
         .slice(0, 5);
@@ -227,11 +235,11 @@ export const analyticsRouter = createTRPCRouter({
         avgCompletionRate,
         popularQuestions,
         responseTypes: {
-          multipleChoice: questions.filter(q => q.type === "multiple_choice").length,
-          textInput: questions.filter(q => q.type === "text").length,
-          rating: questions.filter(q => q.type === "rating").length,
-          yesNo: questions.filter(q => q.type === "yes_no").length,
-          ranking: questions.filter(q => q.type === "ranking").length,
+          multipleChoice: questions.filter(q => q.questionType === "multiple_choice").length,
+          textInput: questions.filter(q => q.questionType === "text").length,
+          rating: questions.filter(q => q.questionType === "rating").length,
+          yesNo: questions.filter(q => q.questionType === "yes_no").length,
+          ranking: questions.filter(q => q.questionType === "ranking").length,
         }
       };
       

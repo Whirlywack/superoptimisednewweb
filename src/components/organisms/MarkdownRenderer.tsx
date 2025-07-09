@@ -144,7 +144,7 @@ export function MarkdownRenderer({
     "prose-table:text-off-black prose-table:border-collapse",
     "prose-th:text-off-black prose-th:font-bold prose-th:bg-light-gray prose-th:border prose-th:border-light-gray prose-th:px-4 prose-th:py-2",
     "prose-td:text-off-black prose-td:border prose-td:border-light-gray prose-td:px-4 prose-td:py-2",
-    variant === "compact" && "prose-sm",
+    variant === "comment" && "prose-sm",
     variant === "blog" && "prose-lg",
     maxWidthClasses[maxWidth],
     variantClasses[variant],
@@ -168,11 +168,11 @@ export function MarkdownRenderer({
           ...(enableSyntaxHighlight ? [rehypeHighlight] : [])
         ]}
         components={{
-          code({ inline, className, children, ...props }) {
+          code({ className, children, ...props }) {
             const match = /language-(\w+)/.exec(className || "");
             const language = match ? match[1] : "text";
 
-            return !inline ? (
+            return !className?.includes("inline") ? (
               <CodeBlock
                 language={language}
                 showCopyButton={showCopyButton}

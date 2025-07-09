@@ -211,23 +211,19 @@ export function SwipeRating({
     const iconSize = size === 'small' ? 20 : size === 'large' ? 32 : 24;
     
     if (iconType === 'custom' && customIcons[index]) {
-      return React.cloneElement(customIcons[index] as React.ReactElement, {
-        size: iconSize,
+      return React.cloneElement(customIcons[index] as React.ReactElement<any>, {
         className: cn('transition-colors duration-200', {
-          'text-primary': filled && iconType === 'star',
-          'text-primary': filled && iconType === 'heart',
-          'text-primary': filled && iconType === 'thumbs',
+          'text-primary': filled,
           'text-warm-gray': !filled,
         }),
+        style: { fontSize: iconSize, width: iconSize, height: iconSize },
       });
     }
     
     const iconProps = {
-      size: iconSize,
+      size: iconSize >= 32 ? "xl" as const : iconSize >= 24 ? "lg" as const : "md" as const,
       className: cn('transition-colors duration-200', {
-        'text-primary': filled && iconType === 'star',
-        'text-primary': filled && iconType === 'heart', 
-        'text-primary': filled && iconType === 'thumbs',
+        'text-primary': filled && (iconType === 'star' || iconType === 'heart' || iconType === 'thumbs'),
         'text-warm-gray': !filled,
       }),
     };
@@ -355,10 +351,10 @@ export function SwipeRating({
         {/* Swipe Indicator */}
         {enableSwipe && (
           <div className="pointer-events-none absolute inset-0 flex items-center justify-between px-2">
-            <Icon size={16} className="text-warm-gray/50">
+            <Icon size="sm" className="text-warm-gray/50">
               <ChevronLeft />
             </Icon>
-            <Icon size={16} className="text-warm-gray/50">
+            <Icon size="sm" className="text-warm-gray/50">
               <ChevronRight />
             </Icon>
           </div>

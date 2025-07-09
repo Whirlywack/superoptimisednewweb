@@ -240,7 +240,7 @@ export function ResponsiveLayout({
   ...props
 }: ResponsiveLayoutProps) {
   if (variant === 'grid') {
-    const cols = breakpoint === 'mobile' 
+    const cols: { mobile: 1 | 2; tablet: 1 | 2 | 3 | 4; desktop: 1 | 2 | 3 | 4 | 5 | 6 } = breakpoint === 'mobile' 
       ? { mobile: 1, tablet: 1, desktop: 2 }
       : breakpoint === 'tablet'
       ? { mobile: 1, tablet: 2, desktop: 3 }
@@ -276,7 +276,7 @@ export function ResponsiveLayout({
   }
 
   if (variant === 'masonry') {
-    const cols = breakpoint === 'mobile' 
+    const cols: { mobile: 1 | 2; tablet: 1 | 2 | 3; desktop: 1 | 2 | 3 | 4 } = breakpoint === 'mobile' 
       ? { mobile: 1, tablet: 1, desktop: 2 }
       : breakpoint === 'tablet'
       ? { mobile: 1, tablet: 2, desktop: 3 }

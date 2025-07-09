@@ -200,7 +200,7 @@ export function ProjectTimeline({
 
               {/* Category tag */}
               {event.category && (
-                <Tag size="xs" variant="secondary">
+                <Tag size="sm" variant="secondary">
                   {event.category}
                 </Tag>
               )}

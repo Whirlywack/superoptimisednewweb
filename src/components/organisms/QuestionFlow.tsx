@@ -305,12 +305,10 @@ export function QuestionFlow({
       case 'multiple-choice':
         return (
           <MultipleChoice
-            questionId={question.id}
-            questionText=""
+            question={question.question}
             options={config.options || []}
             value={value}
             layout={config.layout || 'vertical'}
-            allowMultiple={config.allowMultiple || false}
             onChange={handleAnswerChange}
           />
         );

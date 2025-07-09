@@ -276,7 +276,7 @@ export function TapToRank({
                 disabled={disabled}
                 className="flex items-center gap-1 px-3 py-1 text-sm text-warm-gray transition-colors hover:text-primary"
               >
-                <Icon size={14}>
+                <Icon size="xs">
                   <RotateCcw />
                 </Icon>
                 Reset
@@ -304,7 +304,7 @@ export function TapToRank({
                   {/* Icon */}
                   {item.icon && (
                     <div className="size-6 shrink-0 text-primary">
-                      <Icon size={20}>
+                      <Icon size="md">
                         {item.icon}
                       </Icon>
                     </div>
@@ -341,7 +341,7 @@ export function TapToRank({
                         disabled={disabled || index === 0}
                         className="p-1 text-warm-gray hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
                       >
-                        <Icon size={16}>
+                        <Icon size="sm">
                           <ChevronUp />
                         </Icon>
                       </button>
@@ -354,7 +354,7 @@ export function TapToRank({
                         disabled={disabled || index === rankedItemsData.length - 1}
                         className="p-1 text-warm-gray hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
                       >
-                        <Icon size={16}>
+                        <Icon size="sm">
                           <ChevronDown />
                         </Icon>
                       </button>
@@ -370,7 +370,7 @@ export function TapToRank({
                     disabled={disabled}
                     className="shrink-0 p-1 text-warm-gray transition-colors hover:text-primary"
                   >
-                    <Icon size={16}>
+                    <Icon size="sm">
                       <X />
                     </Icon>
                   </button>
@@ -398,7 +398,7 @@ export function TapToRank({
                 {/* Icon */}
                 {item.icon && (
                   <div className="size-6 shrink-0 text-warm-gray">
-                    <Icon size={20}>
+                    <Icon size="md">
                       {item.icon}
                     </Icon>
                   </div>
@@ -426,7 +426,7 @@ export function TapToRank({
                 
                 {/* Add Button */}
                 <div className="flex size-8 shrink-0 items-center justify-center rounded-full border-2 border-warm-gray transition-colors group-hover:border-primary">
-                  <Icon size={16} className="text-warm-gray group-hover:text-primary">
+                  <Icon size="sm" className="text-warm-gray group-hover:text-primary">
                     <Check />
                   </Icon>
                 </div>

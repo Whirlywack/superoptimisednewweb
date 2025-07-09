@@ -366,11 +366,12 @@ export const contentRouter = createTRPCRouter({
     return safeExecute(async () => {
       try {
         // Get content block statistics
-        const [totalBlocks, activeBlocks, blogPosts, publishedPosts] = await Promise.all([
+        const [totalBlocks, activeBlocks, blogPosts, publishedPosts, draftPosts] = await Promise.all([
           prisma.contentBlock.count(),
           prisma.contentBlock.count({ where: { isActive: true } }),
-          prisma.blogPost.count(),
-          prisma.blogPost.count({ where: { isPublished: true } }),
+          prisma.post.count(),
+          prisma.post.count({ where: { status: "published" } }),
+          prisma.post.count({ where: { status: "draft" } }),
         ]);
 
         // Get recent content activity
@@ -386,14 +387,14 @@ export const contentRouter = createTRPCRouter({
           },
         });
 
-        const recentBlogPosts = await prisma.blogPost.findMany({
+        const recentBlogPosts = await prisma.post.findMany({
           take: 5,
           orderBy: { updatedAt: "desc" },
           select: {
             id: true,
             title: true,
             slug: true,
-            isPublished: true,
+            status: true,
             updatedAt: true,
           },
         });
@@ -403,6 +404,8 @@ export const contentRouter = createTRPCRouter({
           activeBlocks,
           blogPosts,
           publishedPosts,
+          draftPosts,
+          totalViews: 0, // Will be added when analytics are available
           recentActivity: {
             contentBlocks: recentContentBlocks,
             blogPosts: recentBlogPosts,
@@ -414,10 +417,12 @@ export const contentRouter = createTRPCRouter({
         
         // Return fallback data
         return {
-          totalBlocks: 24,
-          activeBlocks: 18,
-          blogPosts: 12,
-          publishedPosts: 8,
+          totalBlocks: 0,
+          activeBlocks: 0,
+          blogPosts: 0,
+          publishedPosts: 0,
+          draftPosts: 0,
+          totalViews: 0,
           recentActivity: {
             contentBlocks: [],
             blogPosts: [],

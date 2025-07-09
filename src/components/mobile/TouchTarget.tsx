@@ -3,12 +3,24 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 
-export interface TouchTargetProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface TouchTargetProps {
   children: React.ReactNode;
   size?: 'sm' | 'md' | 'lg';
   variant?: 'button' | 'link' | 'icon' | 'custom';
   interactive?: boolean;
   className?: string;
+  onClick?: React.MouseEventHandler<HTMLButtonElement | HTMLDivElement>;
+  onMouseDown?: React.MouseEventHandler<HTMLButtonElement | HTMLDivElement>;
+  onMouseUp?: React.MouseEventHandler<HTMLButtonElement | HTMLDivElement>;
+  onTouchStart?: React.TouchEventHandler<HTMLButtonElement | HTMLDivElement>;
+  onTouchEnd?: React.TouchEventHandler<HTMLButtonElement | HTMLDivElement>;
+  style?: React.CSSProperties;
+  id?: string;
+  tabIndex?: number;
+  role?: string;
+  'aria-label'?: string;
+  'aria-describedby'?: string;
+  'data-testid'?: string;
 }
 
 const sizeVariants = {

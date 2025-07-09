@@ -165,9 +165,10 @@ export function QuestionCard({
             </button>
           </div>
           <ProgressIndicator 
-            value={progressPercentage}
+            current={Math.round(progressPercentage)}
+            total={100}
             className="h-2"
-            showLabel={false}
+            showLabels={false}
           />
         </div>
       )}

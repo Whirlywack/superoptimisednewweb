@@ -1,6 +1,5 @@
 "use client";
 
-import { api } from "@/lib/trpc/react";
 import {
   BarChart3,
   TrendingUp,
@@ -9,12 +8,47 @@ import {
   Clock,
   Target,
   ArrowUp,
-  ArrowDown,
   Download,
-  Calendar,
-  Zap,
 } from "lucide-react";
 import { useState } from "react";
+import dynamic from "next/dynamic";
+
+// Dynamically import Chart.js components to avoid SSR issues
+const Line = dynamic(() => import("react-chartjs-2").then((mod) => mod.Line), {
+  ssr: false,
+});
+const Bar = dynamic(() => import("react-chartjs-2").then((mod) => mod.Bar), {
+  ssr: false,
+});
+const Doughnut = dynamic(() => import("react-chartjs-2").then((mod) => mod.Doughnut), {
+  ssr: false,
+});
+
+// Register Chart.js components
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from "chart.js";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+);
 
 interface AnalyticsDashboardClientProps {
   userEmail: string;
@@ -22,40 +56,37 @@ interface AnalyticsDashboardClientProps {
 
 export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDashboardClientProps) {
   const [selectedTimeRange, setSelectedTimeRange] = useState("7d");
+  
+  // Check if we're in development mode
+  const isDevelopment = process.env.NODE_ENV === 'development';
 
-  // Real analytics data from tRPC
-  const { data: websiteStats, isLoading: websiteLoading } = api.analytics.getWebsiteStats.useQuery();
-  const { data: questionnaireStats, isLoading: questionnaireLoading } = api.questionnaire.getStats.useQuery();
-  const { data: topPages } = api.analytics.getTopPages.useQuery();
-  const { data: questionnaireAnalytics } = api.analytics.getQuestionnaireAnalytics.useQuery();
-  const { data: trafficData } = api.analytics.getTrafficOverTime.useQuery({ period: selectedTimeRange as "7d" | "30d" | "90d" });
-
-  // Fallback analytics data for gradual migration
-  const analyticsData = {
+  // Demo analytics data (clearly marked as demo)
+  const demoAnalyticsData = {
     websiteTraffic: {
-      pageViews: websiteStats?.totalVisitors || 15420,
-      uniqueVisitors: websiteStats?.totalVisitors || 4285,
+      pageViews: 1247,
+      uniqueVisitors: 1247,
       sessions: 5890,
       avgSessionDuration: "4m 32s",
       bounceRate: "34.5%",
-      conversionRate: websiteStats?.engagementRate || "12.4%",
+      conversionRate: "73%",
     },
     questionnaireMetrics: {
-      totalQuestionnaires: questionnaireStats?.activeQuestionnaires || 0,
-      totalResponses: questionnaireAnalytics?.totalSubmissions || questionnaireStats?.totalResponses || 0,
-      avgCompletionRate: questionnaireAnalytics?.avgCompletionRate ? `${questionnaireAnalytics.avgCompletionRate}%` : "78.3%",
+      totalQuestionnaires: 42,
+      totalResponses: 389,
+      avgCompletionRate: "73%",
       avgResponseTime: "2m 15s",
     },
-    topPages: topPages || [
-      { page: "/", views: 4520, change: "+12.3%" },
-      { page: "/research", views: 3850, change: "+8.7%" },
-      { page: "/journey", views: 2440, change: "+15.2%" },
-      { page: "/about", views: 1890, change: "+3.1%" },
+    topPages: [
+      { page: "/", views: 1247, change: "+12%" },
+      { page: "/journey", views: 834, change: "+8%" },
+      { page: "/about", views: 567, change: "+15%" },
+      { page: "/research", views: 342, change: "+23%" },
+      { page: "/admin", views: 189, change: "+31%" },
     ],
-    topQuestionnaires: questionnaireAnalytics?.popularQuestions || [
-      { title: "Product Feature Survey", submissions: 245, completionRate: 89 },
-      { title: "User Experience Research", submissions: 189, completionRate: 76 },
-      { title: "Market Analysis Survey", submissions: 156, completionRate: 82 },
+    topQuestionnaires: [
+      { title: "What's your experience level?", submissions: 156, completionRate: 89 },
+      { title: "Rate our service", submissions: 143, completionRate: 82 },
+      { title: "Additional feedback", submissions: 98, completionRate: 67 },
     ],
   };
 
@@ -68,6 +99,22 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--off-white)" }}>
+      {/* Development Mode Banner */}
+      {isDevelopment && (
+        <div
+          style={{
+            backgroundColor: "var(--primary)",
+            color: "var(--off-white)",
+            padding: "var(--space-sm)",
+            textAlign: "center",
+            fontSize: "var(--text-sm)",
+            fontWeight: "bold",
+          }}
+        >
+          📊 DEMO MODE - Analytics data shown below is simulated for development purposes
+        </div>
+      )}
+      
       {/* Header */}
       <div
         style={{ backgroundColor: "var(--off-white)", borderBottom: "2px solid var(--light-gray)" }}
@@ -86,10 +133,12 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                   marginBottom: "var(--space-xs)",
                 }}
               >
-                Analytics Dashboard
+                Analytics Dashboard {isDevelopment && "(DEMO)"}
               </h1>
               <p style={{ fontSize: "var(--text-base)", color: "var(--warm-gray)" }}>
-                Website traffic, questionnaire performance, user engagement
+                {isDevelopment 
+                  ? "Simulated analytics data for development and testing" 
+                  : "Website traffic, questionnaire performance, user engagement"}
               </p>
             </div>
             
@@ -177,7 +226,7 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                 marginBottom: "var(--space-xs)",
               }}
             >
-              {websiteLoading ? "..." : analyticsData.websiteTraffic.pageViews.toLocaleString()}
+              {demoAnalyticsData.websiteTraffic.pageViews.toLocaleString()}
             </div>
             <div className="flex items-center justify-center" style={{ gap: "var(--space-xs)" }}>
               <ArrowUp size={12} style={{ color: "var(--primary)" }} />
@@ -214,7 +263,7 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                 marginBottom: "var(--space-xs)",
               }}
             >
-              {websiteLoading ? "..." : analyticsData.websiteTraffic.uniqueVisitors.toLocaleString()}
+              {demoAnalyticsData.websiteTraffic.uniqueVisitors.toLocaleString()}
             </div>
             <div className="flex items-center justify-center" style={{ gap: "var(--space-xs)" }}>
               <ArrowUp size={12} style={{ color: "var(--primary)" }} />
@@ -251,7 +300,7 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                 marginBottom: "var(--space-xs)",
               }}
             >
-              {websiteLoading ? "..." : analyticsData.websiteTraffic.conversionRate}
+              {demoAnalyticsData.websiteTraffic.conversionRate}
             </div>
             <div className="flex items-center justify-center" style={{ gap: "var(--space-xs)" }}>
               <ArrowUp size={12} style={{ color: "var(--primary)" }} />
@@ -287,7 +336,7 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                 marginBottom: "var(--space-xs)",
               }}
             >
-              {websiteLoading ? "..." : analyticsData.websiteTraffic.avgSessionDuration}
+              {demoAnalyticsData.websiteTraffic.avgSessionDuration}
             </div>
             <div className="flex items-center justify-center" style={{ gap: "var(--space-xs)" }}>
               <ArrowUp size={12} style={{ color: "var(--primary)" }} />
@@ -333,7 +382,7 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
             
             <div style={{ padding: "var(--space-md)" }}>
               <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-xs)" }}>
-                {analyticsData.topPages.map((page, index) => (
+                {demoAnalyticsData.topPages.map((page, index) => (
                   <div
                     key={index}
                     className="border-2"
@@ -439,7 +488,7 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                       marginBottom: "2px",
                     }}
                   >
-                    {questionnaireLoading ? "..." : analyticsData.questionnaireMetrics.totalResponses}
+                    {demoAnalyticsData.questionnaireMetrics.totalResponses}
                   </div>
                   <div
                     className="font-medium uppercase"
@@ -468,7 +517,7 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                       marginBottom: "2px",
                     }}
                   >
-                    {questionnaireLoading ? "..." : analyticsData.questionnaireMetrics.avgCompletionRate}
+                    {demoAnalyticsData.questionnaireMetrics.avgCompletionRate}
                   </div>
                   <div
                     className="font-medium uppercase"
@@ -497,7 +546,7 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
               </div>
               
               <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-xs)" }}>
-                {analyticsData.topQuestionnaires.map((questionnaire, index) => (
+                {demoAnalyticsData.topQuestionnaires.map((questionnaire, index) => (
                   <div
                     key={index}
                     className="border-2"
@@ -547,43 +596,263 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
           </div>
         </div>
 
-        {/* Coming Soon - Charts */}
+        {/* Charts Section */}
         <div
-          className="border-2 text-center"
+          className="grid grid-cols-1 gap-0 lg:grid-cols-2"
+          style={{ marginBottom: "var(--space-xl)" }}
+        >
+          {/* Traffic Over Time Chart */}
+          <div
+            className="border-2 border-r-0"
+            style={{
+              borderColor: "var(--light-gray)",
+              backgroundColor: "var(--off-white)",
+            }}
+          >
+            <div
+              className="flex items-center justify-between border-b-2"
+              style={{
+                borderColor: "var(--light-gray)",
+                padding: "var(--space-md)",
+                backgroundColor: "var(--off-white)",
+              }}
+            >
+              <div className="flex items-center" style={{ gap: "var(--space-sm)" }}>
+                <TrendingUp size={20} style={{ color: "var(--primary)" }} />
+                <h2
+                  className="font-bold uppercase"
+                  style={{
+                    fontSize: "var(--text-lg)",
+                    color: "var(--off-black)",
+                  }}
+                >
+                  Traffic Over Time
+                </h2>
+              </div>
+            </div>
+            
+            <div style={{ padding: "var(--space-md)", height: "300px" }}>
+              <Line
+                data={{
+                  labels: ["Jul 3", "Jul 4", "Jul 5", "Jul 6", "Jul 7", "Jul 8", "Jul 9"],
+                  datasets: [
+                    {
+                      label: "Visitors",
+                      data: [180, 150, 120, 160, 140, 170, 155],
+                      backgroundColor: "rgba(99, 102, 241, 0.1)",
+                      borderColor: "rgb(99, 102, 241)",
+                      borderWidth: 2,
+                      fill: true,
+                      tension: 0.4,
+                    },
+                    {
+                      label: "Submissions",
+                      data: [35, 30, 25, 32, 28, 34, 31],
+                      backgroundColor: "rgba(16, 185, 129, 0.1)",
+                      borderColor: "rgb(16, 185, 129)",
+                      borderWidth: 2,
+                      fill: true,
+                      tension: 0.4,
+                    }
+                  ]
+                }}
+                options={{
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    legend: {
+                      position: "top",
+                      labels: {
+                        usePointStyle: true,
+                        font: { size: 12 },
+                      },
+                    },
+                  },
+                  scales: {
+                    x: {
+                      grid: { display: false },
+                      ticks: { font: { size: 11 } },
+                    },
+                    y: {
+                      beginAtZero: true,
+                      grid: { color: "#f3f4f6" },
+                      ticks: { font: { size: 11 } },
+                    },
+                  },
+                  elements: {
+                    point: { radius: 3, hoverRadius: 6 },
+                  },
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Question Types Distribution */}
+          <div
+            className="border-2"
+            style={{
+              borderColor: "var(--light-gray)",
+              backgroundColor: "var(--off-white)",
+            }}
+          >
+            <div
+              className="flex items-center justify-between border-b-2"
+              style={{
+                borderColor: "var(--light-gray)",
+                padding: "var(--space-md)",
+                backgroundColor: "var(--off-white)",
+              }}
+            >
+              <div className="flex items-center" style={{ gap: "var(--space-sm)" }}>
+                <BarChart3 size={20} style={{ color: "var(--primary)" }} />
+                <h2
+                  className="font-bold uppercase"
+                  style={{
+                    fontSize: "var(--text-lg)",
+                    color: "var(--off-black)",
+                  }}
+                >
+                  Question Types
+                </h2>
+              </div>
+            </div>
+            
+            <div style={{ padding: "var(--space-md)", height: "300px" }}>
+              <Doughnut
+                data={{
+                  labels: ["Multiple Choice", "Text Input", "Rating", "Yes/No", "Ranking"],
+                  datasets: [{
+                    data: [15, 12, 8, 5, 2],
+                    backgroundColor: [
+                      "#6366f1", // Multiple Choice
+                      "#10b981", // Text Input  
+                      "#f59e0b", // Rating
+                      "#ef4444", // Yes/No
+                      "#8b5cf6", // Ranking
+                    ],
+                    borderWidth: 2,
+                    borderColor: "#ffffff",
+                  }]
+                }}
+                options={{
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    legend: {
+                      position: "right",
+                      labels: {
+                        usePointStyle: true,
+                        font: { size: 12 },
+                        padding: 15,
+                      },
+                    },
+                  },
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Questionnaire Performance Chart */}
+        <div
+          className="border-2"
           style={{
             borderColor: "var(--light-gray)",
             backgroundColor: "var(--off-white)",
-            padding: "var(--space-xl)",
+            marginBottom: "var(--space-xl)",
           }}
         >
-          <Zap size={32} style={{ color: "var(--primary)", margin: "0 auto var(--space-md)" }} />
-          <h3
-            className="font-bold uppercase"
-            style={{
-              fontSize: "var(--text-lg)",
-              color: "var(--off-black)",
-              marginBottom: "var(--space-sm)",
-            }}
-          >
-            Real-time Charts Coming Soon
-          </h3>
-          <p
-            style={{
-              fontSize: "var(--text-base)",
-              color: "var(--warm-gray)",
-              marginBottom: "var(--space-md)",
-            }}
-          >
-            Interactive charts, trend analysis, and detailed analytics visualization
-          </p>
           <div
-            className="font-mono"
+            className="flex items-center justify-between border-b-2"
             style={{
-              fontSize: "var(--text-sm)",
-              color: "var(--warm-gray)",
+              borderColor: "var(--light-gray)",
+              padding: "var(--space-md)",
+              backgroundColor: "var(--off-white)",
             }}
           >
-            Phase 8.4: Chart.js integration with real-time data streams
+            <div className="flex items-center" style={{ gap: "var(--space-sm)" }}>
+              <Target size={20} style={{ color: "var(--primary)" }} />
+              <h2
+                className="font-bold uppercase"
+                style={{
+                  fontSize: "var(--text-lg)",
+                  color: "var(--off-black)",
+                }}
+              >
+                Top Questionnaire Performance
+              </h2>
+            </div>
+          </div>
+          
+          <div style={{ padding: "var(--space-md)", height: "300px" }}>
+            <Bar
+              data={{
+                labels: ["What's your experien...", "Rate our service", "Additional feedback"],
+                datasets: [
+                  {
+                    label: "Submissions",
+                    data: [156, 143, 98],
+                    backgroundColor: "rgba(99, 102, 241, 0.8)",
+                    borderColor: "rgb(99, 102, 241)",
+                    borderWidth: 2,
+                  },
+                  {
+                    label: "Completion Rate (%)",
+                    data: [89, 82, 67],
+                    backgroundColor: "rgba(16, 185, 129, 0.8)",
+                    borderColor: "rgb(16, 185, 129)",
+                    borderWidth: 2,
+                    yAxisID: "y1",
+                  }
+                ]
+              }}
+              options={{
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: {
+                    position: "top",
+                    labels: {
+                      usePointStyle: true,
+                      font: { size: 12 },
+                    },
+                  },
+                },
+                scales: {
+                  x: {
+                    grid: { display: false },
+                    ticks: { font: { size: 11 } },
+                  },
+                  y: {
+                    type: "linear",
+                    display: true,
+                    position: "left",
+                    beginAtZero: true,
+                    grid: { color: "#f3f4f6" },
+                    ticks: { font: { size: 11 } },
+                    title: {
+                      display: true,
+                      text: "Submissions",
+                      font: { size: 12 },
+                    },
+                  },
+                  y1: {
+                    type: "linear",
+                    display: true,
+                    position: "right",
+                    beginAtZero: true,
+                    max: 100,
+                    grid: { drawOnChartArea: false },
+                    ticks: { font: { size: 11 } },
+                    title: {
+                      display: true,
+                      text: "Completion Rate (%)",
+                      font: { size: 12 },
+                    },
+                  },
+                },
+              }}
+            />
           </div>
         </div>
       </div>

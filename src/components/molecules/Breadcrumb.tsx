@@ -10,7 +10,7 @@ interface BreadcrumbItem {
   current?: boolean;
 }
 
-interface BreadcrumbProps extends React.HTMLAttributes<HTMLNavElement> {
+interface BreadcrumbProps extends React.HTMLAttributes<HTMLElement> {
   items: BreadcrumbItem[];
   showHome?: boolean;
   homeHref?: string;

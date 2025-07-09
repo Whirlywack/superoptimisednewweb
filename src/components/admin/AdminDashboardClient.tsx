@@ -12,7 +12,6 @@ import {
   Zap,
   Eye,
   Edit,
-  Copy,
 } from "lucide-react";
 
 interface AdminDashboardClientProps {
@@ -28,24 +27,11 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
       limit: 4,
     });
 
-  // Real analytics data from tRPC
+  // Real data from tRPC APIs
   const { data: analyticsData, isLoading: analyticsLoading } = api.analytics.getWebsiteStats.useQuery();
-  const { data: _topPages } = api.analytics.getTopPages.useQuery();
   const { data: questionnaireAnalytics } = api.analytics.getQuestionnaireAnalytics.useQuery();
-
-  // Mock content templates
-  const contentTemplates = [
-    { 
-      id: "blog-post", 
-      title: "Blog Post", 
-      description: "Standard article format",
-    },
-    { 
-      id: "case-study", 
-      title: "Case Study", 
-      description: "Project showcase format",
-    },
-  ];
+  const { data: contentStats } = api.content.getContentStats.useQuery();
+  const { data: blogPosts } = api.blog.getBlogPosts.useQuery({ limit: 3 });
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--off-white)" }}>
@@ -598,7 +584,7 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
                       marginBottom: "2px",
                     }}
                   >
-                    4m 32s
+                    {analyticsLoading ? "..." : contentStats?.blogPosts || 0}
                   </div>
                   <div
                     className="font-medium uppercase"
@@ -608,7 +594,7 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
                       letterSpacing: "0.05em",
                     }}
                   >
-                    Avg Session
+                    Total Posts
                   </div>
                 </div>
               </div>
@@ -627,11 +613,8 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
               </div>
               
               <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-xs)" }}>
-                {(questionnaireAnalytics?.popularQuestions || [
-                  { title: "Product Feature Survey", submissions: 210, completionRate: 89 },
-                  { title: "User Experience Research", submissions: 180, completionRate: 76 },
-                  { title: "Market Analysis Survey", submissions: 120, completionRate: 82 },
-                ]).slice(0, 3).map((item, index) => (
+                {questionnaireAnalytics?.popularQuestions?.length ? (
+                  questionnaireAnalytics.popularQuestions.slice(0, 3).map((item, index) => (
                   <div
                     key={index}
                     className="border-2"
@@ -664,7 +647,7 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
                               color: "var(--warm-gray)",
                             }}
                           >
-                            {item.submissions || (item as any).views || 0} {item.submissions ? 'responses' : 'views'}
+                            {item.submissions} responses
                           </span>
                           <span
                             style={{
@@ -675,14 +658,21 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
                               padding: "2px var(--space-xs)",
                             }}
                           >
-                            {item.completionRate ? `${item.completionRate}%` : (item as any).completion || "N/A"}
+                            {item.completionRate}%
                           </span>
                         </div>
                       </div>
                       <Eye size={14} style={{ color: "var(--warm-gray)" }} />
                     </div>
                   </div>
-                ))}
+                  ))
+                ) : (
+                  <div className="py-4 text-center">
+                    <div style={{ color: "var(--warm-gray)", fontSize: "var(--text-sm)" }}>
+                      No questionnaire data yet
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -730,68 +720,72 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
             </div>
             
             <div style={{ padding: "var(--space-md)" }}>
-              {/* Post Templates */}
+              {/* Content Stats */}
               <div
-                className="font-medium uppercase"
+                className="grid grid-cols-2 gap-0"
                 style={{
-                  fontSize: "var(--text-xs)",
-                  color: "var(--warm-gray)",
-                  marginBottom: "var(--space-sm)",
-                  letterSpacing: "0.05em",
+                  border: "2px solid var(--light-gray)",
+                  marginBottom: "var(--space-md)",
                 }}
               >
-                Post Templates
-              </div>
-              
-              <div style={{ marginBottom: "var(--space-md)" }}>
-                {contentTemplates.map((template) => (
+                <div
+                  className="border-r-2 text-center"
+                  style={{
+                    borderColor: "var(--light-gray)",
+                    backgroundColor: "var(--off-white)",
+                    padding: "var(--space-sm)",
+                  }}
+                >
                   <div
-                    key={template.id}
-                    className="border-2 border-b-0 last:border-b-2"
+                    className="font-bold"
                     style={{
-                      borderColor: "var(--light-gray)",
-                      backgroundColor: "var(--off-white)",
-                      padding: "var(--space-sm)",
+                      fontSize: "var(--text-base)",
+                      color: "var(--off-black)",
+                      marginBottom: "2px",
                     }}
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <h3
-                          className="font-medium"
-                          style={{
-                            fontSize: "var(--text-sm)",
-                            color: "var(--off-black)",
-                            marginBottom: "2px",
-                          }}
-                        >
-                          {template.title}
-                        </h3>
-                        <div
-                          style={{
-                            fontSize: "var(--text-xs)",
-                            color: "var(--warm-gray)",
-                          }}
-                        >
-                          {template.description}
-                        </div>
-                      </div>
-                      <button
-                        className="flex items-center transition-colors"
-                        style={{
-                          fontSize: "var(--text-xs)",
-                          color: "var(--off-white)",
-                          backgroundColor: "var(--off-black)",
-                          padding: "var(--space-xs)",
-                          border: "2px solid var(--off-black)",
-                          cursor: "pointer",
-                          gap: "var(--space-xs)",
-                        }}
-                      >
-                        <Copy size={12} />
-                      </button>
-                    </div>
+                    {contentStats?.blogPosts || 0}
                   </div>
-                ))}
+                  <div
+                    className="font-medium uppercase"
+                    style={{
+                      fontSize: "var(--text-xs)",
+                      color: "var(--warm-gray)",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
+                    Total Posts
+                  </div>
+                </div>
+                
+                <div
+                  className="text-center"
+                  style={{
+                    backgroundColor: "var(--off-white)",
+                    padding: "var(--space-sm)",
+                  }}
+                >
+                  <div
+                    className="font-bold"
+                    style={{
+                      fontSize: "var(--text-base)",
+                      color: "var(--primary)",
+                      marginBottom: "2px",
+                    }}
+                  >
+                    {contentStats?.publishedPosts || 0}
+                  </div>
+                  <div
+                    className="font-medium uppercase"
+                    style={{
+                      fontSize: "var(--text-xs)",
+                      color: "var(--warm-gray)",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
+                    Published
+                  </div>
+                </div>
               </div>
               
               {/* Recent Posts */}
@@ -808,62 +802,85 @@ export function AdminDashboardClient({ userEmail: _userEmail }: AdminDashboardCl
               </div>
               
               <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-xs)" }}>
-                {[
-                  { title: "Building Better User Surveys", status: "Published", date: "2d ago" },
-                  { title: "Analytics Deep Dive", status: "Draft", date: "1w ago" },
-                ].map((post, index) => (
-                  <div
-                    key={index}
-                    className="border-2"
-                    style={{
-                      borderColor: "var(--light-gray)",
-                      backgroundColor: "var(--off-white)",
-                      padding: "var(--space-sm)",
-                    }}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <h3
-                          style={{
-                            fontSize: "var(--text-sm)",
-                            fontWeight: "bold",
-                            color: "var(--off-black)",
-                            marginBottom: "2px",
-                          }}
-                        >
-                          {post.title.length > 16 ? post.title.substring(0, 16) + "..." : post.title}
-                        </h3>
-                        <div
-                          className="flex items-center"
-                          style={{ gap: "var(--space-sm)" }}
-                        >
-                          <span
+                {blogPosts?.posts?.length ? (
+                  blogPosts.posts.map((post) => (
+                    <div
+                      key={post.id}
+                      className="border-2"
+                      style={{
+                        borderColor: "var(--light-gray)",
+                        backgroundColor: "var(--off-white)",
+                        padding: "var(--space-sm)",
+                      }}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <h3
                             style={{
-                              fontSize: "var(--text-xs)",
+                              fontSize: "var(--text-sm)",
                               fontWeight: "bold",
-                              color: post.status === 'Published' ? "var(--primary)" : "var(--warm-gray)",
-                              backgroundColor: "var(--light-gray)",
-                              padding: "2px var(--space-xs)",
-                              textTransform: "uppercase",
+                              color: "var(--off-black)",
+                              marginBottom: "2px",
                             }}
                           >
-                            {post.status}
-                          </span>
-                          <span
-                            className="font-mono"
-                            style={{
-                              fontSize: "var(--text-xs)",
-                              color: "var(--warm-gray)",
-                            }}
+                            {post.title.length > 16 ? post.title.substring(0, 16) + "..." : post.title}
+                          </h3>
+                          <div
+                            className="flex items-center"
+                            style={{ gap: "var(--space-sm)" }}
                           >
-                            {post.date}
-                          </span>
+                            <span
+                              style={{
+                                fontSize: "var(--text-xs)",
+                                fontWeight: "bold",
+                                color: post.status === 'published' ? "var(--primary)" : "var(--warm-gray)",
+                                backgroundColor: "var(--light-gray)",
+                                padding: "2px var(--space-xs)",
+                                textTransform: "uppercase",
+                              }}
+                            >
+                              {post.status}
+                            </span>
+                            <span
+                              className="font-mono"
+                              style={{
+                                fontSize: "var(--text-xs)",
+                                color: "var(--warm-gray)",
+                              }}
+                            >
+                              {new Date(post.createdAt).toLocaleDateString()}
+                            </span>
+                          </div>
                         </div>
+                        <Link
+                          href={`/admin/posts/${post.id}`}
+                          style={{ color: "var(--warm-gray)" }}
+                        >
+                          <Edit size={14} />
+                        </Link>
                       </div>
-                      <Edit size={14} style={{ color: "var(--warm-gray)" }} />
                     </div>
+                  ))
+                ) : (
+                  <div className="py-4 text-center">
+                    <div style={{ color: "var(--warm-gray)", fontSize: "var(--text-sm)" }}>
+                      No blog posts yet
+                    </div>
+                    <Link
+                      href="/admin/posts/new"
+                      className="mt-2 inline-flex items-center font-medium transition-colors"
+                      style={{
+                        fontSize: "var(--text-xs)",
+                        color: "var(--primary)",
+                        textDecoration: "none",
+                        gap: "var(--space-xs)",
+                      }}
+                    >
+                      <Plus size={12} />
+                      Create First Post
+                    </Link>
                   </div>
-                ))}
+                )}
               </div>
             </div>
           </div>

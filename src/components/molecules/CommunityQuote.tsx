@@ -4,7 +4,7 @@ import { Paragraph, MonoText } from "@/components/ui/Typography";
 import { LucideIcon } from "@/components/ui/Icon";
 import { Quote } from "lucide-react";
 
-interface CommunityQuoteProps extends React.HTMLAttributes<HTMLBlockquoteElement> {
+interface CommunityQuoteProps extends React.HTMLAttributes<HTMLElement> {
   quote: string;
   author: string;
   role?: string;

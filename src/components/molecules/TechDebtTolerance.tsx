@@ -12,7 +12,7 @@ import {
   Shield,
   TrendingUp,
   TrendingDown,
-  Balance
+  Scale as Balance
 } from 'lucide-react';
 
 export type ToleranceLevel = 'low' | 'medium' | 'high';

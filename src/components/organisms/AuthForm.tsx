@@ -5,7 +5,7 @@ import { LucideIcon } from "@/components/ui/Icon";
 import { Link } from "@/components/ui/Typography";
 import { Eye, EyeOff, Mail, Lock, ArrowRight, Check, AlertCircle } from "lucide-react";
 
-interface AuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
+interface AuthFormProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onSubmit'> {
   mode?: "signin" | "signup" | "magic-link" | "reset-password";
   onSubmit?: (data: AuthFormData) => void | Promise<void>;
   onModeChange?: (mode: string) => void;

@@ -39,7 +39,7 @@ interface FormField {
   placeholder?: string;
 }
 
-interface ContactSectionProps extends React.HTMLAttributes<HTMLElement> {
+interface ContactSectionProps extends Omit<React.HTMLAttributes<HTMLElement>, 'onSubmit'> {
   title?: string;
   description?: string;
   contactMethods?: ContactMethod[];

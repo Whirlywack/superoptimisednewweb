@@ -73,7 +73,8 @@ export function DualInteractivePolls() {
     const options = poll.question.questionData?.options || [];
     if (optionIndex >= options.length) return;
 
-    const selectedOption = options[optionIndex];
+    const option = options[optionIndex];
+    const selectedOption = typeof option === 'string' ? option : option?.label || option?.text || String(option);
 
     try {
       // Mark as voted locally first (optimistic update)
@@ -205,8 +206,10 @@ function PollWidget({ poll, onVote, onShare }: PollWidgetProps) {
 
       {/* Options */}
       <div className="mb-8 flex gap-4">
-        {options.map((option: string, index: number) => {
-          const isSelected = poll.selectedOption === option;
+        {options.map((option: any, index: number) => {
+          // Handle both string and object option formats
+          const optionText = typeof option === 'string' ? option : option?.label || option?.text || String(option);
+          const isSelected = poll.selectedOption === optionText;
 
           return (
             <button
@@ -223,7 +226,7 @@ function PollWidget({ poll, onVote, onShare }: PollWidgetProps) {
                 hasVoted && !isSelected && "opacity-50"
               )}
             >
-              {option}
+              {optionText}
             </button>
           );
         })}

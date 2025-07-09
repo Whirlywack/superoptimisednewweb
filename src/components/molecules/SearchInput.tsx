@@ -97,7 +97,7 @@ export function SearchInput({
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
-          variant={variant}
+          variant={variant === "outline" ? "default" : variant}
           size={size}
           className={cn(
             "pl-10",

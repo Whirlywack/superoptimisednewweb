@@ -331,7 +331,7 @@ export function OneHandedInput({
       label: isVoiceActive ? 'Stop recording' : 'Voice input',
       onClick: handleVoiceToggle,
       active: isVoiceActive,
-      variant: (isVoiceActive ? 'danger' : 'default') as const,
+      variant: isVoiceActive ? 'danger' as const : 'default' as const,
     }] : []),
     ...(type === 'password' ? [{
       id: 'toggle-password',
@@ -357,8 +357,8 @@ export function OneHandedInput({
             "mb-3 rounded-lg px-4 py-2 text-sm",
             {
               'bg-primary/10 text-primary dark:bg-primary/10 dark:text-primary': validationState === 'success',
-              'bg-light-gray text-warm-gray dark:bg-gray-800 dark:text-warm-gray': validationState === 'warning',
-              'bg-light-gray text-warm-gray dark:bg-gray-800 dark:text-warm-gray': validationState === 'error',
+              'bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400': validationState === 'warning',
+              'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400': validationState === 'error',
             }
           )}>
             {validationMessage}
@@ -386,16 +386,16 @@ export function OneHandedInput({
                       "flex items-center justify-center rounded-lg transition-colors",
                       sizeStyles.button,
                       {
-                        'bg-primary text-white': action.active,
+                        'bg-primary text-white': action.active && (!action.variant || action.variant === 'default'),
                         'text-warm-gray hover:text-primary hover:bg-primary/10': !action.active && !action.disabled,
                         'opacity-50 cursor-not-allowed': action.disabled || disabled,
-                        'bg-warm-gray text-white': action.variant === 'danger' && action.active,
-                        'bg-primary text-white': action.variant === 'success' && action.active,
+                        'bg-red-500 text-white': action.variant === 'danger' && action.active,
+                        'bg-green-500 text-white': action.variant === 'success' && action.active,
                       }
                     )}
                     title={action.label}
                   >
-                    <Icon size={sizeStyles.iconSize}>
+                    <Icon size={sizeStyles.iconSize >= 22 ? "lg" : "md"}>
                       {action.icon}
                     </Icon>
                   </button>
@@ -456,7 +456,7 @@ export function OneHandedInput({
                   )}
                   title="Clear input"
                 >
-                  <Icon size={16}>
+                  <Icon size="sm">
                     <X />
                   </Icon>
                 </button>
@@ -477,7 +477,7 @@ export function OneHandedInput({
                   )}
                   title={`${submitText} (Enter)`}
                 >
-                  <Icon size={sizeStyles.iconSize}>
+                  <Icon size={sizeStyles.iconSize >= 22 ? "lg" : "md"}>
                     <Send />
                   </Icon>
                 </button>
@@ -499,8 +499,8 @@ export function OneHandedInput({
             
             {showCounter && (
               <span className={cn({
-                'text-warm-gray': maxLength && currentValue.length > maxLength * 0.9,
-                'text-warm-gray': maxLength && currentValue.length > maxLength * 0.75,
+                'text-red-500': maxLength && currentValue.length > maxLength * 0.9,
+                'text-yellow-500': maxLength && currentValue.length > maxLength * 0.75 && currentValue.length <= maxLength * 0.9,
               })}>
                 {currentValue.length}{maxLength && ` / ${maxLength}`}
               </span>

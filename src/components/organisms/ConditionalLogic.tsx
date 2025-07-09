@@ -56,7 +56,7 @@ export interface ConditionalResults {
   /** Computed CSS classes from active rules */
   computedClasses: string;
   /** Computed styles from active rules */
-  computedStyles: React.CSSProperties;
+  computedStyles: React.CSSProperties | undefined;
   /** Check if a specific condition is met */
   isConditionMet: (condition: Condition) => boolean;
   /** Get all rules affecting a specific field */
@@ -209,7 +209,7 @@ export function ConditionalLogic({
   }
   
   return (
-    <div className={cn("conditional-logic", results.computedClasses, className)} style={results.computedStyles}>
+    <div className={cn("conditional-logic", results.computedClasses, className)} style={results.computedStyles || {}}>
       {children(results)}
     </div>
   );

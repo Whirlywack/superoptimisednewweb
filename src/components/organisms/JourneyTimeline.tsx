@@ -260,12 +260,12 @@ export function JourneyTimeline({
               {showTags && post.tags && post.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {post.tags.slice(0, variant === "compact" ? 2 : 3).map(tag => (
-                    <Tag key={tag} size="xs" variant="secondary">
+                    <Tag key={tag} size="sm" variant="secondary">
                       {tag}
                     </Tag>
                   ))}
                   {post.tags.length > 3 && variant !== "compact" && (
-                    <Tag size="xs" variant="secondary">
+                    <Tag size="sm" variant="secondary">
                       +{post.tags.length - 3}
                     </Tag>
                   )}
@@ -275,13 +275,13 @@ export function JourneyTimeline({
               {/* Engagement */}
               {showEngagement && (post.engagementCount || post.responseCount) && (
                 <div className="flex items-center gap-3 text-xs text-warm-gray">
-                  {post.engagementCount > 0 && (
+                  {(post.engagementCount || 0) > 0 && (
                     <div className="flex items-center gap-1">
                       <LucideIcon icon={Heart} size="xs" />
                       <span>{post.engagementCount}</span>
                     </div>
                   )}
-                  {post.responseCount > 0 && (
+                  {(post.responseCount || 0) > 0 && (
                     <div className="flex items-center gap-1">
                       <LucideIcon icon={MessageCircle} size="xs" />
                       <span>{post.responseCount}</span>

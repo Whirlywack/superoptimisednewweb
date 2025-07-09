@@ -10,7 +10,6 @@ import {
   Save, 
   X, 
   Menu,
-  ChevronLeft,
   RotateCcw
 } from 'lucide-react';
 
@@ -182,10 +181,11 @@ export function ProgressHeader({
                   </div>
                   
                   <ProgressIndicator
-                    value={calculatedPercentage}
+                    current={Math.round(calculatedPercentage)}
+                    total={100}
                     className="h-2"
-                    variant={hasErrors ? "error" : "default"}
-                    showLabel={false}
+                    variant={hasErrors ? "minimal" : "line"}
+                    showLabels={false}
                   />
 
                   {/* Quick Stats */}

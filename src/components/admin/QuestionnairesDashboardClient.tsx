@@ -15,7 +15,6 @@ import {
   Settings,
   Zap,
   Search,
-  Filter,
 } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";

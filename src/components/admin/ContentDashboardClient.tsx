@@ -6,13 +6,10 @@ import {
   Plus,
   Edit,
   Eye,
-  Calendar,
-  Tag,
   Copy,
   Upload,
   Settings,
   Search,
-  Filter,
   MoreHorizontal,
   ExternalLink,
 } from "lucide-react";
@@ -32,73 +29,30 @@ export function ContentDashboardClient({ userEmail: _userEmail }: ContentDashboa
     page: 1,
     limit: 10,
     postType: "blog",
+    status: undefined, // Get all posts (published and draft)
   });
   const { data: contentStats, isLoading: statsLoading } = api.content.getContentStats.useQuery();
   const { data: contentTemplates } = api.content.getContentTemplates.useQuery();
 
-  // Fallback content data for gradual migration
+  // Real content data from database
   const contentData = {
     stats: {
-      totalPosts: contentStats?.blogPosts || 24,
-      draftPosts: (contentStats?.blogPosts || 24) - (contentStats?.publishedPosts || 18),
-      publishedPosts: contentStats?.publishedPosts || 18,
-      totalViews: 15420, // Will be replaced with analytics data
+      blogPosts: contentStats?.blogPosts || 0,
+      draftPosts: contentStats?.draftPosts || 0,
+      publishedPosts: contentStats?.publishedPosts || 0,
+      totalViews: contentStats?.totalViews || 0,
     },
-    contentTemplates: contentTemplates?.templates || [
-      { 
-        id: "blog-post", 
-        title: "Blog Post", 
-        description: "Standard blog article with SEO optimization",
-        category: "blog",
-      },
-      { 
-        id: "case-study", 
-        title: "Case Study", 
-        description: "Project showcase with problem-solution format",
-        category: "project",
-      },
-      { 
-        id: "tutorial", 
-        title: "Tutorial", 
-        description: "Step-by-step technical guide",
-        category: "education",
-      },
-      { 
-        id: "announcement", 
-        title: "Announcement", 
-        description: "Product updates and feature releases",
-        category: "news",
-      },
-    ],
+    contentTemplates: contentTemplates?.templates || [],
     recentPosts: blogPosts?.posts.map(post => ({
       id: post.id,
       title: post.title,
       status: post.publishedAt ? "published" : "draft",
-      author: post.author?.name || "Admin",
+      author: post.author?.name || "Unknown",
       publishedAt: post.publishedAt ? post.publishedAt.toISOString().split('T')[0] : undefined,
       updatedAt: !post.publishedAt ? post.updatedAt.toISOString().split('T')[0] : undefined,
-      views: Math.floor(Math.random() * 2000) + 100, // Placeholder - will be replaced with analytics
+      views: 0, // Will be replaced with real analytics when available
       category: post.postType || "blog",
-    })) || [
-      {
-        id: "1",
-        title: "Building Better User Surveys with tRPC",
-        status: "published",
-        author: "Admin",
-        publishedAt: "2024-01-15",
-        views: 1240,
-        category: "tutorial",
-      },
-      {
-        id: "2", 
-        title: "Analytics Deep Dive: Understanding User Behavior",
-        status: "draft",
-        author: "Admin",
-        updatedAt: "2024-01-12",
-        views: 0,
-        category: "analysis",
-      },
-    ],
+    })) || [],
   };
 
   const filters = [
@@ -110,6 +64,7 @@ export function ContentDashboardClient({ userEmail: _userEmail }: ContentDashboa
 
   const filteredPosts = contentData.recentPosts.filter(post => {
     if (selectedFilter === "all") return true;
+    if (selectedFilter === "scheduled") return false; // No scheduled posts yet
     return post.status === selectedFilter;
   });
 
@@ -205,7 +160,7 @@ export function ContentDashboardClient({ userEmail: _userEmail }: ContentDashboa
                 marginBottom: "var(--space-xs)",
               }}
             >
-              {statsLoading ? "..." : contentData.stats.totalPosts}
+              {statsLoading ? "..." : contentData.stats.blogPosts}
             </div>
             <div
               className="font-medium uppercase"

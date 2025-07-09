@@ -197,12 +197,12 @@ export function FeatureGrid({
         {showTags && feature.tags && feature.tags.length > 0 && (
           <div className="flex flex-wrap gap-1">
             {feature.tags.slice(0, 3).map((tag) => (
-              <Tag key={tag} size="xs" variant="secondary">
+              <Tag key={tag} size="sm" variant="secondary">
                 {tag}
               </Tag>
             ))}
             {feature.tags.length > 3 && (
-              <Tag size="xs" variant="secondary">
+              <Tag size="sm" variant="secondary">
                 +{feature.tags.length - 3}
               </Tag>
             )}

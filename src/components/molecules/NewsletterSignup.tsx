@@ -7,7 +7,7 @@ import { LucideIcon } from "@/components/ui/Icon";
 import { Mail, Check } from "lucide-react";
 import { api } from "@/lib/trpc/react";
 
-interface NewsletterSignupProps extends React.HTMLAttributes<HTMLDivElement> {
+interface NewsletterSignupProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onSubmit'> {
   variant?: "card" | "inline" | "banner";
   title?: string;
   description?: string;
