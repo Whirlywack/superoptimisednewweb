@@ -207,12 +207,69 @@
 - ✅ **Task 8.1.3**: Add admin user seeding to database seed script
 - ✅ **Task 8.1.4**: Create admin login flow and session management
 
-### 8.2 Question Management Interface
+### 8.2 Question Management Interface ✅ COMPLETED
 
-- **Task 8.2.1**: Create question list page with filtering and sorting
-- **Task 8.2.2**: Add "New Question" form with all question type support
-- **Task 8.2.3**: Implement question activate/deactivate toggle controls
-- **Task 8.2.4**: Add question scheduling interface (start/end dates)
+- ✅ **Task 8.2.1**: Create question list page with filtering and sorting
+- ✅ **Task 8.2.2**: Add "New Question" form with all question type support
+- ✅ **Task 8.2.3**: Implement question activate/deactivate toggle controls
+- ✅ **Task 8.2.4**: Add question scheduling interface (start/end dates)
+
+### 8.2.5 Questionnaire Builder Foundation (High Priority - Foundation-First Strategy)
+
+**Critical Issues Identified:**
+
+- 🔴 Questionnaire builder UI exists but creates poor user experience
+- 🔴 185 actions needed for 10 questions using current individual workflow
+- 🔴 No templates integration - Templates exist but not connected to UI
+- 🔴 No question duplication - Must configure each question from scratch
+
+**Phase 1: Quick Wins + Questionnaire Foundation (2-3 weeks)**
+
+**Priority 1: Fix Questionnaire Builder (High Impact)**
+
+- **Task 8.2.5.1**: Connect questionnaire UI to backend - Make the existing UI actually functional
+- **Task 8.2.5.2**: Improve question modal - Add full configuration support for all question types
+- **Task 8.2.5.3**: Integrate templates - Connect the existing templates to the UI
+
+**Priority 2: Efficiency Improvements (High ROI)**
+
+- **Task 8.2.5.4**: Add question duplication - Copy/paste questions to reduce repetitive work
+- **Task 8.2.5.5**: Better question type selector - Visual cards instead of dropdown
+- **Task 8.2.5.6**: Question templates - Pre-configured common questions
+
+**Expected Result:** 10-question questionnaire creation drops from 185 actions to ~25 actions
+
+**Phase 2: Enhanced User Experience (2-3 weeks)**
+
+**Priority 1: Visual Improvements**
+
+- **Task 8.2.5.7**: Drag & drop interface - Visual question ordering in questionnaires
+- **Task 8.2.5.8**: Live preview - See questionnaire as users will experience it
+- **Task 8.2.5.9**: Smart defaults - Pre-fill common configurations
+
+**Priority 2: Bulk Operations**
+
+- **Task 8.2.5.10**: Multi-select questions - Bulk edit, duplicate, or organize questions
+- **Task 8.2.5.11**: Import/export - Share questionnaire templates
+- **Task 8.2.5.12**: Advanced filtering - Find questions quickly in large databases
+
+**Phase 3: AI-Powered Features (3-4 weeks)**
+
+**Priority 1: AI Question Generation**
+
+- **Task 8.2.5.13**: Integrate OpenAI API for question suggestions - AI-powered question generation based on context
+- **Task 8.2.5.14**: Smart question recommendations - Suggest related questions based on existing questionnaire content
+- **Task 8.2.5.15**: Question improvement suggestions - AI feedback on question clarity and effectiveness
+- **Task 8.2.5.16**: Auto-generate question options - AI-powered option generation for multi-choice questions
+
+**Priority 2: Intelligent Workflows**
+
+- **Task 8.2.5.17**: Smart questionnaire templates - AI-generated templates based on research goals
+- **Task 8.2.5.18**: Question flow optimization - AI suggestions for optimal question ordering
+- **Task 8.2.5.19**: Content analysis - AI-powered insights on question quality and bias detection
+- **Task 8.2.5.20**: Automated tagging - AI-powered categorization and tagging of questions
+
+**Expected Result:** AI-assisted questionnaire creation with intelligent suggestions and optimization
 
 ### 8.3 Analytics Dashboard
 
