@@ -51,12 +51,12 @@ function QuestionConfigurationPanel({
       return (
         <div className="space-y-4">
           <div className="font-mono text-sm font-medium" style={{ color: "var(--off-black)" }}>
-            BINARY_OPTIONS
+            Binary Options
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="mb-2 block font-mono text-xs" style={{ color: "var(--warm-gray)" }}>
-                OPTION_A
+                Option A
               </label>
               <input
                 type="text"
@@ -74,7 +74,7 @@ function QuestionConfigurationPanel({
             </div>
             <div>
               <label className="mb-2 block font-mono text-xs" style={{ color: "var(--warm-gray)" }}>
-                OPTION_B
+                Option B
               </label>
               <input
                 type="text"
@@ -100,7 +100,7 @@ function QuestionConfigurationPanel({
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="font-mono text-sm font-medium" style={{ color: "var(--off-black)" }}>
-              CHOICE_OPTIONS
+              Choice Options
             </div>
             <button
               type="button"
@@ -111,7 +111,7 @@ function QuestionConfigurationPanel({
                 color: "var(--off-white)",
               }}
             >
-              ADD_OPTION
+              Add Option
             </button>
           </div>
           <div className="space-y-2">
@@ -146,7 +146,7 @@ function QuestionConfigurationPanel({
           </div>
           <div>
             <label className="mb-2 block font-mono text-xs" style={{ color: "var(--warm-gray)" }}>
-              MAX_SELECTIONS
+              Max Selections
             </label>
             <input
               type="number"
@@ -170,12 +170,12 @@ function QuestionConfigurationPanel({
       return (
         <div className="space-y-4">
           <div className="font-mono text-sm font-medium" style={{ color: "var(--off-black)" }}>
-            RATING_SCALE
+            Rating Scale
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="mb-2 block font-mono text-xs" style={{ color: "var(--warm-gray)" }}>
-                SCALE_MAX
+                Scale Max
               </label>
               <select
                 value={(config.scale as number) || 5}
@@ -194,7 +194,7 @@ function QuestionConfigurationPanel({
             </div>
             <div>
               <label className="mb-2 block font-mono text-xs" style={{ color: "var(--warm-gray)" }}>
-                DISPLAY_TYPE
+                Display Type
               </label>
               <select
                 value={(config.variant as string) || "numbers"}
@@ -216,7 +216,7 @@ function QuestionConfigurationPanel({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="mb-2 block font-mono text-xs" style={{ color: "var(--warm-gray)" }}>
-                MIN_LABEL
+                Min Label
               </label>
               <input
                 type="text"
@@ -238,7 +238,7 @@ function QuestionConfigurationPanel({
             </div>
             <div>
               <label className="mb-2 block font-mono text-xs" style={{ color: "var(--warm-gray)" }}>
-                MAX_LABEL
+                Max Label
               </label>
               <input
                 type="text"
@@ -266,12 +266,12 @@ function QuestionConfigurationPanel({
       return (
         <div className="space-y-4">
           <div className="font-mono text-sm font-medium" style={{ color: "var(--off-black)" }}>
-            TEXT_CONFIG
+            Text Configuration
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="mb-2 block font-mono text-xs" style={{ color: "var(--warm-gray)" }}>
-                MAX_LENGTH
+                Max Length
               </label>
               <input
                 type="number"
@@ -296,13 +296,13 @@ function QuestionConfigurationPanel({
                   onChange={(e) => updateConfig({ multiline: e.target.checked })}
                   className="mr-2"
                 />
-                <span style={{ color: "var(--off-black)" }}>MULTILINE</span>
+                <span style={{ color: "var(--off-black)" }}>Multiline</span>
               </label>
             </div>
           </div>
           <div>
             <label className="mb-2 block font-mono text-xs" style={{ color: "var(--warm-gray)" }}>
-              PLACEHOLDER
+              Placeholder
             </label>
             <input
               type="text"
@@ -327,7 +327,7 @@ function QuestionConfigurationPanel({
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="font-mono text-sm font-medium" style={{ color: "var(--off-black)" }}>
-              RANKING_ITEMS
+              Ranking Items
             </div>
             <button
               type="button"
@@ -338,7 +338,7 @@ function QuestionConfigurationPanel({
                 color: "var(--off-white)",
               }}
             >
-              ADD_ITEM
+              Add Item
             </button>
           </div>
           <div className="space-y-2">
@@ -381,12 +381,12 @@ function QuestionConfigurationPanel({
       return (
         <div className="space-y-4">
           <div className="font-mono text-sm font-medium" style={{ color: "var(--off-black)" }}>
-            AB_TEST_OPTIONS
+            A/B Test Options
           </div>
           <div className="space-y-4">
             <div>
               <label className="mb-2 block font-mono text-xs" style={{ color: "var(--warm-gray)" }}>
-                OPTION_A_TITLE
+                Option A_TITLE
               </label>
               <input
                 type="text"
@@ -431,7 +431,7 @@ function QuestionConfigurationPanel({
             </div>
             <div>
               <label className="mb-2 block font-mono text-xs" style={{ color: "var(--warm-gray)" }}>
-                OPTION_B_TITLE
+                Option B_TITLE
               </label>
               <input
                 type="text"
@@ -670,7 +670,7 @@ export default function NewQuestionnairePage() {
               style={{ borderColor: "var(--primary)" }}
             ></div>
             <p className="font-mono text-sm" style={{ color: "var(--warm-gray)" }}>
-              LOADING_TEMPLATE...
+              Loading Template...
             </p>
           </div>
         </div>
@@ -694,7 +694,7 @@ export default function NewQuestionnairePage() {
                 className="font-mono text-3xl font-bold uppercase tracking-wide"
                 style={{ color: "var(--off-white)" }}
               >
-                CREATE_QUESTIONNAIRE
+                Create Questionnaire
               </h1>
               <p className="mt-1 font-mono text-sm" style={{ color: "var(--warm-gray)" }}>
                 Build a multi-question survey for your research
@@ -709,7 +709,7 @@ export default function NewQuestionnairePage() {
                   color: "var(--off-white)",
                 }}
               >
-                USE_TEMPLATE
+                Use Template
               </Link>
               <button
                 type="button"
@@ -722,7 +722,7 @@ export default function NewQuestionnairePage() {
                   /* Save as draft */
                 }}
               >
-                SAVE_DRAFT
+                Save Draft
               </button>
               <button
                 type="button"
@@ -735,7 +735,7 @@ export default function NewQuestionnairePage() {
                   /* Publish */
                 }}
               >
-                PUBLISH
+                Publish
               </button>
             </div>
           </div>
@@ -756,7 +756,7 @@ export default function NewQuestionnairePage() {
             >
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="font-mono text-lg font-medium" style={{ color: "var(--off-black)" }}>
-                  QUESTIONNAIRE_DETAILS
+                  Questionnaire Details
                 </h2>
                 {searchParams.get("template") && (
                   <span
@@ -766,7 +766,7 @@ export default function NewQuestionnairePage() {
                       color: "var(--off-white)",
                     }}
                   >
-                    FROM_TEMPLATE
+                    From Template
                   </span>
                 )}
               </div>
@@ -776,7 +776,7 @@ export default function NewQuestionnairePage() {
                     className="mb-1 block font-mono text-sm font-medium"
                     style={{ color: "var(--off-black)" }}
                   >
-                    TITLE *
+                    Title *
                   </label>
                   <input
                     type="text"
@@ -799,7 +799,7 @@ export default function NewQuestionnairePage() {
                     className="mb-1 block font-mono text-sm font-medium"
                     style={{ color: "var(--off-black)" }}
                   >
-                    DESCRIPTION
+                    Description
                   </label>
                   <textarea
                     value={questionnaire.description}
@@ -822,7 +822,7 @@ export default function NewQuestionnairePage() {
                     className="mb-1 block font-mono text-sm font-medium"
                     style={{ color: "var(--off-black)" }}
                   >
-                    CATEGORY
+                    Category
                   </label>
                   <select
                     value={questionnaire.category}
@@ -860,7 +860,7 @@ export default function NewQuestionnairePage() {
                     className="font-mono text-lg font-medium"
                     style={{ color: "var(--off-black)" }}
                   >
-                    QUESTIONS ({questionnaire.questions.length})
+                    Questions ({questionnaire.questions.length})
                   </h2>
                   <button
                     type="button"
@@ -871,7 +871,7 @@ export default function NewQuestionnairePage() {
                       color: "var(--off-white)",
                     }}
                   >
-                    ADD_QUESTION
+                    Add Question
                   </button>
                 </div>
               </div>
@@ -1032,7 +1032,7 @@ export default function NewQuestionnairePage() {
                 className="font-mono font-bold uppercase tracking-wide"
                 style={{ color: "var(--off-white)" }}
               >
-                QUESTION_EDITOR
+                Question Editor
               </div>
             </div>
 
@@ -1044,7 +1044,7 @@ export default function NewQuestionnairePage() {
                     className="mb-2 block font-mono text-sm font-medium"
                     style={{ color: "var(--off-black)" }}
                   >
-                    QUESTION_TYPE
+                    Question Type
                   </label>
                   <select
                     value={editingQuestion?.type || "binary"}
@@ -1075,7 +1075,7 @@ export default function NewQuestionnairePage() {
                     className="mb-2 block font-mono text-sm font-medium"
                     style={{ color: "var(--off-black)" }}
                   >
-                    QUESTION_TEXT *
+                    Question Text *
                   </label>
                   <input
                     type="text"
@@ -1102,7 +1102,7 @@ export default function NewQuestionnairePage() {
                     className="mb-2 block font-mono text-sm font-medium"
                     style={{ color: "var(--off-black)" }}
                   >
-                    DESCRIPTION
+                    Description
                   </label>
                   <textarea
                     value={editingQuestion?.description || ""}
@@ -1146,7 +1146,7 @@ export default function NewQuestionnairePage() {
                       }
                       className="mr-3 size-4"
                     />
-                    <span style={{ color: "var(--off-black)" }}>REQUIRED_QUESTION</span>
+                    <span style={{ color: "var(--off-black)" }}>Required Question</span>
                   </label>
                 </div>
               </div>
@@ -1165,7 +1165,7 @@ export default function NewQuestionnairePage() {
                     color: "var(--off-white)",
                   }}
                 >
-                  CANCEL
+                  Cancel
                 </button>
                 <button
                   type="button"
@@ -1176,7 +1176,7 @@ export default function NewQuestionnairePage() {
                     color: "var(--off-white)",
                   }}
                 >
-                  SAVE_QUESTION
+                  Save Question
                 </button>
               </div>
             </div>
