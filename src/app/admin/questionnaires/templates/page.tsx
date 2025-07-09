@@ -39,6 +39,7 @@ function TemplatePreviewModal({
               </div>
             </div>
             <button
+              type="button"
               onClick={onClose}
               className="text-2xl font-light text-gray-400 hover:text-gray-600"
             >
@@ -109,12 +110,14 @@ function TemplatePreviewModal({
         <div className="border-t border-gray-200 bg-gray-50 px-6 py-4">
           <div className="flex justify-end space-x-3">
             <button
+              type="button"
               onClick={onClose}
               className="rounded-md border border-gray-300 bg-white px-4 py-2 text-gray-700 transition-colors hover:bg-gray-50"
             >
               Close
             </button>
             <button
+              type="button"
               onClick={() => onUseTemplate(template)}
               className="rounded-md bg-blue-600 px-6 py-2 text-white transition-colors hover:bg-blue-700"
             >
@@ -192,6 +195,7 @@ export default function TemplateGalleryPage() {
               </p>
             </div>
             <button
+              type="button"
               onClick={handleStartFromScratch}
               className="rounded-md bg-gray-600 px-4 py-2 text-white transition-colors hover:bg-gray-700"
             >
@@ -231,6 +235,7 @@ export default function TemplateGalleryPage() {
                   return (
                     <button
                       key={category.id}
+                      type="button"
                       onClick={() => setSelectedCategory(category.id)}
                       className={`border-b-2 px-1 py-2 text-sm font-medium transition-colors ${
                         isActive
@@ -309,12 +314,14 @@ export default function TemplateGalleryPage() {
                 {/* Card Actions */}
                 <div className="flex items-center justify-between bg-gray-50 px-6 py-4">
                   <button
+                    type="button"
                     onClick={() => handlePreviewTemplate(template)}
                     className="text-sm text-gray-600 transition-colors hover:text-gray-800"
                   >
                     Preview
                   </button>
                   <button
+                    type="button"
                     onClick={() => handleUseTemplate(template)}
                     className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white transition-colors hover:bg-blue-700"
                   >
@@ -335,6 +342,7 @@ export default function TemplateGalleryPage() {
               Try adjusting your search or category filter, or start with a blank questionnaire.
             </p>
             <button
+              type="button"
               onClick={handleStartFromScratch}
               className="rounded-md bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
             >
