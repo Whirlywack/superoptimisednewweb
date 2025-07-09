@@ -901,44 +901,50 @@ export default function NewQuestionnairePage() {
         </div>
       )}
 
-      {/* Terminal-style Header */}
+      {/* Clean Header */}
       <div
-        className="border-b-2"
+        className="border-b"
         style={{
-          backgroundColor: "var(--off-black)",
-          borderColor: "var(--off-black)",
+          backgroundColor: "var(--off-white)",
+          borderColor: "var(--light-gray)",
         }}
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between py-6">
             <div>
-              <div className="mb-2 font-mono text-sm" style={{ color: "var(--primary)" }}>
-                $ admin/questionnaires/new --create
-              </div>
-              <h1
-                className="font-mono text-3xl font-bold uppercase tracking-wide"
-                style={{ color: "var(--off-white)" }}
-              >
+              <nav className="mb-2 flex space-x-4 text-sm" style={{ color: "var(--warm-gray)" }}>
+                <Link href="/admin" className="hover:opacity-75">
+                  Admin
+                </Link>
+                <span>/</span>
+                <Link href="/admin/questionnaires" className="hover:opacity-75">
+                  Questionnaires
+                </Link>
+                <span>/</span>
+                <span style={{ color: "var(--off-black)" }}>New</span>
+              </nav>
+              <h1 className="text-3xl font-bold" style={{ color: "var(--off-black)" }}>
                 Create Questionnaire
               </h1>
-              <p className="mt-1 font-mono text-sm" style={{ color: "var(--warm-gray)" }}>
+              <p className="mt-1 text-sm" style={{ color: "var(--warm-gray)" }}>
                 Build a multi-question survey for your research
               </p>
             </div>
             <div className="flex space-x-4">
               <Link
                 href="/admin/questionnaires/templates"
-                className="inline-flex items-center px-4 py-2 font-mono text-sm font-medium transition-colors hover:opacity-90"
+                className="inline-flex items-center px-4 py-2 text-sm font-medium transition-colors hover:opacity-75"
                 style={{
-                  backgroundColor: "var(--off-black)",
-                  color: "var(--off-white)",
+                  backgroundColor: "var(--off-white)",
+                  color: "var(--off-black)",
+                  border: "2px solid var(--off-black)",
                 }}
               >
                 Use Template
               </Link>
               <button
                 type="button"
-                className="px-4 py-2 font-mono text-sm font-medium transition-colors hover:opacity-90"
+                className="px-4 py-2 text-sm font-medium transition-colors hover:opacity-90"
                 style={{
                   backgroundColor: "var(--warm-gray)",
                   color: "var(--off-white)",
@@ -951,7 +957,7 @@ export default function NewQuestionnairePage() {
               </button>
               <button
                 type="button"
-                className="px-4 py-2 font-mono text-sm font-medium transition-colors hover:opacity-90"
+                className="px-4 py-2 text-sm font-medium transition-colors hover:opacity-90"
                 style={{
                   backgroundColor: "var(--off-black)",
                   color: "var(--off-white)",
