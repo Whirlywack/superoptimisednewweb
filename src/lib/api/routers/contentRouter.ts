@@ -604,4 +604,100 @@ export const contentRouter = createTRPCRouter({
         return { success: true };
       }, "deleteProjectStat");
     }),
+
+  // Content Block CRUD operations
+  getAllContentBlocks: publicProcedure.query(async () => {
+    return safeExecute(async () => {
+      const contentBlocks = await prisma.contentBlock.findMany({
+        orderBy: [{ pageKey: "asc" }, { blockKey: "asc" }],
+      });
+
+      return {
+        blocks: contentBlocks,
+        totalBlocks: contentBlocks.length,
+        lastUpdated: new Date(),
+      };
+    }, "getAllContentBlocks");
+  }),
+
+  createContentBlock: publicProcedure
+    .input(
+      z.object({
+        pageKey: z.string().min(1).max(100),
+        blockKey: z.string().min(1).max(100),
+        contentType: z.enum(["markdown", "html", "text", "tsx"]),
+        content: z.string().min(1),
+        isActive: z.boolean().default(true),
+      })
+    )
+    .mutation(async ({ input }) => {
+      return safeExecute(async () => {
+        const contentBlock = await prisma.contentBlock.create({
+          data: {
+            pageKey: input.pageKey,
+            blockKey: input.blockKey,
+            contentType: input.contentType,
+            content: input.content,
+            isActive: input.isActive,
+          },
+        });
+
+        return contentBlock;
+      }, "createContentBlock");
+    }),
+
+  updateContentBlock: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        pageKey: z.string().min(1).max(100).optional(),
+        blockKey: z.string().min(1).max(100).optional(),
+        contentType: z.enum(["markdown", "html", "text", "tsx"]).optional(),
+        content: z.string().min(1).optional(),
+        isActive: z.boolean().optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      return safeExecute(async () => {
+        const { id, ...updateData } = input;
+
+        const contentBlock = await prisma.contentBlock.update({
+          where: { id },
+          data: {
+            ...updateData,
+            updatedAt: new Date(),
+          },
+        });
+
+        return contentBlock;
+      }, "updateContentBlock");
+    }),
+
+  deleteContentBlock: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input }) => {
+      return safeExecute(async () => {
+        await prisma.contentBlock.delete({
+          where: { id: input.id },
+        });
+
+        return { success: true };
+      }, "deleteContentBlock");
+    }),
+
+  toggleContentBlockStatus: publicProcedure
+    .input(z.object({ id: z.string(), isActive: z.boolean() }))
+    .mutation(async ({ input }) => {
+      return safeExecute(async () => {
+        const contentBlock = await prisma.contentBlock.update({
+          where: { id: input.id },
+          data: {
+            isActive: input.isActive,
+            updatedAt: new Date(),
+          },
+        });
+
+        return contentBlock;
+      }, "toggleContentBlockStatus");
+    }),
 });

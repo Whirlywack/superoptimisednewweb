@@ -21,7 +21,7 @@ interface ContentBlock {
   id: string;
   pageKey: string;
   blockKey: string;
-  contentType: "markdown" | "html" | "text";
+  contentType: "markdown" | "html" | "text" | "tsx";
   content: string;
   isActive: boolean;
   version: number;
@@ -43,7 +43,7 @@ export function ContentBlockEditor({ userEmail }: ContentBlockEditorProps) {
   const [selectedPage, setSelectedPage] = useState<string>("all");
   const [editingBlock, setEditingBlock] = useState<string | null>(null);
   const [editContent, setEditContent] = useState<string>("");
-  const [editContentType, setEditContentType] = useState<"markdown" | "html" | "text">("markdown");
+  const [editContentType, setEditContentType] = useState<"markdown" | "html" | "text" | "tsx">("markdown");
   const [changeReason, setChangeReason] = useState<string>("");
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showVersionHistory, setShowVersionHistory] = useState<string | null>(null);
@@ -58,10 +58,9 @@ export function ContentBlockEditor({ userEmail }: ContentBlockEditorProps) {
   });
 
   // tRPC queries and mutations
-  const { data: contentBlocks, refetch: refetchBlocks } = api.content.getAllContentBlocks.useQuery({
-    pageKey: selectedPage === "all" ? undefined : selectedPage,
-    includeInactive: true,
-  });
+  const { data: contentData, refetch: refetchBlocks } = api.content.getAllContentBlocks.useQuery();
+  
+  const contentBlocks = contentData?.blocks || [];
 
   const { data: versions } = api.content.getContentVersions.useQuery(
     { contentBlockId: showVersionHistory || "" },
@@ -99,7 +98,6 @@ export function ContentBlockEditor({ userEmail }: ContentBlockEditorProps) {
 
   // Get unique page keys for filter
   const pageKeys = React.useMemo(() => {
-    if (!contentBlocks) return [];
     return [...new Set(contentBlocks.map((block) => block.pageKey))].sort();
   }, [contentBlocks]);
 
@@ -117,8 +115,6 @@ export function ContentBlockEditor({ userEmail }: ContentBlockEditorProps) {
       id: editingBlock,
       content: editContent,
       contentType: editContentType,
-      changeReason: changeReason || "Content update",
-      createdBy: userEmail,
     });
   };
 
@@ -131,15 +127,12 @@ export function ContentBlockEditor({ userEmail }: ContentBlockEditorProps) {
   const handleCreateBlock = async () => {
     if (!newBlock.pageKey || !newBlock.blockKey || !newBlock.content) return;
 
-    await createBlockMutation.mutateAsync({
-      ...newBlock,
-      createdBy: userEmail,
-    });
+    await createBlockMutation.mutateAsync(newBlock);
   };
 
   const handleDeleteBlock = async (blockId: string) => {
-    if (confirm("Are you sure you want to deactivate this content block?")) {
-      await deleteBlockMutation.mutateAsync({ id: blockId, permanent: false });
+    if (confirm("Are you sure you want to delete this content block?")) {
+      await deleteBlockMutation.mutateAsync({ id: blockId });
     }
   };
 
@@ -155,6 +148,8 @@ export function ContentBlockEditor({ userEmail }: ContentBlockEditorProps) {
         return <Code size={16} />;
       case "text":
         return <Type size={16} />;
+      case "tsx":
+        return <Code size={16} />;
       default:
         return <FileText size={16} />;
     }
@@ -314,13 +309,14 @@ export function ContentBlockEditor({ userEmail }: ContentBlockEditorProps) {
                         <select
                           value={editContentType}
                           onChange={(e) =>
-                            setEditContentType(e.target.value as "markdown" | "html" | "text")
+                            setEditContentType(e.target.value as "markdown" | "html" | "text" | "tsx")
                           }
                           className="border-2 border-light-gray bg-off-white px-3 py-2 font-mono text-sm"
                         >
                           <option value="markdown">Markdown</option>
                           <option value="html">HTML</option>
                           <option value="text">Text</option>
+                          <option value="tsx">TSX/React</option>
                         </select>
                       </div>
                       <div>
@@ -498,7 +494,7 @@ export function ContentBlockEditor({ userEmail }: ContentBlockEditorProps) {
                   onChange={(e) =>
                     setNewBlock({
                       ...newBlock,
-                      contentType: e.target.value as "markdown" | "html" | "text",
+                      contentType: e.target.value as "markdown" | "html" | "text" | "tsx",
                     })
                   }
                   className="border-2 border-light-gray bg-off-white px-3 py-2 font-mono text-sm"
@@ -506,6 +502,7 @@ export function ContentBlockEditor({ userEmail }: ContentBlockEditorProps) {
                   <option value="markdown">Markdown</option>
                   <option value="html">HTML</option>
                   <option value="text">Text</option>
+                  <option value="tsx">TSX/React</option>
                 </select>
               </div>
               <div>

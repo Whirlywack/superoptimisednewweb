@@ -12,19 +12,22 @@ import {
   Search,
   MoreHorizontal,
   ExternalLink,
+  Blocks,
 } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
+import { ContentBlockEditor } from "./ContentBlockEditor";
 
 interface ContentDashboardClientProps {
   userEmail: string;
 }
 
-export function ContentDashboardClient({ userEmail: _userEmail }: ContentDashboardClientProps) {
+export function ContentDashboardClient({ userEmail }: ContentDashboardClientProps) {
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [showTemplatePreview, setShowTemplatePreview] = useState(false);
   const [previewTemplate, setPreviewTemplate] = useState<any>(null);
+  const [showContentBlocks, setShowContentBlocks] = useState(false);
 
   // Real content data from tRPC
   const { data: blogPosts, isLoading: postsLoading } = api.blog.getBlogPosts.useQuery({
@@ -672,6 +675,40 @@ export function ContentDashboardClient({ userEmail: _userEmail }: ContentDashboa
                     padding: "var(--space-sm)",
                     cursor: "pointer",
                   }}
+                  onClick={() => setShowContentBlocks(true)}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div
+                        style={{
+                          fontSize: "var(--text-sm)",
+                          fontWeight: "bold",
+                          color: "var(--off-black)",
+                        }}
+                      >
+                        Content Blocks
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "var(--text-xs)",
+                          color: "var(--warm-gray)",
+                        }}
+                      >
+                        Manage page content
+                      </div>
+                    </div>
+                    <Blocks size={16} style={{ color: "var(--warm-gray)" }} />
+                  </div>
+                </button>
+
+                <button
+                  className="border-2 text-left transition-colors"
+                  style={{
+                    borderColor: "var(--light-gray)",
+                    backgroundColor: "var(--off-white)",
+                    padding: "var(--space-sm)",
+                    cursor: "pointer",
+                  }}
                 >
                   <div className="flex items-center justify-between">
                     <div>
@@ -1024,6 +1061,46 @@ export function ContentDashboardClient({ userEmail: _userEmail }: ContentDashboa
                   {previewTemplate.defaultContent}
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Content Block Editor Modal */}
+      {showContentBlocks && (
+        <div
+          className="fixed inset-0 z-50"
+          style={{
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+          }}
+        >
+          <div className="flex h-full flex-col">
+            <div
+              className="flex items-center justify-between"
+              style={{
+                backgroundColor: "var(--off-white)",
+                borderBottom: "2px solid var(--light-gray)",
+                padding: "var(--space-md) var(--space-lg)",
+              }}
+            >
+              <h2
+                className="font-bold uppercase"
+                style={{
+                  fontSize: "var(--text-lg)",
+                  color: "var(--off-black)",
+                }}
+              >
+                Content Block Editor
+              </h2>
+              <button
+                onClick={() => setShowContentBlocks(false)}
+                className="border-2 border-light-gray p-2 text-warm-gray transition-colors hover:border-primary hover:text-off-black"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="flex-1 overflow-hidden">
+              <ContentBlockEditor userEmail={userEmail} />
             </div>
           </div>
         </div>
