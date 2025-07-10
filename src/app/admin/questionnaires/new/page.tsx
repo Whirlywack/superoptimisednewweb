@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { trpc } from "@/lib/trpc/client";
+import { trpc } from "@/lib/trpc/client.ts";
 import {
   ToggleLeft,
   List,
@@ -18,6 +18,10 @@ import {
   Eye,
   Download,
   Upload,
+  Search,
+  Filter,
+  SortAsc,
+  SortDesc,
 } from "lucide-react";
 import type { QuestionnaireTemplate } from "@/lib/questionnaire-templates-detailed";
 
@@ -718,6 +722,14 @@ export default function NewQuestionnairePage() {
   const [selectedQuestions, setSelectedQuestions] = useState<Set<string>>(new Set());
   const [isSelectionMode, setIsSelectionMode] = useState(false);
 
+  // Advanced filtering state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterType, setFilterType] = useState<string>("all");
+  const [filterRequired, setFilterRequired] = useState<string>("all");
+  const [sortBy, setSortBy] = useState<string>("order");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [showFilters, setShowFilters] = useState(false);
+
   // tRPC mutations
   const createQuestionnaireMutation = trpc.questionnaire.create.useMutation();
   const createQuestionMutation = trpc.admin.createQuestion.useMutation();
@@ -1049,6 +1061,79 @@ export default function NewQuestionnairePage() {
     reader.readAsText(file);
     // Reset input value so the same file can be imported again
     event.target.value = "";
+  };
+
+  // Advanced filtering and sorting functions
+  const getFilteredAndSortedQuestions = () => {
+    let filtered = [...questionnaire.questions];
+
+    // Apply search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (q) =>
+          q.title.toLowerCase().includes(query) ||
+          q.description?.toLowerCase().includes(query) ||
+          q.type.toLowerCase().includes(query)
+      );
+    }
+
+    // Apply type filter
+    if (filterType !== "all") {
+      filtered = filtered.filter((q) => q.type === filterType);
+    }
+
+    // Apply required filter
+    if (filterRequired !== "all") {
+      const isRequired = filterRequired === "required";
+      filtered = filtered.filter((q) => q.required === isRequired);
+    }
+
+    // Apply sorting
+    filtered.sort((a, b) => {
+      let comparison = 0;
+
+      switch (sortBy) {
+        case "title":
+          comparison = a.title.localeCompare(b.title);
+          break;
+        case "type":
+          comparison = a.type.localeCompare(b.type);
+          break;
+        case "required":
+          comparison = a.required === b.required ? 0 : a.required ? -1 : 1;
+          break;
+        case "order":
+        default:
+          // Use original order (index in the original questions array)
+          const aIndex = questionnaire.questions.findIndex((q) => q.id === a.id);
+          const bIndex = questionnaire.questions.findIndex((q) => q.id === b.id);
+          comparison = aIndex - bIndex;
+          break;
+      }
+
+      return sortDirection === "desc" ? -comparison : comparison;
+    });
+
+    return filtered;
+  };
+
+  const clearFilters = () => {
+    setSearchQuery("");
+    setFilterType("all");
+    setFilterRequired("all");
+    setSortBy("order");
+    setSortDirection("asc");
+  };
+
+  const hasActiveFilters = () => {
+    return (
+      searchQuery.trim() !== "" ||
+      filterType !== "all" ||
+      filterRequired !== "all" ||
+      sortBy !== "order" ||
+      sortDirection !== "asc"
+    );
   };
 
   // Load template data from URL parameter
@@ -1725,6 +1810,200 @@ export default function NewQuestionnairePage() {
                 </div>
               </div>
 
+              {/* Advanced Filtering Controls */}
+              {questionnaire.questions.length > 0 && (
+                <div
+                  className="border-b-2 px-6 py-4"
+                  style={{ borderColor: "var(--light-gray)", backgroundColor: "var(--off-white)" }}
+                >
+                  <div className="mb-4 flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Search size={16} style={{ color: "var(--primary)" }} />
+                      <span
+                        className="font-mono text-sm font-medium"
+                        style={{ color: "var(--off-black)" }}
+                      >
+                        Filter & Sort Questions
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowFilters(!showFilters)}
+                      className="flex items-center space-x-1 px-3 py-1 font-mono text-xs transition-colors hover:opacity-75"
+                      style={{
+                        backgroundColor: showFilters ? "var(--primary)" : "var(--light-gray)",
+                        color: showFilters ? "var(--off-white)" : "var(--off-black)",
+                      }}
+                    >
+                      <Filter size={14} />
+                      <span>{showFilters ? "Hide Filters" : "Show Filters"}</span>
+                    </button>
+                  </div>
+
+                  {/* Search Bar */}
+                  <div className="mb-3">
+                    <div className="relative">
+                      <Search
+                        size={16}
+                        className="absolute left-3 top-1/2 -translate-y-1/2"
+                        style={{ color: "var(--warm-gray)" }}
+                      />
+                      <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Search questions by title, description, or type..."
+                        className="w-full border-2 pl-10 font-mono text-sm transition-all duration-200 focus:outline-none"
+                        style={{
+                          borderColor: "var(--light-gray)",
+                          backgroundColor: "var(--off-white)",
+                          color: "var(--off-black)",
+                          padding: "0.5rem 0.75rem 0.5rem 2.5rem",
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Advanced Filters */}
+                  {showFilters && (
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                      {/* Question Type Filter */}
+                      <div>
+                        <label
+                          className="mb-1 block font-mono text-xs"
+                          style={{ color: "var(--warm-gray)" }}
+                        >
+                          Question Type
+                        </label>
+                        <select
+                          value={filterType}
+                          onChange={(e) => setFilterType(e.target.value)}
+                          className="w-full border-2 font-mono text-sm transition-all duration-200 focus:outline-none"
+                          style={{
+                            borderColor: "var(--light-gray)",
+                            backgroundColor: "var(--off-white)",
+                            color: "var(--off-black)",
+                            padding: "0.5rem",
+                          }}
+                        >
+                          <option value="all">All Types</option>
+                          {questionTypes.map((type) => (
+                            <option key={type.id} value={type.id}>
+                              {type.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Required Status Filter */}
+                      <div>
+                        <label
+                          className="mb-1 block font-mono text-xs"
+                          style={{ color: "var(--warm-gray)" }}
+                        >
+                          Required Status
+                        </label>
+                        <select
+                          value={filterRequired}
+                          onChange={(e) => setFilterRequired(e.target.value)}
+                          className="w-full border-2 font-mono text-sm transition-all duration-200 focus:outline-none"
+                          style={{
+                            borderColor: "var(--light-gray)",
+                            backgroundColor: "var(--off-white)",
+                            color: "var(--off-black)",
+                            padding: "0.5rem",
+                          }}
+                        >
+                          <option value="all">All Questions</option>
+                          <option value="required">Required Only</option>
+                          <option value="optional">Optional Only</option>
+                        </select>
+                      </div>
+
+                      {/* Sort By */}
+                      <div>
+                        <label
+                          className="mb-1 block font-mono text-xs"
+                          style={{ color: "var(--warm-gray)" }}
+                        >
+                          Sort By
+                        </label>
+                        <select
+                          value={sortBy}
+                          onChange={(e) => setSortBy(e.target.value)}
+                          className="w-full border-2 font-mono text-sm transition-all duration-200 focus:outline-none"
+                          style={{
+                            borderColor: "var(--light-gray)",
+                            backgroundColor: "var(--off-white)",
+                            color: "var(--off-black)",
+                            padding: "0.5rem",
+                          }}
+                        >
+                          <option value="order">Original Order</option>
+                          <option value="title">Title</option>
+                          <option value="type">Question Type</option>
+                          <option value="required">Required Status</option>
+                        </select>
+                      </div>
+
+                      {/* Sort Direction */}
+                      <div>
+                        <label
+                          className="mb-1 block font-mono text-xs"
+                          style={{ color: "var(--warm-gray)" }}
+                        >
+                          Sort Direction
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => setSortDirection(sortDirection === "asc" ? "desc" : "asc")}
+                          className="flex w-full items-center justify-center space-x-2 border-2 font-mono text-sm transition-all duration-200 hover:opacity-75 focus:outline-none"
+                          style={{
+                            borderColor: "var(--light-gray)",
+                            backgroundColor: "var(--off-white)",
+                            color: "var(--off-black)",
+                            padding: "0.5rem",
+                          }}
+                        >
+                          {sortDirection === "asc" ? (
+                            <>
+                              <SortAsc size={16} />
+                              <span>Ascending</span>
+                            </>
+                          ) : (
+                            <>
+                              <SortDesc size={16} />
+                              <span>Descending</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Filter Status and Clear */}
+                  {hasActiveFilters() && (
+                    <div className="mt-3 flex items-center justify-between">
+                      <span className="font-mono text-xs" style={{ color: "var(--warm-gray)" }}>
+                        {getFilteredAndSortedQuestions().length} of {questionnaire.questions.length}{" "}
+                        questions shown
+                      </span>
+                      <button
+                        type="button"
+                        onClick={clearFilters}
+                        className="px-3 py-1 font-mono text-xs transition-colors hover:opacity-75"
+                        style={{
+                          backgroundColor: "var(--warm-gray)",
+                          color: "var(--off-white)",
+                        }}
+                      >
+                        Clear Filters
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+
               <div className="p-6">
                 {questionnaire.questions.length === 0 ? (
                   <div className="py-12 text-center">
@@ -1750,26 +2029,31 @@ export default function NewQuestionnairePage() {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {questionnaire.questions.map((question, index) => {
+                    {getFilteredAndSortedQuestions().map((question, _filteredIndex) => {
                       const questionType = questionTypes.find((t) => t.id === question.type);
                       const QuestionIcon = (questionType as QuestionType)?.icon || Type;
+                      const originalIndex = questionnaire.questions.findIndex(
+                        (q) => q.id === question.id
+                      );
 
                       return (
                         <div
                           key={question.id}
-                          draggable
+                          draggable={!hasActiveFilters()} // Disable drag when filters are active
                           onDragStart={(e) => handleDragStart(e, question.id)}
-                          onDragOver={(e) => handleDragOver(e, index)}
+                          onDragOver={(e) => handleDragOver(e, originalIndex)}
                           onDragLeave={handleDragLeave}
-                          onDrop={(e) => handleDrop(e, index)}
+                          onDrop={(e) => handleDrop(e, originalIndex)}
                           onDragEnd={handleDragEnd}
-                          className={`cursor-move overflow-hidden border-2 shadow-sm transition-all duration-200 hover:shadow-md ${
+                          className={`${hasActiveFilters() ? "cursor-default" : "cursor-move"} overflow-hidden border-2 shadow-sm transition-all duration-200 hover:shadow-md ${
                             draggedQuestion === question.id ? "scale-95 opacity-50" : ""
-                          } ${dragOverIndex === index ? "scale-105 border-4" : ""}`}
+                          } ${dragOverIndex === originalIndex ? "scale-105 border-4" : ""}`}
                           style={{
                             backgroundColor: "var(--off-white)",
                             borderColor:
-                              dragOverIndex === index ? "var(--primary)" : "var(--light-gray)",
+                              dragOverIndex === originalIndex
+                                ? "var(--primary)"
+                                : "var(--light-gray)",
                           }}
                         >
                           <div className="p-6">
@@ -1798,7 +2082,7 @@ export default function NewQuestionnairePage() {
                                         color: "var(--off-black)",
                                       }}
                                     >
-                                      Q{index + 1}
+                                      Q{originalIndex + 1}
                                     </span>
                                     <span
                                       className="px-2 py-1 font-mono text-xs"
@@ -1838,9 +2122,13 @@ export default function NewQuestionnairePage() {
                               {/* Drag Handle */}
                               <div className="ml-4 flex items-center space-x-2">
                                 <div
-                                  className="cursor-grab p-1 transition-colors hover:opacity-75 active:cursor-grabbing"
+                                  className={`p-1 transition-colors ${hasActiveFilters() ? "cursor-not-allowed opacity-50" : "cursor-grab hover:opacity-75 active:cursor-grabbing"}`}
                                   style={{ color: "var(--warm-gray)" }}
-                                  title="Drag to reorder"
+                                  title={
+                                    hasActiveFilters()
+                                      ? "Clear filters to enable drag and drop"
+                                      : "Drag to reorder"
+                                  }
                                   onMouseDown={(e) => e.stopPropagation()}
                                 >
                                   <GripVertical size={16} />
