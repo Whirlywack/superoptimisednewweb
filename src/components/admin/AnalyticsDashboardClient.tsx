@@ -1,6 +1,17 @@
 "use client";
 
-import { BarChart3, TrendingUp, Users, Eye, Clock, Target, ArrowUp, Download } from "lucide-react";
+import {
+  BarChart3,
+  TrendingUp,
+  Users,
+  Target,
+  ArrowUp,
+  Download,
+  RefreshCw,
+  Activity,
+  Award,
+  Zap,
+} from "lucide-react";
 import { useState } from "react";
 import { api } from "@/lib/trpc/react";
 import dynamic from "next/dynamic";
@@ -58,6 +69,17 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
   });
   const { data: topPages } = api.analytics.getTopPages.useQuery();
 
+  // New real-time voting analytics
+  const { data: votingAnalytics, refetch: refetchVoting } =
+    api.analytics.getVotingAnalytics.useQuery({
+      timeRange: selectedTimeRange as "24h" | "7d" | "30d" | "90d",
+    });
+  const { data: communityEngagement } = api.analytics.getCommunityEngagement.useQuery();
+  const { data: questionPerformance } = api.analytics.getQuestionPerformance.useQuery();
+
+  // Export functionality
+  const exportDataMutation = api.analytics.exportVotingData.useMutation();
+
   // Real analytics data structure
   const analyticsData = {
     websiteTraffic: {
@@ -84,6 +106,36 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
     { id: "30d", label: "30 Days" },
     { id: "90d", label: "90 Days" },
   ];
+
+  // Export handler
+  const handleExport = async () => {
+    try {
+      const result = await exportDataMutation.mutateAsync({
+        format: "csv",
+        timeRange: selectedTimeRange as "24h" | "7d" | "30d" | "90d",
+        includeResponses: true,
+        includeVoterInfo: false,
+      });
+
+      if (result.content && result.filename) {
+        // Create download link
+        const blob = new Blob([result.content], {
+          type: result.format === "csv" ? "text/csv" : "application/json",
+        });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = result.filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      }
+    } catch (error) {
+      console.error("Export failed:", error);
+      alert("Export failed. Please try again.");
+    }
+  };
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--off-white)" }}>
@@ -156,7 +208,25 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
               </div>
 
               <button
-                className="flex items-center font-medium uppercase transition-colors"
+                onClick={() => refetchVoting()}
+                className="flex items-center font-medium uppercase transition-colors hover:bg-gray-200"
+                style={{
+                  fontSize: "var(--text-sm)",
+                  color: "var(--off-black)",
+                  backgroundColor: "var(--light-gray)",
+                  padding: "var(--space-sm) var(--space-md)",
+                  border: "2px solid var(--light-gray)",
+                  gap: "var(--space-xs)",
+                  marginRight: "var(--space-sm)",
+                }}
+              >
+                <RefreshCw size={16} />
+                Refresh
+              </button>
+              <button
+                onClick={handleExport}
+                disabled={exportDataMutation.isPending}
+                className="flex items-center font-medium uppercase transition-colors hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50"
                 style={{
                   fontSize: "var(--text-sm)",
                   color: "var(--off-black)",
@@ -167,7 +237,7 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                 }}
               >
                 <Download size={16} />
-                Export
+                {exportDataMutation.isPending ? "Exporting..." : "Export CSV"}
               </button>
             </div>
           </div>
@@ -178,16 +248,16 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
         className="mx-auto max-w-7xl px-6"
         style={{ paddingTop: "var(--space-lg)", paddingBottom: "var(--space-lg)" }}
       >
-        {/* Key Metrics Grid */}
+        {/* Real-time Voting Metrics Grid */}
         <div
           className="grid gap-0"
           style={{
-            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
             marginBottom: "var(--space-xl)",
             border: "2px solid var(--light-gray)",
           }}
         >
-          {/* Website Traffic */}
+          {/* Total Votes */}
           <div
             className="border-r-2 text-center"
             style={{
@@ -200,7 +270,10 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
               className="flex items-center justify-center"
               style={{ marginBottom: "var(--space-sm)" }}
             >
-              <Eye size={20} style={{ color: "var(--primary)", marginRight: "var(--space-xs)" }} />
+              <Activity
+                size={20}
+                style={{ color: "var(--primary)", marginRight: "var(--space-xs)" }}
+              />
               <span
                 className="font-medium uppercase"
                 style={{
@@ -209,7 +282,7 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                   letterSpacing: "0.05em",
                 }}
               >
-                Page Views
+                Total Votes
               </span>
             </div>
             <div
@@ -220,22 +293,16 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                 marginBottom: "var(--space-xs)",
               }}
             >
-              {analyticsData.websiteTraffic.pageViews.toLocaleString()}
+              {votingAnalytics?.summary.totalVotes.toLocaleString() || "0"}
             </div>
-            {analyticsData.websiteTraffic.pageViews === 0 ? (
-              <div className="flex items-center justify-center" style={{ gap: "var(--space-xs)" }}>
-                <span style={{ fontSize: "var(--text-xs)", color: "var(--warm-gray)" }}>
-                  No data yet
-                </span>
-              </div>
-            ) : (
-              <div className="flex items-center justify-center" style={{ gap: "var(--space-xs)" }}>
-                <ArrowUp size={12} style={{ color: "var(--primary)" }} />
-                <span style={{ fontSize: "var(--text-xs)", color: "var(--primary)" }}>+12.3%</span>
-              </div>
-            )}
+            <div className="flex items-center justify-center" style={{ gap: "var(--space-xs)" }}>
+              <span style={{ fontSize: "var(--text-xs)", color: "var(--warm-gray)" }}>
+                {selectedTimeRange}
+              </span>
+            </div>
           </div>
 
+          {/* Unique Voters */}
           <div
             className="border-r-2 text-center"
             style={{
@@ -260,7 +327,7 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                   letterSpacing: "0.05em",
                 }}
               >
-                Unique Visitors
+                Unique Voters
               </span>
             </div>
             <div
@@ -271,26 +338,106 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                 marginBottom: "var(--space-xs)",
               }}
             >
-              {analyticsData.websiteTraffic.uniqueVisitors.toLocaleString()}
+              {votingAnalytics?.summary.uniqueVoters.toLocaleString() || "0"}
             </div>
-            {analyticsData.websiteTraffic.uniqueVisitors === 0 ? (
-              <div className="flex items-center justify-center" style={{ gap: "var(--space-xs)" }}>
-                <span style={{ fontSize: "var(--text-xs)", color: "var(--warm-gray)" }}>
-                  No data yet
-                </span>
-              </div>
-            ) : (
-              <div className="flex items-center justify-center" style={{ gap: "var(--space-xs)" }}>
-                <ArrowUp size={12} style={{ color: "var(--primary)" }} />
-                <span style={{ fontSize: "var(--text-xs)", color: "var(--primary)" }}>+8.7%</span>
-              </div>
-            )}
+            <div className="flex items-center justify-center" style={{ gap: "var(--space-xs)" }}>
+              <span style={{ fontSize: "var(--text-xs)", color: "var(--warm-gray)" }}>
+                {votingAnalytics?.summary.avgVotesPerHour.toFixed(1) || "0"} votes/hr
+              </span>
+            </div>
           </div>
 
+          {/* Active Users */}
           <div
             className="border-r-2 text-center"
             style={{
               borderColor: "var(--light-gray)",
+              backgroundColor: "var(--off-white)",
+              padding: "var(--space-md)",
+            }}
+          >
+            <div
+              className="flex items-center justify-center"
+              style={{ marginBottom: "var(--space-sm)" }}
+            >
+              <Zap size={20} style={{ color: "var(--primary)", marginRight: "var(--space-xs)" }} />
+              <span
+                className="font-medium uppercase"
+                style={{
+                  fontSize: "var(--text-xs)",
+                  color: "var(--warm-gray)",
+                  letterSpacing: "0.05em",
+                }}
+              >
+                Active Users
+              </span>
+            </div>
+            <div
+              className="font-bold"
+              style={{
+                fontSize: "var(--text-lg)",
+                color: "var(--off-black)",
+                marginBottom: "var(--space-xs)",
+              }}
+            >
+              {communityEngagement?.metrics.totalActiveUsers.toLocaleString() || "0"}
+            </div>
+            <div className="flex items-center justify-center" style={{ gap: "var(--space-xs)" }}>
+              <span style={{ fontSize: "var(--text-xs)", color: "var(--primary)" }}>
+                {communityEngagement?.metrics.retentionRate || 0}% retention
+              </span>
+            </div>
+          </div>
+
+          {/* Average Streak */}
+          <div
+            className="border-r-2 text-center"
+            style={{
+              borderColor: "var(--light-gray)",
+              backgroundColor: "var(--off-white)",
+              padding: "var(--space-md)",
+            }}
+          >
+            <div
+              className="flex items-center justify-center"
+              style={{ marginBottom: "var(--space-sm)" }}
+            >
+              <Award
+                size={20}
+                style={{ color: "var(--primary)", marginRight: "var(--space-xs)" }}
+              />
+              <span
+                className="font-medium uppercase"
+                style={{
+                  fontSize: "var(--text-xs)",
+                  color: "var(--warm-gray)",
+                  letterSpacing: "0.05em",
+                }}
+              >
+                Avg Streak
+              </span>
+            </div>
+            <div
+              className="font-bold"
+              style={{
+                fontSize: "var(--text-lg)",
+                color: "var(--off-black)",
+                marginBottom: "var(--space-xs)",
+              }}
+            >
+              {communityEngagement?.metrics.avgCurrentStreak.toFixed(1) || "0"}
+            </div>
+            <div className="flex items-center justify-center" style={{ gap: "var(--space-xs)" }}>
+              <span style={{ fontSize: "var(--text-xs)", color: "var(--warm-gray)" }}>
+                Max: {communityEngagement?.metrics.longestStreak || 0} days
+              </span>
+            </div>
+          </div>
+
+          {/* Total XP */}
+          <div
+            className="text-center"
+            style={{
               backgroundColor: "var(--off-white)",
               padding: "var(--space-md)",
             }}
@@ -311,7 +458,7 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                   letterSpacing: "0.05em",
                 }}
               >
-                Conversion Rate
+                Total XP
               </span>
             </div>
             <div
@@ -322,53 +469,12 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                 marginBottom: "var(--space-xs)",
               }}
             >
-              {analyticsData.websiteTraffic.conversionRate}
+              {communityEngagement?.metrics.totalXpAwarded.toLocaleString() || "0"}
             </div>
             <div className="flex items-center justify-center" style={{ gap: "var(--space-xs)" }}>
-              <ArrowUp size={12} style={{ color: "var(--primary)" }} />
-              <span style={{ fontSize: "var(--text-xs)", color: "var(--primary)" }}>+2.1%</span>
-            </div>
-          </div>
-
-          <div
-            className="text-center"
-            style={{
-              backgroundColor: "var(--off-white)",
-              padding: "var(--space-md)",
-            }}
-          >
-            <div
-              className="flex items-center justify-center"
-              style={{ marginBottom: "var(--space-sm)" }}
-            >
-              <Clock
-                size={20}
-                style={{ color: "var(--primary)", marginRight: "var(--space-xs)" }}
-              />
-              <span
-                className="font-medium uppercase"
-                style={{
-                  fontSize: "var(--text-xs)",
-                  color: "var(--warm-gray)",
-                  letterSpacing: "0.05em",
-                }}
-              >
-                Avg Session
+              <span style={{ fontSize: "var(--text-xs)", color: "var(--warm-gray)" }}>
+                Last 30 days
               </span>
-            </div>
-            <div
-              className="font-bold"
-              style={{
-                fontSize: "var(--text-lg)",
-                color: "var(--off-black)",
-                marginBottom: "var(--space-xs)",
-              }}
-            >
-              {analyticsData.websiteTraffic.avgSessionDuration}
-            </div>
-            <div className="flex items-center justify-center" style={{ gap: "var(--space-xs)" }}>
-              <ArrowUp size={12} style={{ color: "var(--primary)" }} />
-              <span style={{ fontSize: "var(--text-xs)", color: "var(--primary)" }}>+5.4%</span>
             </div>
           </div>
         </div>
@@ -643,12 +749,12 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
           </div>
         </div>
 
-        {/* Charts Section */}
+        {/* Real-Time Voting Charts Section */}
         <div
           className="grid grid-cols-1 gap-0 lg:grid-cols-2"
           style={{ marginBottom: "var(--space-xl)" }}
         >
-          {/* Traffic Over Time Chart */}
+          {/* Real-Time Voting Activity Chart */}
           <div
             className="border-2 border-r-0"
             style={{
@@ -665,7 +771,7 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
               }}
             >
               <div className="flex items-center" style={{ gap: "var(--space-sm)" }}>
-                <TrendingUp size={20} style={{ color: "var(--primary)" }} />
+                <Activity size={20} style={{ color: "var(--primary)" }} />
                 <h2
                   className="font-bold uppercase"
                   style={{
@@ -673,64 +779,48 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                     color: "var(--off-black)",
                   }}
                 >
-                  Traffic Over Time
+                  Real-Time Voting Activity
                 </h2>
               </div>
             </div>
 
             <div style={{ padding: "var(--space-md)", height: "300px" }}>
-              <Line
-                data={{
-                  labels: ["Jul 3", "Jul 4", "Jul 5", "Jul 6", "Jul 7", "Jul 8", "Jul 9"],
-                  datasets: [
-                    {
-                      label: "Visitors",
-                      data: [180, 150, 120, 160, 140, 170, 155],
-                      backgroundColor: "rgba(99, 102, 241, 0.1)",
-                      borderColor: "rgb(99, 102, 241)",
-                      borderWidth: 2,
-                      fill: true,
-                      tension: 0.4,
-                    },
-                    {
-                      label: "Submissions",
-                      data: [35, 30, 25, 32, 28, 34, 31],
-                      backgroundColor: "rgba(16, 185, 129, 0.1)",
-                      borderColor: "rgb(16, 185, 129)",
-                      borderWidth: 2,
-                      fill: true,
-                      tension: 0.4,
-                    },
-                  ],
-                }}
-                options={{
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  plugins: {
-                    legend: {
-                      position: "top",
-                      labels: {
-                        usePointStyle: true,
-                        font: { size: 12 },
+              {votingAnalytics?.chartData ? (
+                <Line
+                  data={votingAnalytics.chartData}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: {
+                        position: "top",
+                        labels: {
+                          usePointStyle: true,
+                          font: { size: 12 },
+                        },
                       },
                     },
-                  },
-                  scales: {
-                    x: {
-                      grid: { display: false },
-                      ticks: { font: { size: 11 } },
+                    scales: {
+                      x: {
+                        grid: { display: false },
+                        ticks: { font: { size: 11 } },
+                      },
+                      y: {
+                        beginAtZero: true,
+                        grid: { color: "#f3f4f6" },
+                        ticks: { font: { size: 11 } },
+                      },
                     },
-                    y: {
-                      beginAtZero: true,
-                      grid: { color: "#f3f4f6" },
-                      ticks: { font: { size: 11 } },
+                    elements: {
+                      point: { radius: 3, hoverRadius: 6 },
                     },
-                  },
-                  elements: {
-                    point: { radius: 3, hoverRadius: 6 },
-                  },
-                }}
-              />
+                  }}
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center text-gray-500">
+                  Loading voting data...
+                </div>
+              )}
             </div>
           </div>
 
@@ -759,50 +849,200 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                     color: "var(--off-black)",
                   }}
                 >
-                  Question Types
+                  Question Types Distribution
                 </h2>
               </div>
             </div>
 
             <div style={{ padding: "var(--space-md)", height: "300px" }}>
-              <Doughnut
-                data={{
-                  labels: ["Multiple Choice", "Text Input", "Rating", "Yes/No", "Ranking"],
-                  datasets: [
-                    {
-                      data: [15, 12, 8, 5, 2],
-                      backgroundColor: [
-                        "#6366f1", // Multiple Choice
-                        "#10b981", // Text Input
-                        "#f59e0b", // Rating
-                        "#ef4444", // Yes/No
-                        "#8b5cf6", // Ranking
-                      ],
-                      borderWidth: 2,
-                      borderColor: "#ffffff",
-                    },
-                  ],
-                }}
-                options={{
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  plugins: {
-                    legend: {
-                      position: "right",
-                      labels: {
-                        usePointStyle: true,
-                        font: { size: 12 },
-                        padding: 15,
+              {votingAnalytics?.questionTypeBreakdown ? (
+                <Doughnut
+                  data={{
+                    labels: Object.keys(votingAnalytics.questionTypeBreakdown).map((key) => {
+                      const labels: Record<string, string> = {
+                        binary: "Yes/No",
+                        multiChoice: "Multiple Choice",
+                        rating: "Rating Scale",
+                        text: "Text Response",
+                        ranking: "Ranking",
+                        abTest: "A/B Test",
+                      };
+                      return labels[key] || key;
+                    }),
+                    datasets: [
+                      {
+                        data: Object.values(votingAnalytics.questionTypeBreakdown),
+                        backgroundColor: [
+                          "#6366f1", // Binary
+                          "#10b981", // Multi Choice
+                          "#f59e0b", // Rating
+                          "#ef4444", // Text
+                          "#8b5cf6", // Ranking
+                          "#06b6d4", // A/B Test
+                        ],
+                        borderWidth: 2,
+                        borderColor: "#ffffff",
+                      },
+                    ],
+                  }}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: {
+                        position: "right",
+                        labels: {
+                          usePointStyle: true,
+                          font: { size: 12 },
+                          padding: 15,
+                        },
                       },
                     },
-                  },
-                }}
-              />
+                  }}
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center text-gray-500">
+                  Loading question type data...
+                </div>
+              )}
             </div>
           </div>
         </div>
 
-        {/* Questionnaire Performance Chart */}
+        {/* Community Engagement Charts */}
+        <div
+          className="grid grid-cols-1 gap-0 lg:grid-cols-2"
+          style={{ marginBottom: "var(--space-xl)" }}
+        >
+          {/* XP Trend Chart */}
+          <div
+            className="border-2 border-r-0"
+            style={{
+              borderColor: "var(--light-gray)",
+              backgroundColor: "var(--off-white)",
+            }}
+          >
+            <div
+              className="flex items-center justify-between border-b-2"
+              style={{
+                borderColor: "var(--light-gray)",
+                padding: "var(--space-md)",
+                backgroundColor: "var(--off-white)",
+              }}
+            >
+              <div className="flex items-center" style={{ gap: "var(--space-sm)" }}>
+                <Award size={20} style={{ color: "var(--primary)" }} />
+                <h2
+                  className="font-bold uppercase"
+                  style={{
+                    fontSize: "var(--text-lg)",
+                    color: "var(--off-black)",
+                  }}
+                >
+                  XP Trends (7 Days)
+                </h2>
+              </div>
+            </div>
+
+            <div style={{ padding: "var(--space-md)", height: "300px" }}>
+              {communityEngagement?.xpTrendData ? (
+                <Line
+                  data={communityEngagement.xpTrendData}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: {
+                        position: "top",
+                        labels: {
+                          usePointStyle: true,
+                          font: { size: 12 },
+                        },
+                      },
+                    },
+                    scales: {
+                      x: {
+                        grid: { display: false },
+                        ticks: { font: { size: 11 } },
+                      },
+                      y: {
+                        beginAtZero: true,
+                        grid: { color: "#f3f4f6" },
+                        ticks: { font: { size: 11 } },
+                      },
+                    },
+                    elements: {
+                      point: { radius: 4, hoverRadius: 7 },
+                    },
+                  }}
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center text-gray-500">
+                  Loading XP trend data...
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Streak Distribution */}
+          <div
+            className="border-2"
+            style={{
+              borderColor: "var(--light-gray)",
+              backgroundColor: "var(--off-white)",
+            }}
+          >
+            <div
+              className="flex items-center justify-between border-b-2"
+              style={{
+                borderColor: "var(--light-gray)",
+                padding: "var(--space-md)",
+                backgroundColor: "var(--off-white)",
+              }}
+            >
+              <div className="flex items-center" style={{ gap: "var(--space-sm)" }}>
+                <Zap size={20} style={{ color: "var(--primary)" }} />
+                <h2
+                  className="font-bold uppercase"
+                  style={{
+                    fontSize: "var(--text-lg)",
+                    color: "var(--off-black)",
+                  }}
+                >
+                  User Streak Distribution
+                </h2>
+              </div>
+            </div>
+
+            <div style={{ padding: "var(--space-md)", height: "300px" }}>
+              {communityEngagement?.streakDistribution ? (
+                <Doughnut
+                  data={communityEngagement.streakDistribution}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: {
+                        position: "right",
+                        labels: {
+                          usePointStyle: true,
+                          font: { size: 12 },
+                          padding: 15,
+                        },
+                      },
+                    },
+                  }}
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center text-gray-500">
+                  Loading streak data...
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Question Performance Chart */}
         <div
           className="border-2"
           style={{
@@ -828,80 +1068,90 @@ export function AnalyticsDashboardClient({ userEmail: _userEmail }: AnalyticsDas
                   color: "var(--off-black)",
                 }}
               >
-                Top Questionnaire Performance
+                Top Question Performance
               </h2>
             </div>
           </div>
 
           <div style={{ padding: "var(--space-md)", height: "300px" }}>
-            <Bar
-              data={{
-                labels: ["What's your experien...", "Rate our service", "Additional feedback"],
-                datasets: [
-                  {
-                    label: "Submissions",
-                    data: [156, 143, 98],
-                    backgroundColor: "rgba(99, 102, 241, 0.8)",
-                    borderColor: "rgb(99, 102, 241)",
-                    borderWidth: 2,
-                  },
-                  {
-                    label: "Completion Rate (%)",
-                    data: [89, 82, 67],
-                    backgroundColor: "rgba(16, 185, 129, 0.8)",
-                    borderColor: "rgb(16, 185, 129)",
-                    borderWidth: 2,
-                    yAxisID: "y1",
-                  },
-                ],
-              }}
-              options={{
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                  legend: {
-                    position: "top",
-                    labels: {
-                      usePointStyle: true,
-                      font: { size: 12 },
+            {questionPerformance?.topPerforming && questionPerformance.topPerforming.length > 0 ? (
+              <Bar
+                data={{
+                  labels: questionPerformance.topPerforming.slice(0, 5).map((q) => q.title),
+                  datasets: [
+                    {
+                      label: "Total Responses",
+                      data: questionPerformance.topPerforming
+                        .slice(0, 5)
+                        .map((q) => q.totalResponses),
+                      backgroundColor: "rgba(99, 102, 241, 0.8)",
+                      borderColor: "rgb(99, 102, 241)",
+                      borderWidth: 2,
+                    },
+                    {
+                      label: "Completion Rate (%)",
+                      data: questionPerformance.topPerforming
+                        .slice(0, 5)
+                        .map((q) => q.completionRate),
+                      backgroundColor: "rgba(16, 185, 129, 0.8)",
+                      borderColor: "rgb(16, 185, 129)",
+                      borderWidth: 2,
+                      yAxisID: "y1",
+                    },
+                  ],
+                }}
+                options={{
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    legend: {
+                      position: "top",
+                      labels: {
+                        usePointStyle: true,
+                        font: { size: 12 },
+                      },
                     },
                   },
-                },
-                scales: {
-                  x: {
-                    grid: { display: false },
-                    ticks: { font: { size: 11 } },
-                  },
-                  y: {
-                    type: "linear",
-                    display: true,
-                    position: "left",
-                    beginAtZero: true,
-                    grid: { color: "#f3f4f6" },
-                    ticks: { font: { size: 11 } },
-                    title: {
+                  scales: {
+                    x: {
+                      grid: { display: false },
+                      ticks: { font: { size: 11 } },
+                    },
+                    y: {
+                      type: "linear",
                       display: true,
-                      text: "Submissions",
-                      font: { size: 12 },
+                      position: "left",
+                      beginAtZero: true,
+                      grid: { color: "#f3f4f6" },
+                      ticks: { font: { size: 11 } },
+                      title: {
+                        display: true,
+                        text: "Total Responses",
+                        font: { size: 12 },
+                      },
                     },
-                  },
-                  y1: {
-                    type: "linear",
-                    display: true,
-                    position: "right",
-                    beginAtZero: true,
-                    max: 100,
-                    grid: { drawOnChartArea: false },
-                    ticks: { font: { size: 11 } },
-                    title: {
+                    y1: {
+                      type: "linear",
                       display: true,
-                      text: "Completion Rate (%)",
-                      font: { size: 12 },
+                      position: "right",
+                      beginAtZero: true,
+                      max: 100,
+                      grid: { drawOnChartArea: false },
+                      ticks: { font: { size: 11 } },
+                      title: {
+                        display: true,
+                        text: "Completion Rate (%)",
+                        font: { size: 12 },
+                      },
                     },
                   },
-                },
-              }}
-            />
+                }}
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center text-gray-500">
+                Loading question performance data...
+              </div>
+            )}
           </div>
         </div>
       </div>
