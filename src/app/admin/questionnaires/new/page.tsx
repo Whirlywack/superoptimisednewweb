@@ -179,17 +179,36 @@ function QuestionConfigurationPanel({
             <div className="font-mono text-sm font-medium" style={{ color: "var(--off-black)" }}>
               Choice Options
             </div>
-            <button
-              type="button"
-              onClick={() => addOption("options")}
-              className="px-3 py-1 font-mono text-xs transition-colors"
-              style={{
-                backgroundColor: "var(--primary)",
-                color: "var(--off-white)",
-              }}
-            >
-              Add Option
-            </button>
+            <div className="flex space-x-2">
+              <button
+                type="button"
+                onClick={() => generateQuestionOptions(question.id)}
+                disabled={isGeneratingOptions}
+                className="px-3 py-1 font-mono text-xs transition-colors disabled:opacity-50"
+                style={{
+                  backgroundColor: "var(--accent)",
+                  color: "var(--off-white)",
+                }}
+              >
+                {isGeneratingOptions ? (
+                  <RefreshCw size={12} className="animate-spin" />
+                ) : (
+                  <Sparkles size={12} />
+                )}
+                {isGeneratingOptions ? " Generating..." : " AI Options"}
+              </button>
+              <button
+                type="button"
+                onClick={() => addOption("options")}
+                className="px-3 py-1 font-mono text-xs transition-colors"
+                style={{
+                  backgroundColor: "var(--primary)",
+                  color: "var(--off-white)",
+                }}
+              >
+                Add Option
+              </button>
+            </div>
           </div>
           <div className="space-y-2">
             {multiOptions.map((option, index) => (
@@ -406,17 +425,36 @@ function QuestionConfigurationPanel({
             <div className="font-mono text-sm font-medium" style={{ color: "var(--off-black)" }}>
               Ranking Items
             </div>
-            <button
-              type="button"
-              onClick={() => addOption("items")}
-              className="px-3 py-1 font-mono text-xs transition-colors"
-              style={{
-                backgroundColor: "var(--primary)",
-                color: "var(--off-white)",
-              }}
-            >
-              Add Item
-            </button>
+            <div className="flex space-x-2">
+              <button
+                type="button"
+                onClick={() => generateQuestionOptions(question.id)}
+                disabled={isGeneratingOptions}
+                className="px-3 py-1 font-mono text-xs transition-colors disabled:opacity-50"
+                style={{
+                  backgroundColor: "var(--accent)",
+                  color: "var(--off-white)",
+                }}
+              >
+                {isGeneratingOptions ? (
+                  <RefreshCw size={12} className="animate-spin" />
+                ) : (
+                  <Sparkles size={12} />
+                )}
+                {isGeneratingOptions ? " Generating..." : " AI Items"}
+              </button>
+              <button
+                type="button"
+                onClick={() => addOption("items")}
+                className="px-3 py-1 font-mono text-xs transition-colors"
+                style={{
+                  backgroundColor: "var(--primary)",
+                  color: "var(--off-white)",
+                }}
+              >
+                Add Item
+              </button>
+            </div>
           </div>
           <div className="space-y-2">
             {rankingItems.map((item, index) => (
@@ -457,8 +495,27 @@ function QuestionConfigurationPanel({
     case "ab-test":
       return (
         <div className="space-y-4">
-          <div className="font-mono text-sm font-medium" style={{ color: "var(--off-black)" }}>
-            A/B Test Options
+          <div className="flex items-center justify-between">
+            <div className="font-mono text-sm font-medium" style={{ color: "var(--off-black)" }}>
+              A/B Test Options
+            </div>
+            <button
+              type="button"
+              onClick={() => generateQuestionOptions(question.id)}
+              disabled={isGeneratingOptions}
+              className="px-3 py-1 font-mono text-xs transition-colors disabled:opacity-50"
+              style={{
+                backgroundColor: "var(--accent)",
+                color: "var(--off-white)",
+              }}
+            >
+              {isGeneratingOptions ? (
+                <RefreshCw size={12} className="animate-spin" />
+              ) : (
+                <Sparkles size={12} />
+              )}
+              {isGeneratingOptions ? " Generating..." : " AI Options"}
+            </button>
           </div>
           <div className="space-y-4">
             <div>
@@ -762,6 +819,32 @@ export default function NewQuestionnairePage() {
       alternatives: Array<{ title: string; reasoning: string }>;
     };
   } | null>(null);
+  const [smartRecommendations, setSmartRecommendations] = useState<
+    Array<{
+      title: string;
+      type: string;
+      reasoning: string;
+      priority: string;
+      category: string;
+      config: Record<string, unknown>;
+    }>
+  >([]);
+  const [showSmartRecommendations, setShowSmartRecommendations] = useState(false);
+  const [recommendationContext, setRecommendationContext] = useState<{
+    basedOnQuestion?: string;
+    insertPosition?: number;
+  }>({});
+  const [showOptionGeneration, setShowOptionGeneration] = useState(false);
+  const [optionGenerationQuestionId, setOptionGenerationQuestionId] = useState<string | null>(null);
+  const [generatedOptions, setGeneratedOptions] = useState<
+    Array<{
+      id: string;
+      text: string;
+      description: string;
+      reasoning: string;
+    }>
+  >([]);
+  const [isGeneratingOptions, setIsGeneratingOptions] = useState(false); // eslint-disable-line @typescript-eslint/no-unused-vars
 
   // tRPC mutations
   const createQuestionnaireMutation = trpc.questionnaire.create.useMutation();
@@ -772,6 +855,8 @@ export default function NewQuestionnairePage() {
   // AI tRPC mutations
   const generateQuestionSuggestionsMutation = trpc.admin.generateQuestionSuggestions.useMutation();
   const improveQuestionMutation = trpc.admin.improveQuestion.useMutation();
+  const getSmartRecommendationsMutation = trpc.admin.getSmartRecommendations.useMutation();
+  const generateQuestionOptionsMutation = trpc.admin.generateQuestionOptions.useMutation();
 
   // Save/Publish functions
   const saveQuestionnaire = async (status: "draft" | "active") => {
@@ -1282,6 +1367,155 @@ export default function NewQuestionnairePage() {
     setShowQuestionImprovement(false);
     setQuestionImprovement(null);
     setImprovingQuestionId(null);
+  };
+
+  const getSmartRecommendations = async (afterQuestionIndex?: number) => {
+    if (questionnaire.questions.length === 0) {
+      alert("Add at least one question first to get smart recommendations");
+      return;
+    }
+
+    setIsGeneratingAI(true);
+    try {
+      const result = await getSmartRecommendationsMutation.mutateAsync({
+        currentQuestions: questionnaire.questions.map((q) => ({
+          title: q.title,
+          type: q.type,
+          description: q.description,
+        })),
+        questionnaireTitle: questionnaire.title,
+        category: questionnaire.category,
+        insertAfterIndex: afterQuestionIndex,
+        count: 3,
+      });
+
+      setSmartRecommendations(result.recommendations);
+      setRecommendationContext({
+        basedOnQuestion: result.context.basedOnQuestion || undefined,
+        insertPosition: result.context.suggestedInsertPosition,
+      });
+      setShowSmartRecommendations(true);
+    } catch (error) {
+      console.error("Failed to get smart recommendations:", error);
+      alert("Failed to get recommendations. Please try again.");
+    } finally {
+      setIsGeneratingAI(false);
+    }
+  };
+
+  const addRecommendedQuestion = (
+    recommendation: (typeof smartRecommendations)[0],
+    insertAt?: number
+  ) => {
+    const newQuestion: Question = {
+      id: `rec_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      type: recommendation.type,
+      title: recommendation.title,
+      description: "",
+      required: false,
+      config: recommendation.config || {},
+    };
+
+    if (insertAt !== undefined) {
+      // Insert at specific position
+      setQuestionnaire((prev) => ({
+        ...prev,
+        questions: [
+          ...prev.questions.slice(0, insertAt),
+          newQuestion,
+          ...prev.questions.slice(insertAt),
+        ],
+      }));
+    } else {
+      // Add to end
+      setQuestionnaire((prev) => ({
+        ...prev,
+        questions: [...prev.questions, newQuestion],
+      }));
+    }
+  };
+
+  // AI-powered option generation for multi-choice questions
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const generateQuestionOptions = async (questionId: string) => {
+    const question = questionnaire.questions.find((q) => q.id === questionId);
+    if (!question) return;
+
+    if (!["multi-choice", "ranking", "ab-test"].includes(question.type)) {
+      alert(
+        "Option generation is only available for multiple choice, ranking, and A/B test questions"
+      );
+      return;
+    }
+
+    setOptionGenerationQuestionId(questionId);
+    setIsGeneratingOptions(true);
+    try {
+      const existingOptions =
+        question.type === "multi-choice"
+          ? ((question.config.options as Array<{ text: string }>) || []).map((opt) => opt.text)
+          : question.type === "ranking"
+            ? ((question.config.items as Array<{ text: string }>) || []).map((item) => item.text)
+            : [];
+
+      const result = await generateQuestionOptionsMutation.mutateAsync({
+        questionTitle: question.title,
+        questionDescription: question.description,
+        questionType: question.type as "multi-choice" | "ranking" | "ab-test",
+        category: questionnaire.category,
+        context: questionnaire.description || questionnaire.title,
+        optionCount: question.type === "ab-test" ? 2 : 4,
+        existingOptions,
+      });
+
+      setGeneratedOptions(result.options);
+      setShowOptionGeneration(true);
+    } catch (error) {
+      console.error("Failed to generate options:", error);
+      alert("Failed to generate options. Please try again.");
+    } finally {
+      setIsGeneratingOptions(false);
+    }
+  };
+
+  const applyGeneratedOptions = (selectedOptions: typeof generatedOptions) => {
+    if (!optionGenerationQuestionId) return;
+
+    const questionIndex = questionnaire.questions.findIndex(
+      (q) => q.id === optionGenerationQuestionId
+    );
+    if (questionIndex === -1) return;
+
+    const question = questionnaire.questions[questionIndex];
+    const newConfig = { ...question.config };
+
+    if (question.type === "multi-choice") {
+      newConfig.options = selectedOptions.map((opt) => ({
+        id: opt.id,
+        text: opt.text,
+      }));
+    } else if (question.type === "ranking") {
+      newConfig.items = selectedOptions.map((opt) => ({
+        id: opt.id,
+        text: opt.text,
+      }));
+    } else if (question.type === "ab-test") {
+      if (selectedOptions.length >= 2) {
+        newConfig.optionA = { id: "a", text: selectedOptions[0].text };
+        newConfig.optionB = { id: "b", text: selectedOptions[1].text };
+      }
+    }
+
+    setQuestionnaire((prev) => ({
+      ...prev,
+      questions: prev.questions.map((q) =>
+        q.id === optionGenerationQuestionId ? { ...q, config: newConfig } : q
+      ),
+    }));
+
+    setShowOptionGeneration(false);
+    setOptionGenerationQuestionId(null);
+    setGeneratedOptions([]);
   };
 
   // Load template data from URL parameter
@@ -1976,6 +2210,19 @@ export default function NewQuestionnairePage() {
                         </>
                       )}
                     </button>
+                    <button
+                      type="button"
+                      onClick={() => getSmartRecommendations()}
+                      disabled={isGeneratingAI || questionnaire.questions.length === 0}
+                      className="flex items-center space-x-2 px-4 py-2 font-mono text-sm font-medium transition-colors hover:opacity-90 disabled:opacity-50"
+                      style={{
+                        backgroundColor: "var(--warm-gray)",
+                        color: "var(--off-white)",
+                      }}
+                    >
+                      <Lightbulb size={16} />
+                      <span>Smart Recommendations</span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -2372,6 +2619,19 @@ export default function NewQuestionnairePage() {
                                   <Wand2 size={14} />
                                 )}
                                 <span>AI</span>
+                              </button>
+                              <button
+                                onClick={() => getSmartRecommendations(originalIndex)}
+                                disabled={isGeneratingAI}
+                                className="flex items-center space-x-1 px-3 py-1 text-xs font-medium transition-colors hover:opacity-90 disabled:opacity-50"
+                                style={{
+                                  backgroundColor: "var(--warm-gray)",
+                                  color: "var(--off-white)",
+                                }}
+                                title="Get recommendations after this question"
+                              >
+                                <Lightbulb size={14} />
+                                <span>Rec</span>
                               </button>
                               <button
                                 onClick={() => removeQuestion(question.id)}
@@ -3200,6 +3460,279 @@ export default function NewQuestionnairePage() {
                   }}
                 >
                   Apply Improvement
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Smart Recommendations Modal */}
+      {showSmartRecommendations && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div
+            className="max-h-[80vh] w-full max-w-4xl overflow-y-auto border-2 shadow-lg"
+            style={{
+              backgroundColor: "var(--off-white)",
+              borderColor: "var(--off-black)",
+            }}
+          >
+            {/* Modal Header */}
+            <div
+              className="flex items-center justify-between border-b-2 px-6 py-4"
+              style={{ borderColor: "var(--light-gray)" }}
+            >
+              <div className="flex items-center space-x-3">
+                <Lightbulb size={24} style={{ color: "var(--primary)" }} />
+                <h2 className="font-mono text-xl font-bold" style={{ color: "var(--off-black)" }}>
+                  Smart Question Recommendations
+                </h2>
+              </div>
+              <button
+                onClick={() => setShowSmartRecommendations(false)}
+                className="transition-colors hover:opacity-75"
+                style={{ color: "var(--warm-gray)" }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Recommendations Content */}
+            <div className="p-6">
+              {recommendationContext.basedOnQuestion && (
+                <div className="mb-6">
+                  <div
+                    className="border-2 p-4"
+                    style={{
+                      backgroundColor: "var(--light-gray)",
+                      borderColor: "var(--warm-gray)",
+                    }}
+                  >
+                    <h3
+                      className="mb-2 font-mono text-sm font-bold"
+                      style={{ color: "var(--off-black)" }}
+                    >
+                      Context Question
+                    </h3>
+                    <p className="text-sm" style={{ color: "var(--warm-gray)" }}>
+                      Based on: &quot;{recommendationContext.basedOnQuestion}&quot;
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              <div className="mb-4">
+                <p className="text-sm" style={{ color: "var(--warm-gray)" }}>
+                  AI-powered recommendations based on your questionnaire flow and context. These
+                  questions are designed to enhance your research goals.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                {smartRecommendations.map((recommendation, index) => (
+                  <div
+                    key={index}
+                    className="border-2 p-4"
+                    style={{
+                      backgroundColor: "var(--off-white)",
+                      borderColor: "var(--light-gray)",
+                    }}
+                  >
+                    <div className="mb-3 flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="mb-2 flex items-center space-x-2">
+                          <span
+                            className="px-2 py-1 font-mono text-xs"
+                            style={{
+                              backgroundColor: "var(--primary)",
+                              color: "var(--off-white)",
+                            }}
+                          >
+                            {recommendation.type}
+                          </span>
+                          <span
+                            className={`px-2 py-1 font-mono text-xs ${
+                              recommendation.priority === "high"
+                                ? "bg-red-500"
+                                : recommendation.priority === "medium"
+                                  ? "bg-yellow-500"
+                                  : "bg-green-500"
+                            }`}
+                            style={{ color: "var(--off-white)" }}
+                          >
+                            {recommendation.priority} priority
+                          </span>
+                          <span
+                            className="px-2 py-1 font-mono text-xs"
+                            style={{
+                              backgroundColor: "var(--light-gray)",
+                              color: "var(--off-black)",
+                            }}
+                          >
+                            {recommendation.category}
+                          </span>
+                        </div>
+                        <h4 className="mb-2 font-medium" style={{ color: "var(--off-black)" }}>
+                          {recommendation.title}
+                        </h4>
+                        {recommendation.reasoning && (
+                          <p className="text-xs" style={{ color: "var(--warm-gray)" }}>
+                            <strong>Why this fits:</strong> {recommendation.reasoning}
+                          </p>
+                        )}
+                      </div>
+                      <div className="ml-4 flex flex-col space-y-2">
+                        <button
+                          onClick={() => {
+                            addRecommendedQuestion(
+                              recommendation,
+                              recommendationContext.insertPosition
+                            );
+                            setShowSmartRecommendations(false);
+                          }}
+                          className="px-4 py-2 font-mono text-sm font-medium transition-colors hover:opacity-90"
+                          style={{
+                            backgroundColor: "var(--off-black)",
+                            color: "var(--off-white)",
+                          }}
+                        >
+                          Add Here
+                        </button>
+                        <button
+                          onClick={() => {
+                            addRecommendedQuestion(recommendation);
+                            setShowSmartRecommendations(false);
+                          }}
+                          className="px-4 py-2 font-mono text-sm font-medium transition-colors hover:opacity-90"
+                          style={{
+                            backgroundColor: "var(--warm-gray)",
+                            color: "var(--off-white)",
+                          }}
+                        >
+                          Add to End
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {smartRecommendations.length === 0 && (
+                <div className="py-8 text-center">
+                  <p className="text-sm" style={{ color: "var(--warm-gray)" }}>
+                    No recommendations available. Add more questions to get better suggestions.
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* AI Option Generation Modal */}
+      {showOptionGeneration && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div
+            className="max-h-[80vh] w-full max-w-3xl overflow-y-auto border-2 shadow-lg"
+            style={{
+              backgroundColor: "var(--off-white)",
+              borderColor: "var(--off-black)",
+            }}
+          >
+            {/* Modal Header */}
+            <div
+              className="flex items-center justify-between border-b-2 px-6 py-4"
+              style={{ borderColor: "var(--light-gray)" }}
+            >
+              <div className="flex items-center space-x-3">
+                <Sparkles size={24} style={{ color: "var(--primary)" }} />
+                <h2 className="font-mono text-xl font-bold" style={{ color: "var(--off-black)" }}>
+                  AI-Generated Options
+                </h2>
+              </div>
+              <button
+                onClick={() => setShowOptionGeneration(false)}
+                className="transition-colors hover:opacity-75"
+                style={{ color: "var(--warm-gray)" }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Generated Options */}
+            <div className="p-6">
+              <div className="mb-4">
+                <p className="text-sm" style={{ color: "var(--warm-gray)" }}>
+                  AI-generated options for your question. Select the options you want to use and
+                  click &quot;Apply Selected&quot;.
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                {generatedOptions.map((option, _index) => (
+                  <div
+                    key={option.id}
+                    className="border-2 p-4"
+                    style={{
+                      backgroundColor: "var(--off-white)",
+                      borderColor: "var(--light-gray)",
+                    }}
+                  >
+                    <div className="flex items-start space-x-3">
+                      <input type="checkbox" checked={true} readOnly className="mt-1" />
+                      <div className="flex-1">
+                        <div
+                          className="font-mono text-sm font-medium"
+                          style={{ color: "var(--off-black)" }}
+                        >
+                          {option.text}
+                        </div>
+                        {option.description && (
+                          <div className="mt-1 text-xs" style={{ color: "var(--warm-gray)" }}>
+                            {option.description}
+                          </div>
+                        )}
+                        {option.reasoning && (
+                          <div className="mt-2 text-xs" style={{ color: "var(--primary)" }}>
+                            <strong>Why this option:</strong> {option.reasoning}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {generatedOptions.length === 0 && (
+                <div className="py-8 text-center">
+                  <p className="text-sm" style={{ color: "var(--warm-gray)" }}>
+                    No options generated. Please try again.
+                  </p>
+                </div>
+              )}
+
+              {/* Actions */}
+              <div className="mt-6 flex justify-end space-x-3">
+                <button
+                  onClick={() => setShowOptionGeneration(false)}
+                  className="px-4 py-2 font-mono text-sm transition-colors"
+                  style={{
+                    backgroundColor: "var(--warm-gray)",
+                    color: "var(--off-white)",
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => applyGeneratedOptions(generatedOptions)}
+                  disabled={generatedOptions.length === 0}
+                  className="px-4 py-2 font-mono text-sm transition-colors disabled:opacity-50"
+                  style={{
+                    backgroundColor: "var(--primary)",
+                    color: "var(--off-white)",
+                  }}
+                >
+                  Apply All Options
                 </button>
               </div>
             </div>

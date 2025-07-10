@@ -308,9 +308,9 @@
 **Priority 1: AI Question Generation**
 
 - **Task 8.2.5.13**: ✅ **COMPLETE** - Integrate OpenAI API for question suggestions - AI-powered question generation based on context
-- **Task 8.2.5.14**: Smart question recommendations - Suggest related questions based on existing questionnaire content
+- **Task 8.2.5.14**: ✅ **COMPLETE** - Smart question recommendations - Suggest related questions based on existing questionnaire content
 - **Task 8.2.5.15**: ✅ **COMPLETE** - Question improvement suggestions - AI feedback on question clarity and effectiveness
-- **Task 8.2.5.16**: Auto-generate question options - AI-powered option generation for multi-choice questions
+- **Task 8.2.5.16**: ✅ **COMPLETE** - Auto-generate question options - AI-powered option generation for multi-choice questions
 
 **Priority 2: Intelligent Workflows**
 

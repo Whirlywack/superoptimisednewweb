@@ -644,4 +644,225 @@ Return your response as JSON with this structure:
         }
       }, "improveQuestion");
     }),
+
+  // Smart question recommendations based on context
+  getSmartRecommendations: adminProcedure
+    .input(
+      z.object({
+        currentQuestions: z.array(
+          z.object({
+            title: z.string(),
+            type: z.string(),
+            description: z.string().optional(),
+          })
+        ),
+        questionnaireTitle: z.string().optional(),
+        category: z.string().optional(),
+        insertAfterIndex: z.number().optional(),
+        count: z.number().min(1).max(5).default(3),
+      })
+    )
+    .mutation(async ({ input }) => {
+      return safeExecute(async () => {
+        const { currentQuestions, questionnaireTitle, category, insertAfterIndex, count } = input;
+
+        // Determine context based on the current question or overall flow
+        let contextualPrompt = "";
+        if (insertAfterIndex !== undefined && currentQuestions[insertAfterIndex]) {
+          const currentQuestion = currentQuestions[insertAfterIndex];
+          contextualPrompt = `Based on the question "${currentQuestion.title}" (${currentQuestion.type}), suggest ${count} follow-up questions that would naturally flow from this question.`;
+        } else {
+          contextualPrompt = `Based on the current questionnaire flow, suggest ${count} questions that would enhance the overall research goals.`;
+        }
+
+        const prompt = `You are an expert questionnaire designer. ${contextualPrompt}
+
+Current Questionnaire Context:
+Title: ${questionnaireTitle || "Not specified"}
+Category: ${category || "general"}
+
+Existing Questions:
+${currentQuestions.map((q, i) => `${i + 1}. ${q.title} (${q.type})`).join("\n")}
+
+Guidelines for recommendations:
+1. Ensure logical flow and progression
+2. Consider questionnaire length and respondent fatigue
+3. Suggest questions that add unique value
+4. Consider different question types for variety
+5. Maintain focus on the research goals
+
+Return recommendations as JSON array:
+[
+  {
+    "title": "Recommended question text",
+    "type": "question-type",
+    "reasoning": "Why this question fits well after the current context",
+    "priority": "high|medium|low",
+    "category": "follow-up|demographic|satisfaction|behavioral",
+    "config": {
+      // Appropriate configuration for the question type
+    }
+  }
+]`;
+
+        const response = await generateChatCompletion(
+          [{ role: "user", content: prompt }],
+          "GPT_4O",
+          { temperature: 0.6 }
+        );
+
+        try {
+          const recommendations = parseJsonResponse(response);
+
+          if (!Array.isArray(recommendations)) {
+            throw new Error("Response is not an array");
+          }
+
+          const validatedRecommendations = recommendations.map((rec, index) => {
+            if (!rec.title || typeof rec.title !== "string") {
+              throw new Error(`Recommendation ${index + 1} missing valid title`);
+            }
+            if (!rec.type || typeof rec.type !== "string") {
+              throw new Error(`Recommendation ${index + 1} missing valid type`);
+            }
+
+            return {
+              title: rec.title.trim(),
+              type: rec.type,
+              reasoning: rec.reasoning || "",
+              priority: rec.priority || "medium",
+              category: rec.category || "follow-up",
+              config: rec.config || {},
+            };
+          });
+
+          return {
+            recommendations: validatedRecommendations,
+            context: {
+              basedOnQuestion:
+                insertAfterIndex !== undefined ? currentQuestions[insertAfterIndex]?.title : null,
+              questionnaireLength: currentQuestions.length,
+              suggestedInsertPosition:
+                insertAfterIndex !== undefined ? insertAfterIndex + 1 : currentQuestions.length,
+            },
+          };
+        } catch (parseError) {
+          console.error("Failed to parse AI recommendations:", parseError);
+          throw new Error("Failed to generate valid recommendations. Please try again.");
+        }
+      }, "getSmartRecommendations");
+    }),
+
+  // AI-powered option generation for multi-choice questions
+  generateQuestionOptions: adminProcedure
+    .input(
+      z.object({
+        questionTitle: z.string().min(1),
+        questionDescription: z.string().optional(),
+        questionType: z.enum(["multi-choice", "ranking", "ab-test"]),
+        category: z.string().optional(),
+        context: z.string().optional(),
+        optionCount: z.number().min(2).max(10).default(4),
+        existingOptions: z.array(z.string()).optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      return safeExecute(async () => {
+        const {
+          questionTitle,
+          questionDescription,
+          questionType,
+          category,
+          context,
+          optionCount,
+          existingOptions = [],
+        } = input;
+
+        const prompt = `You are an expert questionnaire designer. Generate ${optionCount} high-quality options for this ${questionType} question:
+
+Question Title: "${questionTitle}"
+Description: ${questionDescription || "None provided"}
+Category: ${category || "general"}
+${context ? `Additional Context: ${context}` : ""}
+
+${existingOptions.length > 0 ? `Existing Options to Avoid Duplicating:\n${existingOptions.map((opt, i) => `${i + 1}. ${opt}`).join("\n")}\n` : ""}
+
+Guidelines for generating options:
+1. Make options mutually exclusive and comprehensive
+2. Ensure options are balanced and unbiased
+3. Use clear, concise language
+4. Avoid overlapping meanings
+5. Consider logical order (if applicable)
+6. Make options specific enough to be meaningful
+7. For ranking questions, ensure options are comparable
+8. For A/B tests, create distinct alternatives
+
+${questionType === "multi-choice" ? `Generate ${optionCount} distinct options that cover the likely response range.` : ""}
+${questionType === "ranking" ? `Generate ${optionCount} items that can be meaningfully ranked by respondents.` : ""}
+${questionType === "ab-test" ? `Generate 2 distinct alternatives (Option A and Option B) that test different approaches.` : ""}
+
+Return your response as JSON with this structure:
+{
+  "options": [
+    {
+      "id": "unique-id",
+      "text": "Option text",
+      "description": "Brief explanation of this option (optional)",
+      "reasoning": "Why this option is valuable for the question"
+    }
+  ],
+  "suggestions": {
+    "orderingNote": "Recommended ordering or randomization strategy",
+    "balanceNote": "Notes on balance and bias considerations",
+    "additionalOptions": "Suggestions for additional options if needed"
+  }
+}`;
+
+        const response = await generateChatCompletion(
+          [{ role: "user", content: prompt }],
+          "GPT_4O",
+          { temperature: 0.6 }
+        );
+
+        try {
+          const result = parseJsonResponse(response);
+
+          // Validate the response structure
+          if (!result.options || !Array.isArray(result.options)) {
+            throw new Error("Response missing valid options array");
+          }
+
+          const validatedOptions = result.options.map((option, index) => {
+            if (!option.text || typeof option.text !== "string") {
+              throw new Error(`Option ${index + 1} missing valid text`);
+            }
+
+            return {
+              id: option.id || `option-${index + 1}`,
+              text: option.text.trim(),
+              description: option.description || "",
+              reasoning: option.reasoning || "",
+            };
+          });
+
+          return {
+            options: validatedOptions,
+            metadata: {
+              questionTitle,
+              questionType,
+              generatedCount: validatedOptions.length,
+              requestedCount: optionCount,
+            },
+            suggestions: result.suggestions || {
+              orderingNote: "Consider randomizing option order to reduce bias",
+              balanceNote: "Review options for balanced coverage",
+              additionalOptions: "Generated options provide good coverage",
+            },
+          };
+        } catch (parseError) {
+          console.error("Failed to parse AI options response:", parseError);
+          throw new Error("Failed to generate valid question options. Please try again.");
+        }
+      }, "generateQuestionOptions");
+    }),
 });
