@@ -17,6 +17,8 @@ import {
 import { useState } from "react";
 import Link from "next/link";
 import { ContentBlockEditor } from "./ContentBlockEditor";
+import { ProjectStatsManager } from "./ProjectStatsManager";
+import { ContentPreviewWorkflow } from "./ContentPreviewWorkflow";
 
 interface ContentDashboardClientProps {
   userEmail: string;
@@ -26,8 +28,16 @@ export function ContentDashboardClient({ userEmail }: ContentDashboardClientProp
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [showTemplatePreview, setShowTemplatePreview] = useState(false);
-  const [previewTemplate, setPreviewTemplate] = useState<any>(null);
+  const [previewTemplate, setPreviewTemplate] = useState<{
+    id: string;
+    title: string;
+    description: string;
+    contentType: string;
+    defaultContent: string;
+  } | null>(null);
   const [showContentBlocks, setShowContentBlocks] = useState(false);
+  const [showProjectStats, setShowProjectStats] = useState(false);
+  const [showContentPreview, setShowContentPreview] = useState(false);
 
   // Real content data from tRPC
   const { data: blogPosts, isLoading: postsLoading } = api.blog.getBlogPosts.useQuery({
@@ -98,7 +108,13 @@ export function ContentDashboardClient({ userEmail }: ContentDashboardClientProp
     }
   };
 
-  const handleTemplatePreview = (template: any) => {
+  const handleTemplatePreview = (template: {
+    id: string;
+    title: string;
+    description: string;
+    contentType: string;
+    defaultContent: string;
+  }) => {
     setPreviewTemplate(template);
     setShowTemplatePreview(true);
   };
@@ -709,6 +725,7 @@ export function ContentDashboardClient({ userEmail }: ContentDashboardClientProp
                     padding: "var(--space-sm)",
                     cursor: "pointer",
                   }}
+                  onClick={() => setShowProjectStats(true)}
                 >
                   <div className="flex items-center justify-between">
                     <div>
@@ -719,7 +736,7 @@ export function ContentDashboardClient({ userEmail }: ContentDashboardClientProp
                           color: "var(--off-black)",
                         }}
                       >
-                        Bulk Editor
+                        Project Stats
                       </div>
                       <div
                         style={{
@@ -727,7 +744,7 @@ export function ContentDashboardClient({ userEmail }: ContentDashboardClientProp
                           color: "var(--warm-gray)",
                         }}
                       >
-                        Edit multiple posts
+                        Manage project metrics
                       </div>
                     </div>
                     <Edit size={16} style={{ color: "var(--warm-gray)" }} />
@@ -742,6 +759,7 @@ export function ContentDashboardClient({ userEmail }: ContentDashboardClientProp
                     padding: "var(--space-sm)",
                     cursor: "pointer",
                   }}
+                  onClick={() => setShowContentPreview(true)}
                 >
                   <div className="flex items-center justify-between">
                     <div>
@@ -752,7 +770,7 @@ export function ContentDashboardClient({ userEmail }: ContentDashboardClientProp
                           color: "var(--off-black)",
                         }}
                       >
-                        SEO Analysis
+                        Content Preview
                       </div>
                       <div
                         style={{
@@ -760,7 +778,7 @@ export function ContentDashboardClient({ userEmail }: ContentDashboardClientProp
                           color: "var(--warm-gray)",
                         }}
                       >
-                        Optimize content
+                        Preview & publish content
                       </div>
                     </div>
                     <Search size={16} style={{ color: "var(--warm-gray)" }} />
@@ -1101,6 +1119,86 @@ export function ContentDashboardClient({ userEmail }: ContentDashboardClientProp
             </div>
             <div className="flex-1 overflow-hidden">
               <ContentBlockEditor userEmail={userEmail} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Project Stats Manager Modal */}
+      {showProjectStats && (
+        <div
+          className="fixed inset-0 z-50"
+          style={{
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+          }}
+        >
+          <div className="flex h-full flex-col">
+            <div
+              className="flex items-center justify-between"
+              style={{
+                backgroundColor: "var(--off-white)",
+                borderBottom: "2px solid var(--light-gray)",
+                padding: "var(--space-md) var(--space-lg)",
+              }}
+            >
+              <h2
+                className="font-bold uppercase"
+                style={{
+                  fontSize: "var(--text-lg)",
+                  color: "var(--off-black)",
+                }}
+              >
+                Project Statistics Manager
+              </h2>
+              <button
+                onClick={() => setShowProjectStats(false)}
+                className="border-2 border-light-gray p-2 text-warm-gray transition-colors hover:border-primary hover:text-off-black"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="flex-1 overflow-hidden">
+              <ProjectStatsManager userEmail={userEmail} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Content Preview & Publishing Workflow Modal */}
+      {showContentPreview && (
+        <div
+          className="fixed inset-0 z-50"
+          style={{
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+          }}
+        >
+          <div className="flex h-full flex-col">
+            <div
+              className="flex items-center justify-between"
+              style={{
+                backgroundColor: "var(--off-white)",
+                borderBottom: "2px solid var(--light-gray)",
+                padding: "var(--space-md) var(--space-lg)",
+              }}
+            >
+              <h2
+                className="font-bold uppercase"
+                style={{
+                  fontSize: "var(--text-lg)",
+                  color: "var(--off-black)",
+                }}
+              >
+                Content Preview &amp; Publishing
+              </h2>
+              <button
+                onClick={() => setShowContentPreview(false)}
+                className="border-2 border-light-gray p-2 text-warm-gray transition-colors hover:border-primary hover:text-off-black"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="flex-1 overflow-hidden">
+              <ContentPreviewWorkflow userEmail={userEmail} />
             </div>
           </div>
         </div>

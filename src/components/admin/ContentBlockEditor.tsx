@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { api } from "@/lib/trpc/react";
 import {
   FileText,
@@ -39,11 +39,13 @@ interface ContentBlockEditorProps {
   userEmail: string;
 }
 
-export function ContentBlockEditor({ userEmail }: ContentBlockEditorProps) {
+export function ContentBlockEditor({ userEmail: _userEmail }: ContentBlockEditorProps) {
   const [selectedPage, setSelectedPage] = useState<string>("all");
   const [editingBlock, setEditingBlock] = useState<string | null>(null);
   const [editContent, setEditContent] = useState<string>("");
-  const [editContentType, setEditContentType] = useState<"markdown" | "html" | "text" | "tsx">("markdown");
+  const [editContentType, setEditContentType] = useState<"markdown" | "html" | "text" | "tsx">(
+    "markdown"
+  );
   const [changeReason, setChangeReason] = useState<string>("");
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showVersionHistory, setShowVersionHistory] = useState<string | null>(null);
@@ -59,8 +61,8 @@ export function ContentBlockEditor({ userEmail }: ContentBlockEditorProps) {
 
   // tRPC queries and mutations
   const { data: contentData, refetch: refetchBlocks } = api.content.getAllContentBlocks.useQuery();
-  
-  const contentBlocks = contentData?.blocks || [];
+
+  const contentBlocks = useMemo(() => contentData?.blocks || [], [contentData?.blocks]);
 
   const { data: versions } = api.content.getContentVersions.useQuery(
     { contentBlockId: showVersionHistory || "" },
@@ -309,7 +311,9 @@ export function ContentBlockEditor({ userEmail }: ContentBlockEditorProps) {
                         <select
                           value={editContentType}
                           onChange={(e) =>
-                            setEditContentType(e.target.value as "markdown" | "html" | "text" | "tsx")
+                            setEditContentType(
+                              e.target.value as "markdown" | "html" | "text" | "tsx"
+                            )
                           }
                           className="border-2 border-light-gray bg-off-white px-3 py-2 font-mono text-sm"
                         >
