@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { LucideIcon } from "@/components/ui/Icon";
 import { Link } from "@/components/ui/Typography";
-import { ArrowRight, Star, Github, ExternalLink, Play, Download } from "lucide-react";
+import { Star, ExternalLink } from "lucide-react";
 
 interface ActionButton {
   label: string;

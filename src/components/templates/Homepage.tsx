@@ -270,7 +270,7 @@ export function Homepage({
                 </div>
                 
                 <blockquote className="leading-relaxed text-warm-gray">
-                  "{testimonial.content}"
+                  &ldquo;{testimonial.content}&rdquo;
                 </blockquote>
                 
                 <div className="flex items-center gap-3">

@@ -8,14 +8,7 @@ import type {
   Heart} from "lucide-react";
 import { 
   Target, 
-  Users, 
-  Lightbulb, 
-  ArrowRight,
-  Star,
-  Globe,
-  BookOpen,
-  Code,
-  MessageCircle
+  ArrowRight
 } from "lucide-react";
 
 interface Value {

@@ -435,7 +435,7 @@ export function AboutMission({
                 Get in Touch
               </h2>
               <p className="mx-auto max-w-2xl text-lg text-warm-gray">
-                We'd love to hear from you. Whether you have questions, feedback, or just want to connect.
+                We&apos;d love to hear from you. Whether you have questions, feedback, or just want to connect.
               </p>
             </div>
 

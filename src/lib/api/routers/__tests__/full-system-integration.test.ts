@@ -1,5 +1,4 @@
 import { describe, it, expect, jest, beforeEach } from "@jest/globals";
-import { TRPCError } from "@trpc/server";
 
 // Mock all system dependencies
 jest.mock("../../../db", () => ({

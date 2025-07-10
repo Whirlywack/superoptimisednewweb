@@ -81,11 +81,11 @@ describe("Error Handling", () => {
       
       try {
         handleVotingError(originalError);
-      } catch (error) {
-        expect(error).toBeInstanceOf(TRPCError);
-        expect((error as TRPCError).code).toBe("CONFLICT");
-        expect((error as TRPCError).message).toBe("Already voted");
-        expect((error as TRPCError).cause).toBe(originalError);
+      } catch (err) {
+        expect(err).toBeInstanceOf(TRPCError);
+        expect((err as TRPCError).code).toBe("CONFLICT");
+        expect((err as TRPCError).message).toBe("Already voted");
+        expect((err as TRPCError).cause).toBe(originalError);
       }
     });
 
@@ -96,11 +96,11 @@ describe("Error Handling", () => {
       
       try {
         handleVotingError(originalError);
-      } catch (error) {
-        expect(error).toBeInstanceOf(TRPCError);
-        expect((error as TRPCError).code).toBe("NOT_FOUND");
-        expect((error as TRPCError).message).toBe("Question with ID question-123 not found or is not active");
-        expect((error as TRPCError).cause).toBe(originalError);
+      } catch (err) {
+        expect(err).toBeInstanceOf(TRPCError);
+        expect((err as TRPCError).code).toBe("NOT_FOUND");
+        expect((err as TRPCError).message).toBe("Question with ID question-123 not found or is not active");
+        expect((err as TRPCError).cause).toBe(originalError);
       }
     });
 
@@ -111,11 +111,11 @@ describe("Error Handling", () => {
       
       try {
         handleVotingError(originalError);
-      } catch (error) {
-        expect(error).toBeInstanceOf(TRPCError);
-        expect((error as TRPCError).code).toBe("TOO_MANY_REQUESTS");
-        expect((error as TRPCError).message).toBe("Rate limit exceeded");
-        expect((error as TRPCError).cause).toBe(originalError);
+      } catch (err) {
+        expect(err).toBeInstanceOf(TRPCError);
+        expect((err as TRPCError).code).toBe("TOO_MANY_REQUESTS");
+        expect((err as TRPCError).message).toBe("Rate limit exceeded");
+        expect((err as TRPCError).cause).toBe(originalError);
       }
     });
 
@@ -126,11 +126,11 @@ describe("Error Handling", () => {
       
       try {
         handleVotingError(originalError);
-      } catch (error) {
-        expect(error).toBeInstanceOf(TRPCError);
-        expect((error as TRPCError).code).toBe("UNAUTHORIZED");
-        expect((error as TRPCError).message).toBe("Token expired");
-        expect((error as TRPCError).cause).toBe(originalError);
+      } catch (err) {
+        expect(err).toBeInstanceOf(TRPCError);
+        expect((err as TRPCError).code).toBe("UNAUTHORIZED");
+        expect((err as TRPCError).message).toBe("Token expired");
+        expect((err as TRPCError).cause).toBe(originalError);
       }
     });
 
@@ -141,11 +141,11 @@ describe("Error Handling", () => {
       
       try {
         handleVotingError(originalError);
-      } catch (error) {
-        expect(error).toBeInstanceOf(TRPCError);
-        expect((error as TRPCError).code).toBe("BAD_REQUEST");
-        expect((error as TRPCError).message).toBe("Invalid vote data");
-        expect((error as TRPCError).cause).toBe(originalError);
+      } catch (err) {
+        expect(err).toBeInstanceOf(TRPCError);
+        expect((err as TRPCError).code).toBe("BAD_REQUEST");
+        expect((err as TRPCError).message).toBe("Invalid vote data");
+        expect((err as TRPCError).cause).toBe(originalError);
       }
     });
 
@@ -156,11 +156,11 @@ describe("Error Handling", () => {
       
       try {
         handleVotingError(originalError);
-      } catch (error) {
-        expect(error).toBeInstanceOf(TRPCError);
-        expect((error as TRPCError).code).toBe("INTERNAL_SERVER_ERROR");
-        expect((error as TRPCError).message).toBe("An unexpected error occurred");
-        expect((error as TRPCError).cause).toBe(originalError);
+      } catch (err) {
+        expect(err).toBeInstanceOf(TRPCError);
+        expect((err as TRPCError).code).toBe("INTERNAL_SERVER_ERROR");
+        expect((err as TRPCError).message).toBe("An unexpected error occurred");
+        expect((err as TRPCError).cause).toBe(originalError);
       }
     });
 
@@ -171,11 +171,11 @@ describe("Error Handling", () => {
       
       try {
         handleVotingError(originalError);
-      } catch (error) {
-        expect(error).toBeInstanceOf(TRPCError);
-        expect((error as TRPCError).code).toBe("INTERNAL_SERVER_ERROR");
-        expect((error as TRPCError).message).toBe("An unknown error occurred");
-        expect((error as TRPCError).cause).toBeUndefined();
+      } catch (err) {
+        expect(err).toBeInstanceOf(TRPCError);
+        expect((err as TRPCError).code).toBe("INTERNAL_SERVER_ERROR");
+        expect((err as TRPCError).message).toBe("An unknown error occurred");
+        expect((err as TRPCError).cause).toBeUndefined();
       }
     });
 
@@ -185,10 +185,10 @@ describe("Error Handling", () => {
       
       try {
         handleVotingError(null);
-      } catch (error) {
-        expect(error).toBeInstanceOf(TRPCError);
-        expect((error as TRPCError).code).toBe("INTERNAL_SERVER_ERROR");
-        expect((error as TRPCError).message).toBe("An unknown error occurred");
+      } catch (err) {
+        expect(err).toBeInstanceOf(TRPCError);
+        expect((err as TRPCError).code).toBe("INTERNAL_SERVER_ERROR");
+        expect((err as TRPCError).message).toBe("An unknown error occurred");
       }
     });
   });
@@ -210,9 +210,9 @@ describe("Error Handling", () => {
       
       try {
         await safeExecute(mockOperation, "test operation");
-      } catch (error) {
-        expect(error).toBeInstanceOf(TRPCError);
-        expect((error as TRPCError).code).toBe("CONFLICT");
+      } catch (err) {
+        expect(err).toBeInstanceOf(TRPCError);
+        expect((err as TRPCError).code).toBe("CONFLICT");
       }
     });
 
@@ -222,7 +222,7 @@ describe("Error Handling", () => {
       
       try {
         await safeExecute(mockOperation, "test operation");
-      } catch (error) {
+      } catch {
         // Error should be thrown
       }
       
@@ -243,7 +243,7 @@ describe("Error Handling", () => {
       
       try {
         await safeExecute(mockOperation);
-      } catch (error) {
+      } catch {
         // Error should be thrown
       }
       
@@ -267,7 +267,7 @@ describe("Error Handling", () => {
       
       try {
         await safeExecute(mockOperation, "test operation");
-      } catch (error) {
+      } catch {
         // Error should be thrown
       }
       
@@ -296,9 +296,9 @@ describe("Error Handling", () => {
       
       try {
         await safeExecute(mockOperation, "test operation");
-      } catch (error) {
-        expect(error).toBeInstanceOf(TRPCError);
-        expect((error as TRPCError).code).toBe("NOT_FOUND");
+      } catch (err) {
+        expect(err).toBeInstanceOf(TRPCError);
+        expect((err as TRPCError).code).toBe("NOT_FOUND");
       }
     });
 
@@ -308,7 +308,7 @@ describe("Error Handling", () => {
       
       try {
         await safeExecute(mockOperation, "test operation");
-      } catch (error) {
+      } catch {
         // Error should be thrown
       }
       
@@ -359,8 +359,8 @@ describe("Error Handling", () => {
       
       try {
         handleVotingError(originalError);
-      } catch (error) {
-        const trpcError = error as TRPCError;
+      } catch (err) {
+        const trpcError = err as TRPCError;
         expect(trpcError.cause).toBe(originalError);
         expect(trpcError.cause?.name).toBe("DuplicateVoteError");
         expect(trpcError.cause?.message).toBe("Already voted");
@@ -373,8 +373,8 @@ describe("Error Handling", () => {
       
       try {
         handleVotingError(error);
-      } catch (trpcError) {
-        expect((trpcError as TRPCError).cause).toBe(error);
+      } catch (trpcErr) {
+        expect((trpcErr as TRPCError).cause).toBe(error);
         expect((error as RateLimitError).retryAfter).toBe(120);
       }
     });
@@ -389,7 +389,7 @@ describe("Error Handling", () => {
       
       try {
         await safeExecute(mockOperation, "test operation");
-      } catch (error) {
+      } catch {
         // Should not throw during logging
       }
       
@@ -404,8 +404,8 @@ describe("Error Handling", () => {
       
       try {
         handleVotingError(sensitiveError);
-      } catch (error) {
-        const trpcError = error as TRPCError;
+      } catch (err) {
+        const trpcError = err as TRPCError;
         expect(trpcError.message).toBe("An unexpected error occurred");
         expect(trpcError.message).not.toContain("secret123");
       }
@@ -422,8 +422,8 @@ describe("Error Handling", () => {
       userErrors.forEach(error => {
         try {
           handleVotingError(error);
-        } catch (trpcError) {
-          const message = (trpcError as TRPCError).message;
+        } catch (trpcErr) {
+          const message = (trpcErr as TRPCError).message;
           expect(message).toBeDefined();
           expect(message.length).toBeGreaterThan(0);
           expect(message).not.toContain("undefined");

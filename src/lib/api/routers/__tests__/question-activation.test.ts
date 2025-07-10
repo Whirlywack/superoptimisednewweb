@@ -1,5 +1,4 @@
 import { describe, it, expect, jest, beforeEach } from "@jest/globals";
-import { TRPCError } from "@trpc/server";
 import { adminRouter } from "../adminRouter";
 import { questionRouter } from "../questionRouter";
 import { voteRouter } from "../voteRouter";
@@ -307,7 +306,7 @@ describe("Question Activation/Deactivation Logic", () => {
     });
 
     it("should not return questions that are not yet started", async () => {
-      const futureQuestion = createMockQuestion({
+      const _futureQuestion = createMockQuestion({
         id: "question-1",
         isActive: true,
         startDate: new Date("2024-01-31T10:00:00Z"), // Future start date
@@ -325,7 +324,7 @@ describe("Question Activation/Deactivation Logic", () => {
     });
 
     it("should not return questions that have expired", async () => {
-      const expiredQuestion = createMockQuestion({
+      const _expiredQuestion = createMockQuestion({
         id: "question-1",
         isActive: true,
         startDate: null,
@@ -343,7 +342,7 @@ describe("Question Activation/Deactivation Logic", () => {
     });
 
     it("should not return questions that are manually deactivated", async () => {
-      const deactivatedQuestion = createMockQuestion({
+      const _deactivatedQuestion = createMockQuestion({
         id: "question-1",
         isActive: false,
         startDate: null,

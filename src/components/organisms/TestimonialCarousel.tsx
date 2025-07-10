@@ -163,7 +163,7 @@ export function TestimonialCarousel({
           size === "sm" ? "text-base" : size === "md" ? "text-lg" : "text-xl",
           variant === "centered" && "text-center"
         )}>
-          "{testimonial.content}"
+          &ldquo;{testimonial.content}&rdquo;
         </blockquote>
 
         {/* Rating */}

@@ -6,15 +6,7 @@ import { Link } from "@/components/ui/Typography";
 import type { 
   Mail} from "lucide-react";
 import { 
-  MessageCircle, 
-  Github, 
-  Twitter, 
-  Linkedin,
-  Globe,
   Send,
-  User,
-  Phone,
-  MapPin,
   Clock,
   CheckCircle,
   AlertCircle,
@@ -120,7 +112,7 @@ export function ContactSection({
       await onSubmit(formData);
       setSubmitStatus("success");
       setFormData({});
-    } catch (error) {
+    } catch {
       setSubmitStatus("error");
     } finally {
       setIsSubmitting(false);
@@ -250,7 +242,7 @@ export function ContactSection({
         {submitStatus === "success" && (
           <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
             <LucideIcon icon={CheckCircle} size="sm" />
-            <span>Message sent successfully! We'll get back to you soon.</span>
+            <span>Message sent successfully! We&apos;ll get back to you soon.</span>
           </div>
         )}
         

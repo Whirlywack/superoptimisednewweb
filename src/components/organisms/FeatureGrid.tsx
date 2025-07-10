@@ -7,21 +7,8 @@ import { Tag } from "@/components/ui/Tag";
 import type { 
   Zap} from "lucide-react";
 import { 
-  Shield, 
-  Globe, 
-  Code, 
-  Users, 
   ArrowRight,
-  Check,
-  Star,
-  Lightbulb,
-  Target,
-  Heart,
-  Cpu,
-  Lock,
-  Smartphone,
-  Search,
-  BarChart
+  Star
 } from "lucide-react";
 
 interface Feature {

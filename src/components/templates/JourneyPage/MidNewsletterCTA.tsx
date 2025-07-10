@@ -61,7 +61,7 @@ export function MidNewsletterCTA() {
               Check Your Email!
             </h3>
             <p className="mx-auto mb-lg max-w-[50ch] text-base leading-relaxed text-warm-gray">
-              We've sent you a confirmation link. Click it to complete your subscription and 
+              We&apos;ve sent you a confirmation link. Click it to complete your subscription and 
               stay updated on all the major decisions.
             </p>
           </div>
@@ -81,7 +81,7 @@ export function MidNewsletterCTA() {
           }}
         >
           <h3 className="mb-md text-xl font-semibold text-off-black">
-            Don't Miss the Next Decision
+            Don&apos;t Miss the Next Decision
           </h3>
           <p className="mx-auto mb-lg max-w-[50ch] text-base leading-relaxed text-warm-gray">
             Major technical choices happen weekly. Get the full context and influence the direction 

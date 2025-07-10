@@ -9,15 +9,12 @@ import {
   Target, 
   Calendar, 
   Clock, 
-  Zap, 
   ArrowRight,
   Activity,
   CheckCircle2,
   Circle,
   AlertCircle,
-  TrendingUp,
-  Users,
-  MessageCircle
+  TrendingUp
 } from "lucide-react";
 
 interface Milestone {

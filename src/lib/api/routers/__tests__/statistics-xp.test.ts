@@ -330,7 +330,7 @@ describe("Statistics and XP Calculation", () => {
         _sum: { xpAmount: 50000 },
       };
 
-      const mockUniqueVoters = { _count: { voterTokenId: 250 } };
+      const _mockUniqueVoters = { _count: { voterTokenId: 250 } };
 
       mockPrisma.questionResponse.aggregate.mockResolvedValue(mockVoteStats);
       mockPrisma.questionResponse.count.mockResolvedValue(250);

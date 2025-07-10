@@ -211,7 +211,7 @@ export function FAQAccordion({
         {searchQuery && filteredFAQs.length === 0 && (
           <div className="py-8 text-center text-warm-gray">
             <LucideIcon icon={Search} size="lg" className="mx-auto mb-3 opacity-50" />
-            <p>No FAQs found matching "{searchQuery}"</p>
+            <p>No FAQs found matching &ldquo;{searchQuery}&rdquo;</p>
           </div>
         )}
       </div>
@@ -284,7 +284,7 @@ export function FAQAccordion({
           <div className="py-12 text-center text-warm-gray">
             <LucideIcon icon={Search} size="xl" className="mx-auto mb-4 opacity-50" />
             <h3 className="mb-2 text-lg font-medium">No results found</h3>
-            <p>No FAQs found matching "{searchQuery}". Try different keywords or browse all questions.</p>
+            <p>No FAQs found matching &ldquo;{searchQuery}&rdquo;. Try different keywords or browse all questions.</p>
           </div>
         )}
       </div>

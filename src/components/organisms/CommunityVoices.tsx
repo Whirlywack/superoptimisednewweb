@@ -115,7 +115,7 @@ export function CommunityVoices({
 
         {/* Content */}
         <p className="relative z-10 pr-8 leading-relaxed text-warm-gray">
-          "{quote.content}"
+          &ldquo;{quote.content}&rdquo;
         </p>
 
         {/* Footer */}

@@ -65,11 +65,6 @@ export function Divider({
   }
 
   if (label) {
-    const labelPositionStyles = {
-      left: "justify-start",
-      center: "justify-center", 
-      right: "justify-end",
-    };
 
     return (
       <div

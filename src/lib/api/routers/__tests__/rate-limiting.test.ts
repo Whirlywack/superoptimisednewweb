@@ -30,7 +30,7 @@ import {
 const mockPrisma = prisma as jest.Mocked<typeof prisma>;
 const mockGetVoterRateLimit = getVoterRateLimit as jest.MockedFunction<typeof getVoterRateLimit>;
 const mockIncrementRateLimit = incrementRateLimit as jest.MockedFunction<typeof incrementRateLimit>;
-const mockCleanupExpiredRateLimits = cleanupExpiredRateLimits as jest.MockedFunction<typeof cleanupExpiredRateLimits>;
+const _mockCleanupExpiredRateLimits = cleanupExpiredRateLimits as jest.MockedFunction<typeof cleanupExpiredRateLimits>;
 
 describe("Rate Limiting", () => {
   beforeEach(() => {

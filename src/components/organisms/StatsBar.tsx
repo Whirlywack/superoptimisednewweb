@@ -5,21 +5,8 @@ import { Link } from "@/components/ui/Typography";
 import type { 
   FileText} from "lucide-react";
 import { 
-  Clock, 
-  Folder, 
-  Users, 
-  GitCommit,
   Star,
-  Eye,
-  Download,
-  Heart,
-  MessageCircle,
-  TrendingUp,
-  Calendar,
-  Activity,
-  Globe,
-  Code,
-  Database
+  TrendingUp
 } from "lucide-react";
 
 interface Stat {

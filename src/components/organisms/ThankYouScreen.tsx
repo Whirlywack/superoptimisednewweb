@@ -269,7 +269,7 @@ export function ThankYouScreen({
         {nextSteps.length > 0 && (
           <div className="space-y-6">
             <H2 className="text-center text-2xl font-semibold text-off-black dark:text-off-white">
-              What's next?
+              What&apos;s next?
             </H2>
             
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">

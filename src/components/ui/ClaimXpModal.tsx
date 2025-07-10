@@ -45,7 +45,7 @@ export function ClaimXpModal({ isOpen, onClose, currentXp, voterTokenHash }: Cla
         email,
         voterTokenHash,
       });
-    } catch (error) {
+    } catch {
       // Error handled by mutation's onError
     }
   };
@@ -120,7 +120,7 @@ export function ClaimXpModal({ isOpen, onClose, currentXp, voterTokenHash }: Cla
                   />
                 </div>
                 <p className="mt-1 text-xs text-warm-gray">
-                  We'll send you a magic link to claim your XP securely
+                  We&apos;ll send you a magic link to claim your XP securely
                 </p>
               </div>
 
@@ -154,11 +154,11 @@ export function ClaimXpModal({ isOpen, onClose, currentXp, voterTokenHash }: Cla
               Verification Email Sent!
             </h3>
             <p className="mb-4 text-sm text-warm-gray">
-              We've sent a secure magic link to <strong>{email}</strong>. 
+              We&apos;ve sent a secure magic link to <strong>{email}</strong>. 
               Click the link to complete your XP claim.
             </p>
             <p className="text-xs text-warm-gray">
-              Check your spam folder if you don't see the email within a few minutes.
+              Check your spam folder if you don&apos;t see the email within a few minutes.
             </p>
             <button
               onClick={handleClose}

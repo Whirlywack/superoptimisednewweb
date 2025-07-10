@@ -426,7 +426,7 @@ export function SearchResults({
           {showStats && (
             <div className="flex items-center justify-between gap-4 text-sm text-warm-gray">
               <div>
-                {totalResults.toLocaleString()} results for "{query}"
+                {totalResults.toLocaleString()} results for &ldquo;{query}&rdquo;
                 {searchTime && (
                   <span className="ml-2">({searchTime.toFixed(2)}s)</span>
                 )}
