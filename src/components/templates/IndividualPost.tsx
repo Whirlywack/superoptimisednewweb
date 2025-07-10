@@ -3,9 +3,9 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { LucideIcon } from "@/components/ui/Icon";
 import { Link } from "@/components/ui/Typography";
-import { 
-  Calendar, 
-  Clock, 
+import {
+  Calendar,
+  Clock,
   User,
   Heart,
   MessageCircle,
@@ -14,12 +14,9 @@ import {
   Tag,
   ArrowLeft,
   ArrowRight,
-  ChevronUp,
-  ChevronDown,
   Reply,
   Send,
   MoreVertical,
-  Flag,
   Edit,
   Trash2,
   Github,
@@ -27,8 +24,7 @@ import {
   Linkedin,
   Copy,
   CheckCircle,
-  TrendingUp,
-  Eye
+  Eye,
 } from "lucide-react";
 
 interface Author {
@@ -137,10 +133,10 @@ export function IndividualPost({
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
@@ -149,7 +145,7 @@ export function IndividualPost({
     const now = new Date();
     const diff = now.getTime() - date.getTime();
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    
+
     if (days === 0) return "Today";
     if (days === 1) return "Yesterday";
     if (days < 7) return `${days} days ago`;
@@ -161,7 +157,7 @@ export function IndividualPost({
   const handleShare = async (platform?: string) => {
     const url = window.location.href;
     const text = `${post.title} by ${post.author.name}`;
-    
+
     if (platform === "copy") {
       try {
         await navigator.clipboard.writeText(url);
@@ -171,11 +167,17 @@ export function IndividualPost({
         console.error("Failed to copy:", err);
       }
     } else if (platform === "twitter") {
-      window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+      window.open(
+        `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
+        "_blank"
+      );
     } else if (platform === "linkedin") {
-      window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
+      window.open(
+        `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+        "_blank"
+      );
     }
-    
+
     if (onShare && platform) {
       onShare(platform);
     }
@@ -224,18 +226,14 @@ export function IndividualPost({
                 {comment.author.role}
               </span>
             )}
-            <span className="text-sm text-warm-gray">
-              {formatRelativeTime(comment.createdAt)}
-            </span>
+            <span className="text-sm text-warm-gray">{formatRelativeTime(comment.createdAt)}</span>
             {comment.updatedAt && comment.updatedAt !== comment.createdAt && (
               <span className="text-xs text-warm-gray">(edited)</span>
             )}
           </div>
 
           {/* Comment Content */}
-          <div className="leading-relaxed text-warm-gray">
-            {comment.content}
-          </div>
+          <div className="leading-relaxed text-warm-gray">{comment.content}</div>
 
           {/* Comment Actions */}
           <div className="flex items-center gap-4 text-sm">
@@ -249,7 +247,7 @@ export function IndividualPost({
               <LucideIcon icon={Heart} size="xs" />
               <span>{comment.likes}</span>
             </button>
-            
+
             <button
               onClick={() => setReplyTo(comment.id)}
               className="flex items-center gap-1 text-warm-gray transition-colors hover:text-primary"
@@ -279,7 +277,7 @@ export function IndividualPost({
       {/* Replies */}
       {comment.replies && comment.replies.length > 0 && (
         <div className="space-y-4">
-          {comment.replies.map(reply => renderComment(reply, true))}
+          {comment.replies.map((reply) => renderComment(reply, true))}
         </div>
       )}
     </div>
@@ -313,7 +311,7 @@ export function IndividualPost({
               <LucideIcon icon={Calendar} size="xs" />
               <time>{formatDate(post.publishedAt)}</time>
             </div>
-            
+
             <div className="flex items-center gap-1">
               <LucideIcon icon={Clock} size="xs" />
               <span>{post.readTime}</span>
@@ -332,12 +330,12 @@ export function IndividualPost({
                   <LucideIcon icon={Eye} size="xs" />
                   <span>{post.stats.views.toLocaleString()} views</span>
                 </div>
-                
+
                 <div className="flex items-center gap-1">
                   <LucideIcon icon={Heart} size="xs" />
                   <span>{post.stats.likes} likes</span>
                 </div>
-                
+
                 <div className="flex items-center gap-1">
                   <LucideIcon icon={MessageCircle} size="xs" />
                   <span>{post.stats.comments} comments</span>
@@ -381,11 +379,7 @@ export function IndividualPost({
             </Button>
 
             <div className="relative">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowShareMenu(!showShareMenu)}
-              >
+              <Button variant="outline" size="sm" onClick={() => setShowShareMenu(!showShareMenu)}>
                 <LucideIcon icon={Share} size="xs" />
               </Button>
 
@@ -420,7 +414,7 @@ export function IndividualPost({
 
         {/* Post Content */}
         <div className="prose mb-12 max-w-none">
-          <div 
+          <div
             className="text-lg leading-relaxed text-warm-gray"
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
@@ -449,23 +443,33 @@ export function IndividualPost({
                 {post.author.role && (
                   <p className="text-sm font-medium text-primary">{post.author.role}</p>
                 )}
-                {post.author.bio && (
-                  <p className="text-warm-gray">{post.author.bio}</p>
-                )}
+                {post.author.bio && <p className="text-warm-gray">{post.author.bio}</p>}
                 {post.author.social && (
                   <div className="flex items-center gap-3">
                     {post.author.social.github && (
-                      <Link href={post.author.social.github} external className="text-warm-gray hover:text-primary">
+                      <Link
+                        href={post.author.social.github}
+                        external
+                        className="text-warm-gray hover:text-primary"
+                      >
                         <LucideIcon icon={Github} size="sm" />
                       </Link>
                     )}
                     {post.author.social.twitter && (
-                      <Link href={post.author.social.twitter} external className="text-warm-gray hover:text-primary">
+                      <Link
+                        href={post.author.social.twitter}
+                        external
+                        className="text-warm-gray hover:text-primary"
+                      >
                         <LucideIcon icon={Twitter} size="sm" />
                       </Link>
                     )}
                     {post.author.social.linkedin && (
-                      <Link href={post.author.social.linkedin} external className="text-warm-gray hover:text-primary">
+                      <Link
+                        href={post.author.social.linkedin}
+                        external
+                        className="text-warm-gray hover:text-primary"
+                      >
                         <LucideIcon icon={Linkedin} size="sm" />
                       </Link>
                     )}
@@ -503,19 +507,14 @@ export function IndividualPost({
                   )}
                 />
               </div>
-              
+
               <div className="flex items-center justify-between">
                 {replyTo && (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setReplyTo(null)}
-                  >
+                  <Button type="button" variant="ghost" size="sm" onClick={() => setReplyTo(null)}>
                     Cancel Reply
                   </Button>
                 )}
-                
+
                 <Button
                   type="submit"
                   variant="primary"
@@ -530,9 +529,7 @@ export function IndividualPost({
             </form>
 
             {/* Comments List */}
-            <div className="space-y-6">
-              {comments.map(comment => renderComment(comment))}
-            </div>
+            <div className="space-y-6">{comments.map((comment) => renderComment(comment))}</div>
 
             {comments.length === 0 && (
               <div className="py-8 text-center text-warm-gray">
@@ -546,10 +543,8 @@ export function IndividualPost({
         {/* Related Posts */}
         {showRelated && relatedPosts.length > 0 && (
           <div className="mb-8 space-y-6">
-            <h2 className="text-2xl font-bold text-off-black dark:text-off-white">
-              Related Posts
-            </h2>
-            
+            <h2 className="text-2xl font-bold text-off-black dark:text-off-white">Related Posts</h2>
+
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {relatedPosts.map((relatedPost) => (
                 <article
@@ -561,9 +556,7 @@ export function IndividualPost({
                       {relatedPost.title}
                     </Link>
                   </h3>
-                  <p className="text-sm leading-relaxed text-warm-gray">
-                    {relatedPost.excerpt}
-                  </p>
+                  <p className="text-sm leading-relaxed text-warm-gray">{relatedPost.excerpt}</p>
                   <div className="flex items-center gap-4 text-xs text-warm-gray">
                     <span>{formatDate(relatedPost.publishedAt)}</span>
                     <span>{relatedPost.readTime}</span>
@@ -579,7 +572,10 @@ export function IndividualPost({
           <nav className="flex items-center justify-between gap-4 border-t border-light-gray pt-8 dark:border-warm-gray/30">
             <div className="flex-1">
               {previousPost && (
-                <Link href={previousPost.href} className="group flex items-center gap-2 text-warm-gray no-underline hover:text-primary">
+                <Link
+                  href={previousPost.href}
+                  className="group flex items-center gap-2 text-warm-gray no-underline hover:text-primary"
+                >
                   <LucideIcon icon={ArrowLeft} size="sm" />
                   <div>
                     <div className="text-xs">Previous</div>
@@ -588,10 +584,13 @@ export function IndividualPost({
                 </Link>
               )}
             </div>
-            
+
             <div className="flex-1 text-right">
               {nextPost && (
-                <Link href={nextPost.href} className="group flex items-center justify-end gap-2 text-warm-gray no-underline hover:text-primary">
+                <Link
+                  href={nextPost.href}
+                  className="group flex items-center justify-end gap-2 text-warm-gray no-underline hover:text-primary"
+                >
                   <div>
                     <div className="text-xs">Next</div>
                     <div className="font-medium group-hover:underline">{nextPost.title}</div>

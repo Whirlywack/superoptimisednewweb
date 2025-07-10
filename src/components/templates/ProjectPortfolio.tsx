@@ -3,29 +3,26 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { LucideIcon } from "@/components/ui/Icon";
 import { Link } from "@/components/ui/Typography";
-import { 
-  Filter, 
-  Search, 
-  Grid, 
+import {
+  Filter,
+  Search,
+  Grid,
   List,
   ChevronDown,
   Calendar,
   Code,
-  ExternalLink,
   Github,
   Globe,
   Star,
-  Eye,
   Users,
   TrendingUp,
   Clock,
-  Tag,
   ArrowRight,
   Play,
   CheckCircle,
   AlertCircle,
   Pause,
-  Lightbulb
+  Lightbulb,
 } from "lucide-react";
 
 interface Project {
@@ -100,7 +97,7 @@ export function ProjectPortfolio({
   });
 
   const categories = React.useMemo(() => {
-    const cats = Array.from(new Set(projects.map(p => p.category))).sort();
+    const cats = Array.from(new Set(projects.map((p) => p.category))).sort();
     return ["all", ...cats];
   }, [projects]);
 
@@ -114,21 +111,23 @@ export function ProjectPortfolio({
   ];
 
   const technologies = React.useMemo(() => {
-    const techs = Array.from(new Set(projects.flatMap(p => p.technologies))).sort();
+    const techs = Array.from(new Set(projects.flatMap((p) => p.technologies))).sort();
     return ["all", ...techs];
   }, [projects]);
 
   const filteredProjects = React.useMemo(() => {
-    return projects.filter(project => {
-      const matchesSearch = !searchQuery.trim() || 
+    return projects.filter((project) => {
+      const matchesSearch =
+        !searchQuery.trim() ||
         project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         project.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        project.technologies.some(tech => tech.toLowerCase().includes(searchQuery.toLowerCase()));
-      
+        project.technologies.some((tech) => tech.toLowerCase().includes(searchQuery.toLowerCase()));
+
       const matchesCategory = filters.category === "all" || project.category === filters.category;
       const matchesStatus = filters.status === "all" || project.status === filters.status;
-      const matchesTechnology = filters.technology === "all" || project.technologies.includes(filters.technology);
-      
+      const matchesTechnology =
+        filters.technology === "all" || project.technologies.includes(filters.technology);
+
       return matchesSearch && matchesCategory && matchesStatus && matchesTechnology;
     });
   }, [projects, searchQuery, filters]);
@@ -184,15 +183,15 @@ export function ProjectPortfolio({
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
     });
   };
 
   const renderProjectCard = (project: Project) => {
     const StatusIcon = getStatusIcon(project.status);
-    
+
     return (
       <article
         key={project.id}
@@ -205,15 +204,13 @@ export function ProjectPortfolio({
       >
         {/* Project Image */}
         {project.image && (
-          <div className={cn(
-            "relative aspect-video overflow-hidden bg-light-gray dark:bg-warm-gray/20",
-            currentViewMode === "list" && "aspect-auto h-32 w-48 shrink-0"
-          )}>
-            <img
-              src={project.image}
-              alt={project.title}
-              className="size-full object-cover"
-            />
+          <div
+            className={cn(
+              "relative aspect-video overflow-hidden bg-light-gray dark:bg-warm-gray/20",
+              currentViewMode === "list" && "aspect-auto h-32 w-48 shrink-0"
+            )}
+          >
+            <img src={project.image} alt={project.title} className="size-full object-cover" />
             {project.buildingInPublic && (
               <div className="absolute left-3 top-3 rounded bg-primary/90 px-2 py-1 text-xs font-medium text-off-white">
                 Building in Public
@@ -227,10 +224,12 @@ export function ProjectPortfolio({
           </div>
         )}
 
-        <div className={cn(
-          "flex-1 space-y-4 p-6",
-          !project.image && currentViewMode === "grid" && "pt-6"
-        )}>
+        <div
+          className={cn(
+            "flex-1 space-y-4 p-6",
+            !project.image && currentViewMode === "grid" && "pt-6"
+          )}
+        >
           {/* Header */}
           <div className="space-y-3">
             <div className="flex items-start justify-between gap-4">
@@ -239,24 +238,26 @@ export function ProjectPortfolio({
                   {project.title}
                 </h3>
                 <div className="flex items-center gap-2">
-                  <span className={cn(
-                    "inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium capitalize",
-                    getStatusColor(project.status)
-                  )}>
+                  <span
+                    className={cn(
+                      "inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium capitalize",
+                      getStatusColor(project.status)
+                    )}
+                  >
                     <LucideIcon icon={StatusIcon} size="xs" />
-                    {project.status.replace('-', ' ')}
+                    {project.status.replace("-", " ")}
                   </span>
                   <span className="text-xs text-warm-gray">{project.category}</span>
                 </div>
               </div>
-              
+
               {project.progress !== undefined && project.status === "in-progress" && (
                 <div className="text-right">
                   <div className="text-sm font-medium text-off-black dark:text-off-white">
                     {project.progress}%
                   </div>
                   <div className="mt-1 h-2 w-16 rounded-full bg-light-gray dark:bg-warm-gray/30">
-                    <div 
+                    <div
                       className="h-2 rounded-full bg-primary"
                       style={{ width: `${project.progress}%` }}
                     />
@@ -265,9 +266,7 @@ export function ProjectPortfolio({
               )}
             </div>
 
-            <p className="leading-relaxed text-warm-gray">
-              {project.description}
-            </p>
+            <p className="leading-relaxed text-warm-gray">{project.description}</p>
           </div>
 
           {/* Technologies */}
@@ -379,15 +378,15 @@ export function ProjectPortfolio({
   };
 
   const renderFilters = () => (
-    <div className={cn(
-      "space-y-4 rounded-lg bg-light-gray/50 p-4 dark:bg-warm-gray/10",
-      showFiltersPanel ? "block" : "hidden lg:block"
-    )}>
+    <div
+      className={cn(
+        "space-y-4 rounded-lg bg-light-gray/50 p-4 dark:bg-warm-gray/10",
+        showFiltersPanel ? "block" : "hidden lg:block"
+      )}
+    >
       {/* Category Filter */}
       <div className="space-y-2">
-        <label className="text-sm font-medium text-off-black dark:text-off-white">
-          Category
-        </label>
+        <label className="text-sm font-medium text-off-black dark:text-off-white">Category</label>
         <select
           value={filters.category}
           onChange={(e) => handleFilterChange({ category: e.target.value })}
@@ -403,9 +402,7 @@ export function ProjectPortfolio({
 
       {/* Status Filter */}
       <div className="space-y-2">
-        <label className="text-sm font-medium text-off-black dark:text-off-white">
-          Status
-        </label>
+        <label className="text-sm font-medium text-off-black dark:text-off-white">Status</label>
         <select
           value={filters.status}
           onChange={(e) => handleFilterChange({ status: e.target.value })}
@@ -421,9 +418,7 @@ export function ProjectPortfolio({
 
       {/* Technology Filter */}
       <div className="space-y-2">
-        <label className="text-sm font-medium text-off-black dark:text-off-white">
-          Technology
-        </label>
+        <label className="text-sm font-medium text-off-black dark:text-off-white">Technology</label>
         <select
           value={filters.technology}
           onChange={(e) => handleFilterChange({ technology: e.target.value })}
@@ -505,9 +500,9 @@ export function ProjectPortfolio({
                   <LucideIcon icon={ChevronDown} size="xs" className="ml-2" />
                 </Button>
               )}
-              
+
               <span className="text-sm text-warm-gray">
-                {filteredProjects.length} project{filteredProjects.length !== 1 ? 's' : ''}
+                {filteredProjects.length} project{filteredProjects.length !== 1 ? "s" : ""}
               </span>
             </div>
 
@@ -531,28 +526,21 @@ export function ProjectPortfolio({
         </div>
 
         {/* Content */}
-        <div className={cn(
-          "grid gap-8",
-          showFilters ? "lg:grid-cols-4" : "grid-cols-1"
-        )}>
+        <div className={cn("grid gap-8", showFilters ? "lg:grid-cols-4" : "grid-cols-1")}>
           {/* Filters Sidebar */}
-          {showFilters && (
-            <div className="lg:col-span-1">
-              {renderFilters()}
-            </div>
-          )}
+          {showFilters && <div className="lg:col-span-1">{renderFilters()}</div>}
 
           {/* Projects Grid */}
-          <div className={cn(
-            showFilters ? "lg:col-span-3" : "col-span-1"
-          )}>
+          <div className={cn(showFilters ? "lg:col-span-3" : "col-span-1")}>
             {filteredProjects.length > 0 ? (
-              <div className={cn(
-                "gap-6",
-                currentViewMode === "grid" 
-                  ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" 
-                  : "flex flex-col space-y-6"
-              )}>
+              <div
+                className={cn(
+                  "gap-6",
+                  currentViewMode === "grid"
+                    ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+                    : "flex flex-col space-y-6"
+                )}
+              >
                 {filteredProjects.map(renderProjectCard)}
               </div>
             ) : (

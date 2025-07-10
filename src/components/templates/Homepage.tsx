@@ -3,26 +3,16 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { LucideIcon } from "@/components/ui/Icon";
 import { Link } from "@/components/ui/Typography";
-import type {
-  Zap} from "lucide-react";
-import { 
-  ArrowRight, 
-  Star, 
-  Users, 
-  Heart,
-  Github,
-  ExternalLink,
+import type { Zap } from "lucide-react";
+import {
+  ArrowRight,
+  Star,
   Quote,
   Calendar,
-  TrendingUp,
   MessageCircle,
-  Shield,
-  Globe,
-  Code,
-  BookOpen,
   Play,
   CheckCircle,
-  ChevronRight
+  ChevronRight,
 } from "lucide-react";
 
 interface HeroProps {
@@ -35,7 +25,7 @@ interface HeroProps {
   secondaryCtaHref?: string;
   onPrimaryCtaClick?: () => void;
   onSecondaryCtaClick?: () => void;
-  stats?: Array<{ value: string; label: string; }>;
+  stats?: Array<{ value: string; label: string }>;
 }
 
 interface FeatureProps {
@@ -87,7 +77,7 @@ interface HomepageProps extends React.HTMLAttributes<HTMLElement> {
   showCommunity?: boolean;
   communityTitle?: string;
   communityDescription?: string;
-  communityStats?: Array<{ value: string; label: string; }>;
+  communityStats?: Array<{ value: string; label: string }>;
   ctaTitle?: string;
   ctaDescription?: string;
   ctaText?: string;
@@ -117,7 +107,6 @@ export function Homepage({
   className,
   ...props
 }: HomepageProps) {
-
   const getStatusColor = (status: string) => {
     switch (status) {
       case "completed":
@@ -142,39 +131,41 @@ export function Homepage({
               <h1 className="text-4xl font-bold leading-tight text-off-black dark:text-off-white lg:text-6xl">
                 {hero.title}
               </h1>
-              <p className="text-xl font-medium text-primary lg:text-2xl">
-                {hero.subtitle}
-              </p>
+              <p className="text-xl font-medium text-primary lg:text-2xl">{hero.subtitle}</p>
             </div>
             <p className="mx-auto max-w-3xl text-lg leading-relaxed text-warm-gray lg:text-xl">
               {hero.description}
             </p>
           </div>
-          
+
           <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Button 
-              variant="primary" 
+            <Button
+              variant="primary"
               size="lg"
               onClick={hero.onPrimaryCtaClick}
-              {...(hero.primaryCtaHref && !hero.onPrimaryCtaClick ? { href: hero.primaryCtaHref } : {})}
+              {...(hero.primaryCtaHref && !hero.onPrimaryCtaClick
+                ? { href: hero.primaryCtaHref }
+                : {})}
             >
               {hero.primaryCtaText}
               <LucideIcon icon={ArrowRight} size="sm" className="ml-2" />
             </Button>
-            
+
             {hero.secondaryCtaText && (
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="lg"
                 onClick={hero.onSecondaryCtaClick}
-                {...(hero.secondaryCtaHref && !hero.onSecondaryCtaClick ? { href: hero.secondaryCtaHref } : {})}
+                {...(hero.secondaryCtaHref && !hero.onSecondaryCtaClick
+                  ? { href: hero.secondaryCtaHref }
+                  : {})}
               >
                 <LucideIcon icon={Play} size="sm" className="mr-2" />
                 {hero.secondaryCtaText}
               </Button>
             )}
           </div>
-          
+
           {hero.stats && hero.stats.length > 0 && (
             <div className="flex flex-wrap items-center justify-center gap-8 text-sm text-warm-gray">
               {hero.stats.map((stat, index) => (
@@ -195,7 +186,7 @@ export function Homepage({
 
   const renderFeatures = () => {
     if (!features.length) return null;
-    
+
     return (
       <section className="py-20 lg:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -207,7 +198,7 @@ export function Homepage({
               Discover the benefits of transparent development and community-driven building
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {features.map((feature, index) => (
               <div
@@ -216,7 +207,7 @@ export function Homepage({
                   "space-y-4 rounded-lg border border-light-gray bg-off-white p-6 transition-colors dark:border-warm-gray/30 dark:bg-off-black",
                   feature.href && "cursor-pointer hover:border-primary/50"
                 )}
-                {...(feature.href ? { onClick: () => window.location.href = feature.href } : {})}
+                {...(feature.href ? { onClick: () => (window.location.href = feature.href) } : {})}
               >
                 <div className="flex size-12 items-center justify-center rounded-lg bg-primary/10">
                   <LucideIcon icon={feature.icon} size="md" className="text-primary" />
@@ -224,9 +215,7 @@ export function Homepage({
                 <h3 className="text-xl font-semibold text-off-black dark:text-off-white">
                   {feature.title}
                 </h3>
-                <p className="leading-relaxed text-warm-gray">
-                  {feature.description}
-                </p>
+                <p className="leading-relaxed text-warm-gray">{feature.description}</p>
                 {feature.href && (
                   <div className="flex items-center text-sm font-medium text-primary">
                     Learn more
@@ -243,7 +232,7 @@ export function Homepage({
 
   const renderTestimonials = () => {
     if (!testimonials.length) return null;
-    
+
     return (
       <section className="bg-light-gray/50 py-20 dark:bg-warm-gray/5 lg:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -255,7 +244,7 @@ export function Homepage({
               Feedback from our amazing community of builders and creators
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {testimonials.slice(0, 6).map((testimonial, index) => (
               <div
@@ -268,11 +257,11 @@ export function Homepage({
                 <div className="flex justify-start">
                   <LucideIcon icon={Quote} size="sm" className="text-primary" />
                 </div>
-                
+
                 <blockquote className="leading-relaxed text-warm-gray">
                   &ldquo;{testimonial.content}&rdquo;
                 </blockquote>
-                
+
                 <div className="flex items-center gap-3">
                   {testimonial.avatar ? (
                     <img
@@ -287,7 +276,7 @@ export function Homepage({
                       </span>
                     </div>
                   )}
-                  
+
                   <div>
                     <p className="font-medium text-off-black dark:text-off-white">
                       {testimonial.author}
@@ -308,7 +297,7 @@ export function Homepage({
 
   const renderCurrentProjects = () => {
     if (!currentProjects.length) return null;
-    
+
     return (
       <section className="py-20 lg:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -321,12 +310,15 @@ export function Homepage({
                 Follow along as we build these projects in public
               </p>
             </div>
-            <Link href="/projects" className="hidden items-center font-medium text-primary no-underline sm:flex">
+            <Link
+              href="/projects"
+              className="hidden items-center font-medium text-primary no-underline sm:flex"
+            >
               View All Projects
               <LucideIcon icon={ChevronRight} size="sm" className="ml-1" />
             </Link>
           </div>
-          
+
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
             {currentProjects.slice(0, 4).map((project) => (
               <div
@@ -341,21 +333,23 @@ export function Homepage({
                     <h3 className="text-xl font-semibold text-off-black dark:text-off-white">
                       {project.title}
                     </h3>
-                    <span className={cn(
-                      "inline-flex items-center rounded px-2 py-1 text-xs font-medium capitalize",
-                      getStatusColor(project.status)
-                    )}>
-                      {project.status.replace('-', ' ')}
+                    <span
+                      className={cn(
+                        "inline-flex items-center rounded px-2 py-1 text-xs font-medium capitalize",
+                        getStatusColor(project.status)
+                      )}
+                    >
+                      {project.status.replace("-", " ")}
                     </span>
                   </div>
-                  
+
                   {project.progress !== undefined && (
                     <div className="text-right">
                       <div className="text-sm font-medium text-off-black dark:text-off-white">
                         {project.progress}%
                       </div>
                       <div className="mt-1 h-2 w-16 rounded-full bg-light-gray dark:bg-warm-gray/30">
-                        <div 
+                        <div
                           className="h-2 rounded-full bg-primary"
                           style={{ width: `${project.progress}%` }}
                         />
@@ -363,11 +357,9 @@ export function Homepage({
                     </div>
                   )}
                 </div>
-                
-                <p className="leading-relaxed text-warm-gray">
-                  {project.description}
-                </p>
-                
+
+                <p className="leading-relaxed text-warm-gray">{project.description}</p>
+
                 <div className="flex flex-wrap gap-2">
                   {project.technologies.slice(0, 4).map((tech) => (
                     <span
@@ -383,9 +375,9 @@ export function Homepage({
                     </span>
                   )}
                 </div>
-                
-                <Link 
-                  href={project.href} 
+
+                <Link
+                  href={project.href}
                   className="inline-flex items-center text-sm font-medium text-primary no-underline"
                 >
                   View Project
@@ -394,9 +386,12 @@ export function Homepage({
               </div>
             ))}
           </div>
-          
+
           <div className="mt-8 text-center sm:hidden">
-            <Link href="/projects" className="inline-flex items-center font-medium text-primary no-underline">
+            <Link
+              href="/projects"
+              className="inline-flex items-center font-medium text-primary no-underline"
+            >
               View All Projects
               <LucideIcon icon={ChevronRight} size="sm" className="ml-1" />
             </Link>
@@ -408,7 +403,7 @@ export function Homepage({
 
   const renderRecentPosts = () => {
     if (!recentPosts.length) return null;
-    
+
     return (
       <section className="bg-light-gray/50 py-20 dark:bg-warm-gray/5 lg:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -421,12 +416,15 @@ export function Homepage({
                 Recent posts from our building in public journey
               </p>
             </div>
-            <Link href="/blog" className="hidden items-center font-medium text-primary no-underline sm:flex">
+            <Link
+              href="/blog"
+              className="hidden items-center font-medium text-primary no-underline sm:flex"
+            >
               View All Posts
               <LucideIcon icon={ChevronRight} size="sm" className="ml-1" />
             </Link>
           </div>
-          
+
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {recentPosts.slice(0, 6).map((post) => (
               <article
@@ -440,11 +438,9 @@ export function Homepage({
                   <h3 className="text-lg font-semibold leading-snug text-off-black dark:text-off-white">
                     {post.title}
                   </h3>
-                  <p className="line-clamp-3 leading-relaxed text-warm-gray">
-                    {post.excerpt}
-                  </p>
+                  <p className="line-clamp-3 leading-relaxed text-warm-gray">{post.excerpt}</p>
                 </div>
-                
+
                 <div className="flex items-center justify-between text-sm text-warm-gray">
                   <div className="flex items-center gap-2">
                     <LucideIcon icon={Calendar} size="xs" />
@@ -452,9 +448,9 @@ export function Homepage({
                   </div>
                   <span>{post.readTime}</span>
                 </div>
-                
-                <Link 
-                  href={post.href} 
+
+                <Link
+                  href={post.href}
                   className="inline-flex items-center text-sm font-medium text-primary no-underline"
                 >
                   Read More
@@ -463,9 +459,12 @@ export function Homepage({
               </article>
             ))}
           </div>
-          
+
           <div className="mt-8 text-center sm:hidden">
-            <Link href="/blog" className="inline-flex items-center font-medium text-primary no-underline">
+            <Link
+              href="/blog"
+              className="inline-flex items-center font-medium text-primary no-underline"
+            >
               View All Posts
               <LucideIcon icon={ChevronRight} size="sm" className="ml-1" />
             </Link>
@@ -477,16 +476,14 @@ export function Homepage({
 
   const renderMissionSection = () => {
     if (!showMission) return null;
-    
+
     return (
       <section className="py-20 lg:py-32">
         <div className="mx-auto max-w-4xl space-y-8 px-4 text-center sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-off-black dark:text-off-white lg:text-4xl">
             {missionTitle}
           </h2>
-          <p className="text-lg leading-relaxed text-warm-gray lg:text-xl">
-            {missionContent}
-          </p>
+          <p className="text-lg leading-relaxed text-warm-gray lg:text-xl">{missionContent}</p>
         </div>
       </section>
     );
@@ -494,7 +491,7 @@ export function Homepage({
 
   const renderCommunitySection = () => {
     if (!showCommunity) return null;
-    
+
     return (
       <section className="bg-primary/5 py-20 dark:bg-primary/10 lg:py-32">
         <div className="mx-auto max-w-7xl space-y-12 px-4 text-center sm:px-6 lg:px-8">
@@ -502,26 +499,20 @@ export function Homepage({
             <h2 className="text-3xl font-bold text-off-black dark:text-off-white lg:text-4xl">
               {communityTitle}
             </h2>
-            <p className="mx-auto max-w-2xl text-lg text-warm-gray">
-              {communityDescription}
-            </p>
+            <p className="mx-auto max-w-2xl text-lg text-warm-gray">{communityDescription}</p>
           </div>
-          
+
           {communityStats.length > 0 && (
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
               {communityStats.map((stat, index) => (
                 <div key={index} className="space-y-2">
-                  <div className="text-3xl font-bold text-primary lg:text-4xl">
-                    {stat.value}
-                  </div>
-                  <div className="text-warm-gray">
-                    {stat.label}
-                  </div>
+                  <div className="text-3xl font-bold text-primary lg:text-4xl">{stat.value}</div>
+                  <div className="text-warm-gray">{stat.label}</div>
                 </div>
               ))}
             </div>
           )}
-          
+
           <Button variant="primary" size="lg">
             <LucideIcon icon={MessageCircle} size="sm" className="mr-2" />
             Join Our Community
@@ -538,13 +529,11 @@ export function Homepage({
           <h2 className="text-3xl font-bold text-off-black dark:text-off-white lg:text-4xl">
             {ctaTitle}
           </h2>
-          <p className="text-lg text-warm-gray">
-            {ctaDescription}
-          </p>
+          <p className="text-lg text-warm-gray">{ctaDescription}</p>
         </div>
-        
-        <Button 
-          variant="primary" 
+
+        <Button
+          variant="primary"
           size="lg"
           onClick={onCtaClick}
           {...(ctaHref && !onCtaClick ? { href: ctaHref } : {})}
@@ -552,7 +541,7 @@ export function Homepage({
           {ctaText}
           <LucideIcon icon={ArrowRight} size="sm" className="ml-2" />
         </Button>
-        
+
         <div className="flex items-center justify-center gap-6 text-sm text-warm-gray">
           <div className="flex items-center gap-2">
             <LucideIcon icon={CheckCircle} size="sm" className="text-green-500" />

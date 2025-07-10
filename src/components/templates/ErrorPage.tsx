@@ -3,11 +3,10 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { LucideIcon } from "@/components/ui/Icon";
 import { Link } from "@/components/ui/Typography";
-import { 
-  AlertTriangle, 
-  Home, 
-  ArrowLeft, 
-  RefreshCw, 
+import {
+  AlertTriangle,
+  Home,
+  ArrowLeft,
   Mail,
   Search,
   FileX,
@@ -17,10 +16,9 @@ import {
   Shield,
   ExternalLink,
   MessageCircle,
-  HelpCircle,
   Settings,
   BookOpen,
-  Users
+  Users,
 } from "lucide-react";
 
 interface ErrorAction {
@@ -90,7 +88,9 @@ export function ErrorPage({
           icon: FileX,
           title: title || "Page Not Found",
           message: message || "The page you're looking for doesn't exist",
-          description: description || "The URL you entered may be incorrect, or the page has been moved or deleted.",
+          description:
+            description ||
+            "The URL you entered may be incorrect, or the page has been moved or deleted.",
           code: errorCode || "404",
         };
       case "403":
@@ -98,7 +98,9 @@ export function ErrorPage({
           icon: Shield,
           title: title || "Access Denied",
           message: message || "You don't have permission to access this resource",
-          description: description || "This content is restricted. Please check your permissions or contact support if you believe this is an error.",
+          description:
+            description ||
+            "This content is restricted. Please check your permissions or contact support if you believe this is an error.",
           code: errorCode || "403",
         };
       case "500":
@@ -106,7 +108,9 @@ export function ErrorPage({
           icon: Server,
           title: title || "Server Error",
           message: message || "Something went wrong on our end",
-          description: description || "We're experiencing technical difficulties. Our team has been notified and is working to resolve the issue.",
+          description:
+            description ||
+            "We're experiencing technical difficulties. Our team has been notified and is working to resolve the issue.",
           code: errorCode || "500",
         };
       case "expired":
@@ -114,7 +118,9 @@ export function ErrorPage({
           icon: Clock,
           title: title || "Link Expired",
           message: message || "This link has expired and is no longer valid",
-          description: description || "Magic links and temporary access links expire for security reasons. Please request a new link or sign in again.",
+          description:
+            description ||
+            "Magic links and temporary access links expire for security reasons. Please request a new link or sign in again.",
           code: errorCode || "EXPIRED",
         };
       case "offline":
@@ -122,7 +128,9 @@ export function ErrorPage({
           icon: Wifi,
           title: title || "No Internet Connection",
           message: message || "You appear to be offline",
-          description: description || "Please check your internet connection and try again. Some features may be limited while offline.",
+          description:
+            description ||
+            "Please check your internet connection and try again. Some features may be limited while offline.",
           code: errorCode || "OFFLINE",
         };
       case "maintenance":
@@ -130,7 +138,9 @@ export function ErrorPage({
           icon: Settings,
           title: title || "Scheduled Maintenance",
           message: message || "We're currently performing scheduled maintenance",
-          description: description || "Our service will be back online shortly. Thank you for your patience during this brief maintenance window.",
+          description:
+            description ||
+            "Our service will be back online shortly. Thank you for your patience during this brief maintenance window.",
           code: errorCode || "MAINTENANCE",
         };
       default:
@@ -138,7 +148,9 @@ export function ErrorPage({
           icon: AlertTriangle,
           title: title || "Something went wrong",
           message: message || "An unexpected error occurred",
-          description: description || "We encountered an unexpected error. Please try again or contact support if the problem persists.",
+          description:
+            description ||
+            "We encountered an unexpected error. Please try again or contact support if the problem persists.",
           code: errorCode || "ERROR",
         };
     }
@@ -206,14 +218,20 @@ export function ErrorPage({
   const displaySuggestions = suggestions || getDefaultSuggestions();
 
   return (
-    <div className={cn("flex min-h-screen items-center justify-center bg-off-white p-4 dark:bg-off-black", className)} {...props}>
+    <div
+      className={cn(
+        "flex min-h-screen items-center justify-center bg-off-white p-4 dark:bg-off-black",
+        className
+      )}
+      {...props}
+    >
       <div className="w-full max-w-2xl space-y-8 text-center">
         {/* Error Icon and Code */}
         <div className="space-y-6">
           <div className="mx-auto flex size-24 items-center justify-center rounded-full bg-warm-gray/10 dark:bg-warm-gray/20">
             <LucideIcon icon={ErrorIcon} size="xl" className="text-warm-gray" />
           </div>
-          
+
           {showErrorDetails && (
             <div className="inline-flex items-center gap-2 rounded-full bg-light-gray px-3 py-1 text-sm text-warm-gray dark:bg-warm-gray/20">
               <span>Error {errorConfig.code}</span>
@@ -226,11 +244,9 @@ export function ErrorPage({
           <h1 className="text-3xl font-bold text-off-black dark:text-off-white lg:text-4xl">
             {errorConfig.title}
           </h1>
-          
-          <p className="text-xl text-warm-gray">
-            {errorConfig.message}
-          </p>
-          
+
+          <p className="text-xl text-warm-gray">{errorConfig.message}</p>
+
           {errorConfig.description && (
             <p className="mx-auto max-w-lg leading-relaxed text-warm-gray">
               {errorConfig.description}
@@ -250,8 +266,8 @@ export function ErrorPage({
               className="min-w-0"
             >
               {action.href ? (
-                <Link 
-                  href={action.href} 
+                <Link
+                  href={action.href}
                   external={action.external}
                   className="inline-flex items-center gap-2 no-underline"
                 >
@@ -273,12 +289,12 @@ export function ErrorPage({
         {showSuggestions && displaySuggestions.length > 0 && (
           <div className="space-y-6">
             <div className="h-px w-full bg-light-gray dark:bg-warm-gray/30" />
-            
+
             <div className="space-y-4">
               <h2 className="text-lg font-semibold text-off-black dark:text-off-white">
                 Try these instead
               </h2>
-              
+
               <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                 {displaySuggestions.map((suggestion) => (
                   <Link
@@ -310,16 +326,12 @@ export function ErrorPage({
         {showErrorDetails && (timestamp || requestId) && (
           <div className="space-y-4">
             <div className="h-px w-full bg-light-gray dark:bg-warm-gray/30" />
-            
+
             <div className="space-y-2 text-center">
               <p className="text-sm text-warm-gray">Error Details</p>
               <div className="space-y-1 text-xs text-warm-gray">
-                {timestamp && (
-                  <div>Timestamp: {timestamp}</div>
-                )}
-                {requestId && (
-                  <div>Request ID: {requestId}</div>
-                )}
+                {timestamp && <div>Timestamp: {timestamp}</div>}
+                {requestId && <div>Request ID: {requestId}</div>}
               </div>
             </div>
           </div>
@@ -329,30 +341,28 @@ export function ErrorPage({
         {showContactInfo && (
           <div className="space-y-4">
             <div className="h-px w-full bg-light-gray dark:bg-warm-gray/30" />
-            
+
             <div className="space-y-3 text-center">
-              <p className="text-sm font-medium text-off-black dark:text-off-white">
-                Need help?
-              </p>
-              
+              <p className="text-sm font-medium text-off-black dark:text-off-white">Need help?</p>
+
               <div className="flex items-center justify-center gap-6 text-sm">
-                <Link 
+                <Link
                   href={`mailto:${contactEmail}`}
                   className="inline-flex items-center gap-2 text-primary hover:underline"
                 >
                   <LucideIcon icon={Mail} size="xs" />
                   Email Support
                 </Link>
-                
-                <Link 
+
+                <Link
                   href={supportUrl}
                   className="inline-flex items-center gap-2 text-primary hover:underline"
                 >
                   <LucideIcon icon={MessageCircle} size="xs" />
                   Help Center
                 </Link>
-                
-                <Link 
+
+                <Link
                   href={statusPageUrl}
                   className="inline-flex items-center gap-2 text-primary hover:underline"
                 >

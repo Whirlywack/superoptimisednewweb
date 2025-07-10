@@ -3,24 +3,18 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { LucideIcon } from "@/components/ui/Icon";
 import { Link } from "@/components/ui/Typography";
-import type {
-  FileText} from "lucide-react";
-import { 
-  Menu, 
-  X, 
-  ChevronRight,
+import type { FileText } from "lucide-react";
+import {
+  Menu,
+  X,
   Search,
   Sun,
   Moon,
   Github,
   ExternalLink,
   Book,
-  Code,
-  Settings,
-  HelpCircle,
-  Home,
   ChevronDown,
-  ArrowUp
+  ArrowUp,
 } from "lucide-react";
 
 interface NavItem {
@@ -84,8 +78,8 @@ export function DocSiteLayout({
     };
 
     if (showBackToTop) {
-      window.addEventListener('scroll', handleScroll);
-      return () => window.removeEventListener('scroll', handleScroll);
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
     }
   }, [showBackToTop]);
 
@@ -108,19 +102,19 @@ export function DocSiteLayout({
 
   const isActive = (href?: string) => {
     if (!href) return false;
-    return currentPath === href || currentPath.startsWith(href + '/');
+    return currentPath === href || currentPath.startsWith(href + "/");
   };
 
   const hasActiveChild = (item: NavItem): boolean => {
     if (isActive(item.href)) return true;
     if (item.children) {
-      return item.children.some(child => hasActiveChild(child));
+      return item.children.some((child) => hasActiveChild(child));
     }
     return false;
   };
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const renderNavItem = (item: NavItem, level = 0) => {
@@ -128,13 +122,6 @@ export function DocSiteLayout({
     const isExpanded = expandedItems.has(item.id);
     const itemIsActive = isActive(item.href);
     const hasActiveDescendant = hasActiveChild(item);
-
-    // Auto-expand items with active children
-    React.useEffect(() => {
-      if (hasActiveDescendant && !isExpanded) {
-        setExpandedItems(prev => new Set([...prev, item.id]));
-      }
-    }, [hasActiveDescendant, isExpanded, item.id]);
 
     return (
       <div key={item.id} className="space-y-1">
@@ -145,8 +132,8 @@ export function DocSiteLayout({
             itemIsActive
               ? "bg-primary/10 font-medium text-primary"
               : hasActiveDescendant
-              ? "text-off-black dark:text-off-white"
-              : "text-warm-gray hover:bg-light-gray/50 hover:text-off-black dark:hover:bg-warm-gray/10 dark:hover:text-off-white"
+                ? "text-off-black dark:text-off-white"
+                : "text-warm-gray hover:bg-light-gray/50 hover:text-off-black dark:hover:bg-warm-gray/10 dark:hover:text-off-white"
           )}
           onClick={() => {
             if (hasChildren) {
@@ -157,25 +144,20 @@ export function DocSiteLayout({
           }}
         >
           {item.icon && (
-            <LucideIcon 
-              icon={item.icon} 
-              size="xs" 
-              className={cn(
-                "shrink-0",
-                itemIsActive ? "text-primary" : "text-warm-gray"
-              )} 
+            <LucideIcon
+              icon={item.icon}
+              size="xs"
+              className={cn("shrink-0", itemIsActive ? "text-primary" : "text-warm-gray")}
             />
           )}
-          
+
           {item.href ? (
-            <Link 
-              href={item.href} 
+            <Link
+              href={item.href}
               external={item.external}
               className={cn(
                 "flex-1 no-underline",
-                itemIsActive 
-                  ? "font-medium text-primary" 
-                  : "text-current hover:text-current"
+                itemIsActive ? "font-medium text-primary" : "text-current hover:text-current"
               )}
             >
               {item.title}
@@ -183,32 +165,27 @@ export function DocSiteLayout({
           ) : (
             <span className="flex-1">{item.title}</span>
           )}
-          
+
           {item.badge && (
             <span className="rounded bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
               {item.badge}
             </span>
           )}
-          
-          {item.external && (
-            <LucideIcon icon={ExternalLink} size="xs" className="text-warm-gray" />
-          )}
-          
+
+          {item.external && <LucideIcon icon={ExternalLink} size="xs" className="text-warm-gray" />}
+
           {hasChildren && (
-            <LucideIcon 
-              icon={ChevronDown} 
-              size="xs" 
-              className={cn(
-                "text-warm-gray transition-transform",
-                isExpanded ? "rotate-180" : ""
-              )} 
+            <LucideIcon
+              icon={ChevronDown}
+              size="xs"
+              className={cn("text-warm-gray transition-transform", isExpanded ? "rotate-180" : "")}
             />
           )}
         </div>
 
         {hasChildren && isExpanded && (
           <div className="space-y-1">
-            {item.children!.map(child => renderNavItem(child, level + 1))}
+            {item.children!.map((child) => renderNavItem(child, level + 1))}
           </div>
         )}
       </div>
@@ -216,14 +193,19 @@ export function DocSiteLayout({
   };
 
   const renderSidebar = () => (
-    <aside className={cn(
-      "flex w-64 flex-col border-r border-light-gray bg-off-white dark:border-warm-gray/30 dark:bg-off-black",
-      "fixed inset-y-0 left-0 z-50 transition-transform lg:relative lg:translate-x-0",
-      isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-    )}>
+    <aside
+      className={cn(
+        "flex w-64 flex-col border-r border-light-gray bg-off-white dark:border-warm-gray/30 dark:bg-off-black",
+        "fixed inset-y-0 left-0 z-50 transition-transform lg:relative lg:translate-x-0",
+        isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+      )}
+    >
       {/* Sidebar Header */}
       <div className="flex items-center justify-between border-b border-light-gray p-4 dark:border-warm-gray/30">
-        <Link href={logoHref} className="flex items-center gap-2 font-semibold text-off-black no-underline dark:text-off-white">
+        <Link
+          href={logoHref}
+          className="flex items-center gap-2 font-semibold text-off-black no-underline dark:text-off-white"
+        >
           <LucideIcon icon={Book} size="md" className="text-primary" />
           <span>{logoText}</span>
           {version && (
@@ -232,7 +214,7 @@ export function DocSiteLayout({
             </span>
           )}
         </Link>
-        
+
         <Button
           variant="ghost"
           size="sm"
@@ -269,7 +251,7 @@ export function DocSiteLayout({
 
       {/* Navigation */}
       <nav className="flex-1 space-y-2 overflow-y-auto p-4">
-        {navigation.map(item => renderNavItem(item))}
+        {navigation.map((item) => renderNavItem(item))}
       </nav>
 
       {/* Sidebar Footer */}
@@ -279,20 +261,16 @@ export function DocSiteLayout({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => window.open(githubUrl, '_blank')}
+              onClick={() => window.open(githubUrl, "_blank")}
               className="flex-1"
             >
               <LucideIcon icon={Github} size="xs" className="mr-2" />
               GitHub
             </Button>
           )}
-          
+
           {showThemeToggle && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onThemeToggle}
-            >
+            <Button variant="ghost" size="sm" onClick={onThemeToggle}>
               <LucideIcon icon={Sun} size="xs" className="dark:hidden" />
               <LucideIcon icon={Moon} size="xs" className="hidden dark:block" />
             </Button>
@@ -336,9 +314,7 @@ export function DocSiteLayout({
                     {title}
                   </h1>
                 )}
-                {description && (
-                  <p className="mt-1 text-sm text-warm-gray">{description}</p>
-                )}
+                {description && <p className="mt-1 text-sm text-warm-gray">{description}</p>}
               </div>
 
               <div className="flex items-center gap-2">
@@ -346,14 +322,14 @@ export function DocSiteLayout({
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => window.open(githubUrl, '_blank')}
+                    onClick={() => window.open(githubUrl, "_blank")}
                     className="hidden sm:flex"
                   >
                     <LucideIcon icon={Github} size="xs" className="mr-2" />
                     GitHub
                   </Button>
                 )}
-                
+
                 {showThemeToggle && (
                   <Button
                     variant="ghost"
@@ -371,17 +347,13 @@ export function DocSiteLayout({
 
           {/* Content */}
           <main className="flex-1 px-4 py-6 lg:p-8">
-            <div className="mx-auto max-w-4xl">
-              {children}
-            </div>
+            <div className="mx-auto max-w-4xl">{children}</div>
           </main>
 
           {/* Footer */}
           {footerContent && (
             <footer className="border-t border-light-gray px-4 py-6 dark:border-warm-gray/30 lg:px-8">
-              <div className="mx-auto max-w-4xl">
-                {footerContent}
-              </div>
+              <div className="mx-auto max-w-4xl">{footerContent}</div>
             </footer>
           )}
         </div>

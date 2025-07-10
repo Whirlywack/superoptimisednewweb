@@ -3,9 +3,9 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { LucideIcon } from "@/components/ui/Icon";
 import { Link } from "@/components/ui/Typography";
-import { 
-  Calendar, 
-  Clock, 
+import {
+  Calendar,
+  Clock,
   ArrowRight,
   ChevronLeft,
   ChevronRight,
@@ -13,16 +13,12 @@ import {
   Search,
   Grid,
   List,
-  Tag,
   User,
   Heart,
   MessageCircle,
-  Share,
-  Bookmark,
   TrendingUp,
   Eye,
   ChevronDown,
-  X
 } from "lucide-react";
 
 interface TimelinePost {
@@ -80,7 +76,7 @@ export function JourneyTimeline({
   posts,
   currentPage = 1,
   totalPages = 1,
-  postsPerPage = 10,
+  postsPerPage: _postsPerPage = 10,
   showFilters = true,
   showSearch = true,
   showStats = true,
@@ -136,10 +132,10 @@ export function JourneyTimeline({
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
@@ -158,7 +154,7 @@ export function JourneyTimeline({
 
   const renderPostCard = (post: TimelinePost, index: number) => {
     const isLeft = index % 2 === 0;
-    
+
     return (
       <article
         key={post.id}
@@ -174,11 +170,13 @@ export function JourneyTimeline({
       >
         {/* Timeline connector */}
         {currentViewMode === "timeline" && (
-          <div className={cn(
-            "absolute top-6 size-4 rounded-full border-2 border-primary bg-off-white dark:bg-off-black",
-            post.milestone && "border-primary bg-primary",
-            isLeft ? "-right-6 lg:-right-8" : "-left-6 lg:-left-8"
-          )} />
+          <div
+            className={cn(
+              "absolute top-6 size-4 rounded-full border-2 border-primary bg-off-white dark:bg-off-black",
+              post.milestone && "border-primary bg-primary",
+              isLeft ? "-right-6 lg:-right-8" : "-left-6 lg:-left-8"
+            )}
+          />
         )}
 
         {/* Post Header */}
@@ -190,17 +188,19 @@ export function JourneyTimeline({
                   <LucideIcon icon={Calendar} size="xs" />
                   {formatDate(post.publishedAt)}
                 </time>
-                
+
                 <span className="flex items-center gap-1 text-sm text-warm-gray">
                   <LucideIcon icon={Clock} size="xs" />
                   {post.readTime}
                 </span>
 
                 {post.status && (
-                  <span className={cn(
-                    "inline-flex items-center rounded px-2 py-1 text-xs font-medium capitalize",
-                    getStatusColor(post.status)
-                  )}>
+                  <span
+                    className={cn(
+                      "inline-flex items-center rounded px-2 py-1 text-xs font-medium capitalize",
+                      getStatusColor(post.status)
+                    )}
+                  >
                     {post.status}
                   </span>
                 )}
@@ -218,9 +218,7 @@ export function JourneyTimeline({
             )}
           </div>
 
-          <p className="leading-relaxed text-warm-gray">
-            {post.excerpt}
-          </p>
+          <p className="leading-relaxed text-warm-gray">{post.excerpt}</p>
         </div>
 
         {/* Author */}
@@ -251,9 +249,7 @@ export function JourneyTimeline({
               </span>
             ))}
             {post.tags.length > 4 && (
-              <span className="py-1 text-xs text-warm-gray">
-                +{post.tags.length - 4} more
-              </span>
+              <span className="py-1 text-xs text-warm-gray">+{post.tags.length - 4} more</span>
             )}
           </div>
         )}
@@ -273,10 +269,10 @@ export function JourneyTimeline({
               <LucideIcon icon={MessageCircle} size="xs" />
               <span>{post.stats.comments}</span>
             </div>
-            
+
             <div className="ml-auto flex items-center gap-1">
-              <Link 
-                href={post.href} 
+              <Link
+                href={post.href}
                 className="inline-flex items-center gap-1 text-sm font-medium text-primary no-underline"
               >
                 Read More
@@ -290,15 +286,15 @@ export function JourneyTimeline({
   };
 
   const renderFilters = () => (
-    <div className={cn(
-      "space-y-4 rounded-lg bg-light-gray/50 p-4 dark:bg-warm-gray/10",
-      showFiltersPanel ? "block" : "hidden lg:block"
-    )}>
+    <div
+      className={cn(
+        "space-y-4 rounded-lg bg-light-gray/50 p-4 dark:bg-warm-gray/10",
+        showFiltersPanel ? "block" : "hidden lg:block"
+      )}
+    >
       {/* Category Filter */}
       <div className="space-y-2">
-        <label className="text-sm font-medium text-off-black dark:text-off-white">
-          Category
-        </label>
+        <label className="text-sm font-medium text-off-black dark:text-off-white">Category</label>
         <select
           value={filters.category}
           onChange={(e) => handleFilterChange({ category: e.target.value as any })}
@@ -314,9 +310,7 @@ export function JourneyTimeline({
 
       {/* Time Range Filter */}
       <div className="space-y-2">
-        <label className="text-sm font-medium text-off-black dark:text-off-white">
-          Time Range
-        </label>
+        <label className="text-sm font-medium text-off-black dark:text-off-white">Time Range</label>
         <select
           value={filters.timeRange}
           onChange={(e) => handleFilterChange({ timeRange: e.target.value as any })}
@@ -344,13 +338,13 @@ export function JourneyTimeline({
 
   const renderPagination = () => {
     if (!showPagination || totalPages <= 1) return null;
-    
+
     return (
       <div className="flex items-center justify-between gap-4">
         <div className="text-sm text-warm-gray">
           Page {currentPage} of {totalPages} ({posts.length} posts)
         </div>
-        
+
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
@@ -361,7 +355,7 @@ export function JourneyTimeline({
             <LucideIcon icon={ChevronLeft} size="xs" className="mr-1" />
             Previous
           </Button>
-          
+
           <Button
             variant="outline"
             size="sm"
@@ -432,9 +426,9 @@ export function JourneyTimeline({
                   <LucideIcon icon={ChevronDown} size="xs" className="ml-2" />
                 </Button>
               )}
-              
+
               <span className="text-sm text-warm-gray">
-                {posts.length} post{posts.length !== 1 ? 's' : ''}
+                {posts.length} post{posts.length !== 1 ? "s" : ""}
               </span>
             </div>
 
@@ -465,34 +459,27 @@ export function JourneyTimeline({
         </div>
 
         {/* Content */}
-        <div className={cn(
-          "grid gap-8",
-          showFilters ? "lg:grid-cols-4" : "grid-cols-1"
-        )}>
+        <div className={cn("grid gap-8", showFilters ? "lg:grid-cols-4" : "grid-cols-1")}>
           {/* Filters Sidebar */}
-          {showFilters && (
-            <div className="lg:col-span-1">
-              {renderFilters()}
-            </div>
-          )}
+          {showFilters && <div className="lg:col-span-1">{renderFilters()}</div>}
 
           {/* Posts */}
-          <div className={cn(
-            showFilters ? "lg:col-span-3" : "col-span-1"
-          )}>
+          <div className={cn(showFilters ? "lg:col-span-3" : "col-span-1")}>
             {posts.length > 0 ? (
               <div className="space-y-8">
                 {/* Timeline Line */}
                 {currentViewMode === "timeline" && (
                   <div className="absolute left-1/2 hidden h-full w-0.5 -translate-x-1/2 bg-light-gray dark:bg-warm-gray/30 lg:block" />
                 )}
-                
-                <div className={cn(
-                  "space-y-8",
-                  currentViewMode === "grid" && "grid grid-cols-1 gap-6 md:grid-cols-2",
-                  currentViewMode === "list" && "space-y-4",
-                  currentViewMode === "timeline" && "relative"
-                )}>
+
+                <div
+                  className={cn(
+                    "space-y-8",
+                    currentViewMode === "grid" && "grid grid-cols-1 gap-6 md:grid-cols-2",
+                    currentViewMode === "list" && "space-y-4",
+                    currentViewMode === "timeline" && "relative"
+                  )}
+                >
                   {posts.map((post, index) => renderPostCard(post, index))}
                 </div>
               </div>

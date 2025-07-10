@@ -3,10 +3,10 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { LucideIcon } from "@/components/ui/Icon";
 import { Link } from "@/components/ui/Typography";
-import { 
-  ChevronLeft, 
-  ChevronRight, 
-  Quote, 
+import {
+  ChevronLeft,
+  ChevronRight,
+  Quote,
   Star,
   User,
   Github,
@@ -14,7 +14,7 @@ import {
   Linkedin,
   Globe,
   Play,
-  Pause
+  Pause,
 } from "lucide-react";
 
 interface Testimonial {
@@ -65,7 +65,7 @@ export function TestimonialCarousel({
 }: TestimonialCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(autoPlay);
-  
+
   const totalItems = testimonials.length;
   const maxIndex = Math.max(0, totalItems - itemsPerView);
 
@@ -109,11 +109,11 @@ export function TestimonialCarousel({
   };
 
   const goToPrevious = () => {
-    setCurrentIndex(prev => prev === 0 ? maxIndex : prev - 1);
+    setCurrentIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
   };
 
   const goToNext = () => {
-    setCurrentIndex(prev => prev >= maxIndex ? 0 : prev + 1);
+    setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
   };
 
   const toggleAutoPlay = () => {
@@ -126,31 +126,27 @@ export function TestimonialCarousel({
         key={i}
         icon={Star}
         size="xs"
-        className={cn(
-          i < rating ? "text-yellow-500" : "text-light-gray dark:text-warm-gray/30"
-        )}
+        className={cn(i < rating ? "text-yellow-500" : "text-light-gray dark:text-warm-gray/30")}
       />
     ));
   };
 
-  const renderTestimonial = (testimonial: Testimonial, index: number) => {
+  const renderTestimonial = (testimonial: Testimonial, _index: number) => {
     const SourceIcon = getSourceIcon(testimonial.source);
-    
+
     return (
       <div
         key={testimonial.id}
         className={cn(
           "space-y-6",
-          variant === "cards" && "rounded-lg border border-light-gray bg-off-white p-6 dark:border-warm-gray/30 dark:bg-off-black",
+          variant === "cards" &&
+            "rounded-lg border border-light-gray bg-off-white p-6 dark:border-warm-gray/30 dark:bg-off-black",
           variant === "centered" && "mx-auto max-w-3xl text-center"
         )}
       >
         {/* Quote Icon */}
         {variant !== "minimal" && (
-          <div className={cn(
-            "flex",
-            variant === "centered" ? "justify-center" : "justify-start"
-          )}>
+          <div className={cn("flex", variant === "centered" ? "justify-center" : "justify-start")}>
             <div className="flex size-8 items-center justify-center rounded-full bg-primary/10">
               <LucideIcon icon={Quote} size="sm" className="text-primary" />
             </div>
@@ -158,29 +154,30 @@ export function TestimonialCarousel({
         )}
 
         {/* Content */}
-        <blockquote className={cn(
-          "leading-relaxed text-warm-gray",
-          size === "sm" ? "text-base" : size === "md" ? "text-lg" : "text-xl",
-          variant === "centered" && "text-center"
-        )}>
+        <blockquote
+          className={cn(
+            "leading-relaxed text-warm-gray",
+            size === "sm" ? "text-base" : size === "md" ? "text-lg" : "text-xl",
+            variant === "centered" && "text-center"
+          )}
+        >
           &ldquo;{testimonial.content}&rdquo;
         </blockquote>
 
         {/* Rating */}
         {showRating && testimonial.rating && (
-          <div className={cn(
-            "flex gap-1",
-            variant === "centered" ? "justify-center" : "justify-start"
-          )}>
+          <div
+            className={cn(
+              "flex gap-1",
+              variant === "centered" ? "justify-center" : "justify-start"
+            )}
+          >
             {renderStars(testimonial.rating)}
           </div>
         )}
 
         {/* Author */}
-        <div className={cn(
-          "flex items-center gap-4",
-          variant === "centered" && "justify-center"
-        )}>
+        <div className={cn("flex items-center gap-4", variant === "centered" && "justify-center")}>
           {/* Avatar */}
           <div className="shrink-0">
             {testimonial.avatar ? (
@@ -197,13 +194,8 @@ export function TestimonialCarousel({
           </div>
 
           {/* Author Info */}
-          <div className={cn(
-            "space-y-1",
-            variant === "centered" && "text-center"
-          )}>
-            <p className="font-medium text-off-black dark:text-off-white">
-              {testimonial.author}
-            </p>
+          <div className={cn("space-y-1", variant === "centered" && "text-center")}>
+            <p className="font-medium text-off-black dark:text-off-white">{testimonial.author}</p>
             {(testimonial.role || testimonial.company) && (
               <p className="text-sm text-warm-gray">
                 {testimonial.role}
@@ -211,9 +203,7 @@ export function TestimonialCarousel({
                 {testimonial.company}
               </p>
             )}
-            {testimonial.date && (
-              <p className="text-xs text-warm-gray">{testimonial.date}</p>
-            )}
+            {testimonial.date && <p className="text-xs text-warm-gray">{testimonial.date}</p>}
           </div>
 
           {/* Source */}
@@ -241,32 +231,25 @@ export function TestimonialCarousel({
     return (
       <div className={cn("space-y-6", className)} {...props}>
         {title && (
-          <h2 className="text-xl font-semibold text-off-black dark:text-off-white">
-            {title}
-          </h2>
+          <h2 className="text-xl font-semibold text-off-black dark:text-off-white">{title}</h2>
         )}
-        
+
         <div className="space-y-6">
-          {testimonials.slice(currentIndex, currentIndex + itemsPerView).map((testimonial) =>
-            renderTestimonial(testimonial, 0)
-          )}
+          {testimonials
+            .slice(currentIndex, currentIndex + itemsPerView)
+            .map((testimonial) => renderTestimonial(testimonial, 0))}
         </div>
 
         {showNavigation && totalItems > itemsPerView && (
           <div className="flex items-center justify-between">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={goToPrevious}
-              disabled={currentIndex === 0}
-            >
+            <Button variant="ghost" size="sm" onClick={goToPrevious} disabled={currentIndex === 0}>
               <LucideIcon icon={ChevronLeft} size="sm" />
             </Button>
-            
+
             <span className="text-sm text-warm-gray">
               {currentIndex + 1} of {totalItems}
             </span>
-            
+
             <Button
               variant="ghost"
               size="sm"
@@ -288,18 +271,17 @@ export function TestimonialCarousel({
         {(title || description) && (
           <div className="space-y-4 text-center">
             {title && (
-              <h2 className={cn(
-                titleSizes[size],
-                "font-bold text-off-black dark:text-off-white"
-              )}>
+              <h2 className={cn(titleSizes[size], "font-bold text-off-black dark:text-off-white")}>
                 {title}
               </h2>
             )}
             {description && (
-              <p className={cn(
-                "mx-auto max-w-3xl leading-relaxed text-warm-gray",
-                size === "lg" ? "text-lg" : "text-base"
-              )}>
+              <p
+                className={cn(
+                  "mx-auto max-w-3xl leading-relaxed text-warm-gray",
+                  size === "lg" ? "text-lg" : "text-base"
+                )}
+              >
                 {description}
               </p>
             )}
@@ -310,7 +292,7 @@ export function TestimonialCarousel({
         <div className="relative">
           {/* Testimonials */}
           <div className="overflow-hidden">
-            <div 
+            <div
               className={cn(
                 "flex transition-transform duration-500 ease-in-out",
                 itemsPerView > 1 && "gap-6"
@@ -349,7 +331,7 @@ export function TestimonialCarousel({
               >
                 <LucideIcon icon={ChevronLeft} size="md" />
               </Button>
-              
+
               <Button
                 variant="ghost"
                 size="sm"

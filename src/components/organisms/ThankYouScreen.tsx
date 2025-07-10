@@ -1,11 +1,20 @@
-import React from 'react';
-import { cn } from '@/lib/utils';
-import { Button } from '../ui/button';
-import { H1, H2, Paragraph } from '../ui/Typography';
-import { Icon } from '../ui/Icon';
-import { Card, CardContent } from '../molecules/Card';
-import { ProgressBar } from '../ui/ProgressBar';
-import { CheckCircle, Share2, Download, MailIcon, ExternalLink, ArrowRight, Gift, Users, Zap } from 'lucide-react';
+import React from "react";
+import { cn } from "@/lib/utils";
+import { Button } from "../ui/button";
+import { H1, H2, Paragraph } from "../ui/Typography";
+import { Icon } from "../ui/Icon";
+import { Card, CardContent } from "../molecules/Card";
+import { ProgressBar } from "../ui/ProgressBar";
+import {
+  CheckCircle,
+  Share2,
+  MailIcon,
+  ExternalLink,
+  ArrowRight,
+  Gift,
+  Users,
+  Zap,
+} from "lucide-react";
 
 export interface NextStep {
   /** Unique identifier for the step */
@@ -18,11 +27,11 @@ export interface NextStep {
   icon?: React.ReactNode;
   /** Action to take (button link, callback, etc.) */
   action?: {
-    type: 'link' | 'download' | 'share' | 'callback';
+    type: "link" | "download" | "share" | "callback";
     label: string;
     url?: string;
     onClick?: () => void;
-    variant?: 'primary' | 'secondary' | 'outline';
+    variant?: "primary" | "secondary" | "outline";
   };
   /** Optional priority/order */
   priority?: number;
@@ -32,7 +41,7 @@ export interface NextStep {
 
 export interface SocialShare {
   /** Platform name */
-  platform: 'twitter' | 'linkedin' | 'facebook' | 'email' | 'copy-link';
+  platform: "twitter" | "linkedin" | "facebook" | "email" | "copy-link";
   /** Share URL */
   url: string;
   /** Share text/title */
@@ -49,7 +58,7 @@ export interface ThankYouScreenProps {
   /** Detailed description */
   description?: string;
   /** Success message variant */
-  variant?: 'celebration' | 'professional' | 'minimalist' | 'community';
+  variant?: "celebration" | "professional" | "minimalist" | "community";
   /** Show completion progress */
   showProgress?: boolean;
   /** Completion percentage (0-100) */
@@ -87,7 +96,7 @@ export function ThankYouScreen({
   title = "Thank you for your responses!",
   subtitle,
   description = "Your feedback has been recorded and will help improve our understanding of the community.",
-  variant = 'professional',
+  variant = "professional",
   showProgress = true,
   completionProgress = 100,
   timeTaken,
@@ -102,113 +111,122 @@ export function ThankYouScreen({
   footerContent,
   className,
 }: ThankYouScreenProps) {
-  const [email, setEmail] = React.useState('');
+  const [email, setEmail] = React.useState("");
   const [isSubmittingEmail, setIsSubmittingEmail] = React.useState(false);
-  
+
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newsletterSignup || !email.trim()) return;
-    
+
     setIsSubmittingEmail(true);
     try {
       await newsletterSignup.onSubmit(email);
-      setEmail('');
+      setEmail("");
     } finally {
       setIsSubmittingEmail(false);
     }
   };
-  
+
   const getVariantStyles = () => {
     switch (variant) {
-      case 'celebration':
+      case "celebration":
         return {
-          container: 'bg-gradient-to-br from-light-gray to-off-white dark:from-gray-800 dark:to-gray-900',
-          icon: 'text-primary',
-          accent: 'border-primary/20',
+          container:
+            "bg-gradient-to-br from-light-gray to-off-white dark:from-gray-800 dark:to-gray-900",
+          icon: "text-primary",
+          accent: "border-primary/20",
         };
-      case 'community':
+      case "community":
         return {
-          container: 'bg-gradient-to-br from-light-gray to-off-white dark:from-gray-800 dark:to-gray-900',
-          icon: 'text-primary',
-          accent: 'border-primary/20',
+          container:
+            "bg-gradient-to-br from-light-gray to-off-white dark:from-gray-800 dark:to-gray-900",
+          icon: "text-primary",
+          accent: "border-primary/20",
         };
-      case 'minimalist':
+      case "minimalist":
         return {
-          container: 'bg-off-white dark:bg-gray-900',
-          icon: 'text-primary',
-          accent: 'border-light-gray dark:border-gray-700',
+          container: "bg-off-white dark:bg-gray-900",
+          icon: "text-primary",
+          accent: "border-light-gray dark:border-gray-700",
         };
       default: // professional
         return {
-          container: 'bg-off-white dark:bg-gray-900',
-          icon: 'text-primary',
-          accent: 'border-primary/20',
+          container: "bg-off-white dark:bg-gray-900",
+          icon: "text-primary",
+          accent: "border-primary/20",
         };
     }
   };
-  
+
   const styles = getVariantStyles();
-  
+
   const formatSocialUrl = (share: SocialShare) => {
-    const encodedText = encodeURIComponent(share.text || '');
+    const encodedText = encodeURIComponent(share.text || "");
     const encodedUrl = encodeURIComponent(share.url);
-    
+
     switch (share.platform) {
-      case 'twitter':
-        const hashtags = share.hashtags ? share.hashtags.join(',') : '';
+      case "twitter":
+        const hashtags = share.hashtags ? share.hashtags.join(",") : "";
         return `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}&hashtags=${hashtags}`;
-      case 'linkedin':
+      case "linkedin":
         return `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`;
-      case 'facebook':
+      case "facebook":
         return `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
-      case 'email':
+      case "email":
         return `mailto:?subject=${encodedText}&body=${encodedUrl}`;
       default:
         return share.url;
     }
   };
-  
+
   const handleShare = async (share: SocialShare) => {
-    if (share.platform === 'copy-link') {
+    if (share.platform === "copy-link") {
       try {
         await navigator.clipboard.writeText(share.url);
         // Could show a toast notification here
       } catch (error) {
-        console.error('Failed to copy link:', error);
+        console.error("Failed to copy link:", error);
       }
     } else {
-      window.open(formatSocialUrl(share), '_blank', 'noopener,noreferrer');
+      window.open(formatSocialUrl(share), "_blank", "noopener,noreferrer");
     }
   };
-  
+
   return (
-    <div className={cn("flex min-h-screen items-center justify-center p-4", styles.container, className)}>
+    <div
+      className={cn(
+        "flex min-h-screen items-center justify-center p-4",
+        styles.container,
+        className
+      )}
+    >
       <div className="mx-auto w-full max-w-4xl space-y-8">
         {/* Main Success Message */}
         <div className="space-y-6 text-center">
-          <div className={cn("inline-flex size-20 items-center justify-center rounded-full bg-white shadow-lg dark:bg-gray-800", styles.accent)}>
+          <div
+            className={cn(
+              "inline-flex size-20 items-center justify-center rounded-full bg-white shadow-lg dark:bg-gray-800",
+              styles.accent
+            )}
+          >
             <Icon size={40} className={styles.icon}>
               <CheckCircle />
             </Icon>
           </div>
-          
+
           <div className="space-y-3">
             <H1 className="text-3xl text-off-black dark:text-off-white md:text-4xl lg:text-5xl">
               {title}
             </H1>
-            
-            {subtitle && (
-              <H2 className="text-xl text-warm-gray md:text-2xl">
-                {subtitle}
-              </H2>
-            )}
-            
+
+            {subtitle && <H2 className="text-xl text-warm-gray md:text-2xl">{subtitle}</H2>}
+
             <Paragraph className="mx-auto max-w-2xl text-lg text-warm-gray">
               {description}
             </Paragraph>
           </div>
         </div>
-        
+
         {/* Progress and Stats */}
         {showProgress && (
           <Card className="mx-auto max-w-2xl">
@@ -217,13 +235,13 @@ export function ThankYouScreen({
                 <span>Completion</span>
                 <span>{completionProgress}%</span>
               </div>
-              <ProgressBar 
-                progress={completionProgress} 
+              <ProgressBar
+                progress={completionProgress}
                 variant="success"
                 showLabel={false}
                 className="h-2"
               />
-              
+
               <div className="grid grid-cols-2 gap-4 border-t border-light-gray pt-4 dark:border-gray-700 md:grid-cols-4">
                 {questionsAnswered && totalQuestions && (
                   <div className="text-center">
@@ -233,7 +251,7 @@ export function ThankYouScreen({
                     <div className="text-sm text-warm-gray">Questions</div>
                   </div>
                 )}
-                
+
                 {timeTaken && (
                   <div className="text-center">
                     <div className="text-2xl font-semibold text-off-black dark:text-off-white">
@@ -242,7 +260,7 @@ export function ThankYouScreen({
                     <div className="text-sm text-warm-gray">Time taken</div>
                   </div>
                 )}
-                
+
                 <div className="text-center">
                   <div className="text-2xl font-semibold text-primary">
                     <Icon size={24} className="mx-auto">
@@ -251,7 +269,7 @@ export function ThankYouScreen({
                   </div>
                   <div className="text-sm text-warm-gray">Complete</div>
                 </div>
-                
+
                 <div className="text-center">
                   <div className="text-2xl font-semibold text-primary">
                     <Icon size={24} className="mx-auto">
@@ -264,14 +282,14 @@ export function ThankYouScreen({
             </CardContent>
           </Card>
         )}
-        
+
         {/* Next Steps */}
         {nextSteps.length > 0 && (
           <div className="space-y-6">
             <H2 className="text-center text-2xl font-semibold text-off-black dark:text-off-white">
               What&apos;s next?
             </H2>
-            
+
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {nextSteps
                 .sort((a, b) => (a.priority || 0) - (b.priority || 0))
@@ -280,29 +298,38 @@ export function ThankYouScreen({
                     <CardContent className="space-y-4 p-6">
                       <div className="flex items-start gap-4">
                         {step.icon && (
-                          <div className={cn("flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10", step.completed && "bg-primary/20 dark:bg-primary/20")}>
-                            <Icon size={20} className={step.completed ? "text-primary" : "text-primary"}>
+                          <div
+                            className={cn(
+                              "flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10",
+                              step.completed && "bg-primary/20 dark:bg-primary/20"
+                            )}
+                          >
+                            <Icon
+                              size={20}
+                              className={step.completed ? "text-primary" : "text-primary"}
+                            >
                               {step.completed ? <CheckCircle /> : step.icon}
                             </Icon>
                           </div>
                         )}
-                        
+
                         <div className="flex-1 space-y-2">
                           <h3 className="font-semibold text-off-black dark:text-off-white">
                             {step.title}
                           </h3>
-                          <p className="text-sm text-warm-gray">
-                            {step.description}
-                          </p>
-                          
+                          <p className="text-sm text-warm-gray">{step.description}</p>
+
                           {step.action && !step.completed && (
                             <Button
-                              variant={step.action.variant || 'outline'}
+                              variant={step.action.variant || "outline"}
                               size="sm"
                               onClick={() => {
-                                if (step.action?.type === 'link' && step.action.url) {
-                                  window.open(step.action.url, '_blank', 'noopener,noreferrer');
-                                } else if (step.action?.type === 'callback' && step.action.onClick) {
+                                if (step.action?.type === "link" && step.action.url) {
+                                  window.open(step.action.url, "_blank", "noopener,noreferrer");
+                                } else if (
+                                  step.action?.type === "callback" &&
+                                  step.action.onClick
+                                ) {
                                   step.action.onClick();
                                 }
                               }}
@@ -322,7 +349,7 @@ export function ThankYouScreen({
             </div>
           </div>
         )}
-        
+
         {/* Social Sharing */}
         {showSharing && socialSharing.length > 0 && (
           <Card className="mx-auto max-w-2xl">
@@ -331,11 +358,9 @@ export function ThankYouScreen({
                 <H2 className="text-lg font-semibold text-off-black dark:text-off-white">
                   Share your experience
                 </H2>
-                <p className="text-sm text-warm-gray">
-                  Help others discover this questionnaire
-                </p>
+                <p className="text-sm text-warm-gray">Help others discover this questionnaire</p>
               </div>
-              
+
               <div className="flex flex-wrap justify-center gap-3">
                 {socialSharing.map((share) => (
                   <Button
@@ -346,20 +371,20 @@ export function ThankYouScreen({
                     className="flex items-center gap-2"
                   >
                     <Icon size={16}>
-                      {share.platform === 'twitter' && <Share2 />}
-                      {share.platform === 'linkedin' && <Users />}
-                      {share.platform === 'facebook' && <Users />}
-                      {share.platform === 'email' && <MailIcon />}
-                      {share.platform === 'copy-link' && <ExternalLink />}
+                      {share.platform === "twitter" && <Share2 />}
+                      {share.platform === "linkedin" && <Users />}
+                      {share.platform === "facebook" && <Users />}
+                      {share.platform === "email" && <MailIcon />}
+                      {share.platform === "copy-link" && <ExternalLink />}
                     </Icon>
-                    <span className="capitalize">{share.platform.replace('-', ' ')}</span>
+                    <span className="capitalize">{share.platform.replace("-", " ")}</span>
                   </Button>
                 ))}
               </div>
             </CardContent>
           </Card>
         )}
-        
+
         {/* Newsletter Signup */}
         {newsletterSignup && (
           <Card className="mx-auto max-w-2xl">
@@ -371,11 +396,9 @@ export function ThankYouScreen({
                   </Icon>
                   {newsletterSignup.title}
                 </H2>
-                <p className="text-sm text-warm-gray">
-                  {newsletterSignup.description}
-                </p>
+                <p className="text-sm text-warm-gray">{newsletterSignup.description}</p>
               </div>
-              
+
               <form onSubmit={handleNewsletterSubmit} className="flex gap-3">
                 <input
                   type="email"
@@ -390,13 +413,13 @@ export function ThankYouScreen({
                   disabled={isSubmittingEmail || !email.trim()}
                   className="px-6"
                 >
-                  {isSubmittingEmail ? 'Sending...' : 'Subscribe'}
+                  {isSubmittingEmail ? "Sending..." : "Subscribe"}
                 </Button>
               </form>
             </CardContent>
           </Card>
         )}
-        
+
         {/* Action Buttons */}
         <div className="flex flex-wrap justify-center gap-4">
           {onViewResults && (
@@ -404,14 +427,14 @@ export function ThankYouScreen({
               View My Results
             </Button>
           )}
-          
+
           {onRetake && (
             <Button variant="outline" size="lg" onClick={onRetake}>
               Retake Questionnaire
             </Button>
           )}
         </div>
-        
+
         {/* Footer Content */}
         {footerContent && (
           <div className="mx-auto max-w-2xl text-center text-sm text-warm-gray">

@@ -5,18 +5,16 @@ import { Tag } from "@/components/ui/Tag";
 import { LucideIcon } from "@/components/ui/Icon";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { Link } from "@/components/ui/Typography";
-import { 
-  Github, 
-  ExternalLink, 
-  Star, 
+import {
+  Github,
+  ExternalLink,
+  Star,
   GitFork,
   Activity,
   Calendar,
   Code,
-  Package,
-  Zap,
   Users,
-  Globe
+  Globe,
 } from "lucide-react";
 
 interface TechStack {
@@ -69,7 +67,7 @@ export function ProjectShowcase({
   links = [],
   stats,
   startDate,
-  completedDate,
+  completedDate: _completedDate,
   variant = "card",
   size = "md",
   featured = false,
@@ -145,14 +143,9 @@ export function ProjectShowcase({
           const isString = typeof tech === "string";
           const name = isString ? tech : tech.name;
           const icon = !isString && tech.icon ? tech.icon : Code;
-          
+
           return (
-            <Tag
-              key={index}
-              size="sm"
-              variant="secondary"
-              className="flex items-center gap-1"
-            >
+            <Tag key={index} size="sm" variant="secondary" className="flex items-center gap-1">
               <LucideIcon icon={icon} size="xs" />
               {name}
             </Tag>
@@ -207,9 +200,7 @@ export function ProjectShowcase({
       <div className="space-y-2">
         <div className="flex items-center justify-between text-sm">
           <span className="text-warm-gray">Progress</span>
-          <span className="font-medium text-off-black dark:text-off-white">
-            {progress}%
-          </span>
+          <span className="font-medium text-off-black dark:text-off-white">{progress}%</span>
         </div>
         <ProgressBar value={progress} size="sm" />
       </div>
@@ -222,16 +213,8 @@ export function ProjectShowcase({
     return (
       <div className="flex flex-wrap gap-3">
         {links.map((link, index) => (
-          <Link
-            key={index}
-            href={link.url}
-            external
-            className="no-underline"
-          >
-            <Button
-              variant={index === 0 ? "primary" : "outline"}
-              size="sm"
-            >
+          <Link key={index} href={link.url} external className="no-underline">
+            <Button variant={index === 0 ? "primary" : "outline"} size="sm">
               <span className="flex items-center gap-2">
                 <LucideIcon icon={getLinkIcon(link.type)} size="sm" />
                 {link.label || link.type.charAt(0).toUpperCase() + link.type.slice(1)}
@@ -257,21 +240,14 @@ export function ProjectShowcase({
         <div className="space-y-6">
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <h2 className={cn(
-                titleSizes[size],
-                "font-bold text-off-black dark:text-off-white"
-              )}>
+              <h2 className={cn(titleSizes[size], "font-bold text-off-black dark:text-off-white")}>
                 {name}
               </h2>
-              {featured && (
-                <LucideIcon icon={Star} size="md" className="text-primary" />
-              )}
+              {featured && <LucideIcon icon={Star} size="md" className="text-primary" />}
             </div>
 
             <div className="flex items-center gap-4 text-sm">
-              <span className={cn("font-medium", getStatusColor())}>
-                {getStatusLabel()}
-              </span>
+              <span className={cn("font-medium", getStatusColor())}>{getStatusLabel()}</span>
               {startDate && (
                 <div className="flex items-center gap-1 text-warm-gray">
                   <LucideIcon icon={Calendar} size="xs" />
@@ -281,9 +257,7 @@ export function ProjectShowcase({
             </div>
           </div>
 
-          <p className="text-lg leading-relaxed text-warm-gray">
-            {longDescription || description}
-          </p>
+          <p className="text-lg leading-relaxed text-warm-gray">{longDescription || description}</p>
 
           {renderTechStack()}
           {renderProgress()}
@@ -293,10 +267,12 @@ export function ProjectShowcase({
 
         {/* Image */}
         {image && (
-          <div className={cn(
-            "aspect-video overflow-hidden rounded-lg",
-            "bg-light-gray dark:bg-warm-gray/20"
-          )}>
+          <div
+            className={cn(
+              "aspect-video overflow-hidden rounded-lg",
+              "bg-light-gray dark:bg-warm-gray/20"
+            )}
+          >
             <img
               src={image}
               alt={imageAlt || `${name} screenshot`}
@@ -335,27 +311,18 @@ export function ProjectShowcase({
         <div className="space-y-4">
           <div className="flex items-start justify-between gap-4">
             <div className="space-y-2">
-              <h3 className={cn(
-                titleSizes[size],
-                "font-bold text-off-black dark:text-off-white"
-              )}>
+              <h3 className={cn(titleSizes[size], "font-bold text-off-black dark:text-off-white")}>
                 {name}
               </h3>
               <div className="flex items-center gap-3 text-sm">
-                <span className={cn("font-medium", getStatusColor())}>
-                  {getStatusLabel()}
-                </span>
+                <span className={cn("font-medium", getStatusColor())}>{getStatusLabel()}</span>
                 {renderStats()}
               </div>
             </div>
-            {featured && (
-              <LucideIcon icon={Star} size="md" className="shrink-0 text-primary" />
-            )}
+            {featured && <LucideIcon icon={Star} size="md" className="shrink-0 text-primary" />}
           </div>
 
-          <p className="leading-relaxed text-warm-gray">
-            {longDescription || description}
-          </p>
+          <p className="leading-relaxed text-warm-gray">{longDescription || description}</p>
 
           {renderTechStack()}
           {renderProgress()}
@@ -380,12 +347,8 @@ export function ProjectShowcase({
       >
         <div className="flex-1 space-y-2">
           <div className="flex items-center gap-2">
-            <h4 className="text-lg font-semibold text-off-black dark:text-off-white">
-              {name}
-            </h4>
-            <span className={cn("text-sm", getStatusColor())}>
-              {getStatusLabel()}
-            </span>
+            <h4 className="text-lg font-semibold text-off-black dark:text-off-white">{name}</h4>
+            <span className={cn("text-sm", getStatusColor())}>{getStatusLabel()}</span>
           </div>
           <p className="line-clamp-1 text-sm text-warm-gray">{description}</p>
           {renderTechStack()}
@@ -418,24 +381,15 @@ export function ProjectShowcase({
     >
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 space-y-2">
-          <h3 className={cn(
-            titleSizes[size],
-            "font-semibold text-off-black dark:text-off-white"
-          )}>
+          <h3 className={cn(titleSizes[size], "font-semibold text-off-black dark:text-off-white")}>
             {name}
           </h3>
-          <span className={cn("text-sm font-medium", getStatusColor())}>
-            {getStatusLabel()}
-          </span>
+          <span className={cn("text-sm font-medium", getStatusColor())}>{getStatusLabel()}</span>
         </div>
-        {featured && (
-          <LucideIcon icon={Star} size="md" className="shrink-0 text-primary" />
-        )}
+        {featured && <LucideIcon icon={Star} size="md" className="shrink-0 text-primary" />}
       </div>
 
-      <p className="leading-relaxed text-warm-gray">
-        {description}
-      </p>
+      <p className="leading-relaxed text-warm-gray">{description}</p>
 
       {renderTechStack()}
       {renderProgress()}

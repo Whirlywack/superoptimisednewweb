@@ -3,8 +3,8 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { LucideIcon } from "@/components/ui/Icon";
 import { Link } from "@/components/ui/Typography";
-import { 
-  Menu, 
+import {
+  Menu,
   X,
   Github,
   Twitter,
@@ -12,8 +12,7 @@ import {
   Mail,
   ExternalLink,
   ArrowRight,
-  ChevronDown,
-  ArrowUp
+  ArrowUp,
 } from "lucide-react";
 
 interface NavItem {
@@ -72,18 +71,18 @@ export function MarketingLayout({
     };
 
     if (showBackToTop) {
-      window.addEventListener('scroll', handleScroll);
-      return () => window.removeEventListener('scroll', handleScroll);
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
     }
   }, [showBackToTop]);
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const getSocialIcon = (platform: string, customIcon?: typeof Github) => {
     if (customIcon) return customIcon;
-    
+
     switch (platform) {
       case "github":
         return Github;
@@ -105,7 +104,7 @@ export function MarketingLayout({
       label: "GitHub",
     },
     {
-      platform: "twitter", 
+      platform: "twitter",
       href: "https://twitter.com/superoptimised",
       label: "Twitter",
     },
@@ -135,9 +134,7 @@ export function MarketingLayout({
             {item.badge}
           </span>
         )}
-        {item.external && (
-          <LucideIcon icon={ExternalLink} size="xs" className="ml-1" />
-        )}
+        {item.external && <LucideIcon icon={ExternalLink} size="xs" className="ml-1" />}
       </Link>
     </div>
   );
@@ -147,8 +144,8 @@ export function MarketingLayout({
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link 
-            href={logoHref} 
+          <Link
+            href={logoHref}
             className="flex items-center gap-2 font-bold text-off-black no-underline dark:text-off-white"
           >
             {logoImage ? (
@@ -191,7 +188,7 @@ export function MarketingLayout({
         {isMobileMenuOpen && (
           <div className="border-t border-light-gray dark:border-warm-gray/30 md:hidden">
             <nav className="space-y-4 py-4">
-              {navigation.map(item => (
+              {navigation.map((item) => (
                 <div key={item.id} className="block">
                   {renderNavItem(item)}
                 </div>
@@ -229,8 +226,8 @@ export function MarketingLayout({
             <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
               {/* Logo and Description */}
               <div className="space-y-4">
-                <Link 
-                  href={logoHref} 
+                <Link
+                  href={logoHref}
                   className="flex items-center gap-2 font-bold text-off-black no-underline dark:text-off-white"
                 >
                   {logoImage ? (
@@ -240,7 +237,8 @@ export function MarketingLayout({
                   )}
                 </Link>
                 <p className="max-w-md text-sm text-warm-gray">
-                  Building in public, sharing the journey, and fostering community-driven development.
+                  Building in public, sharing the journey, and fostering community-driven
+                  development.
                 </p>
               </div>
 
@@ -266,7 +264,7 @@ export function MarketingLayout({
             {/* Navigation Links */}
             {navigation.length > 0 && (
               <div className="flex flex-wrap gap-6 border-t border-light-gray py-6 dark:border-warm-gray/30">
-                {navigation.map(item => (
+                {navigation.map((item) => (
                   <Link
                     key={item.id}
                     href={item.href}
@@ -282,7 +280,8 @@ export function MarketingLayout({
             {/* Copyright */}
             <div className="border-t border-light-gray pt-6 dark:border-warm-gray/30">
               <p className="text-center text-sm text-warm-gray">
-                {copyrightText || `© ${new Date().getFullYear()} ${logoText}. Building in public with transparency and community.`}
+                {copyrightText ||
+                  `© ${new Date().getFullYear()} ${logoText}. Building in public with transparency and community.`}
               </p>
             </div>
           </div>
@@ -292,13 +291,14 @@ export function MarketingLayout({
   );
 
   return (
-    <div className={cn("flex min-h-screen flex-col bg-off-white dark:bg-off-black", className)} {...props}>
+    <div
+      className={cn("flex min-h-screen flex-col bg-off-white dark:bg-off-black", className)}
+      {...props}
+    >
       {renderHeader()}
-      
-      <main className="flex-1">
-        {children}
-      </main>
-      
+
+      <main className="flex-1">{children}</main>
+
       {renderFooter()}
 
       {/* Mobile Menu Overlay */}

@@ -1,0 +1,86 @@
+# Page snapshot
+
+```yaml
+- navigation "Main navigation":
+    - link "Superoptimised":
+        - /url: /
+    - link "Journey":
+        - /url: /journey
+    - link "Research":
+        - /url: /research
+    - link "About":
+        - /url: /about
+    - link "Follow on X":
+        - /url: https://x.com/superoptimised
+- main:
+    - region "Magic Link Questionnaire System":
+        - text: Building Decision Made
+        - heading "Magic Link Questionnaire System" [level=1]
+        - paragraph:
+            - text: I've decided to build an anonymous community feedback system for developers. Traditional sign-ups kill honest feedback—magic links solve this.
+            - strong: Your input helps refine every technical decision along the way.
+        - text: Current Progress Initial Planning Complete 15% Complete What's your preference for authentication? binary question from auth category
+        - button "Magic links only"
+        - button "Traditional login forms"
+        - text: 1 votes so far•
+        - button "Share on X"
+        - text: Which features are most important for developer productivity? Select up to 3 features that matter most to you
+        - button "Hot Reload"
+        - button "TypeScript Integration"
+        - button "Advanced Debugging"
+        - button "Performance Monitoring"
+        - button "Testing Tools"
+        - text: 1 votes so far•
+        - button "Share on X"
+        - link "Follow the Building Process":
+            - /url: /journey
+        - link "Take Full Questionnaire":
+            - /url: /questionnaire
+    - region "Why Build in Public?":
+        - heading "Why Build in Public?" [level=2]
+        - paragraph: Traditional development happens behind closed doors. Decisions are made in isolation, problems are hidden until launch, and communities only see the polished final product.
+        - paragraph: I'm building differently. Every decision gets documented, every challenge shared, and the community helps shape the direction. This transparency leads to better products, stronger relationships, and genuine learning.
+        - blockquote: '"The best feedback comes from real problems, not survey responses. Building transparently creates trust—and trust creates honest input."'
+        - paragraph:
+            - text: Most conversations happen on
+            - link "X (@superoptimised)":
+                - /url: https://x.com/superoptimised
+            - text: where you can see live decision-making, vote in polls, and influence the building process. This website documents the complete journey for deeper context.
+    - region "Community Input Shapes Every Decision":
+        - heading "Community Input Shapes Every Decision" [level=2]
+        - img
+        - text: Superoptimised @superoptimised
+        - paragraph: Should I prioritize mobile-first design or desktop experience for the questionnaire system? Mobile = better accessibility, Desktop = richer interactions. Your thoughts?
+        - text: "📱 Mobile-first: 67% 💻 Desktop: 33%"
+        - img
+        - text: 15 votes
+        - link "View full conversation on X":
+            - /url: https://x.com/superoptimised
+            - img
+            - text: View full conversation on X
+        - text: 12 Total Votes 12 Unique Voters 11 Active Questions 557 Days Building
+        - paragraph: Real-time community input from X polls and website questionnaires shapes every technical decision.
+    - region "Join the Building Journey":
+        - heading "Join the Building Journey" [level=2]
+        - paragraph: Weekly building insights launching when valuable. I won't start sending until I have meaningful weekly content and at least 100 builders to write to. Your early signup helps reach that goal and shows there's genuine interest in this transparent approach.
+        - text: Email address
+        - textbox "Email address"
+        - button "Be Among the First 100" [disabled]:
+            - img
+            - text: Be Among the First 100
+        - paragraph: Currently 0 builders signed up. Weekly updates when launched, unsubscribe anytime, absolutely no spam.
+- contentinfo:
+    - text: © 2025 Superoptimised. Built transparently.
+    - link "Journey":
+        - /url: /journey
+    - link "About":
+        - /url: /about
+    - link "X":
+        - /url: https://x.com/superoptimised
+    - link "Contact":
+        - /url: mailto:hello@superoptimised.com
+- region "Notifications Alt+T"
+- alert
+- button "Open Next.js Dev Tools":
+    - img
+```

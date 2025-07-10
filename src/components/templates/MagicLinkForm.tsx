@@ -3,9 +3,9 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { LucideIcon } from "@/components/ui/Icon";
 import { Link } from "@/components/ui/Typography";
-import { 
-  Mail, 
-  ArrowRight, 
+import {
+  Mail,
+  ArrowRight,
   CheckCircle,
   AlertCircle,
   ArrowLeft,
@@ -14,9 +14,7 @@ import {
   Shield,
   Zap,
   RefreshCw,
-  ExternalLink,
-  User,
-  Lock
+  Lock,
 } from "lucide-react";
 
 interface MagicLinkFormProps extends React.HTMLAttributes<HTMLElement> {
@@ -109,17 +107,17 @@ export function MagicLinkForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email.trim()) {
       setValidationError("Email address is required");
       return;
     }
-    
+
     if (!validateEmail(email.trim())) {
       setValidationError("Please enter a valid email address");
       return;
     }
-    
+
     setValidationError("");
     onSubmit?.(email.trim());
   };
@@ -139,12 +137,22 @@ export function MagicLinkForm({
   // Success State
   if (isSuccess) {
     return (
-      <div className={cn("flex min-h-screen items-center justify-center bg-off-white p-4 dark:bg-off-black", className)} {...props}>
+      <div
+        className={cn(
+          "flex min-h-screen items-center justify-center bg-off-white p-4 dark:bg-off-black",
+          className
+        )}
+        {...props}
+      >
         <div className="w-full max-w-md space-y-8">
           <div className="space-y-6 text-center">
             {/* Success Icon */}
             <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/20">
-              <LucideIcon icon={CheckCircle} size="xl" className="text-green-600 dark:text-green-400" />
+              <LucideIcon
+                icon={CheckCircle}
+                size="xl"
+                className="text-green-600 dark:text-green-400"
+              />
             </div>
 
             {/* Success Content */}
@@ -152,16 +160,19 @@ export function MagicLinkForm({
               <h1 className="text-2xl font-bold text-off-black dark:text-off-white">
                 {successTitle}
               </h1>
-              
-              <p className="leading-relaxed text-warm-gray">
-                {successMessage}
-              </p>
+
+              <p className="leading-relaxed text-warm-gray">{successMessage}</p>
 
               {submittedEmail && (
                 <div className="rounded-lg bg-light-gray/50 p-4 dark:bg-warm-gray/10">
                   <div className="flex items-center gap-2 text-sm text-warm-gray">
                     <LucideIcon icon={Mail} size="xs" />
-                    <span>Sent to: <strong className="text-off-black dark:text-off-white">{submittedEmail}</strong></span>
+                    <span>
+                      Sent to:{" "}
+                      <strong className="text-off-black dark:text-off-white">
+                        {submittedEmail}
+                      </strong>
+                    </span>
                   </div>
                 </div>
               )}
@@ -194,12 +205,7 @@ export function MagicLinkForm({
                   )}
                 </Button>
 
-                <Button
-                  onClick={handleBackToForm}
-                  variant="ghost"
-                  size="sm"
-                  className="w-full"
-                >
+                <Button onClick={handleBackToForm} variant="ghost" size="sm" className="w-full">
                   <LucideIcon icon={ArrowLeft} size="xs" className="mr-2" />
                   {backToFormText}
                 </Button>
@@ -233,28 +239,27 @@ export function MagicLinkForm({
               <div className="mx-auto flex size-12 items-center justify-center rounded-lg bg-primary/10">
                 <LucideIcon icon={Sparkles} size="lg" className="text-primary" />
               </div>
-              
+
               <div className="space-y-2">
                 <h1 className="text-2xl font-bold text-off-black dark:text-off-white lg:text-3xl">
                   {title}
                 </h1>
-                <p className="text-warm-gray">
-                  {subtitle}
-                </p>
+                <p className="text-warm-gray">{subtitle}</p>
               </div>
             </div>
 
             {/* Description */}
             <div className="rounded-lg bg-light-gray/50 p-4 dark:bg-warm-gray/10">
-              <p className="text-sm leading-relaxed text-warm-gray">
-                {description}
-              </p>
+              <p className="text-sm leading-relaxed text-warm-gray">{description}</p>
             </div>
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <label htmlFor="email" className="block text-sm font-medium text-off-black dark:text-off-white">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-off-black dark:text-off-white"
+                >
                   Email Address
                 </label>
                 <div className="relative">
@@ -273,18 +278,20 @@ export function MagicLinkForm({
                       "placeholder:text-warm-gray",
                       "focus:border-primary focus:ring-2 focus:ring-primary/20",
                       "transition-colors",
-                      (validationError || isError) ? "border-red-500 dark:border-red-400" : "border-light-gray dark:border-warm-gray/30"
+                      validationError || isError
+                        ? "border-red-500 dark:border-red-400"
+                        : "border-light-gray dark:border-warm-gray/30"
                     )}
                   />
                 </div>
-                
+
                 {validationError && (
                   <div className="flex items-center gap-2 text-sm text-red-600 dark:text-red-400">
                     <LucideIcon icon={AlertCircle} size="xs" />
                     <span>{validationError}</span>
                   </div>
                 )}
-                
+
                 {isError && !validationError && (
                   <div className="flex items-center gap-2 text-sm text-red-600 dark:text-red-400">
                     <LucideIcon icon={AlertCircle} size="xs" />
@@ -339,17 +346,15 @@ export function MagicLinkForm({
                 Welcome to {brandName}
               </h2>
               <p className="leading-relaxed text-warm-gray">
-                Join thousands of developers building amazing things with our platform. 
-                No complex passwords required – just secure, seamless access.
+                Join thousands of developers building amazing things with our platform. No complex
+                passwords required – just secure, seamless access.
               </p>
             </div>
 
             {/* Benefits */}
             {showBenefits && displayBenefits.length > 0 && (
               <div className="space-y-6">
-                <h3 className="font-medium text-off-black dark:text-off-white">
-                  Why Magic Links?
-                </h3>
+                <h3 className="font-medium text-off-black dark:text-off-white">Why Magic Links?</h3>
                 <div className="space-y-4">
                   {displayBenefits.map((benefit) => (
                     <div key={benefit.id} className="flex items-start gap-3">
@@ -380,8 +385,8 @@ export function MagicLinkForm({
                   </h4>
                 </div>
                 <p className="text-xs leading-relaxed text-warm-gray">
-                  Magic links are sent securely and expire after 15 minutes. 
-                  We never store passwords and your email is protected according to our privacy policy.
+                  Magic links are sent securely and expire after 15 minutes. We never store
+                  passwords and your email is protected according to our privacy policy.
                 </p>
               </div>
             )}

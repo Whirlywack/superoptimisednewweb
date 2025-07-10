@@ -3,10 +3,9 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { LucideIcon } from "@/components/ui/Icon";
 import { Link } from "@/components/ui/Typography";
-import { 
-  Heart, 
-  Users, 
-  Lightbulb, 
+import {
+  Users,
+  Lightbulb,
   Target,
   ArrowRight,
   Mail,
@@ -14,12 +13,9 @@ import {
   Twitter,
   Linkedin,
   Globe,
-  MessageCircle,
   Calendar,
-  TrendingUp,
-  Code,
   BookOpen,
-  Star
+  Star,
 } from "lucide-react";
 
 interface Value {
@@ -101,25 +97,29 @@ export function AboutMission({
     {
       id: "transparency",
       title: "Radical Transparency",
-      description: "We share our successes, failures, metrics, and decision-making process openly with the community.",
+      description:
+        "We share our successes, failures, metrics, and decision-making process openly with the community.",
       icon: BookOpen,
     },
     {
       id: "community",
       title: "Community First",
-      description: "Every feature, design decision, and strategic choice is influenced by genuine community feedback.",
+      description:
+        "Every feature, design decision, and strategic choice is influenced by genuine community feedback.",
       icon: Users,
     },
     {
       id: "learning",
       title: "Continuous Learning",
-      description: "We approach every challenge as a learning opportunity and share our insights with others.",
+      description:
+        "We approach every challenge as a learning opportunity and share our insights with others.",
       icon: Lightbulb,
     },
     {
       id: "quality",
       title: "Sustainable Quality",
-      description: "Building tools that stand the test of time through thoughtful architecture and user-centered design.",
+      description:
+        "Building tools that stand the test of time through thoughtful architecture and user-centered design.",
       icon: Target,
     },
   ];
@@ -142,21 +142,24 @@ export function AboutMission({
     {
       id: "launch",
       title: "Public Launch",
-      description: "Launched the first version of our platform with core features and community feedback integration.",
+      description:
+        "Launched the first version of our platform with core features and community feedback integration.",
       date: "2023-01-15",
       metric: "100 users",
     },
     {
       id: "community",
       title: "Community Growth",
-      description: "Reached our first major community milestone with active contributors and feature requests.",
-      date: "2023-06-01", 
+      description:
+        "Reached our first major community milestone with active contributors and feature requests.",
+      date: "2023-06-01",
       metric: "1,000 users",
     },
     {
       id: "platform",
       title: "Platform Expansion",
-      description: "Released comprehensive developer tools and expanded our open source component library.",
+      description:
+        "Released comprehensive developer tools and expanded our open source component library.",
       date: "2023-12-01",
       metric: "10,000 users",
     },
@@ -193,9 +196,9 @@ export function AboutMission({
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
     });
   };
 
@@ -207,15 +210,11 @@ export function AboutMission({
           <h1 className="text-4xl font-bold leading-tight text-off-black dark:text-off-white lg:text-5xl">
             {title}
           </h1>
-          
-          <p className="mx-auto max-w-3xl text-xl leading-relaxed text-warm-gray">
-            {subtitle}
-          </p>
-          
+
+          <p className="mx-auto max-w-3xl text-xl leading-relaxed text-warm-gray">{subtitle}</p>
+
           <div className="rounded-lg bg-light-gray/50 p-8 text-left dark:bg-warm-gray/10">
-            <p className="text-lg leading-relaxed text-warm-gray">
-              {story}
-            </p>
+            <p className="text-lg leading-relaxed text-warm-gray">{story}</p>
           </div>
         </div>
       </section>
@@ -232,9 +231,7 @@ export function AboutMission({
                   Our Mission
                 </h2>
               </div>
-              <p className="text-lg leading-relaxed text-warm-gray">
-                {mission}
-              </p>
+              <p className="text-lg leading-relaxed text-warm-gray">{mission}</p>
             </div>
 
             {/* Vision */}
@@ -245,9 +242,7 @@ export function AboutMission({
                   Our Vision
                 </h2>
               </div>
-              <p className="text-lg leading-relaxed text-warm-gray">
-                {vision}
-              </p>
+              <p className="text-lg leading-relaxed text-warm-gray">{vision}</p>
             </div>
           </div>
         </div>
@@ -280,9 +275,7 @@ export function AboutMission({
                       {value.title}
                     </h3>
                   </div>
-                  <p className="leading-relaxed text-warm-gray">
-                    {value.description}
-                  </p>
+                  <p className="leading-relaxed text-warm-gray">{value.description}</p>
                 </div>
               ))}
             </div>
@@ -305,15 +298,12 @@ export function AboutMission({
 
             <div className="space-y-8">
               {displayMilestones.map((milestone, index) => (
-                <div
-                  key={milestone.id}
-                  className="relative flex gap-6"
-                >
+                <div key={milestone.id} className="relative flex gap-6">
                   {/* Timeline Line */}
                   {index < displayMilestones.length - 1 && (
                     <div className="absolute left-4 top-12 h-16 w-0.5 bg-light-gray dark:bg-warm-gray/30" />
                   )}
-                  
+
                   {/* Timeline Dot */}
                   <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary">
                     <div className="size-3 rounded-full bg-off-white" />
@@ -335,9 +325,7 @@ export function AboutMission({
                         </span>
                       )}
                     </div>
-                    <p className="leading-relaxed text-warm-gray">
-                      {milestone.description}
-                    </p>
+                    <p className="leading-relaxed text-warm-gray">{milestone.description}</p>
                   </div>
                 </div>
               ))}
@@ -386,34 +374,46 @@ export function AboutMission({
                     <h3 className="text-lg font-semibold text-off-black dark:text-off-white">
                       {member.name}
                     </h3>
-                    <p className="text-sm font-medium text-primary">
-                      {member.role}
-                    </p>
-                    <p className="text-sm leading-relaxed text-warm-gray">
-                      {member.bio}
-                    </p>
+                    <p className="text-sm font-medium text-primary">{member.role}</p>
+                    <p className="text-sm leading-relaxed text-warm-gray">{member.bio}</p>
                   </div>
 
                   {/* Social Links */}
                   {member.social && (
                     <div className="flex items-center justify-center gap-3 pt-2">
                       {member.social.github && (
-                        <Link href={member.social.github} external className="text-warm-gray hover:text-primary">
+                        <Link
+                          href={member.social.github}
+                          external
+                          className="text-warm-gray hover:text-primary"
+                        >
                           <LucideIcon icon={Github} size="sm" />
                         </Link>
                       )}
                       {member.social.twitter && (
-                        <Link href={member.social.twitter} external className="text-warm-gray hover:text-primary">
+                        <Link
+                          href={member.social.twitter}
+                          external
+                          className="text-warm-gray hover:text-primary"
+                        >
                           <LucideIcon icon={Twitter} size="sm" />
                         </Link>
                       )}
                       {member.social.linkedin && (
-                        <Link href={member.social.linkedin} external className="text-warm-gray hover:text-primary">
+                        <Link
+                          href={member.social.linkedin}
+                          external
+                          className="text-warm-gray hover:text-primary"
+                        >
                           <LucideIcon icon={Linkedin} size="sm" />
                         </Link>
                       )}
                       {member.social.website && (
-                        <Link href={member.social.website} external className="text-warm-gray hover:text-primary">
+                        <Link
+                          href={member.social.website}
+                          external
+                          className="text-warm-gray hover:text-primary"
+                        >
                           <LucideIcon icon={Globe} size="sm" />
                         </Link>
                       )}
@@ -435,7 +435,8 @@ export function AboutMission({
                 Get in Touch
               </h2>
               <p className="mx-auto max-w-2xl text-lg text-warm-gray">
-                We&apos;d love to hear from you. Whether you have questions, feedback, or just want to connect.
+                We&apos;d love to hear from you. Whether you have questions, feedback, or just want
+                to connect.
               </p>
             </div>
 
@@ -452,18 +453,20 @@ export function AboutMission({
                   <div className="mx-auto w-fit rounded-lg bg-primary/10 p-3">
                     <LucideIcon icon={method.icon} size="lg" className="text-primary" />
                   </div>
-                  
+
                   <div className="space-y-2">
                     <h3 className="font-semibold text-off-black dark:text-off-white">
                       {method.label}
                     </h3>
-                    <p className="text-sm text-warm-gray">
-                      {method.value}
-                    </p>
+                    <p className="text-sm text-warm-gray">{method.value}</p>
                   </div>
 
                   <Button variant="outline" size="sm" asChild>
-                    <Link href={method.href} external={method.type !== 'email'} className="no-underline">
+                    <Link
+                      href={method.href}
+                      external={method.type !== "email"}
+                      className="no-underline"
+                    >
                       <span>Connect</span>
                       <LucideIcon icon={ArrowRight} size="xs" className="ml-2" />
                     </Link>

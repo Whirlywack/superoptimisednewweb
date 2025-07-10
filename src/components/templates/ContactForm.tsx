@@ -3,40 +3,23 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { LucideIcon } from "@/components/ui/Icon";
 import { Link } from "@/components/ui/Typography";
-import { 
-  Mail, 
-  User, 
-  MessageCircle, 
-  Send, 
-  CheckCircle, 
-  AlertCircle, 
-  Phone, 
-  MapPin, 
-  Clock, 
-  Calendar, 
-  Building, 
-  Globe, 
-  ExternalLink,
+import {
+  Mail,
+  Send,
+  CheckCircle,
+  AlertCircle,
+  Phone,
+  MapPin,
+  Clock,
+  Globe,
   Github,
   Twitter,
   Linkedin,
-  Facebook,
-  Instagram,
-  Youtube,
   MessageSquare,
-  HelpCircle,
-  FileText,
   Briefcase,
   Heart,
-  Lightbulb,
   Bug,
-  Star,
-  Zap,
-  Shield,
-  Users,
-  Code,
-  Headphones,
-  CreditCard
+  CreditCard,
 } from "lucide-react";
 
 interface ContactMethod {
@@ -205,7 +188,7 @@ export function ContactForm({
     },
     {
       id: "phone",
-      type: "phone", 
+      type: "phone",
       label: "Call Us",
       value: "+1 (555) 123-4567",
       href: "tel:+15551234567",
@@ -293,22 +276,22 @@ export function ContactForm({
 
     if (value && field.validation) {
       const validation = field.validation;
-      
+
       if (validation.pattern && !new RegExp(validation.pattern).test(value)) {
         if (field.type === "email") {
           return "Please enter a valid email address";
         }
         return `${field.label} format is invalid`;
       }
-      
+
       if (validation.minLength && value.length < validation.minLength) {
         return `${field.label} must be at least ${validation.minLength} characters`;
       }
-      
+
       if (validation.maxLength && value.length > validation.maxLength) {
         return `${field.label} must be no more than ${validation.maxLength} characters`;
       }
-      
+
       if (validation.custom) {
         return validation.custom(value);
       }
@@ -318,21 +301,21 @@ export function ContactForm({
   };
 
   const handleInputChange = (field: FormField, value: any) => {
-    setFormData(prev => ({ ...prev, [field.name]: value }));
-    
+    setFormData((prev) => ({ ...prev, [field.name]: value }));
+
     // Clear error when user starts typing
     if (errors[field.name]) {
-      setErrors(prev => ({ ...prev, [field.name]: "" }));
+      setErrors((prev) => ({ ...prev, [field.name]: "" }));
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const newErrors: Record<string, string> = {};
-    
+
     // Validate all fields
-    displayFields.forEach(field => {
+    displayFields.forEach((field) => {
       const error = validateField(field, formData[field.name]);
       if (error) {
         newErrors[field.name] = error;
@@ -357,14 +340,17 @@ export function ContactForm({
 
   const renderField = (field: FormField) => {
     const hasError = !!errors[field.name];
-    
+
     return (
       <div key={field.id} className="space-y-2">
-        <label htmlFor={field.id} className="block text-sm font-medium text-off-black dark:text-off-white">
+        <label
+          htmlFor={field.id}
+          className="block text-sm font-medium text-off-black dark:text-off-white"
+        >
           {field.label}
           {field.required && <span className="ml-1 text-red-500">*</span>}
         </label>
-        
+
         {field.type === "textarea" ? (
           <textarea
             id={field.id}
@@ -378,7 +364,9 @@ export function ContactForm({
               "placeholder:text-warm-gray",
               "focus:border-primary focus:ring-2 focus:ring-primary/20",
               "transition-colors",
-              hasError ? "border-red-500 dark:border-red-400" : "border-light-gray dark:border-warm-gray/30"
+              hasError
+                ? "border-red-500 dark:border-red-400"
+                : "border-light-gray dark:border-warm-gray/30"
             )}
           />
         ) : field.type === "select" ? (
@@ -391,7 +379,9 @@ export function ContactForm({
               "bg-off-white text-off-black dark:bg-off-black dark:text-off-white",
               "focus:border-primary focus:ring-2 focus:ring-primary/20",
               "transition-colors",
-              hasError ? "border-red-500 dark:border-red-400" : "border-light-gray dark:border-warm-gray/30"
+              hasError
+                ? "border-red-500 dark:border-red-400"
+                : "border-light-gray dark:border-warm-gray/30"
             )}
           >
             <option value="">{field.placeholder || `Select ${field.label.toLowerCase()}`}</option>
@@ -414,11 +404,13 @@ export function ContactForm({
               "placeholder:text-warm-gray",
               "focus:border-primary focus:ring-2 focus:ring-primary/20",
               "transition-colors",
-              hasError ? "border-red-500 dark:border-red-400" : "border-light-gray dark:border-warm-gray/30"
+              hasError
+                ? "border-red-500 dark:border-red-400"
+                : "border-light-gray dark:border-warm-gray/30"
             )}
           />
         )}
-        
+
         {hasError && (
           <div className="flex items-center gap-2 text-sm text-red-600 dark:text-red-400">
             <LucideIcon icon={AlertCircle} size="xs" />
@@ -431,24 +423,28 @@ export function ContactForm({
 
   if (isSuccess) {
     return (
-      <div className={cn("flex min-h-screen items-center justify-center bg-off-white p-4 dark:bg-off-black", className)} {...props}>
+      <div
+        className={cn(
+          "flex min-h-screen items-center justify-center bg-off-white p-4 dark:bg-off-black",
+          className
+        )}
+        {...props}
+      >
         <div className="w-full max-w-md space-y-6 text-center">
           <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/20">
-            <LucideIcon icon={CheckCircle} size="xl" className="text-green-600 dark:text-green-400" />
+            <LucideIcon
+              icon={CheckCircle}
+              size="xl"
+              className="text-green-600 dark:text-green-400"
+            />
           </div>
           <div className="space-y-3">
             <h1 className="text-2xl font-bold text-off-black dark:text-off-white">
               {successTitle}
             </h1>
-            <p className="leading-relaxed text-warm-gray">
-              {successMessage}
-            </p>
+            <p className="leading-relaxed text-warm-gray">{successMessage}</p>
           </div>
-          <Button
-            onClick={() => window.location.reload()}
-            variant="primary"
-            size="lg"
-          >
+          <Button onClick={() => window.location.reload()} variant="primary" size="lg">
             Send Another Message
           </Button>
         </div>
@@ -468,13 +464,9 @@ export function ContactForm({
                 <h1 className="text-3xl font-bold text-off-black dark:text-off-white lg:text-4xl">
                   {title}
                 </h1>
-                <p className="text-xl text-warm-gray">
-                  {subtitle}
-                </p>
+                <p className="text-xl text-warm-gray">{subtitle}</p>
                 {description && (
-                  <p className="max-w-2xl leading-relaxed text-warm-gray">
-                    {description}
-                  </p>
+                  <p className="max-w-2xl leading-relaxed text-warm-gray">{description}</p>
                 )}
               </div>
 
@@ -499,14 +491,16 @@ export function ContactForm({
                         )}
                       >
                         <div className="flex items-start gap-3">
-                          <LucideIcon icon={category.icon} size="lg" className="mt-1 shrink-0 text-primary" />
+                          <LucideIcon
+                            icon={category.icon}
+                            size="lg"
+                            className="mt-1 shrink-0 text-primary"
+                          />
                           <div>
                             <h3 className="font-medium text-off-black dark:text-off-white">
                               {category.title}
                             </h3>
-                            <p className="mt-1 text-sm text-warm-gray">
-                              {category.description}
-                            </p>
+                            <p className="mt-1 text-sm text-warm-gray">{category.description}</p>
                           </div>
                         </div>
                       </button>
@@ -576,10 +570,14 @@ export function ContactForm({
                   {displayContactMethods.map((method) => (
                     <div
                       key={method.id}
-                      onClick={() => method.href ? window.open(method.href, '_blank') : onMethodClick?.(method)}
+                      onClick={() =>
+                        method.href ? window.open(method.href, "_blank") : onMethodClick?.(method)
+                      }
                       className={cn(
                         "flex items-start gap-3 rounded-lg p-3 transition-colors",
-                        method.href || onMethodClick ? "cursor-pointer hover:bg-off-white/50 dark:hover:bg-off-black/20" : ""
+                        method.href || onMethodClick
+                          ? "cursor-pointer hover:bg-off-white/50 dark:hover:bg-off-black/20"
+                          : ""
                       )}
                     >
                       <div className="shrink-0 rounded-lg bg-primary/10 p-2">
@@ -589,19 +587,11 @@ export function ContactForm({
                         <h3 className="font-medium text-off-black dark:text-off-white">
                           {method.label}
                         </h3>
-                        <p className="text-sm text-warm-gray">
-                          {method.value}
-                        </p>
+                        <p className="text-sm text-warm-gray">{method.value}</p>
                         {method.description && (
-                          <p className="text-xs text-warm-gray">
-                            {method.description}
-                          </p>
+                          <p className="text-xs text-warm-gray">{method.description}</p>
                         )}
-                        {method.hours && (
-                          <p className="text-xs text-warm-gray">
-                            {method.hours}
-                          </p>
-                        )}
+                        {method.hours && <p className="text-xs text-warm-gray">{method.hours}</p>}
                       </div>
                     </div>
                   ))}
@@ -622,7 +612,9 @@ export function ContactForm({
                       key={day.day}
                       className={cn(
                         "flex items-center justify-between text-sm",
-                        day.isToday ? "font-medium text-off-black dark:text-off-white" : "text-warm-gray"
+                        day.isToday
+                          ? "font-medium text-off-black dark:text-off-white"
+                          : "text-warm-gray"
                       )}
                     >
                       <span>{day.day}</span>
@@ -682,7 +674,11 @@ export function ContactForm({
                   {companyInfo.website && (
                     <div className="flex items-center gap-2">
                       <LucideIcon icon={Globe} size="xs" />
-                      <Link href={companyInfo.website} external className="text-primary hover:underline">
+                      <Link
+                        href={companyInfo.website}
+                        external
+                        className="text-primary hover:underline"
+                      >
                         {companyInfo.website}
                       </Link>
                     </div>

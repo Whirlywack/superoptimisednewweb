@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
-import { Button, IconButton } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/button";
 import { Link } from "@/components/ui/Typography";
 import { LucideIcon } from "@/components/ui/Icon";
-import { Menu, X, Home, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 
 interface NavItem {
   label: string;
@@ -77,10 +77,7 @@ export function Navigation({
               <LucideIcon
                 icon={ChevronDown}
                 size="xs"
-                className={cn(
-                  "transition-transform duration-200",
-                  isDropdownOpen && "rotate-180"
-                )}
+                className={cn("transition-transform duration-200", isDropdownOpen && "rotate-180")}
               />
             </button>
 
@@ -165,7 +162,7 @@ export function Navigation({
                 {logo}
               </Link>
             )}
-            
+
             <IconButton
               icon={<LucideIcon icon={X} size="md" />}
               onClick={toggleMobile}
@@ -175,9 +172,7 @@ export function Navigation({
           </div>
 
           {/* Mobile Menu Items */}
-          <div className="space-y-1 overflow-y-auto p-4">
-            {renderNavItems(items, true)}
-          </div>
+          <div className="space-y-1 overflow-y-auto p-4">{renderNavItems(items, true)}</div>
         </nav>
       </>
     );
@@ -203,9 +198,7 @@ export function Navigation({
       </div>
 
       {/* Desktop Navigation */}
-      <div className="hidden items-center space-x-1 lg:flex">
-        {renderNavItems(items)}
-      </div>
+      <div className="hidden items-center space-x-1 lg:flex">{renderNavItems(items)}</div>
 
       {/* Mobile Toggle */}
       {showMobileToggle && (
