@@ -1730,4 +1730,267 @@ Provide thorough, evidence-based analysis with specific, actionable recommendati
         }
       }, "analyzeQuestionContent");
     }),
+
+  // AI-powered automated tagging for question categorization
+  generateQuestionTags: adminProcedure
+    .input(
+      z.object({
+        questionTitle: z.string().min(1),
+        questionDescription: z.string().optional(),
+        questionType: z.enum([
+          "binary",
+          "multi-choice",
+          "rating-scale",
+          "text-response",
+          "ranking",
+          "ab-test",
+        ]),
+        questionConfig: z.record(z.unknown()).optional(),
+        category: z.string().optional(),
+        existingTags: z.array(z.string()).optional(),
+        tagCount: z.number().min(1).max(10).default(5),
+        tagTypes: z
+          .array(
+            z.enum([
+              "topic",
+              "methodology",
+              "audience",
+              "difficulty",
+              "purpose",
+              "domain",
+              "format",
+              "context",
+            ])
+          )
+          .default(["topic", "methodology", "purpose"]),
+        customTaggingInstructions: z.string().optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      return safeExecute(async () => {
+        const {
+          questionTitle,
+          questionDescription,
+          questionType,
+          questionConfig,
+          category,
+          existingTags = [],
+          tagCount,
+          tagTypes,
+          customTaggingInstructions,
+        } = input;
+
+        // Map tag types to descriptions
+        const tagTypeDescriptions = {
+          topic:
+            "Subject matter and content area (e.g., 'user-experience', 'pricing', 'performance')",
+          methodology:
+            "Research methodology and approach (e.g., 'quantitative', 'comparative', 'exploratory')",
+          audience: "Target respondent group (e.g., 'developers', 'end-users', 'stakeholders')",
+          difficulty: "Complexity level (e.g., 'beginner-friendly', 'technical', 'expert-level')",
+          purpose: "Research intent and goals (e.g., 'validation', 'discovery', 'optimization')",
+          domain: "Industry or field (e.g., 'saas', 'e-commerce', 'healthcare')",
+          format: "Question structure and format (e.g., 'multiple-choice', 'open-ended', 'scale')",
+          context: "Usage context and setting (e.g., 'onboarding', 'feedback', 'evaluation')",
+        };
+
+        const selectedTagTypes = tagTypes
+          .map((type) => `- ${type}: ${tagTypeDescriptions[type]}`)
+          .join("\n");
+
+        const configContext = questionConfig
+          ? `Question Configuration: ${JSON.stringify(questionConfig, null, 2)}`
+          : "No configuration provided";
+
+        const existingTagsContext =
+          existingTags.length > 0
+            ? `Existing Tags to Consider: ${existingTags.join(", ")}`
+            : "No existing tags";
+
+        const prompt = `You are an expert content categorization specialist and research methodology expert. Generate relevant, specific, and actionable tags for the following question to improve organization, searchability, and analysis.
+
+**Question to Tag:**
+Title: "${questionTitle}"
+Description: ${questionDescription || "No description provided"}
+Type: ${questionType}
+Category: ${category || "general"}
+${configContext}
+${existingTagsContext}
+
+**Tagging Guidelines:**
+Generate ${tagCount} highly relevant tags from these categories:
+${selectedTagTypes}
+
+**Tagging Requirements:**
+1. **Specificity**: Use specific, descriptive tags rather than generic ones
+2. **Consistency**: Follow kebab-case format (e.g., "user-experience", "data-analysis")
+3. **Relevance**: Ensure all tags directly relate to the question content or purpose
+4. **Searchability**: Include tags that would help researchers find similar questions
+5. **Hierarchy**: Include both broad and specific tags when relevant
+6. **Uniqueness**: Avoid redundant or overly similar tags
+
+**Tag Format Guidelines:**
+- Use lowercase with hyphens for multi-word tags (kebab-case)
+- Maximum 3 words per tag
+- Avoid articles (a, an, the) and prepositions
+- Be specific rather than generic (prefer "mobile-usability" over "usability")
+- Include technical terms when appropriate for the audience
+
+${customTaggingInstructions ? `**Custom Instructions:** ${customTaggingInstructions}` : ""}
+
+**Context Analysis:**
+Consider the question's:
+- Core subject matter and topics covered
+- Research methodology and approach
+- Intended audience and complexity level
+- Purpose within a broader research strategy
+- Technical domain and industry context
+- Data collection format and structure
+
+**Output Format:**
+Return a JSON object with this structure:
+
+{
+  "tags": [
+    {
+      "tag": "user-experience",
+      "type": "topic",
+      "relevance": "high",
+      "description": "Focuses on user interaction and satisfaction with the product",
+      "reasoning": "Question directly asks about user experience with interface elements"
+    }
+  ],
+  "tagCategories": {
+    "topic": ["user-experience", "interface-design"],
+    "methodology": ["comparative-analysis"],
+    "purpose": ["optimization"]
+  },
+  "suggestions": {
+    "relatedTags": ["Alternative tags that might also be relevant"],
+    "tagHierarchy": {
+      "broad": ["General category tags"],
+      "specific": ["Specific implementation tags"]
+    },
+    "searchKeywords": ["Keywords that would help find this question"],
+    "organizationTips": [
+      "Suggestions for how these tags could be used for organization"
+    ]
+  },
+  "confidence": "high",
+  "alternativeTagging": [
+    {
+      "context": "Different research context where alternative tags might be better",
+      "tags": ["alternative-tag-1", "alternative-tag-2"]
+    }
+  ]
+}
+
+Provide thoughtful, research-oriented tags that would be valuable for question organization, searchability, and analysis in a professional research environment.`;
+
+        const response = await generateChatCompletion(
+          [{ role: "user", content: prompt }],
+          "GPT_4O",
+          { temperature: 0.3 }
+        );
+
+        try {
+          const taggingResult = parseJsonResponse(response);
+
+          // Validate the response structure
+          if (!taggingResult.tags || !Array.isArray(taggingResult.tags)) {
+            throw new Error("Missing valid tags array");
+          }
+
+          // Validate each tag
+          const validatedTags = taggingResult.tags.map((tagItem: any, index: number) => {
+            if (!tagItem.tag || typeof tagItem.tag !== "string") {
+              throw new Error(`Tag ${index + 1} missing valid tag name`);
+            }
+            if (!tagItem.type || typeof tagItem.type !== "string") {
+              throw new Error(`Tag ${index + 1} missing valid type`);
+            }
+
+            // Normalize tag format (kebab-case, lowercase)
+            const normalizedTag = tagItem.tag
+              .toLowerCase()
+              .trim()
+              .replace(/[^a-z0-9\s-]/g, "") // Remove special characters except hyphens
+              .replace(/\s+/g, "-") // Replace spaces with hyphens
+              .replace(/-+/g, "-") // Replace multiple hyphens with single
+              .replace(/^-|-$/g, ""); // Remove leading/trailing hyphens
+
+            return {
+              tag: normalizedTag,
+              type: tagItem.type,
+              relevance: tagItem.relevance || "medium",
+              description: tagItem.description || "",
+              reasoning: tagItem.reasoning || "",
+            };
+          });
+
+          // Remove duplicates and filter out invalid tags
+          const uniqueTags = validatedTags.filter((tagItem, index, self) => {
+            const isDuplicate = self.findIndex((t) => t.tag === tagItem.tag) !== index;
+            const isValid = tagItem.tag.length > 0 && tagItem.tag.length <= 50;
+            return !isDuplicate && isValid;
+          });
+
+          // Organize tags by category
+          const tagCategories: Record<string, string[]> = {};
+          uniqueTags.forEach((tagItem) => {
+            if (!tagCategories[tagItem.type]) {
+              tagCategories[tagItem.type] = [];
+            }
+            tagCategories[tagItem.type].push(tagItem.tag);
+          });
+
+          const validatedResult = {
+            questionContext: {
+              title: questionTitle,
+              description: questionDescription,
+              type: questionType,
+              category: category || "general",
+              config: questionConfig || {},
+            },
+            tags: uniqueTags,
+            tagCategories,
+            suggestions: {
+              relatedTags: Array.isArray(taggingResult.suggestions?.relatedTags)
+                ? taggingResult.suggestions.relatedTags.slice(0, 10)
+                : [],
+              tagHierarchy: {
+                broad: Array.isArray(taggingResult.suggestions?.tagHierarchy?.broad)
+                  ? taggingResult.suggestions.tagHierarchy.broad.slice(0, 5)
+                  : [],
+                specific: Array.isArray(taggingResult.suggestions?.tagHierarchy?.specific)
+                  ? taggingResult.suggestions.tagHierarchy.specific.slice(0, 5)
+                  : [],
+              },
+              searchKeywords: Array.isArray(taggingResult.suggestions?.searchKeywords)
+                ? taggingResult.suggestions.searchKeywords.slice(0, 10)
+                : [],
+              organizationTips: Array.isArray(taggingResult.suggestions?.organizationTips)
+                ? taggingResult.suggestions.organizationTips.slice(0, 5)
+                : [],
+            },
+            metadata: {
+              confidence: taggingResult.confidence || "medium",
+              tagCount: uniqueTags.length,
+              requestedCount: tagCount,
+              tagTypes: [...new Set(uniqueTags.map((t) => t.type))],
+              alternativeTagging: Array.isArray(taggingResult.alternativeTagging)
+                ? taggingResult.alternativeTagging.slice(0, 3)
+                : [],
+              processedAt: new Date().toISOString(),
+              version: "1.0",
+            },
+          };
+
+          return validatedResult;
+        } catch (parseError) {
+          console.error("Failed to parse AI tagging response:", parseError);
+          throw new Error("Failed to generate valid question tags. Please try again.");
+        }
+      }, "generateQuestionTags");
+    }),
 });

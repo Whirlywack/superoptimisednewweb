@@ -27,10 +27,12 @@ import {
   Lightbulb,
   RefreshCw,
   Shield,
+  Tags,
   Brain, // eslint-disable-line @typescript-eslint/no-unused-vars
 } from "lucide-react";
 import type { QuestionnaireTemplate } from "@/lib/questionnaire-templates-detailed";
 import { ContentAnalysisPanel } from "@/components/admin/ContentAnalysisPanel";
+import { QuestionTagsPanel } from "@/components/admin/QuestionTagsPanel";
 
 interface Question {
   id: string;
@@ -1217,6 +1219,13 @@ export default function NewQuestionnairePage() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [contentAnalysisResult, setContentAnalysisResult] = useState<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
 
+  // Question tagging state
+  const [showQuestionTags, setShowQuestionTags] = useState(false);
+  const [taggingQuestionId, setTaggingQuestionId] = useState<string | null>(null);
+  const [isGeneratingTags, setIsGeneratingTags] = useState(false);
+  const [questionTagsResult, setQuestionTagsResult] = useState<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
   const [showTemplateGenerator, setShowTemplateGenerator] = useState(false);
   const [isGeneratingTemplate, setIsGeneratingTemplate] = useState(false);
   const [generatedTemplate, setGeneratedTemplate] = useState<{
@@ -1293,6 +1302,7 @@ export default function NewQuestionnairePage() {
   const generateSmartTemplateMutation = trpc.admin.generateSmartTemplate.useMutation();
   const optimizeQuestionFlowMutation = trpc.admin.optimizeQuestionFlow.useMutation();
   const analyzeQuestionContentMutation = trpc.admin.analyzeQuestionContent.useMutation();
+  const generateQuestionTagsMutation = trpc.admin.generateQuestionTags.useMutation();
 
   // Save/Publish functions
   const saveQuestionnaire = async (status: "draft" | "active") => {
@@ -2127,6 +2137,59 @@ export default function NewQuestionnairePage() {
       setIsAnalyzing(false);
       setAnalyzingQuestionId(null);
     }
+  };
+
+  // AI-powered automated tagging for question categorization
+  const generateQuestionTags = async (questionId: string) => {
+    const question = questionnaire.questions.find((q) => q.id === questionId);
+    if (!question) {
+      alert("Question not found");
+      return;
+    }
+
+    setTaggingQuestionId(questionId);
+    setIsGeneratingTags(true);
+    try {
+      const result = await generateQuestionTagsMutation.mutateAsync({
+        questionTitle: question.title,
+        questionDescription: question.description,
+        questionType: question.type as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+        questionConfig: question.config,
+        category: questionnaire.category,
+        targetAudience: "general audience", // Could be made dynamic
+        context: {
+          questionnaireTitle: questionnaire.title,
+          questionnaireDescription: questionnaire.description,
+          existingQuestions: questionnaire.questions.map((q) => q.title),
+          questionPosition: questionnaire.questions.findIndex((q) => q.id === questionId) + 1,
+          totalQuestions: questionnaire.questions.length,
+        },
+        tagPreferences: {
+          maxPrimaryTags: 5,
+          maxSecondaryTags: 8,
+          maxContextualTags: 3,
+          includeConfidenceScores: true,
+          includeRecommendations: true,
+        },
+      });
+
+      setQuestionTagsResult(result);
+      setSelectedTags(result.generatedTags.primary.map((tag: any) => tag.tag)); // eslint-disable-line @typescript-eslint/no-explicit-any
+      setShowQuestionTags(true);
+    } catch (error) {
+      console.error("Failed to generate question tags:", error);
+      alert("Failed to generate question tags. Please try again.");
+    } finally {
+      setIsGeneratingTags(false);
+      setTaggingQuestionId(null);
+    }
+  };
+
+  // Handle tag selection toggle
+  const handleTagToggle = (tag: string) => {
+    setSelectedTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
   };
 
   // Load template data from URL parameter
@@ -3293,6 +3356,23 @@ export default function NewQuestionnairePage() {
                                   <Shield size={14} />
                                 )}
                                 <span>Analyze</span>
+                              </button>
+                              <button
+                                onClick={() => generateQuestionTags(question.id)}
+                                disabled={isGeneratingTags || taggingQuestionId === question.id}
+                                className="flex items-center space-x-1 px-3 py-1 text-xs font-medium transition-colors hover:opacity-90 disabled:opacity-50"
+                                style={{
+                                  backgroundColor: "var(--primary)",
+                                  color: "var(--off-white)",
+                                }}
+                                title="Generate AI-powered tags for categorization"
+                              >
+                                {taggingQuestionId === question.id ? (
+                                  <RefreshCw size={14} className="animate-spin" />
+                                ) : (
+                                  <Tags size={14} />
+                                )}
+                                <span>Tags</span>
                               </button>
                               <button
                                 onClick={() => getSmartRecommendations(originalIndex)}
@@ -4894,6 +4974,24 @@ export default function NewQuestionnairePage() {
               onClose={() => {
                 setShowContentAnalysis(false);
                 setContentAnalysisResult(null);
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Question Tags Modal */}
+      {showQuestionTags && questionTagsResult && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="max-h-[90vh] w-full max-w-6xl overflow-hidden">
+            <QuestionTagsPanel
+              tags={questionTagsResult}
+              selectedTags={selectedTags}
+              onTagToggle={handleTagToggle}
+              onClose={() => {
+                setShowQuestionTags(false);
+                setQuestionTagsResult(null);
+                setSelectedTags([]);
               }}
             />
           </div>
