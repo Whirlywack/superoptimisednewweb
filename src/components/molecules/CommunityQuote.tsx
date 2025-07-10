@@ -64,12 +64,7 @@ export function CommunityQuote({
 
   return (
     <blockquote
-      className={cn(
-        variantClasses[variant],
-        sizeClasses[size].container,
-        "space-y-4",
-        className
-      )}
+      className={cn(variantClasses[variant], sizeClasses[size].container, "space-y-4", className)}
       {...props}
     >
       <div className="relative">
@@ -80,7 +75,7 @@ export function CommunityQuote({
             className="absolute -left-2 -top-2 text-primary/40"
           />
         )}
-        
+
         <Paragraph
           className={cn(
             sizeClasses[size].quote,
@@ -89,7 +84,7 @@ export function CommunityQuote({
             showQuoteIcon && variant !== "minimal" && "ml-4"
           )}
         >
-          "{quote}"
+          &ldquo;{quote}&rdquo;
         </Paragraph>
       </div>
 
@@ -101,15 +96,12 @@ export function CommunityQuote({
             className="size-10 rounded-full bg-light-gray object-cover dark:bg-warm-gray/20"
           />
         )}
-        
+
         <div className="flex flex-col">
-          <MonoText
-            variant="default"
-            className="font-medium text-off-black dark:text-off-white"
-          >
+          <MonoText variant="default" className="font-medium text-off-black dark:text-off-white">
             {author}
           </MonoText>
-          
+
           {authorInfo && (
             <MonoText variant="muted" className="text-xs">
               {authorInfo}

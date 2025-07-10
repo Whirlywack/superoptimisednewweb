@@ -55,15 +55,10 @@ interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
   as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
-export function CardTitle({ 
-  className, 
-  children, 
-  as: Component = "h3",
-  ...props 
-}: CardTitleProps) {
+export function CardTitle({ className, children, as: Component = "h3", ...props }: CardTitleProps) {
   return (
-    <Component 
-      className={cn("text-lg font-semibold leading-none tracking-tight", className)} 
+    <Component
+      className={cn("text-lg font-semibold leading-none tracking-tight", className)}
       {...props}
     >
       {children}
@@ -107,7 +102,7 @@ export function CardFooter({ className, children, ...props }: CardFooterProps) {
   );
 }
 
-interface ImageCardProps extends Omit<CardProps, 'children'> {
+interface ImageCardProps extends Omit<CardProps, "children"> {
   src: string;
   alt: string;
   title?: string;
@@ -146,7 +141,7 @@ export function ImageCard({
           )}
         />
       </div>
-      
+
       {(title || description || children) && (
         <>
           {(title || description) && (
@@ -155,7 +150,7 @@ export function ImageCard({
               {description && <CardDescription>{description}</CardDescription>}
             </CardHeader>
           )}
-          
+
           {children}
         </>
       )}
@@ -163,7 +158,7 @@ export function ImageCard({
   );
 }
 
-interface StatCardProps extends Omit<CardProps, 'children'> {
+interface StatCardProps extends Omit<CardProps, "children"> {
   title: string;
   value: string | number;
   description?: string;
@@ -182,13 +177,13 @@ export function StatCard({
   description,
   trend,
   icon,
-  children,
+  _children,
   className,
   ...props
 }: StatCardProps) {
   const trendColors = {
     up: "text-primary",
-    down: "text-warm-gray", 
+    down: "text-warm-gray",
     neutral: "text-muted-foreground",
   };
 
@@ -204,10 +199,10 @@ export function StatCard({
         <CardTitle className="text-sm font-medium">{title}</CardTitle>
         {icon && <div className="size-4 text-muted-foreground">{icon}</div>}
       </CardHeader>
-      
+
       <CardContent>
         <div className="text-2xl font-bold">{value}</div>
-        
+
         {(description || trend) && (
           <div className="mt-1 flex items-center gap-2">
             {trend && (
@@ -216,10 +211,8 @@ export function StatCard({
                 {trend.label && ` ${trend.label}`}
               </span>
             )}
-            
-            {description && (
-              <p className="text-xs text-muted-foreground">{description}</p>
-            )}
+
+            {description && <p className="text-xs text-muted-foreground">{description}</p>}
           </div>
         )}
       </CardContent>
@@ -227,7 +220,7 @@ export function StatCard({
   );
 }
 
-interface ActionCardProps extends Omit<CardProps, 'children'> {
+interface ActionCardProps extends Omit<CardProps, "children"> {
   title: string;
   description?: string;
   icon?: React.ReactNode;
@@ -256,7 +249,7 @@ export function ActionCard({
                 {icon}
               </div>
             )}
-            
+
             <div className="flex-1">
               <div className="flex items-center gap-2">
                 <CardTitle className="text-base">{title}</CardTitle>
@@ -267,9 +260,9 @@ export function ActionCard({
           </div>
         </div>
       </CardHeader>
-      
+
       {children && <CardContent>{children}</CardContent>}
-      
+
       {action && <CardFooter>{action}</CardFooter>}
     </Card>
   );

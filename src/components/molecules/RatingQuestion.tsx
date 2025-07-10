@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { cn } from '@/lib/utils';
-import { QuestionLabel } from '@/components/questionnaire/QuestionLabel';
-import { ValidationMessage } from '@/components/ui/ValidationMessage';
-import { SkipControl } from '@/components/ui/SkipControl';
-import { Star, ThumbsUp } from 'lucide-react';
+import React, { useState } from "react";
+import { cn } from "@/lib/utils";
+import { QuestionLabel } from "@/components/questionnaire/QuestionLabel";
+import { ValidationMessage } from "@/components/ui/ValidationMessage";
+import { SkipControl } from "@/components/ui/SkipControl";
+import { Star, ThumbsUp } from "lucide-react";
 
 export interface RatingQuestionProps {
   /** Question text */
@@ -13,7 +13,7 @@ export interface RatingQuestionProps {
   /** Rating scale (e.g., 5 for 1-5, 10 for 1-10) */
   scale?: number;
   /** Visual style of the rating */
-  variant?: 'stars' | 'numbers' | 'thumbs';
+  variant?: "stars" | "numbers" | "thumbs";
   /** Current rating value */
   value?: number;
   /** Callback when rating changes */
@@ -38,7 +38,7 @@ export function RatingQuestion({
   question,
   description,
   scale = 10,
-  variant = 'numbers',
+  variant = "numbers",
   value,
   onChange,
   required = false,
@@ -54,7 +54,7 @@ export function RatingQuestion({
 
   const handleRatingSelect = (selectedRating: number) => {
     if (disabled) return;
-    
+
     setRating(selectedRating);
     if (onChange) {
       onChange(selectedRating);
@@ -107,16 +107,12 @@ export function RatingQuestion({
       );
     }
 
-    return (
-      <div className="flex items-center justify-center gap-1 py-4">
-        {stars}
-      </div>
-    );
+    return <div className="flex items-center justify-center gap-1 py-4">{stars}</div>;
   };
 
   const renderNumberRating = () => {
     const numbers = [];
-    const displayRating = _getDisplayRating();
+    const _displayRating = _getDisplayRating();
 
     for (let i = 1; i <= scale; i++) {
       const isSelected = i === rating;
@@ -146,11 +142,7 @@ export function RatingQuestion({
       );
     }
 
-    return (
-      <div className="flex flex-wrap items-center justify-center gap-2 py-4">
-        {numbers}
-      </div>
-    );
+    return <div className="flex flex-wrap items-center justify-center gap-2 py-4">{numbers}</div>;
   };
 
   const renderThumbsRating = () => {
@@ -187,20 +179,16 @@ export function RatingQuestion({
       );
     }
 
-    return (
-      <div className="flex items-center justify-center gap-3 py-4">
-        {thumbs}
-      </div>
-    );
+    return <div className="flex items-center justify-center gap-3 py-4">{thumbs}</div>;
   };
 
   const getRatingComponent = () => {
     switch (variant) {
-      case 'stars':
+      case "stars":
         return renderStarRating();
-      case 'thumbs':
+      case "thumbs":
         return renderThumbsRating();
-      case 'numbers':
+      case "numbers":
       default:
         return renderNumberRating();
     }
@@ -208,11 +196,11 @@ export function RatingQuestion({
 
   const getVariantDescription = () => {
     switch (variant) {
-      case 'stars':
+      case "stars":
         return `Rate from 1 to ${scale} stars`;
-      case 'thumbs':
-        return 'Rate your satisfaction level';
-      case 'numbers':
+      case "thumbs":
+        return "Rate your satisfaction level";
+      case "numbers":
       default:
         return `Rate from 1 to ${scale}`;
     }
@@ -222,23 +210,15 @@ export function RatingQuestion({
     <div className={cn("space-y-6", className)}>
       {/* Question Header */}
       <div className="space-y-2">
-        <QuestionLabel required={required}>
-          {question}
-        </QuestionLabel>
-        {description && (
-          <p className="text-sm leading-relaxed text-warm-gray">
-            {description}
-          </p>
-        )}
-        <p className="text-xs text-warm-gray">
-          {getVariantDescription()}
-        </p>
+        <QuestionLabel required={required}>{question}</QuestionLabel>
+        {description && <p className="text-sm leading-relaxed text-warm-gray">{description}</p>}
+        <p className="text-xs text-warm-gray">{getVariantDescription()}</p>
       </div>
 
       {/* Rating Component */}
       <div className="rounded-lg border-2 border-light-gray bg-off-white p-6">
         {getRatingComponent()}
-        
+
         {/* Scale Labels */}
         {scaleLabels && (
           <div className="mt-4 flex justify-between text-xs text-warm-gray">
@@ -253,27 +233,21 @@ export function RatingQuestion({
         <div className="text-center">
           <div className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-off-white">
             <span className="font-medium">Your Rating:</span>
-            <span className="text-lg font-bold">{rating}/{scale}</span>
-            {variant === 'stars' && (
-              <Star className="size-4 fill-current" />
-            )}
+            <span className="text-lg font-bold">
+              {rating}/{scale}
+            </span>
+            {variant === "stars" && <Star className="size-4 fill-current" />}
           </div>
         </div>
       )}
 
       {/* Validation Error */}
-      {error && (
-        <ValidationMessage type="error" message={error} />
-      )}
+      {error && <ValidationMessage type="error" message={error} />}
 
       {/* Skip Option */}
       {allowSkip && onSkip && (
         <div className="flex justify-center">
-          <SkipControl
-            variant="subtle"
-            onClick={onSkip}
-            disabled={disabled}
-          >
+          <SkipControl variant="subtle" onClick={onSkip} disabled={disabled}>
             Skip this rating
           </SkipControl>
         </div>

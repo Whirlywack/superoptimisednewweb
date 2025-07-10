@@ -1,6 +1,6 @@
 import React from "react";
 import { cn } from "@/lib/utils";
-import { H3, Paragraph, Link } from "@/components/ui/Typography";
+import { Paragraph, Link } from "@/components/ui/Typography";
 import { Tag } from "@/components/ui/Tag";
 import { PostMeta } from "./PostMeta";
 import { LucideIcon } from "@/components/ui/Icon";
@@ -74,9 +74,7 @@ export function PostPreview({
   };
 
   const LinkComponent = external ? "a" : Link;
-  const linkProps = external 
-    ? { href, target: "_blank", rel: "noopener noreferrer" }
-    : { href };
+  const linkProps = external ? { href, target: "_blank", rel: "noopener noreferrer" } : { href };
 
   return (
     <article
@@ -112,16 +110,16 @@ export function PostPreview({
         >
           {title}
           {external ? (
-            <LucideIcon 
-              icon={ExternalLink} 
-              size="sm" 
-              className="opacity-50 transition-opacity group-hover:opacity-100" 
+            <LucideIcon
+              icon={ExternalLink}
+              size="sm"
+              className="opacity-50 transition-opacity group-hover:opacity-100"
             />
           ) : (
-            <LucideIcon 
-              icon={ArrowRight} 
-              size="sm" 
-              className="translate-x-0 opacity-0 transition-all duration-200 group-hover:translate-x-1 group-hover:opacity-100" 
+            <LucideIcon
+              icon={ArrowRight}
+              size="sm"
+              className="translate-x-0 opacity-0 transition-all duration-200 group-hover:translate-x-1 group-hover:opacity-100"
             />
           )}
         </LinkComponent>
@@ -138,11 +136,7 @@ export function PostPreview({
       {showTags && tags.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {tags.map((tag, index) => (
-            <Tag
-              key={index}
-              variant="secondary"
-              size={size === "lg" ? "md" : "sm"}
-            >
+            <Tag key={index} variant="secondary" size={size === "lg" ? "md" : "sm"}>
               {tag}
             </Tag>
           ))}

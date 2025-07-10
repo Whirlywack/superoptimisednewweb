@@ -1,29 +1,28 @@
-import React, { useState } from 'react';
-import { cn } from '@/lib/utils';
-import { QuestionLabel } from '@/components/questionnaire/QuestionLabel';
-import { ValidationMessage } from '@/components/ui/ValidationMessage';
-import { SkipControl } from '@/components/ui/SkipControl';
-import { 
-  AlertTriangle, 
-  CheckCircle, 
-  XCircle, 
-  Clock, 
-  Zap, 
+import React, { useState } from "react";
+import { cn } from "@/lib/utils";
+import { QuestionLabel } from "@/components/questionnaire/QuestionLabel";
+import { ValidationMessage } from "@/components/ui/ValidationMessage";
+import { SkipControl } from "@/components/ui/SkipControl";
+import {
+  AlertTriangle,
+  CheckCircle,
+  XCircle,
+  Clock,
+  Zap,
   Shield,
   TrendingUp,
-  TrendingDown,
-  Scale as Balance
-} from 'lucide-react';
+  Scale as Balance,
+} from "lucide-react";
 
-export type ToleranceLevel = 'low' | 'medium' | 'high';
+export type ToleranceLevel = "low" | "medium" | "high";
 
 export interface TechDebtScenario {
   id: string;
   title: string;
   description: string;
-  impact: 'low' | 'medium' | 'high';
-  urgency: 'low' | 'medium' | 'high';
-  effort: 'low' | 'medium' | 'high';
+  impact: "low" | "medium" | "high";
+  urgency: "low" | "medium" | "high";
+  effort: "low" | "medium" | "high";
   tradeoffs: {
     shortTerm: string;
     longTerm: string;
@@ -65,7 +64,7 @@ export interface TechDebtToleranceProps {
   /** Show personality traits for each tolerance level */
   showTraits?: boolean;
   /** Visual style variant */
-  variant?: 'scale' | 'cards' | 'scenarios';
+  variant?: "scale" | "cards" | "scenarios";
   /** Additional CSS classes */
   className?: string;
 }
@@ -83,7 +82,7 @@ export function TechDebtTolerance({
   scenario,
   showTradeoffs = true,
   showTraits = false,
-  variant = 'scale',
+  variant = "scale",
   className,
 }: TechDebtToleranceProps) {
   const [selectedTolerance, setSelectedTolerance] = useState<ToleranceLevel | undefined>(value);
@@ -96,45 +95,48 @@ export function TechDebtTolerance({
 
   const toleranceOptions: ToleranceOption[] = [
     {
-      level: 'low',
-      label: 'Low Tolerance',
-      description: 'Prefer to address technical debt immediately, even if it slows down feature development',
+      level: "low",
+      label: "Low Tolerance",
+      description:
+        "Prefer to address technical debt immediately, even if it slows down feature development",
       icon: <Shield className="size-5" />,
-      color: 'text-red-500',
-      traits: ['Quality-focused', 'Risk-averse', 'Long-term thinking', 'Process-oriented']
+      color: "text-red-500",
+      traits: ["Quality-focused", "Risk-averse", "Long-term thinking", "Process-oriented"],
     },
     {
-      level: 'medium',
-      label: 'Balanced Approach',
-      description: 'Accept some technical debt for short-term gains, but regularly prioritize cleanup',
+      level: "medium",
+      label: "Balanced Approach",
+      description:
+        "Accept some technical debt for short-term gains, but regularly prioritize cleanup",
       icon: <Balance className="size-5" />,
-      color: 'text-yellow-500',
-      traits: ['Pragmatic', 'Context-aware', 'Strategic', 'Balanced perspective']
+      color: "text-yellow-500",
+      traits: ["Pragmatic", "Context-aware", "Strategic", "Balanced perspective"],
     },
     {
-      level: 'high',
-      label: 'High Tolerance',
-      description: 'Accept significant technical debt to move fast, address it only when it becomes critical',
+      level: "high",
+      label: "High Tolerance",
+      description:
+        "Accept significant technical debt to move fast, address it only when it becomes critical",
       icon: <Zap className="size-5" />,
-      color: 'text-green-500',
-      traits: ['Speed-focused', 'Adaptable', 'Result-oriented', 'High-pressure tolerance']
-    }
+      color: "text-green-500",
+      traits: ["Speed-focused", "Adaptable", "Result-oriented", "High-pressure tolerance"],
+    },
   ];
 
-  const getImpactColor = (level: 'low' | 'medium' | 'high') => {
+  const getImpactColor = (level: "low" | "medium" | "high") => {
     const colors = {
-      low: 'text-green-600 bg-green-50',
-      medium: 'text-yellow-600 bg-yellow-50',
-      high: 'text-red-600 bg-red-50'
+      low: "text-green-600 bg-green-50",
+      medium: "text-yellow-600 bg-yellow-50",
+      high: "text-red-600 bg-red-50",
     };
     return colors[level];
   };
 
-  const getImpactIcon = (level: 'low' | 'medium' | 'high') => {
+  const getImpactIcon = (level: "low" | "medium" | "high") => {
     const icons = {
       low: <CheckCircle className="size-4" />,
       medium: <AlertTriangle className="size-4" />,
-      high: <XCircle className="size-4" />
+      high: <XCircle className="size-4" />,
     };
     return icons[level];
   };
@@ -155,16 +157,16 @@ export function TechDebtTolerance({
           High Tolerance
         </span>
       </div>
-      
+
       <div className="relative">
         <input
           type="range"
           min="0"
           max="2"
           step="1"
-          value={selectedTolerance ? ['low', 'medium', 'high'].indexOf(selectedTolerance) : 1}
+          value={selectedTolerance ? ["low", "medium", "high"].indexOf(selectedTolerance) : 1}
           onChange={(e) => {
-            const levels: ToleranceLevel[] = ['low', 'medium', 'high'];
+            const levels: ToleranceLevel[] = ["low", "medium", "high"];
             handleSelect(levels[parseInt(e.target.value)]);
           }}
           disabled={disabled}
@@ -180,7 +182,7 @@ export function TechDebtTolerance({
               key={option.level}
               className={cn(
                 "px-2 text-center",
-                selectedTolerance === option.level ? option.color : 'text-warm-gray'
+                selectedTolerance === option.level ? option.color : "text-warm-gray"
               )}
             >
               <div className="mb-1">{option.icon}</div>
@@ -189,14 +191,14 @@ export function TechDebtTolerance({
           ))}
         </div>
       </div>
-      
+
       {selectedTolerance && (
         <div className="mt-4 rounded-lg bg-light-gray/30 p-4">
           <div className="mb-2 font-medium text-off-black dark:text-off-white">
-            {toleranceOptions.find(opt => opt.level === selectedTolerance)?.label}
+            {toleranceOptions.find((opt) => opt.level === selectedTolerance)?.label}
           </div>
           <p className="text-sm text-warm-gray">
-            {toleranceOptions.find(opt => opt.level === selectedTolerance)?.description}
+            {toleranceOptions.find((opt) => opt.level === selectedTolerance)?.description}
           </p>
         </div>
       )}
@@ -207,7 +209,7 @@ export function TechDebtTolerance({
     <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
       {toleranceOptions.map((option) => {
         const isSelected = selectedTolerance === option.level;
-        
+
         return (
           <button
             key={option.level}
@@ -224,18 +226,16 @@ export function TechDebtTolerance({
             disabled={disabled}
           >
             <div className="mb-4 flex items-center space-x-3">
-              <div className={cn("transition-colors", isSelected ? option.color : 'text-warm-gray')}>
+              <div
+                className={cn("transition-colors", isSelected ? option.color : "text-warm-gray")}
+              >
                 {option.icon}
               </div>
-              <h3 className="font-medium text-off-black dark:text-off-white">
-                {option.label}
-              </h3>
+              <h3 className="font-medium text-off-black dark:text-off-white">{option.label}</h3>
             </div>
-            
-            <p className="mb-4 text-sm leading-relaxed text-warm-gray">
-              {option.description}
-            </p>
-            
+
+            <p className="mb-4 text-sm leading-relaxed text-warm-gray">{option.description}</p>
+
             {showTraits && (
               <div className="space-y-2">
                 <h4 className="text-xs font-medium text-off-black dark:text-off-white">
@@ -261,7 +261,7 @@ export function TechDebtTolerance({
 
   const renderScenariosVariant = () => {
     if (!scenario) return renderCardsVariant();
-    
+
     return (
       <div className="space-y-6">
         {/* Scenario Description */}
@@ -269,32 +269,45 @@ export function TechDebtTolerance({
           <h3 className="mb-3 font-medium text-off-black dark:text-off-white">
             Scenario: {scenario.title}
           </h3>
-          <p className="mb-4 text-sm leading-relaxed text-warm-gray">
-            {scenario.description}
-          </p>
-          
+          <p className="mb-4 text-sm leading-relaxed text-warm-gray">{scenario.description}</p>
+
           {/* Scenario Metrics */}
           <div className="grid grid-cols-3 gap-4">
             <div className="text-center">
-              <div className={cn("inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium", getImpactColor(scenario.impact))}>
+              <div
+                className={cn(
+                  "inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium",
+                  getImpactColor(scenario.impact)
+                )}
+              >
                 {getImpactIcon(scenario.impact)}
                 Impact: {scenario.impact}
               </div>
             </div>
             <div className="text-center">
-              <div className={cn("inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium", getImpactColor(scenario.urgency))}>
+              <div
+                className={cn(
+                  "inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium",
+                  getImpactColor(scenario.urgency)
+                )}
+              >
                 <Clock className="size-4" />
                 Urgency: {scenario.urgency}
               </div>
             </div>
             <div className="text-center">
-              <div className={cn("inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium", getImpactColor(scenario.effort))}>
+              <div
+                className={cn(
+                  "inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium",
+                  getImpactColor(scenario.effort)
+                )}
+              >
                 <TrendingUp className="size-4" />
                 Effort: {scenario.effort}
               </div>
             </div>
           </div>
-          
+
           {/* Trade-offs */}
           {showTradeoffs && (
             <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -313,7 +326,7 @@ export function TechDebtTolerance({
             </div>
           )}
         </div>
-        
+
         {/* Response Options */}
         <div className="space-y-3">
           <h4 className="font-medium text-off-black dark:text-off-white">
@@ -327,9 +340,9 @@ export function TechDebtTolerance({
 
   const renderVariant = () => {
     switch (variant) {
-      case 'scale':
+      case "scale":
         return renderScaleVariant();
-      case 'scenarios':
+      case "scenarios":
         return renderScenariosVariant();
       default:
         return renderCardsVariant();
@@ -340,14 +353,8 @@ export function TechDebtTolerance({
     <div className={cn("space-y-6", className)}>
       {/* Question Header */}
       <div className="space-y-2">
-        <QuestionLabel required={required}>
-          {question}
-        </QuestionLabel>
-        {description && (
-          <p className="text-sm leading-relaxed text-warm-gray">
-            {description}
-          </p>
-        )}
+        <QuestionLabel required={required}>{question}</QuestionLabel>
+        {description && <p className="text-sm leading-relaxed text-warm-gray">{description}</p>}
       </div>
 
       {/* Tolerance Interface */}
@@ -357,24 +364,18 @@ export function TechDebtTolerance({
       <div className="flex items-start space-x-2 rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
         <AlertTriangle className="mt-0.5 size-5 shrink-0 text-blue-600 dark:text-blue-400" />
         <div className="text-sm text-blue-800 dark:text-blue-300">
-          <strong>Consider:</strong> Team experience, project timeline, business priorities, 
-          and long-term maintenance when evaluating technical debt tolerance.
+          <strong>Consider:</strong> Team experience, project timeline, business priorities, and
+          long-term maintenance when evaluating technical debt tolerance.
         </div>
       </div>
 
       {/* Validation Error */}
-      {error && (
-        <ValidationMessage type="error" message={error} />
-      )}
+      {error && <ValidationMessage type="error" message={error} />}
 
       {/* Skip Option */}
       {allowSkip && onSkip && (
         <div className="flex justify-center">
-          <SkipControl
-            variant="subtle"
-            onClick={onSkip}
-            disabled={disabled}
-          >
+          <SkipControl variant="subtle" onClick={onSkip} disabled={disabled}>
             Skip this question
           </SkipControl>
         </div>

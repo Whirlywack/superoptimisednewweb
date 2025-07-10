@@ -1,6 +1,6 @@
 import React from "react";
 import { cn } from "@/lib/utils";
-import { H3, H4, MonoText, Paragraph } from "@/components/ui/Typography";
+import { MonoText } from "@/components/ui/Typography";
 import { LucideIcon } from "@/components/ui/Icon";
 import { TrendingUp, TrendingDown, Minus, BarChart3, Users, Star, Eye, Clock } from "lucide-react";
 
@@ -92,21 +92,19 @@ export function StatsDisplay({
     },
   };
 
-  const gridCols = columns 
-    ? `grid-cols-${Math.min(columns, 6)}` 
-    : variant === "compact" 
-      ? "grid-cols-2 sm:grid-cols-4" 
+  const gridCols = columns
+    ? `grid-cols-${Math.min(columns, 6)}`
+    : variant === "compact"
+      ? "grid-cols-2 sm:grid-cols-4"
       : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3";
 
   if (variant === "inline") {
     return (
-      <div
-        className={cn("flex flex-wrap items-center gap-6", className)}
-        {...props}
-      >
+      <div className={cn("flex flex-wrap items-center gap-6", className)} {...props}>
         {stats.map((stat, index) => {
-          const IconComponent = stat.customIcon || (stat.icon && stat.icon !== "custom" ? iconMap[stat.icon] : null);
-          
+          const IconComponent =
+            stat.customIcon || (stat.icon && stat.icon !== "custom" ? iconMap[stat.icon] : null);
+
           return (
             <div key={index} className="flex items-center gap-3">
               {showIcons && IconComponent && (
@@ -116,9 +114,14 @@ export function StatsDisplay({
                   className="text-primary"
                 />
               )}
-              
+
               <div className="space-y-1">
-                <div className={cn("font-bold text-off-black dark:text-off-white", sizeClasses[size].value)}>
+                <div
+                  className={cn(
+                    "font-bold text-off-black dark:text-off-white",
+                    sizeClasses[size].value
+                  )}
+                >
                   {formatValue(stat.value)}
                 </div>
                 <MonoText variant="muted" className={sizeClasses[size].label}>
@@ -128,10 +131,7 @@ export function StatsDisplay({
 
               {showChanges && stat.change && (
                 <div className={cn("flex items-center gap-1", trendColors[stat.change.type])}>
-                  <LucideIcon
-                    icon={trendIcons[stat.change.type]}
-                    size="xs"
-                  />
+                  <LucideIcon icon={trendIcons[stat.change.type]} size="xs" />
                   <MonoText variant="small" className={trendColors[stat.change.type]}>
                     {Math.abs(stat.change.value)}%
                   </MonoText>
@@ -145,17 +145,11 @@ export function StatsDisplay({
   }
 
   return (
-    <div
-      className={cn(
-        "grid gap-4",
-        gridCols,
-        className
-      )}
-      {...props}
-    >
+    <div className={cn("grid gap-4", gridCols, className)} {...props}>
       {stats.map((stat, index) => {
-        const IconComponent = stat.customIcon || (stat.icon && stat.icon !== "custom" ? iconMap[stat.icon] : null);
-        
+        const IconComponent =
+          stat.customIcon || (stat.icon && stat.icon !== "custom" ? iconMap[stat.icon] : null);
+
         return (
           <div
             key={index}
@@ -171,7 +165,12 @@ export function StatsDisplay({
           >
             <div className="flex items-start justify-between">
               <div className="min-w-0 flex-1">
-                <div className={cn("font-bold text-off-black dark:text-off-white", sizeClasses[size].value)}>
+                <div
+                  className={cn(
+                    "font-bold text-off-black dark:text-off-white",
+                    sizeClasses[size].value
+                  )}
+                >
                   {formatValue(stat.value)}
                 </div>
                 <MonoText variant="muted" className={sizeClasses[size].label}>
@@ -190,12 +189,13 @@ export function StatsDisplay({
 
             {showChanges && stat.change && (
               <div className={cn("mt-2 flex items-center gap-1", trendColors[stat.change.type])}>
-                <LucideIcon
-                  icon={trendIcons[stat.change.type]}
-                  size="xs"
-                />
+                <LucideIcon icon={trendIcons[stat.change.type]} size="xs" />
                 <MonoText variant="small" className={trendColors[stat.change.type]}>
-                  {stat.change.type === "increase" ? "+" : stat.change.type === "decrease" ? "-" : ""}
+                  {stat.change.type === "increase"
+                    ? "+"
+                    : stat.change.type === "decrease"
+                      ? "-"
+                      : ""}
                   {Math.abs(stat.change.value)}% from last period
                 </MonoText>
               </div>

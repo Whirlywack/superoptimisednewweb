@@ -1,9 +1,9 @@
-import React, { useState, useCallback, useMemo } from 'react';
-import { cn } from '@/lib/utils';
-import { QuestionLabel } from '@/components/questionnaire/QuestionLabel';
-import { ValidationMessage } from '@/components/ui/ValidationMessage';
-import { SkipControl } from '@/components/ui/SkipControl';
-import { Plus, Minus, Coins } from 'lucide-react';
+import React, { useState, useCallback, useMemo } from "react";
+import { cn } from "@/lib/utils";
+import { QuestionLabel } from "@/components/questionnaire/QuestionLabel";
+import { ValidationMessage } from "@/components/ui/ValidationMessage";
+import { SkipControl } from "@/components/ui/SkipControl";
+import { Plus, Minus, Coins } from "lucide-react";
 
 export interface VotingOption {
   id: string;
@@ -48,7 +48,7 @@ export interface FeatureVotingProps {
   /** Whether all points must be allocated */
   requireAllPoints?: boolean;
   /** Layout variant */
-  layout?: 'cards' | 'list' | 'compact';
+  layout?: "cards" | "list" | "compact";
   /** Helper text shown below voting area */
   helperText?: string;
   /** Additional CSS classes */
@@ -69,7 +69,7 @@ export function FeatureVoting({
   onSkip,
   pointStep = 1,
   requireAllPoints = false,
-  layout = 'cards',
+  layout = "cards",
   helperText,
   className,
 }: FeatureVotingProps) {
@@ -83,80 +83,98 @@ export function FeatureVoting({
   const pointsRemaining = totalPoints - pointsAllocated;
 
   // Get points for a specific option
-  const getOptionPoints = useCallback((optionId: string) => {
-    const vote = value.find(v => v.optionId === optionId);
-    return vote?.points || 0;
-  }, [value]);
+  const getOptionPoints = useCallback(
+    (optionId: string) => {
+      const vote = value.find((v) => v.optionId === optionId);
+      return vote?.points || 0;
+    },
+    [value]
+  );
 
   // Update points for an option
-  const updatePoints = useCallback((optionId: string, newPoints: number) => {
-    if (disabled) return;
+  const updatePoints = useCallback(
+    (optionId: string, newPoints: number) => {
+      if (disabled) return;
 
-    const option = options.find(opt => opt.id === optionId);
-    if (!option || option.disabled) return;
+      const option = options.find((opt) => opt.id === optionId);
+      if (!option || option.disabled) return;
 
-    // Enforce min/max constraints
-    const minPoints = option.minPoints || 0;
-    const maxPoints = option.maxPoints || totalPoints;
-    const constrainedPoints = Math.max(minPoints, Math.min(maxPoints, newPoints));
+      // Enforce min/max constraints
+      const minPoints = option.minPoints || 0;
+      const maxPoints = option.maxPoints || totalPoints;
+      const constrainedPoints = Math.max(minPoints, Math.min(maxPoints, newPoints));
 
-    // Calculate if this would exceed total points
-    const currentPoints = getOptionPoints(optionId);
-    const pointDifference = constrainedPoints - currentPoints;
-    
-    if (pointDifference > pointsRemaining) {
-      // Can't allocate more points than remaining
-      const maxAllowable = currentPoints + pointsRemaining;
-      const finalPoints = Math.min(maxAllowable, constrainedPoints);
-      
-      if (finalPoints === currentPoints) return; // No change
-      
-      updateVotes(optionId, finalPoints);
-    } else {
-      updateVotes(optionId, constrainedPoints);
-    }
-  }, [disabled, options, totalPoints, getOptionPoints, pointsRemaining]);
+      // Calculate if this would exceed total points
+      const currentPoints = getOptionPoints(optionId);
+      const pointDifference = constrainedPoints - currentPoints;
+
+      if (pointDifference > pointsRemaining) {
+        // Can't allocate more points than remaining
+        const maxAllowable = currentPoints + pointsRemaining;
+        const finalPoints = Math.min(maxAllowable, constrainedPoints);
+
+        if (finalPoints === currentPoints) return; // No change
+
+        updateVotes(optionId, finalPoints);
+      } else {
+        updateVotes(optionId, constrainedPoints);
+      }
+    },
+    [disabled, options, totalPoints, getOptionPoints, pointsRemaining]
+  );
 
   // Update the votes array
-  const updateVotes = useCallback((optionId: string, points: number) => {
-    const newVotes = [...value];
-    const existingIndex = newVotes.findIndex(v => v.optionId === optionId);
+  const updateVotes = useCallback(
+    (optionId: string, points: number) => {
+      const newVotes = [...value];
+      const existingIndex = newVotes.findIndex((v) => v.optionId === optionId);
 
-    if (points === 0) {
-      // Remove vote if points are 0
-      if (existingIndex >= 0) {
-        newVotes.splice(existingIndex, 1);
-      }
-    } else {
-      // Add or update vote
-      if (existingIndex >= 0) {
-        newVotes[existingIndex] = { optionId, points };
+      if (points === 0) {
+        // Remove vote if points are 0
+        if (existingIndex >= 0) {
+          newVotes.splice(existingIndex, 1);
+        }
       } else {
-        newVotes.push({ optionId, points });
+        // Add or update vote
+        if (existingIndex >= 0) {
+          newVotes[existingIndex] = { optionId, points };
+        } else {
+          newVotes.push({ optionId, points });
+        }
       }
-    }
 
-    onChange?.(newVotes);
-  }, [value, onChange]);
+      onChange?.(newVotes);
+    },
+    [value, onChange]
+  );
 
   // Handle increment/decrement
-  const handleIncrement = useCallback((optionId: string) => {
-    const currentPoints = getOptionPoints(optionId);
-    updatePoints(optionId, currentPoints + pointStep);
-  }, [getOptionPoints, updatePoints, pointStep]);
+  const handleIncrement = useCallback(
+    (optionId: string) => {
+      const currentPoints = getOptionPoints(optionId);
+      updatePoints(optionId, currentPoints + pointStep);
+    },
+    [getOptionPoints, updatePoints, pointStep]
+  );
 
-  const handleDecrement = useCallback((optionId: string) => {
-    const currentPoints = getOptionPoints(optionId);
-    updatePoints(optionId, currentPoints - pointStep);
-  }, [getOptionPoints, updatePoints, pointStep]);
+  const handleDecrement = useCallback(
+    (optionId: string) => {
+      const currentPoints = getOptionPoints(optionId);
+      updatePoints(optionId, currentPoints - pointStep);
+    },
+    [getOptionPoints, updatePoints, pointStep]
+  );
 
   // Handle direct input
-  const handleInputChange = useCallback((optionId: string, inputValue: string) => {
-    const numValue = parseInt(inputValue, 10);
-    if (!isNaN(numValue)) {
-      updatePoints(optionId, numValue);
-    }
-  }, [updatePoints]);
+  const handleInputChange = useCallback(
+    (optionId: string, inputValue: string) => {
+      const numValue = parseInt(inputValue, 10);
+      if (!isNaN(numValue)) {
+        updatePoints(optionId, numValue);
+      }
+    },
+    [updatePoints]
+  );
 
   // Reset all votes
   const handleReset = useCallback(() => {
@@ -166,8 +184,10 @@ export function FeatureVoting({
   const renderOption = (option: VotingOption) => {
     const points = getOptionPoints(option.id);
     const isDisabled = disabled || option.disabled;
-    const canIncrement = !isDisabled && (pointsRemaining > 0 || points > 0) && 
-                        (!option.maxPoints || points < option.maxPoints);
+    const canIncrement =
+      !isDisabled &&
+      (pointsRemaining > 0 || points > 0) &&
+      (!option.maxPoints || points < option.maxPoints);
     const canDecrement = !isDisabled && points > (option.minPoints || 0);
     const isFocused = focusedOption === option.id;
 
@@ -176,19 +196,13 @@ export function FeatureVoting({
         {/* Option Info */}
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            {option.icon && (
-              <span className="shrink-0 text-primary">
-                {option.icon}
-              </span>
-            )}
+            {option.icon && <span className="shrink-0 text-primary">{option.icon}</span>}
             <h3 className="truncate font-medium text-off-black dark:text-off-white">
               {option.label}
             </h3>
           </div>
           {option.description && (
-            <p className="mt-1 text-sm leading-relaxed text-warm-gray">
-              {option.description}
-            </p>
+            <p className="mt-1 text-sm leading-relaxed text-warm-gray">{option.description}</p>
           )}
         </div>
 
@@ -258,7 +272,7 @@ export function FeatureVoting({
 
     // Render based on layout
     switch (layout) {
-      case 'list':
+      case "list":
         return (
           <div
             key={option.id}
@@ -272,7 +286,7 @@ export function FeatureVoting({
           </div>
         );
 
-      case 'compact':
+      case "compact":
         return (
           <div
             key={option.id}
@@ -297,9 +311,7 @@ export function FeatureVoting({
               >
                 -
               </button>
-              <span className="w-8 text-center text-sm font-semibold">
-                {points}
-              </span>
+              <span className="w-8 text-center text-sm font-semibold">{points}</span>
               <button
                 type="button"
                 onClick={() => handleIncrement(option.id)}
@@ -317,7 +329,7 @@ export function FeatureVoting({
           </div>
         );
 
-      case 'cards':
+      case "cards":
       default:
         return (
           <div
@@ -339,21 +351,15 @@ export function FeatureVoting({
   };
 
   const votingId = `feature-voting-${Math.random().toString(36).substr(2, 9)}`;
-  const errorId = error ? `${votingId}-error` : undefined;
+  const _errorId = error ? `${votingId}-error` : undefined;
   const helperId = helperText ? `${votingId}-helper` : undefined;
 
   return (
     <div className={cn("space-y-6", className)}>
       {/* Question Header */}
       <div className="space-y-2">
-        <QuestionLabel required={required}>
-          {question}
-        </QuestionLabel>
-        {description && (
-          <p className="text-sm leading-relaxed text-warm-gray">
-            {description}
-          </p>
-        )}
+        <QuestionLabel required={required}>{question}</QuestionLabel>
+        {description && <p className="text-sm leading-relaxed text-warm-gray">{description}</p>}
       </div>
 
       {/* Points Status Bar */}
@@ -361,20 +367,18 @@ export function FeatureVoting({
         <div className="mb-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Coins className="size-5 text-primary" />
-            <span className="font-medium text-off-black dark:text-off-white">
-              Points Available
-            </span>
+            <span className="font-medium text-off-black dark:text-off-white">Points Available</span>
           </div>
           <div className="flex items-center gap-4">
-            <span className={cn(
-              "text-2xl font-bold tabular-nums",
-              pointsRemaining === 0 ? "text-primary" : "text-off-black dark:text-off-white"
-            )}>
+            <span
+              className={cn(
+                "text-2xl font-bold tabular-nums",
+                pointsRemaining === 0 ? "text-primary" : "text-off-black dark:text-off-white"
+              )}
+            >
               {pointsRemaining}
             </span>
-            <span className="text-sm text-warm-gray">
-              of {totalPoints}
-            </span>
+            <span className="text-sm text-warm-gray">of {totalPoints}</span>
           </div>
         </div>
 
@@ -400,12 +404,14 @@ export function FeatureVoting({
       </div>
 
       {/* Voting Options */}
-      <div className={cn(
-        layout === 'cards' && "space-y-3",
-        layout === 'list' && "overflow-hidden rounded-lg border border-light-gray",
-        layout === 'compact' && "grid grid-cols-1 gap-2 sm:grid-cols-2"
-      )}>
-        {options.map(option => renderOption(option))}
+      <div
+        className={cn(
+          layout === "cards" && "space-y-3",
+          layout === "list" && "overflow-hidden rounded-lg border border-light-gray",
+          layout === "compact" && "grid grid-cols-1 gap-2 sm:grid-cols-2"
+        )}
+      >
+        {options.map((option) => renderOption(option))}
       </div>
 
       {/* Helper Text */}
@@ -416,26 +422,20 @@ export function FeatureVoting({
       )}
 
       {/* Validation Error */}
-      {error && (
-        <ValidationMessage type="error" message={error} />
-      )}
+      {error && <ValidationMessage type="error" message={error} />}
 
       {/* All Points Required Warning */}
       {requireAllPoints && pointsRemaining > 0 && (
-        <ValidationMessage 
-          type="warning" 
-          message={`Please allocate all ${totalPoints} points. You have ${pointsRemaining} points remaining.`} 
+        <ValidationMessage
+          type="warning"
+          message={`Please allocate all ${totalPoints} points. You have ${pointsRemaining} points remaining.`}
         />
       )}
 
       {/* Skip Option */}
       {allowSkip && onSkip && (
         <div className="flex justify-center">
-          <SkipControl
-            variant="subtle"
-            onClick={onSkip}
-            disabled={disabled}
-          >
+          <SkipControl variant="subtle" onClick={onSkip} disabled={disabled}>
             Skip this question
           </SkipControl>
         </div>

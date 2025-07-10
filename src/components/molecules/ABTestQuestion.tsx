@@ -1,9 +1,9 @@
-import React from 'react';
-import { cn } from '@/lib/utils';
-import { QuestionLabel } from '@/components/questionnaire/QuestionLabel';
-import { ChoiceButton } from '@/components/ui/ChoiceButton';
-import { ValidationMessage } from '@/components/ui/ValidationMessage';
-import { SkipControl } from '@/components/ui/SkipControl';
+import React from "react";
+import { cn } from "@/lib/utils";
+import { QuestionLabel } from "@/components/questionnaire/QuestionLabel";
+// import { ChoiceButton } from '@/components/ui/ChoiceButton';
+import { ValidationMessage } from "@/components/ui/ValidationMessage";
+import { SkipControl } from "@/components/ui/SkipControl";
 
 export interface ABTestOption {
   id: string;
@@ -72,9 +72,7 @@ const OptionCard = React.forwardRef<
     >
       {/* Option Label */}
       <div className="mb-3 flex items-center justify-between">
-        <span className="text-sm font-medium uppercase tracking-wide text-primary">
-          {label}
-        </span>
+        <span className="text-sm font-medium uppercase tracking-wide text-primary">{label}</span>
         <div
           className={cn(
             "size-4 rounded-full border-2 transition-colors",
@@ -83,21 +81,15 @@ const OptionCard = React.forwardRef<
               : "border-warm-gray group-hover:border-primary/50"
           )}
         >
-          {isSelected && (
-            <div className="m-0.5 size-2 rounded-full bg-off-white" />
-          )}
+          {isSelected && <div className="m-0.5 size-2 rounded-full bg-off-white" />}
         </div>
       </div>
 
       {/* Title */}
-      <h3 className="mb-2 text-lg font-semibold text-off-black">
-        {option.title}
-      </h3>
+      <h3 className="mb-2 text-lg font-semibold text-off-black">{option.title}</h3>
 
       {/* Description */}
-      <p className="mb-4 text-sm leading-relaxed text-warm-gray">
-        {option.description}
-      </p>
+      <p className="mb-4 text-sm leading-relaxed text-warm-gray">{option.description}</p>
 
       {/* Code Example */}
       {option.codeExample && (
@@ -161,7 +153,7 @@ const OptionCard = React.forwardRef<
   );
 });
 
-OptionCard.displayName = 'OptionCard';
+OptionCard.displayName = "OptionCard";
 
 export function ABTestQuestion({
   question,
@@ -187,14 +179,8 @@ export function ABTestQuestion({
     <div className={cn("space-y-6", className)}>
       {/* Question Header */}
       <div className="space-y-2">
-        <QuestionLabel required={required}>
-          {question}
-        </QuestionLabel>
-        {description && (
-          <p className="text-sm leading-relaxed text-warm-gray">
-            {description}
-          </p>
-        )}
+        <QuestionLabel required={required}>{question}</QuestionLabel>
+        {description && <p className="text-sm leading-relaxed text-warm-gray">{description}</p>}
       </div>
 
       {/* A/B Options */}
@@ -216,18 +202,12 @@ export function ABTestQuestion({
       </div>
 
       {/* Validation Error */}
-      {error && (
-        <ValidationMessage type="error" message={error} />
-      )}
+      {error && <ValidationMessage type="error" message={error} />}
 
       {/* Skip Option */}
       {allowSkip && onSkip && (
         <div className="flex justify-center">
-          <SkipControl
-            variant="subtle"
-            onClick={onSkip}
-            disabled={disabled}
-          >
+          <SkipControl variant="subtle" onClick={onSkip} disabled={disabled}>
             Skip this comparison
           </SkipControl>
         </div>

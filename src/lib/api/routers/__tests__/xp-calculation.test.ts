@@ -1,5 +1,4 @@
 import { describe, it, expect, jest, beforeEach } from "@jest/globals";
-import { TRPCError } from "@trpc/server";
 
 // Mock dependencies
 jest.mock("../../../db", () => ({
@@ -47,31 +46,37 @@ jest.mock("crypto", () => ({
 }));
 
 import { prisma } from "../../../db";
-import { 
+import {
   calculateXpForVote,
   calculateAndRecordXp,
   processVoteEnhancement,
   updateEngagementStats,
   getVoteXpCalculation,
-  queueVoteEnhancement
+  queueVoteEnhancement,
 } from "../../../background-jobs";
 import { sendXpClaimEmail } from "../../../email/sendEmail";
 import { onXpClaimed } from "../../../progress-automation";
 import { randomUUID } from "crypto";
 import { voteRouter } from "../voteRouter";
-import { 
-  createMockContext, 
-  createMockVoterToken, 
-  createMockXpLedger 
-} from "./test-utils";
+import { createMockContext, createMockVoterToken, createMockXpLedger } from "./test-utils";
 
 const mockPrisma = prisma as jest.Mocked<typeof prisma>;
 const mockCalculateXpForVote = calculateXpForVote as jest.MockedFunction<typeof calculateXpForVote>;
-const mockCalculateAndRecordXp = calculateAndRecordXp as jest.MockedFunction<typeof calculateAndRecordXp>;
-const mockProcessVoteEnhancement = processVoteEnhancement as jest.MockedFunction<typeof processVoteEnhancement>;
-const mockUpdateEngagementStats = updateEngagementStats as jest.MockedFunction<typeof updateEngagementStats>;
-const mockGetVoteXpCalculation = getVoteXpCalculation as jest.MockedFunction<typeof getVoteXpCalculation>;
-const mockQueueVoteEnhancement = queueVoteEnhancement as jest.MockedFunction<typeof queueVoteEnhancement>;
+const mockCalculateAndRecordXp = calculateAndRecordXp as jest.MockedFunction<
+  typeof calculateAndRecordXp
+>;
+const mockProcessVoteEnhancement = processVoteEnhancement as jest.MockedFunction<
+  typeof processVoteEnhancement
+>;
+const mockUpdateEngagementStats = updateEngagementStats as jest.MockedFunction<
+  typeof updateEngagementStats
+>;
+const mockGetVoteXpCalculation = getVoteXpCalculation as jest.MockedFunction<
+  typeof getVoteXpCalculation
+>;
+const mockQueueVoteEnhancement = queueVoteEnhancement as jest.MockedFunction<
+  typeof queueVoteEnhancement
+>;
 const mockSendXpClaimEmail = sendXpClaimEmail as jest.MockedFunction<typeof sendXpClaimEmail>;
 const mockOnXpClaimed = onXpClaimed as jest.MockedFunction<typeof onXpClaimed>;
 const mockRandomUUID = randomUUID as jest.MockedFunction<typeof randomUUID>;
@@ -150,8 +155,8 @@ describe("XP Calculation and Aggregation System", () => {
     it("should handle boundary cases correctly", () => {
       // Test exact boundary values
       const boundaryTests = [
-        { voteNumber: 5, expectedXp: 5 },   // Last vote at 5 XP
-        { voteNumber: 6, expectedXp: 10 },  // First vote at 10 XP
+        { voteNumber: 5, expectedXp: 5 }, // Last vote at 5 XP
+        { voteNumber: 6, expectedXp: 10 }, // First vote at 10 XP
         { voteNumber: 10, expectedXp: 10 }, // Last vote at 10 XP
         { voteNumber: 11, expectedXp: 15 }, // First vote at 15 XP
         { voteNumber: 25, expectedXp: 15 }, // Last vote at 15 XP
@@ -173,9 +178,9 @@ describe("XP Calculation and Aggregation System", () => {
 
     it("should handle edge cases for invalid vote numbers", () => {
       const edgeCases = [
-        { voteNumber: 0, expectedXp: 5 },     // Zero votes
-        { voteNumber: -1, expectedXp: 5 },    // Negative votes
-        { voteNumber: -100, expectedXp: 5 },  // Large negative
+        { voteNumber: 0, expectedXp: 5 }, // Zero votes
+        { voteNumber: -1, expectedXp: 5 }, // Negative votes
+        { voteNumber: -100, expectedXp: 5 }, // Large negative
       ];
 
       edgeCases.forEach(({ voteNumber, expectedXp }) => {
@@ -213,7 +218,7 @@ describe("XP Calculation and Aggregation System", () => {
 
     it("should aggregate XP correctly for multiple transactions", async () => {
       const voterTokenId = "voter-1";
-      const mockXpLedger = [
+      const _mockXpLedger = [
         createMockXpLedger({ voterTokenId, xpAmount: 5 }),
         createMockXpLedger({ voterTokenId, xpAmount: 10 }),
         createMockXpLedger({ voterTokenId, xpAmount: 15 }),
@@ -254,12 +259,7 @@ describe("XP Calculation and Aggregation System", () => {
     it("should create XP claim with correct total", async () => {
       const mockVoterToken = {
         id: "voter-1",
-        xpLedger: [
-          { xpAmount: 5 },
-          { xpAmount: 10 },
-          { xpAmount: 15 },
-          { xpAmount: 20 },
-        ],
+        xpLedger: [{ xpAmount: 5 }, { xpAmount: 10 }, { xpAmount: 15 }, { xpAmount: 20 }],
       };
 
       const mockXpClaim = {
@@ -305,10 +305,12 @@ describe("XP Calculation and Aggregation System", () => {
       const ctx = createMockContext();
       const caller = voteRouter.createCaller(ctx);
 
-      await expect(caller.claimXP({
-        email: "test@example.com",
-        voterTokenHash: "invalid-hash",
-      })).rejects.toThrow("Invalid voter token");
+      await expect(
+        caller.claimXP({
+          email: "test@example.com",
+          voterTokenHash: "invalid-hash",
+        })
+      ).rejects.toThrow("Invalid voter token");
     });
 
     it("should reject claim for zero XP", async () => {
@@ -322,10 +324,12 @@ describe("XP Calculation and Aggregation System", () => {
       const ctx = createMockContext();
       const caller = voteRouter.createCaller(ctx);
 
-      await expect(caller.claimXP({
-        email: "test@example.com",
-        voterTokenHash: "test-hash",
-      })).rejects.toThrow("No XP to claim");
+      await expect(
+        caller.claimXP({
+          email: "test@example.com",
+          voterTokenHash: "test-hash",
+        })
+      ).rejects.toThrow("No XP to claim");
     });
 
     it("should reject duplicate claims", async () => {
@@ -346,10 +350,12 @@ describe("XP Calculation and Aggregation System", () => {
       const ctx = createMockContext();
       const caller = voteRouter.createCaller(ctx);
 
-      await expect(caller.claimXP({
-        email: "test@example.com",
-        voterTokenHash: "test-hash",
-      })).rejects.toThrow("XP has already been claimed for this account");
+      await expect(
+        caller.claimXP({
+          email: "test@example.com",
+          voterTokenHash: "test-hash",
+        })
+      ).rejects.toThrow("XP has already been claimed for this account");
     });
 
     it("should handle email sending failures gracefully", async () => {
@@ -437,14 +443,12 @@ describe("XP Calculation and Aggregation System", () => {
       const processingError = new Error("Background processing failed");
       mockProcessVoteEnhancement.mockRejectedValue(processingError);
 
-      await expect(processVoteEnhancement(mockJob)).rejects.toThrow(
-        "Background processing failed"
-      );
+      await expect(processVoteEnhancement(mockJob)).rejects.toThrow("Background processing failed");
     });
 
     it("should update engagement stats", async () => {
       const voterTokenId = "voter-1";
-      
+
       mockUpdateEngagementStats.mockResolvedValue(undefined);
 
       await updateEngagementStats(voterTokenId);
@@ -456,11 +460,11 @@ describe("XP Calculation and Aggregation System", () => {
   describe("XP Completion Reconciliation", () => {
     it("should indicate complete processing when XP matches expected minimum", async () => {
       const mockVoterToken = createMockVoterToken({ id: "voter-1" });
-      
+
       mockPrisma.xpLedger.aggregate.mockResolvedValue({
         _sum: { xpAmount: 50 }, // 10 votes * 5 XP = 50 (minimum)
       });
-      
+
       mockPrisma.questionResponse.count.mockResolvedValue(10);
 
       const ctx = createMockContext({ voterTokenRecord: mockVoterToken });
@@ -476,11 +480,11 @@ describe("XP Calculation and Aggregation System", () => {
 
     it("should indicate incomplete processing when XP is below minimum", async () => {
       const mockVoterToken = createMockVoterToken({ id: "voter-1" });
-      
+
       mockPrisma.xpLedger.aggregate.mockResolvedValue({
         _sum: { xpAmount: 25 }, // Less than 10 votes * 5 XP = 50
       });
-      
+
       mockPrisma.questionResponse.count.mockResolvedValue(10);
 
       const ctx = createMockContext({ voterTokenRecord: mockVoterToken });
@@ -509,7 +513,7 @@ describe("XP Calculation and Aggregation System", () => {
   describe("XP Performance and Scalability", () => {
     it("should handle high-volume XP calculations efficiently", async () => {
       const startTime = Date.now();
-      
+
       // Simulate 1000 XP calculations
       for (let i = 1; i <= 1000; i++) {
         mockCalculateXpForVote.mockReturnValue(i <= 5 ? 5 : i <= 10 ? 10 : 15);
@@ -525,21 +529,23 @@ describe("XP Calculation and Aggregation System", () => {
 
     it("should handle concurrent XP aggregation requests", async () => {
       const voterTokenId = "voter-1";
-      
+
       mockPrisma.xpLedger.aggregate.mockResolvedValue({
         _sum: { xpAmount: 100 },
         _count: { id: 10 },
       });
 
       // Simulate concurrent requests
-      const promises = Array.from({ length: 10 }, () => 
-        mockGetVoteXpCalculation ? getVoteXpCalculation(voterTokenId) : Promise.resolve({ totalXp: 100 })
+      const promises = Array.from({ length: 10 }, () =>
+        mockGetVoteXpCalculation
+          ? getVoteXpCalculation(voterTokenId)
+          : Promise.resolve({ totalXp: 100 })
       );
 
       const results = await Promise.all(promises);
 
       // All requests should succeed
-      results.forEach(result => {
+      results.forEach((result) => {
         expect(result.totalXp).toBe(100);
       });
     });

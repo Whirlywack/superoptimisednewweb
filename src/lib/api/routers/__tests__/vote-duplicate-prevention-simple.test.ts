@@ -1,5 +1,4 @@
 import { describe, it, expect, jest, beforeEach } from "@jest/globals";
-import { TRPCError } from "@trpc/server";
 
 // Mock the database
 jest.mock("../../../db", () => ({
@@ -62,7 +61,9 @@ describe("Vote Duplicate Prevention - Direct hasVoterVoted Tests", () => {
       const databaseError = new Error("Database connection failed");
       mockPrisma.questionResponse.findFirst.mockRejectedValue(databaseError);
 
-      await expect(hasVoterVoted("voter-1", "question-1")).rejects.toThrow("Database connection failed");
+      await expect(hasVoterVoted("voter-1", "question-1")).rejects.toThrow(
+        "Database connection failed"
+      );
     });
 
     it("should handle empty parameters", async () => {
@@ -89,10 +90,10 @@ describe("Vote Duplicate Prevention - Direct hasVoterVoted Tests", () => {
 
       for (const testCase of testCases) {
         mockPrisma.questionResponse.findFirst.mockResolvedValue(null);
-        
+
         const result = await hasVoterVoted(testCase.voterTokenId, testCase.questionId);
         expect(result).toBe(false);
-        
+
         expect(mockPrisma.questionResponse.findFirst).toHaveBeenCalledWith({
           where: {
             voterTokenId: testCase.voterTokenId,
@@ -111,7 +112,7 @@ describe("Vote Duplicate Prevention - Direct hasVoterVoted Tests", () => {
 
       // Should complete very quickly
       expect(endTime - startTime).toBeLessThan(100);
-      
+
       // Should only make one database query
       expect(mockPrisma.questionResponse.findFirst).toHaveBeenCalledTimes(1);
     });
@@ -128,10 +129,10 @@ describe("Vote Duplicate Prevention - Direct hasVoterVoted Tests", () => {
       ];
 
       const results = await Promise.all(promises);
-      
+
       // All should return false (no duplicates)
-      results.forEach(result => expect(result).toBe(false));
-      
+      results.forEach((result) => expect(result).toBe(false));
+
       // Should have made separate queries for each check
       expect(mockPrisma.questionResponse.findFirst).toHaveBeenCalledTimes(4);
     });
@@ -148,7 +149,7 @@ describe("Vote Duplicate Prevention - Direct hasVoterVoted Tests", () => {
 
       for (const token of malformedTokens) {
         mockPrisma.questionResponse.findFirst.mockResolvedValue(null);
-        
+
         const result = await hasVoterVoted(token, "question-1");
         expect(result).toBe(false);
       }

@@ -1,12 +1,10 @@
 import { describe, it, expect, jest, beforeEach } from "@jest/globals";
-import { DuplicateVoteError } from "../../errors";
-import { 
-  createMockContext, 
-  createMockQuestion, 
-  createMockVoterToken, 
+import {
+  createMockContext,
+  createMockQuestion,
+  createMockVoterToken,
   createMockQuestionResponse,
   rateLimitMocks,
-  expectTRPCError
 } from "./test-utils";
 
 // Mock dependencies
@@ -74,18 +72,20 @@ jest.mock("crypto", () => ({
 }));
 
 import { prisma } from "../../../db";
-import { 
-  getOrCreateVoterToken, 
+import {
+  getOrCreateVoterToken,
   hasVoterVoted,
-  getVoterRateLimit, 
+  getVoterRateLimit,
   incrementRateLimit,
-  hashToken
+  hashToken,
 } from "../../voterToken";
 import { voteRouter } from "../voteRouter";
 import { randomUUID, createHash } from "crypto";
 
 const mockPrisma = prisma as jest.Mocked<typeof prisma>;
-const mockGetOrCreateVoterToken = getOrCreateVoterToken as jest.MockedFunction<typeof getOrCreateVoterToken>;
+const mockGetOrCreateVoterToken = getOrCreateVoterToken as jest.MockedFunction<
+  typeof getOrCreateVoterToken
+>;
 const mockHasVoterVoted = hasVoterVoted as jest.MockedFunction<typeof hasVoterVoted>;
 const mockGetVoterRateLimit = getVoterRateLimit as jest.MockedFunction<typeof getVoterRateLimit>;
 const mockIncrementRateLimit = incrementRateLimit as jest.MockedFunction<typeof incrementRateLimit>;
@@ -96,17 +96,17 @@ const mockCreateHash = createHash as jest.MockedFunction<typeof createHash>;
 describe("Vote Duplicate Prevention", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Setup default mocks
     mockGetVoterRateLimit.mockResolvedValue(rateLimitMocks.withinLimit);
     mockIncrementRateLimit.mockResolvedValue(undefined);
     mockRandomUUID.mockReturnValue("test-uuid");
-    
+
     mockGetOrCreateVoterToken.mockResolvedValue({
       token: "test-token",
       voterTokenRecord: createMockVoterToken(),
     });
-    
+
     // Mock crypto hash chain
     const mockHashInstance = {
       update: jest.fn().mockReturnThis(),
@@ -183,10 +183,12 @@ describe("Vote Duplicate Prevention", () => {
       const ctx = createMockContext();
       const caller = voteRouter.createCaller(ctx);
 
-      await expect(caller.submitVote({
-        questionId: "question-1",
-        response: "Yes",
-      })).rejects.toThrow("You have already voted on this question");
+      await expect(
+        caller.submitVote({
+          questionId: "question-1",
+          response: "Yes",
+        })
+      ).rejects.toThrow("You have already voted on this question");
     });
 
     it("should allow votes when voter has not voted on question", async () => {
@@ -216,14 +218,16 @@ describe("Vote Duplicate Prevention", () => {
 
       for (const testCase of testCases) {
         mockHasVoterVoted.mockResolvedValue(true);
-        
+
         const ctx = createMockContext();
         const caller = voteRouter.createCaller(ctx);
 
-        await expect(caller.submitVote({
-          questionId: "question-1",
-          response: testCase.response,
-        })).rejects.toThrow("You have already voted on this question");
+        await expect(
+          caller.submitVote({
+            questionId: "question-1",
+            response: testCase.response,
+          })
+        ).rejects.toThrow("You have already voted on this question");
       }
     });
 
@@ -303,7 +307,7 @@ describe("Vote Duplicate Prevention", () => {
 
       expect(firstResult.status).toBe("fulfilled");
       expect(secondResult.status).toBe("rejected");
-      
+
       if (secondResult.status === "rejected") {
         expect(secondResult.reason.message).toContain("You have already voted on this question");
       }
@@ -341,10 +345,12 @@ describe("Vote Duplicate Prevention", () => {
       const ctx2 = createMockContext({ voterTokenRecord: newVoterToken });
       const caller2 = voteRouter.createCaller(ctx2);
 
-      await expect(caller2.submitVote({
-        questionId: "question-1",
-        response: "No",
-      })).rejects.toThrow("You have already voted on this question");
+      await expect(
+        caller2.submitVote({
+          questionId: "question-1",
+          response: "No",
+        })
+      ).rejects.toThrow("You have already voted on this question");
     });
 
     it("should handle database errors during duplicate check", async () => {
@@ -353,10 +359,12 @@ describe("Vote Duplicate Prevention", () => {
       const ctx = createMockContext();
       const caller = voteRouter.createCaller(ctx);
 
-      await expect(caller.submitVote({
-        questionId: "question-1",
-        response: "Yes",
-      })).rejects.toThrow("Database connection failed");
+      await expect(
+        caller.submitVote({
+          questionId: "question-1",
+          response: "Yes",
+        })
+      ).rejects.toThrow("Database connection failed");
     });
 
     it("should verify duplicate check happens before vote creation", async () => {
@@ -365,10 +373,12 @@ describe("Vote Duplicate Prevention", () => {
       const ctx = createMockContext();
       const caller = voteRouter.createCaller(ctx);
 
-      await expect(caller.submitVote({
-        questionId: "question-1",
-        response: "Yes",
-      })).rejects.toThrow("You have already voted on this question");
+      await expect(
+        caller.submitVote({
+          questionId: "question-1",
+          response: "Yes",
+        })
+      ).rejects.toThrow("You have already voted on this question");
 
       // Verify that questionResponse.create was never called
       expect(mockPrisma.questionResponse.create).not.toHaveBeenCalled();
@@ -384,10 +394,12 @@ describe("Vote Duplicate Prevention", () => {
       const caller = voteRouter.createCaller(ctx);
 
       // Should handle gracefully and not crash
-      await expect(caller.submitVote({
-        questionId: "question-1",
-        response: "Yes",
-      })).rejects.toThrow();
+      await expect(
+        caller.submitVote({
+          questionId: "question-1",
+          response: "Yes",
+        })
+      ).rejects.toThrow();
     });
   });
 
@@ -444,10 +456,12 @@ describe("Vote Duplicate Prevention", () => {
       const ctx = createMockContext();
       const caller = voteRouter.createCaller(ctx);
 
-      await expect(caller.submitVote({
-        questionId: "question-1",
-        response: "Yes",
-      })).rejects.toThrow("Connection timeout");
+      await expect(
+        caller.submitVote({
+          questionId: "question-1",
+          response: "Yes",
+        })
+      ).rejects.toThrow("Connection timeout");
     });
 
     it("should handle malformed voter token IDs", async () => {
@@ -471,7 +485,7 @@ describe("Vote Duplicate Prevention", () => {
     it("should prevent duplicate votes while maintaining normal flow", async () => {
       const mockQuestion = createMockQuestion();
       const mockVoterToken = createMockVoterToken();
-      
+
       mockPrisma.question.findFirst.mockResolvedValue(mockQuestion);
       mockGetOrCreateVoterToken.mockResolvedValue({
         token: "test-token",
@@ -496,10 +510,12 @@ describe("Vote Duplicate Prevention", () => {
       // Second vote should fail
       mockHasVoterVoted.mockResolvedValueOnce(true);
 
-      await expect(caller.submitVote({
-        questionId: "question-1",
-        response: "No",
-      })).rejects.toThrow("You have already voted on this question");
+      await expect(
+        caller.submitVote({
+          questionId: "question-1",
+          response: "No",
+        })
+      ).rejects.toThrow("You have already voted on this question");
     });
 
     it("should work correctly with rate limiting", async () => {
@@ -515,10 +531,12 @@ describe("Vote Duplicate Prevention", () => {
       const ctx = createMockContext();
       const caller = voteRouter.createCaller(ctx);
 
-      await expect(caller.submitVote({
-        questionId: "question-1",
-        response: "Yes",
-      })).rejects.toThrow("Rate limit exceeded");
+      await expect(
+        caller.submitVote({
+          questionId: "question-1",
+          response: "Yes",
+        })
+      ).rejects.toThrow("Rate limit exceeded");
 
       // hasVoterVoted should not be called when rate limit is exceeded
       expect(mockHasVoterVoted).not.toHaveBeenCalled();

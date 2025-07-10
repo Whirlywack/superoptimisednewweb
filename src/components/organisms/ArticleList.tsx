@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Link } from "@/components/ui/Typography";
 import { LucideIcon } from "@/components/ui/Icon";
 import { PostMeta } from "@/components/molecules/PostMeta";
-import { PostPreview } from "@/components/molecules/PostPreview";
-import { Grid, List, Calendar, Clock, Tag } from "lucide-react";
+import { Grid, List, Tag } from "lucide-react";
 
 interface Article {
   id: string;
@@ -61,13 +59,11 @@ export function ArticleList({
   const [sortBy, setSortBy] = useState<"date" | "title" | "reading-time">("date");
 
   // Get all unique tags from articles
-  const allTags = Array.from(
-    new Set(articles.flatMap(article => article.tags))
-  ).sort();
+  const _allTags = Array.from(new Set(articles.flatMap((article) => article.tags))).sort();
 
   // Filter articles by selected tag
   const filteredArticles = selectedTag
-    ? articles.filter(article => article.tags.includes(selectedTag))
+    ? articles.filter((article) => article.tags.includes(selectedTag))
     : articles;
 
   // Sort articles
@@ -241,8 +237,8 @@ export function ArticleList({
             {sortedArticles.length} article{sortedArticles.length !== 1 ? "s" : ""}
             {selectedTag && (
               <span>
-                {" "}tagged with{" "}
-                <span className="font-medium text-primary">{selectedTag}</span>
+                {" "}
+                tagged with <span className="font-medium text-primary">{selectedTag}</span>
               </span>
             )}
           </p>
@@ -270,11 +266,7 @@ export function ArticleList({
 
             {/* Clear Filters */}
             {selectedTag && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setSelectedTag(null)}
-              >
+              <Button variant="outline" size="sm" onClick={() => setSelectedTag(null)}>
                 Clear Filter
               </Button>
             )}
@@ -332,10 +324,7 @@ export function ArticleList({
                     : "No articles available at the moment"}
                 </p>
                 {selectedTag && (
-                  <Button
-                    variant="outline"
-                    onClick={() => setSelectedTag(null)}
-                  >
+                  <Button variant="outline" onClick={() => setSelectedTag(null)}>
                     Clear Filter
                   </Button>
                 )}
@@ -346,11 +335,7 @@ export function ArticleList({
           {/* Load More */}
           {showLoadMore && hasMore && !loading && sortedArticles.length > 0 && (
             <div className="pt-6 text-center">
-              <Button
-                variant="outline"
-                onClick={onLoadMore}
-                disabled={loading}
-              >
+              <Button variant="outline" onClick={onLoadMore} disabled={loading}>
                 Load More Articles
               </Button>
             </div>

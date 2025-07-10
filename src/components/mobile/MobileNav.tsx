@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
-import { Menu, X } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
+import { Menu, X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export interface MobileNavProps {
   children: React.ReactNode;
@@ -11,16 +11,16 @@ export interface MobileNavProps {
   triggerClassName?: string;
   overlayClassName?: string;
   drawerClassName?: string;
-  'aria-label'?: string;
+  "aria-label"?: string;
 }
 
 export function MobileNav({
   children,
-  className,
+  className: _className,
   triggerClassName,
   overlayClassName,
   drawerClassName,
-  'aria-label': ariaLabel = 'Navigation menu',
+  "aria-label": ariaLabel = "Navigation menu",
   ...props
 }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,8 +33,8 @@ export function MobileNav({
   useEffect(() => {
     if (isOpen) {
       const originalStyle = window.getComputedStyle(document.body).overflow;
-      document.body.style.overflow = 'hidden';
-      
+      document.body.style.overflow = "hidden";
+
       return () => {
         document.body.style.overflow = originalStyle;
       };
@@ -43,13 +43,13 @@ export function MobileNav({
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
+      if (e.key === "Escape" && isOpen) {
         setIsOpen(false);
       }
     };
 
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
   }, [isOpen]);
 
   const toggleNav = () => setIsOpen(!isOpen);
@@ -62,17 +62,14 @@ export function MobileNav({
 
   const drawer = (
     <div
-      className={cn(
-        'fixed inset-0 z-50 lg:hidden',
-        overlayClassName
-      )}
+      className={cn("fixed inset-0 z-50 lg:hidden", overlayClassName)}
       onClick={handleBackdropClick}
     >
       <div
         className={cn(
-          'fixed inset-y-0 left-0 z-50 w-3/4 max-w-sm bg-off-white shadow-xl transition-transform duration-300 ease-in-out',
-          '',
-          isOpen ? 'translate-x-0' : '-translate-x-full',
+          "fixed inset-y-0 left-0 z-50 w-3/4 max-w-sm bg-off-white shadow-xl transition-transform duration-300 ease-in-out",
+          "",
+          isOpen ? "translate-x-0" : "-translate-x-full",
           drawerClassName
         )}
         role="dialog"
@@ -85,28 +82,24 @@ export function MobileNav({
             <button
               onClick={() => setIsOpen(false)}
               className={cn(
-                'inline-flex size-11 items-center justify-center rounded-lg',
-                'text-warm-gray hover:bg-light-gray hover:text-off-black',
-                'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
-                'transition-colors duration-200'
+                "inline-flex size-11 items-center justify-center rounded-lg",
+                "text-warm-gray hover:bg-light-gray hover:text-off-black",
+                "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
+                "transition-colors duration-200"
               )}
               aria-label="Close navigation menu"
             >
               <X className="size-5" />
             </button>
           </div>
-          
+
           <nav className="flex-1 overflow-y-auto p-4">
-            <div onClick={() => setIsOpen(false)}>
-              {children}
-            </div>
+            <div onClick={() => setIsOpen(false)}>{children}</div>
           </nav>
         </div>
       </div>
-      
-      {isOpen && (
-        <div className="fixed inset-0 bg-off-black/50 transition-opacity duration-300" />
-      )}
+
+      {isOpen && <div className="fixed inset-0 bg-off-black/50 transition-opacity duration-300" />}
     </div>
   );
 
@@ -115,13 +108,13 @@ export function MobileNav({
       <button
         onClick={toggleNav}
         className={cn(
-          'inline-flex size-11 items-center justify-center rounded-lg lg:hidden',
-          'text-warm-gray hover:bg-light-gray hover:text-off-black',
-          'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
-          'transition-colors duration-200',
+          "inline-flex size-11 items-center justify-center rounded-lg lg:hidden",
+          "text-warm-gray hover:bg-light-gray hover:text-off-black",
+          "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
+          "transition-colors duration-200",
           triggerClassName
         )}
-        aria-label={`${isOpen ? 'Close' : 'Open'} navigation menu`}
+        aria-label={`${isOpen ? "Close" : "Open"} navigation menu`}
         aria-expanded={isOpen}
         {...props}
       >
@@ -138,21 +131,19 @@ export interface MobileNavItemProps extends React.AnchorHTMLAttributes<HTMLAncho
   active?: boolean;
 }
 
-export function MobileNavItem({ 
-  children, 
-  active = false, 
-  className, 
-  ...props 
+export function MobileNavItem({
+  children,
+  active = false,
+  className,
+  ...props
 }: MobileNavItemProps) {
   return (
     <a
       className={cn(
-        'block rounded-lg px-4 py-3 text-base font-medium transition-colors duration-200',
-        'hover:bg-light-gray hover:text-off-black',
-        'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
-        active 
-          ? 'bg-primary/10 text-primary' 
-          : 'text-warm-gray',
+        "block rounded-lg px-4 py-3 text-base font-medium transition-colors duration-200",
+        "hover:bg-light-gray hover:text-off-black",
+        "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
+        active ? "bg-primary/10 text-primary" : "text-warm-gray",
         className
       )}
       {...props}
@@ -170,13 +161,11 @@ export interface MobileNavGroupProps {
 
 export function MobileNavGroup({ title, children, className }: MobileNavGroupProps) {
   return (
-    <div className={cn('mb-6', className)}>
+    <div className={cn("mb-6", className)}>
       <h3 className="px-4 py-2 text-small font-semibold uppercase tracking-wider text-off-black">
         {title}
       </h3>
-      <div className="space-y-1">
-        {children}
-      </div>
+      <div className="space-y-1">{children}</div>
     </div>
   );
 }

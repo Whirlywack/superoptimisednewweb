@@ -46,12 +46,19 @@ describe("generateMetadata", () => {
         type: "article",
         publishedTime: "2024-01-01T10:00:00.000Z",
         authors: ["Test Author"],
+        url: "http://localhost:3000/journey/test-slug",
         images: [
           {
-            url: "/api/og/test-slug",
+            url: "http://localhost:3000/api/og/test-slug",
             width: 1200,
             height: 630,
             alt: "Test Journey Post",
+          },
+          {
+            url: "http://localhost:3000/og-default.png",
+            width: 1200,
+            height: 630,
+            alt: "Superoptimised - Building in Public",
           },
         ],
       },
@@ -59,10 +66,10 @@ describe("generateMetadata", () => {
         card: "summary_large_image",
         title: "Test Journey Post",
         description: "This is a test excerpt for SEO",
-        images: ["/api/og/test-slug"],
+        images: ["http://localhost:3000/api/og/test-slug", "http://localhost:3000/og-default.png"],
       },
       alternates: {
-        canonical: "/journey/test-slug",
+        canonical: "http://localhost:3000/journey/test-slug",
       },
     });
   });

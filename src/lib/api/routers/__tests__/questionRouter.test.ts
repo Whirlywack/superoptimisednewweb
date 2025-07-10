@@ -9,12 +9,22 @@ jest.mock("../../../db", () => ({
       findFirst: jest.fn(),
       findUnique: jest.fn(),
     },
+    questionResponse: {
+      findMany: jest.fn(),
+      groupBy: jest.fn(),
+      count: jest.fn(),
+    },
   },
 }));
 
 import { prisma } from "../../../db";
 
 const mockPrisma = prisma as jest.Mocked<typeof prisma>;
+
+// Get mock instances
+const mockQuestionFindMany = mockPrisma.question.findMany as jest.MockedFunction<any>;
+const mockQuestionFindFirst = mockPrisma.question.findFirst as jest.MockedFunction<any>;
+const mockQuestionFindUnique = mockPrisma.question.findUnique as jest.MockedFunction<any>;
 
 describe("questionRouter", () => {
   beforeEach(() => {
@@ -83,12 +93,7 @@ describe("questionRouter", () => {
         description: "Drag and drop ranking question",
         questionType: "ranking",
         questionData: {
-          items: [
-            "Performance",
-            "Security",
-            "User Experience",
-            "Maintainability",
-          ],
+          items: ["Performance", "Security", "User Experience", "Maintainability"],
         },
         category: "features",
         displayOrder: 4,
@@ -144,7 +149,7 @@ describe("questionRouter", () => {
     ];
 
     it("should return all active questions without category filter", async () => {
-      mockPrisma.question.findMany.mockResolvedValue(mockQuestions);
+      mockQuestionFindMany.mockResolvedValue(mockQuestions);
 
       const ctx = {
         db: mockPrisma,
@@ -191,8 +196,8 @@ describe("questionRouter", () => {
     });
 
     it("should filter questions by category", async () => {
-      const developmentQuestions = mockQuestions.filter(q => q.category === "development");
-      mockPrisma.question.findMany.mockResolvedValue(developmentQuestions);
+      const developmentQuestions = mockQuestions.filter((q) => q.category === "development");
+      mockQuestionFindMany.mockResolvedValue(developmentQuestions);
 
       const ctx = {
         db: mockPrisma,
@@ -239,7 +244,7 @@ describe("questionRouter", () => {
 
     it("should respect limit parameter", async () => {
       const limitedQuestions = mockQuestions.slice(0, 3);
-      mockPrisma.question.findMany.mockResolvedValue(limitedQuestions);
+      mockQuestionFindMany.mockResolvedValue(limitedQuestions);
 
       const ctx = {
         db: mockPrisma,
@@ -273,7 +278,7 @@ describe("questionRouter", () => {
     });
 
     it("should handle different question types correctly", async () => {
-      mockPrisma.question.findMany.mockResolvedValue(mockQuestions);
+      mockQuestionFindMany.mockResolvedValue(mockQuestions);
 
       const ctx = {
         db: mockPrisma,
@@ -284,7 +289,7 @@ describe("questionRouter", () => {
       const result = await caller.getActiveQuestions({});
 
       // Verify all question types are handled
-      const questionTypes = result.map(q => q.questionType);
+      const questionTypes = result.map((q) => q.questionType);
       expect(questionTypes).toContain("binary");
       expect(questionTypes).toContain("multiple_choice");
       expect(questionTypes).toContain("rating");
@@ -293,18 +298,18 @@ describe("questionRouter", () => {
       expect(questionTypes).toContain("ab-test");
 
       // Verify questionData structure for each type
-      const binaryQ = result.find(q => q.questionType === "binary");
+      const binaryQ = result.find((q) => q.questionType === "binary");
       expect(binaryQ?.questionData).toEqual({
         options: ["Yes", "No"],
       });
 
-      const multipleChoiceQ = result.find(q => q.questionType === "multiple_choice");
+      const multipleChoiceQ = result.find((q) => q.questionType === "multiple_choice");
       expect(multipleChoiceQ?.questionData).toEqual({
         options: ["React", "Vue", "Angular", "Svelte"],
         allowMultiple: false,
       });
 
-      const ratingQ = result.find(q => q.questionType === "rating");
+      const ratingQ = result.find((q) => q.questionType === "rating");
       expect(ratingQ?.questionData).toEqual({
         scale: {
           min: 1,
@@ -317,23 +322,18 @@ describe("questionRouter", () => {
         },
       });
 
-      const rankingQ = result.find(q => q.questionType === "ranking");
+      const rankingQ = result.find((q) => q.questionType === "ranking");
       expect(rankingQ?.questionData).toEqual({
-        items: [
-          "Performance",
-          "Security",
-          "User Experience",
-          "Maintainability",
-        ],
+        items: ["Performance", "Security", "User Experience", "Maintainability"],
       });
 
-      const textQ = result.find(q => q.questionType === "text");
+      const textQ = result.find((q) => q.questionType === "text");
       expect(textQ?.questionData).toEqual({
         maxLength: 500,
         placeholder: "Describe the features you'd like...",
       });
 
-      const abTestQ = result.find(q => q.questionType === "ab-test");
+      const abTestQ = result.find((q) => q.questionType === "ab-test");
       expect(abTestQ?.questionData).toEqual({
         variants: [
           {
@@ -371,7 +371,7 @@ describe("questionRouter", () => {
     };
 
     it("should return a question by ID", async () => {
-      mockPrisma.question.findFirst.mockResolvedValue(mockQuestion);
+      mockQuestionFindFirst.mockResolvedValue(mockQuestion);
 
       const ctx = {
         db: mockPrisma,
@@ -416,7 +416,7 @@ describe("questionRouter", () => {
     });
 
     it("should throw QuestionNotFoundError when question does not exist", async () => {
-      mockPrisma.question.findFirst.mockResolvedValue(null);
+      mockQuestionFindFirst.mockResolvedValue(null);
 
       const ctx = {
         db: mockPrisma,
@@ -481,13 +481,13 @@ describe("questionRouter", () => {
       id: "question-4",
       questionType: "ranking",
       responses: [
-        { 
-          responseData: ["Performance", "Security", "User Experience", "Maintainability"], 
-          createdAt: new Date("2024-01-01") 
+        {
+          responseData: ["Performance", "Security", "User Experience", "Maintainability"],
+          createdAt: new Date("2024-01-01"),
         },
-        { 
-          responseData: ["Security", "Performance", "Maintainability", "User Experience"], 
-          createdAt: new Date("2024-01-02") 
+        {
+          responseData: ["Security", "Performance", "Maintainability", "User Experience"],
+          createdAt: new Date("2024-01-02"),
         },
       ],
     };
@@ -496,7 +496,10 @@ describe("questionRouter", () => {
       id: "question-5",
       questionType: "text",
       responses: [
-        { responseData: "I would like to see dark mode support", createdAt: new Date("2024-01-01") },
+        {
+          responseData: "I would like to see dark mode support",
+          createdAt: new Date("2024-01-01"),
+        },
         { responseData: "Better mobile responsiveness", createdAt: new Date("2024-01-02") },
         { responseData: "More customization options", createdAt: new Date("2024-01-03") },
       ],
@@ -515,7 +518,7 @@ describe("questionRouter", () => {
     };
 
     it("should return binary question results with percentages", async () => {
-      mockPrisma.question.findUnique.mockResolvedValue(mockBinaryQuestion);
+      mockQuestionFindUnique.mockResolvedValue(mockBinaryQuestion);
 
       const ctx = {
         db: mockPrisma,
@@ -545,7 +548,7 @@ describe("questionRouter", () => {
     });
 
     it("should handle multiple choice question results", async () => {
-      mockPrisma.question.findUnique.mockResolvedValue(mockMultipleChoiceQuestion);
+      mockQuestionFindUnique.mockResolvedValue(mockMultipleChoiceQuestion);
 
       const ctx = {
         db: mockPrisma,
@@ -564,7 +567,7 @@ describe("questionRouter", () => {
     });
 
     it("should handle rating question results", async () => {
-      mockPrisma.question.findUnique.mockResolvedValue(mockRatingQuestion);
+      mockQuestionFindUnique.mockResolvedValue(mockRatingQuestion);
 
       const ctx = {
         db: mockPrisma,
@@ -583,7 +586,7 @@ describe("questionRouter", () => {
     });
 
     it("should handle ranking question results", async () => {
-      mockPrisma.question.findUnique.mockResolvedValue(mockRankingQuestion);
+      mockQuestionFindUnique.mockResolvedValue(mockRankingQuestion);
 
       const ctx = {
         db: mockPrisma,
@@ -605,7 +608,7 @@ describe("questionRouter", () => {
     });
 
     it("should handle text question results", async () => {
-      mockPrisma.question.findUnique.mockResolvedValue(mockTextQuestion);
+      mockQuestionFindUnique.mockResolvedValue(mockTextQuestion);
 
       const ctx = {
         db: mockPrisma,
@@ -628,7 +631,7 @@ describe("questionRouter", () => {
     });
 
     it("should handle ab-test question results", async () => {
-      mockPrisma.question.findUnique.mockResolvedValue(mockAbTestQuestion);
+      mockQuestionFindUnique.mockResolvedValue(mockAbTestQuestion);
 
       const ctx = {
         db: mockPrisma,
@@ -653,7 +656,7 @@ describe("questionRouter", () => {
         responses: [],
       };
 
-      mockPrisma.question.findUnique.mockResolvedValue(mockEmptyQuestion);
+      mockQuestionFindUnique.mockResolvedValue(mockEmptyQuestion);
 
       const ctx = {
         db: mockPrisma,
@@ -678,7 +681,7 @@ describe("questionRouter", () => {
         responses: [],
       };
 
-      mockPrisma.question.findUnique.mockResolvedValue(mockQuestionWithZeroResponses);
+      mockQuestionFindUnique.mockResolvedValue(mockQuestionWithZeroResponses);
 
       const ctx = {
         db: mockPrisma,
@@ -692,7 +695,7 @@ describe("questionRouter", () => {
     });
 
     it("should throw QuestionNotFoundError when question does not exist", async () => {
-      mockPrisma.question.findUnique.mockResolvedValue(null);
+      mockQuestionFindUnique.mockResolvedValue(null);
 
       const ctx = {
         db: mockPrisma,
@@ -710,10 +713,10 @@ describe("questionRouter", () => {
   describe("date filtering", () => {
     it("should filter questions by start and end dates", async () => {
       const now = new Date();
-      const pastDate = new Date(now.getTime() - 24 * 60 * 60 * 1000); // 1 day ago
-      const futureDate = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 1 day ahead
+      const _pastDate = new Date(now.getTime() - 24 * 60 * 60 * 1000); // 1 day ago
+      const _futureDate = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 1 day ahead
 
-      mockPrisma.question.findMany.mockResolvedValue([]);
+      mockQuestionFindMany.mockResolvedValue([]);
 
       const ctx = {
         db: mockPrisma,
@@ -756,7 +759,7 @@ describe("questionRouter", () => {
 
   describe("error handling", () => {
     it("should handle database errors gracefully", async () => {
-      mockPrisma.question.findMany.mockRejectedValue(new Error("Database connection failed"));
+      mockQuestionFindMany.mockRejectedValue(new Error("Database connection failed"));
 
       const ctx = {
         db: mockPrisma,
@@ -775,7 +778,7 @@ describe("questionRouter", () => {
         responses: [{ responseData: "test", createdAt: new Date() }],
       };
 
-      mockPrisma.question.findUnique.mockResolvedValue(mockInvalidQuestion);
+      mockQuestionFindUnique.mockResolvedValue(mockInvalidQuestion);
 
       const ctx = {
         db: mockPrisma,

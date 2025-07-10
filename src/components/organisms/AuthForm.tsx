@@ -5,7 +5,7 @@ import { LucideIcon } from "@/components/ui/Icon";
 import { Link } from "@/components/ui/Typography";
 import { Eye, EyeOff, Mail, Lock, ArrowRight, Check, AlertCircle } from "lucide-react";
 
-interface AuthFormProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onSubmit'> {
+interface AuthFormProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onSubmit"> {
   mode?: "signin" | "signup" | "magic-link" | "reset-password";
   onSubmit?: (data: AuthFormData) => void | Promise<void>;
   onModeChange?: (mode: string) => void;
@@ -33,7 +33,7 @@ export function AuthForm({
   loading = false,
   error,
   success,
-  showSocialAuth = false,
+  _showSocialAuth = false,
   showMagicLink = true,
   showPasswordToggle = true,
   variant = "card",
@@ -87,18 +87,18 @@ export function AuthForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     onSubmit?.(formData);
   };
 
   const handleInputChange = (field: keyof AuthFormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    
+    setFormData((prev) => ({ ...prev, [field]: value }));
+
     // Clear field error when user starts typing
     if (fieldErrors[field]) {
-      setFieldErrors(prev => ({ ...prev, [field]: "" }));
+      setFieldErrors((prev) => ({ ...prev, [field]: "" }));
     }
   };
 
@@ -130,7 +130,7 @@ export function AuthForm({
 
   const getSubmitText = () => {
     if (loading) return "Please wait...";
-    
+
     switch (mode) {
       case "signup":
         return "Create Account";
@@ -154,27 +154,24 @@ export function AuthForm({
   };
 
   return (
-    <div
-      className={cn(variantClasses[variant], className)}
-      {...props}
-    >
+    <div className={cn(variantClasses[variant], className)} {...props}>
       {/* Header */}
       <div className="mb-6 text-center">
         <h1 className="mb-2 text-2xl font-semibold text-off-black dark:text-off-white">
           {getTitle()}
         </h1>
-        <p className="text-sm text-warm-gray">
-          {getDescription()}
-        </p>
+        <p className="text-sm text-warm-gray">{getDescription()}</p>
       </div>
 
       {/* Success Message */}
       {success && (
-        <div className={cn(
-          "mb-4 flex items-center gap-2 rounded-md p-3",
-          "bg-green-50 dark:bg-green-900/20",
-          "border border-green-200 dark:border-green-800/30"
-        )}>
+        <div
+          className={cn(
+            "mb-4 flex items-center gap-2 rounded-md p-3",
+            "bg-green-50 dark:bg-green-900/20",
+            "border border-green-200 dark:border-green-800/30"
+          )}
+        >
           <LucideIcon icon={Check} size="sm" className="text-green-600 dark:text-green-400" />
           <p className="text-sm text-green-700 dark:text-green-300">{success}</p>
         </div>
@@ -182,11 +179,13 @@ export function AuthForm({
 
       {/* Error Message */}
       {error && (
-        <div className={cn(
-          "mb-4 flex items-center gap-2 rounded-md p-3",
-          "bg-red-50 dark:bg-red-900/20",
-          "border border-red-200 dark:border-red-800/30"
-        )}>
+        <div
+          className={cn(
+            "mb-4 flex items-center gap-2 rounded-md p-3",
+            "bg-red-50 dark:bg-red-900/20",
+            "border border-red-200 dark:border-red-800/30"
+          )}
+        >
           <LucideIcon icon={AlertCircle} size="sm" className="text-red-600 dark:text-red-400" />
           <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
         </div>
@@ -361,18 +360,15 @@ export function AuthForm({
               )}
             </div>
             {fieldErrors.confirmPassword && (
-              <p className="text-sm text-red-600 dark:text-red-400">{fieldErrors.confirmPassword}</p>
+              <p className="text-sm text-red-600 dark:text-red-400">
+                {fieldErrors.confirmPassword}
+              </p>
             )}
           </div>
         )}
 
         {/* Submit Button */}
-        <Button
-          type="submit"
-          disabled={loading}
-          className="w-full"
-          variant="primary"
-        >
+        <Button type="submit" disabled={loading} className="w-full" variant="primary">
           <span className="flex items-center justify-center gap-2">
             {getSubmitText()}
             {!loading && <LucideIcon icon={ArrowRight} size="sm" />}
@@ -412,7 +408,7 @@ export function AuthForm({
         <div className="text-center">
           {mode === "signin" ? (
             <p className="text-sm text-warm-gray">
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <button
                 type="button"
                 onClick={() => onModeChange?.("signup")}

@@ -1,6 +1,5 @@
 import React from "react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { LucideIcon } from "@/components/ui/Icon";
 import { Filter, X } from "lucide-react";
 
@@ -37,7 +36,7 @@ export function FilterButtonGroup({
   const handleOptionClick = (optionId: string) => {
     if (allowMultiple) {
       if (selectedIds.includes(optionId)) {
-        onSelectionChange(selectedIds.filter(id => id !== optionId));
+        onSelectionChange(selectedIds.filter((id) => id !== optionId));
       } else {
         onSelectionChange([...selectedIds, optionId]);
       }
@@ -66,24 +65,17 @@ export function FilterButtonGroup({
   const buttonVariantClasses = "rounded-lg";
 
   return (
-    <div
-      className={cn("flex flex-wrap items-center gap-2", className)}
-      {...props}
-    >
+    <div className={cn("flex flex-wrap items-center gap-2", className)} {...props}>
       {showFilterIcon && (
         <div className="mr-2 flex items-center gap-2">
-          <LucideIcon 
-            icon={Filter} 
-            size="sm" 
-            className="text-warm-gray" 
-          />
+          <LucideIcon icon={Filter} size="sm" className="text-warm-gray" />
           <span className="text-sm text-warm-gray">Filter:</span>
         </div>
       )}
 
       {options.map((option) => {
         const isSelected = selectedIds.includes(option.id);
-        
+
         return (
           <button
             key={option.id}
@@ -99,11 +91,7 @@ export function FilterButtonGroup({
               variant === "pills" ? pillVariantClasses : buttonVariantClasses,
               // Selection state
               isSelected
-                ? [
-                    "bg-primary text-primary-foreground",
-                    "border-primary",
-                    "hover:bg-primary/90",
-                  ]
+                ? ["bg-primary text-primary-foreground", "border-primary", "hover:bg-primary/90"]
                 : [
                     "bg-off-white dark:bg-off-black",
                     "text-off-black dark:text-off-white",

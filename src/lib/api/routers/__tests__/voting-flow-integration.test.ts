@@ -1,5 +1,4 @@
-import { describe, it, expect, jest, beforeEach, afterEach } from "@jest/globals";
-import { TRPCError } from "@trpc/server";
+import { describe, it, expect, jest, beforeEach } from "@jest/globals";
 
 // Mock all dependencies for integration testing
 jest.mock("../../../db", () => ({
@@ -77,57 +76,57 @@ jest.mock("crypto", () => ({
 
 // Import all the modules after mocking
 import { prisma } from "../../../db";
-import { 
-  getOrCreateVoterToken, 
+import {
+  getOrCreateVoterToken,
   hasVoterVoted,
-  getVoterRateLimit, 
+  getVoterRateLimit,
   incrementRateLimit,
-  hashToken 
+  hashToken,
 } from "../../voterToken";
-import { 
+import {
   queueVoteEnhancement,
   processVoteEnhancement,
   calculateAndRecordXp,
-  calculateXpForVote
+  calculateXpForVote,
 } from "../../../background-jobs";
-import { 
-  queueStatUpdate,
-  incrementVoteStats,
-  warmStatsCache 
-} from "../../statsCache";
-import { 
-  trackProgressEvent,
-  onVoteSubmitted 
-} from "../../../progress-automation";
+import { queueStatUpdate, incrementVoteStats, warmStatsCache } from "../../statsCache";
+import { trackProgressEvent, onVoteSubmitted } from "../../../progress-automation";
 import { sendXpClaimEmail } from "../../../email/sendEmail";
 import { randomUUID } from "crypto";
 import { voteRouter } from "../voteRouter";
-import { 
-  createMockContext, 
-  createMockQuestion, 
-  createMockVoterToken, 
+import {
+  createMockContext,
+  createMockQuestion,
+  createMockVoterToken,
   createMockQuestionResponse,
-  createMockXpLedger,
-  rateLimitMocks
+  rateLimitMocks,
 } from "./test-utils";
 
 // Create typed mock functions
 const mockPrisma = prisma as jest.Mocked<typeof prisma>;
-const mockGetOrCreateVoterToken = getOrCreateVoterToken as jest.MockedFunction<typeof getOrCreateVoterToken>;
+const mockGetOrCreateVoterToken = getOrCreateVoterToken as jest.MockedFunction<
+  typeof getOrCreateVoterToken
+>;
 const mockHasVoterVoted = hasVoterVoted as jest.MockedFunction<typeof hasVoterVoted>;
 const mockGetVoterRateLimit = getVoterRateLimit as jest.MockedFunction<typeof getVoterRateLimit>;
 const mockIncrementRateLimit = incrementRateLimit as jest.MockedFunction<typeof incrementRateLimit>;
 const mockHashToken = hashToken as jest.MockedFunction<typeof hashToken>;
-const mockQueueVoteEnhancement = queueVoteEnhancement as jest.MockedFunction<typeof queueVoteEnhancement>;
-const mockProcessVoteEnhancement = processVoteEnhancement as jest.MockedFunction<typeof processVoteEnhancement>;
-const mockCalculateAndRecordXp = calculateAndRecordXp as jest.MockedFunction<typeof calculateAndRecordXp>;
+const mockQueueVoteEnhancement = queueVoteEnhancement as jest.MockedFunction<
+  typeof queueVoteEnhancement
+>;
+const mockProcessVoteEnhancement = processVoteEnhancement as jest.MockedFunction<
+  typeof processVoteEnhancement
+>;
+const mockCalculateAndRecordXp = calculateAndRecordXp as jest.MockedFunction<
+  typeof calculateAndRecordXp
+>;
 const mockCalculateXpForVote = calculateXpForVote as jest.MockedFunction<typeof calculateXpForVote>;
 const mockQueueStatUpdate = queueStatUpdate as jest.MockedFunction<typeof queueStatUpdate>;
 const mockIncrementVoteStats = incrementVoteStats as jest.MockedFunction<typeof incrementVoteStats>;
 const mockWarmStatsCache = warmStatsCache as jest.MockedFunction<typeof warmStatsCache>;
 const mockTrackProgressEvent = trackProgressEvent as jest.MockedFunction<typeof trackProgressEvent>;
 const mockOnVoteSubmitted = onVoteSubmitted as jest.MockedFunction<typeof onVoteSubmitted>;
-const mockSendXpClaimEmail = sendXpClaimEmail as jest.MockedFunction<typeof sendXpClaimEmail>;
+const _mockSendXpClaimEmail = sendXpClaimEmail as jest.MockedFunction<typeof sendXpClaimEmail>;
 const mockRandomUUID = randomUUID as jest.MockedFunction<typeof randomUUID>;
 
 describe("Voting Flow Integration Tests", () => {
@@ -139,7 +138,7 @@ describe("Voting Flow Integration Tests", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Setup common test fixtures
     mockActiveQuestion = createMockQuestion({
       id: "question-1",
@@ -366,10 +365,12 @@ describe("Voting Flow Integration Tests", () => {
 
       const caller = voteRouter.createCaller(mockContext);
 
-      await expect(caller.submitVote({
-        questionId: "question-1",
-        response: "Yes",
-      })).rejects.toThrow("Rate limit exceeded");
+      await expect(
+        caller.submitVote({
+          questionId: "question-1",
+          response: "Yes",
+        })
+      ).rejects.toThrow("Rate limit exceeded");
 
       // Verify subsequent operations were not called
       expect(mockPrisma.question.findFirst).not.toHaveBeenCalled();
@@ -384,10 +385,12 @@ describe("Voting Flow Integration Tests", () => {
 
       const caller = voteRouter.createCaller(mockContext);
 
-      await expect(caller.submitVote({
-        questionId: "question-1",
-        response: "Yes",
-      })).rejects.toThrow("Question with ID question-1 not found or is not active");
+      await expect(
+        caller.submitVote({
+          questionId: "question-1",
+          response: "Yes",
+        })
+      ).rejects.toThrow("Question with ID question-1 not found or is not active");
 
       // Verify subsequent operations were not called
       expect(mockHasVoterVoted).not.toHaveBeenCalled();
@@ -401,10 +404,12 @@ describe("Voting Flow Integration Tests", () => {
 
       const caller = voteRouter.createCaller(mockContext);
 
-      await expect(caller.submitVote({
-        questionId: "question-1",
-        response: "Yes",
-      })).rejects.toThrow("You have already voted on this question");
+      await expect(
+        caller.submitVote({
+          questionId: "question-1",
+          response: "Yes",
+        })
+      ).rejects.toThrow("You have already voted on this question");
 
       // Verify subsequent operations were not called
       expect(mockPrisma.questionResponse.create).not.toHaveBeenCalled();
@@ -417,10 +422,12 @@ describe("Voting Flow Integration Tests", () => {
 
       const caller = voteRouter.createCaller(mockContext);
 
-      await expect(caller.submitVote({
-        questionId: "question-1",
-        response: "Yes",
-      })).rejects.toThrow("Database error");
+      await expect(
+        caller.submitVote({
+          questionId: "question-1",
+          response: "Yes",
+        })
+      ).rejects.toThrow("Database error");
 
       // Verify background job was not queued on failure
       expect(mockQueueVoteEnhancement).not.toHaveBeenCalled();
@@ -453,7 +460,9 @@ describe("Voting Flow Integration Tests", () => {
         submittedAt: new Date(),
       };
 
-      await expect(processVoteEnhancement(backgroundJob)).rejects.toThrow("Background processing failed");
+      await expect(processVoteEnhancement(backgroundJob)).rejects.toThrow(
+        "Background processing failed"
+      );
     });
   });
 
@@ -584,10 +593,12 @@ describe("Voting Flow Integration Tests", () => {
         });
 
         const caller = voteRouter.createCaller(mockContext);
-        promises.push(caller.submitVote({
-          questionId: "question-1",
-          response: "Yes",
-        }));
+        promises.push(
+          caller.submitVote({
+            questionId: "question-1",
+            response: "Yes",
+          })
+        );
       }
 
       const results = await Promise.all(promises);
@@ -611,7 +622,7 @@ describe("Voting Flow Integration Tests", () => {
       const caller = voteRouter.createCaller(mockContext);
 
       const startTime = Date.now();
-      
+
       await caller.submitVote({
         questionId: "question-1",
         response: "Yes",
@@ -637,10 +648,12 @@ describe("Voting Flow Integration Tests", () => {
         });
 
         const caller = voteRouter.createCaller(mockContext);
-        promises.push(caller.submitVote({
-          questionId: "question-1",
-          response: "Yes",
-        }));
+        promises.push(
+          caller.submitVote({
+            questionId: "question-1",
+            response: "Yes",
+          })
+        );
       }
 
       const startTime = Date.now();
@@ -698,10 +711,12 @@ describe("Voting Flow Integration Tests", () => {
 
       const caller = voteRouter.createCaller(mockContext);
 
-      await expect(caller.submitVote({
-        questionId: "question-1",
-        response: "Yes",
-      })).rejects.toThrow("Token creation failed");
+      await expect(
+        caller.submitVote({
+          questionId: "question-1",
+          response: "Yes",
+        })
+      ).rejects.toThrow("Token creation failed");
 
       // Verify error stopped the flow
       expect(mockHasVoterVoted).not.toHaveBeenCalled();

@@ -1,8 +1,8 @@
-import React, { useState, useCallback } from 'react';
-import { cn } from '@/lib/utils';
-import { QuestionLabel } from '@/components/questionnaire/QuestionLabel';
-import { ValidationMessage } from '@/components/ui/ValidationMessage';
-import { SkipControl } from '@/components/ui/SkipControl';
+import React, { useState, useCallback } from "react";
+import { cn } from "@/lib/utils";
+import { QuestionLabel } from "@/components/questionnaire/QuestionLabel";
+import { ValidationMessage } from "@/components/ui/ValidationMessage";
+import { SkipControl } from "@/components/ui/SkipControl";
 
 export interface MatrixItem {
   id: string;
@@ -13,8 +13,8 @@ export interface MatrixItem {
 }
 
 export interface MatrixPosition {
-  effort: 'low' | 'high';
-  impact: 'low' | 'high';
+  effort: "low" | "high";
+  impact: "low" | "high";
 }
 
 export interface MatrixSelection {
@@ -54,14 +54,26 @@ export interface PriorityMatrixProps {
   className?: string;
 }
 
-const defaultEffortLabel = { low: 'Low Effort', high: 'High Effort' };
-const defaultImpactLabel = { low: 'Low Impact', high: 'High Impact' };
+const defaultEffortLabel = { low: "Low Effort", high: "High Effort" };
+const defaultImpactLabel = { low: "Low Impact", high: "High Impact" };
 
 const quadrantInfo = {
-  'low-high': { label: 'Quick Wins', color: 'bg-off-white dark:bg-off-black border-primary text-off-black dark:text-off-white' },
-  'high-high': { label: 'Major Projects', color: 'bg-light-gray border-warm-gray text-off-black dark:text-off-white' },
-  'low-low': { label: 'Fill-ins', color: 'bg-off-white dark:bg-off-black border-light-gray text-warm-gray' },
-  'high-low': { label: 'Thankless Tasks', color: 'bg-warm-gray/10 border-warm-gray text-warm-gray' },
+  "low-high": {
+    label: "Quick Wins",
+    color: "bg-off-white dark:bg-off-black border-primary text-off-black dark:text-off-white",
+  },
+  "high-high": {
+    label: "Major Projects",
+    color: "bg-light-gray border-warm-gray text-off-black dark:text-off-white",
+  },
+  "low-low": {
+    label: "Fill-ins",
+    color: "bg-off-white dark:bg-off-black border-light-gray text-warm-gray",
+  },
+  "high-low": {
+    label: "Thankless Tasks",
+    color: "bg-warm-gray/10 border-warm-gray text-warm-gray",
+  },
 };
 
 export function PriorityMatrix({
@@ -84,12 +96,15 @@ export function PriorityMatrix({
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
   const [hoveredQuadrant, setHoveredQuadrant] = useState<string | null>(null);
 
-  const handleDragStart = useCallback((event: React.DragEvent, itemId: string) => {
-    if (disabled) return;
-    setDraggedItem(itemId);
-    event.dataTransfer.effectAllowed = 'move';
-    event.dataTransfer.setData('text/plain', itemId);
-  }, [disabled]);
+  const handleDragStart = useCallback(
+    (event: React.DragEvent, itemId: string) => {
+      if (disabled) return;
+      setDraggedItem(itemId);
+      event.dataTransfer.effectAllowed = "move";
+      event.dataTransfer.setData("text/plain", itemId);
+    },
+    [disabled]
+  );
 
   const handleDragEnd = useCallback(() => {
     setDraggedItem(null);
@@ -98,7 +113,7 @@ export function PriorityMatrix({
 
   const handleDragOver = useCallback((event: React.DragEvent) => {
     event.preventDefault();
-    event.dataTransfer.dropEffect = 'move';
+    event.dataTransfer.dropEffect = "move";
   }, []);
 
   const handleDragEnter = useCallback((quadrantKey: string) => {
@@ -109,41 +124,50 @@ export function PriorityMatrix({
     setHoveredQuadrant(null);
   }, []);
 
-  const handleDrop = useCallback((event: React.DragEvent, effort: 'low' | 'high', impact: 'low' | 'high') => {
-    event.preventDefault();
-    if (disabled) return;
+  const handleDrop = useCallback(
+    (event: React.DragEvent, effort: "low" | "high", impact: "low" | "high") => {
+      event.preventDefault();
+      if (disabled) return;
 
-    const itemId = event.dataTransfer.getData('text/plain');
-    if (!itemId) return;
+      const itemId = event.dataTransfer.getData("text/plain");
+      if (!itemId) return;
 
-    const newValue = value.filter(selection => selection.itemId !== itemId);
-    newValue.push({ itemId, position: { effort, impact } });
+      const newValue = value.filter((selection) => selection.itemId !== itemId);
+      newValue.push({ itemId, position: { effort, impact } });
 
-    onChange?.(newValue);
-    setDraggedItem(null);
-    setHoveredQuadrant(null);
-  }, [disabled, value, onChange]);
+      onChange?.(newValue);
+      setDraggedItem(null);
+      setHoveredQuadrant(null);
+    },
+    [disabled, value, onChange]
+  );
 
-  const handleRemoveItem = useCallback((itemId: string) => {
-    if (disabled) return;
-    const newValue = value.filter(selection => selection.itemId !== itemId);
-    onChange?.(newValue);
-  }, [disabled, value, onChange]);
+  const handleRemoveItem = useCallback(
+    (itemId: string) => {
+      if (disabled) return;
+      const newValue = value.filter((selection) => selection.itemId !== itemId);
+      onChange?.(newValue);
+    },
+    [disabled, value, onChange]
+  );
 
-  const getItemsInQuadrant = useCallback((effort: 'low' | 'high', impact: 'low' | 'high') => {
-    return value.filter(selection => 
-      selection.position.effort === effort && selection.position.impact === impact
-    );
-  }, [value]);
+  const getItemsInQuadrant = useCallback(
+    (effort: "low" | "high", impact: "low" | "high") => {
+      return value.filter(
+        (selection) => selection.position.effort === effort && selection.position.impact === impact
+      );
+    },
+    [value]
+  );
 
   const getUnplacedItems = useCallback(() => {
-    const placedItemIds = new Set(value.map(selection => selection.itemId));
-    return items.filter(item => !placedItemIds.has(item.id) && !item.disabled);
+    const placedItemIds = new Set(value.map((selection) => selection.itemId));
+    return items.filter((item) => !placedItemIds.has(item.id) && !item.disabled);
   }, [items, value]);
 
-  const quadrantKey = (effort: 'low' | 'high', impact: 'low' | 'high') => `${effort}-${impact}`;
+  const quadrantKey = (effort: "low" | "high", impact: "low" | "high") => `${effort}-${impact}`;
 
-  const renderQuadrant = (effort: 'low' | 'high', impact: 'low' | 'high') => {
+  const renderQuadrant = (effort: "low" | "high", impact: "low" | "high") => {
     const key = quadrantKey(effort, impact);
     const quadrantItems = getItemsInQuadrant(effort, impact);
     const quadrant = quadrantInfo[key as keyof typeof quadrantInfo];
@@ -164,14 +188,12 @@ export function PriorityMatrix({
         onDrop={(e) => handleDrop(e, effort, impact)}
       >
         {/* Quadrant Label */}
-        <div className="mb-2 text-center text-xs font-semibold">
-          {quadrant.label}
-        </div>
+        <div className="mb-2 text-center text-xs font-semibold">{quadrant.label}</div>
 
         {/* Items in this quadrant */}
         <div className="space-y-2">
-          {quadrantItems.map(selection => {
-            const item = items.find(i => i.id === selection.itemId);
+          {quadrantItems.map((selection) => {
+            const item = items.find((i) => i.id === selection.itemId);
             if (!item) return null;
 
             return (
@@ -188,23 +210,15 @@ export function PriorityMatrix({
                 onDragEnd={handleDragEnd}
               >
                 <div className="flex min-w-0 flex-1 items-center gap-2">
-                  {item.icon && (
-                    <span className="shrink-0 text-primary">
-                      {item.icon}
-                    </span>
-                  )}
-                  <span className="truncate text-sm font-medium">
-                    {item.label}
-                  </span>
+                  {item.icon && <span className="shrink-0 text-primary">{item.icon}</span>}
+                  <span className="truncate text-sm font-medium">{item.label}</span>
                 </div>
-                
+
                 {!disabled && (
                   <button
                     type="button"
                     onClick={() => handleRemoveItem(item.id)}
-                    className="flex size-5 shrink-0 items-center justify-center rounded-full 
-                             bg-light-gray text-xs text-warm-gray transition-colors duration-200 hover:bg-warm-gray/20
-                             hover:text-off-black"
+                    className="flex size-5 shrink-0 items-center justify-center rounded-full bg-light-gray text-xs text-warm-gray transition-colors duration-200 hover:bg-warm-gray/20 hover:text-off-black"
                     aria-label={`Remove ${item.label} from matrix`}
                   >
                     ×
@@ -227,34 +241,26 @@ export function PriorityMatrix({
 
   const unplacedItems = getUnplacedItems();
   const hasUnplacedItems = unplacedItems.length > 0;
-  const allItemsPlaced = items.filter(item => !item.disabled).length === value.length;
+  const allItemsPlaced = items.filter((item) => !item.disabled).length === value.length;
 
   const matrixId = `priority-matrix-${Math.random().toString(36).substr(2, 9)}`;
-  const errorId = error ? `${matrixId}-error` : undefined;
+  const _errorId = error ? `${matrixId}-error` : undefined;
   const helperId = helperText ? `${matrixId}-helper` : undefined;
 
   return (
     <div className={cn("space-y-6", className)}>
       {/* Question Header */}
       <div className="space-y-2">
-        <QuestionLabel required={required}>
-          {question}
-        </QuestionLabel>
-        {description && (
-          <p className="text-sm leading-relaxed text-warm-gray">
-            {description}
-          </p>
-        )}
+        <QuestionLabel required={required}>{question}</QuestionLabel>
+        {description && <p className="text-sm leading-relaxed text-warm-gray">{description}</p>}
       </div>
 
       {/* Unplaced Items */}
       {hasUnplacedItems && (
         <div className="space-y-2">
-          <p className="text-sm font-medium text-off-black dark:text-off-white">
-            Items to place:
-          </p>
+          <p className="text-sm font-medium text-off-black dark:text-off-white">Items to place:</p>
           <div className="flex flex-wrap gap-2 rounded-lg border border-light-gray bg-light-gray p-3">
-            {unplacedItems.map(item => (
+            {unplacedItems.map((item) => (
               <div
                 key={item.id}
                 className={cn(
@@ -268,14 +274,8 @@ export function PriorityMatrix({
                 onDragStart={(e) => handleDragStart(e, item.id)}
                 onDragEnd={handleDragEnd}
               >
-                {item.icon && (
-                  <span className="shrink-0 text-primary">
-                    {item.icon}
-                  </span>
-                )}
-                <span className="text-sm font-medium">
-                  {item.label}
-                </span>
+                {item.icon && <span className="shrink-0 text-primary">{item.icon}</span>}
+                <span className="text-sm font-medium">{item.label}</span>
               </div>
             ))}
           </div>
@@ -308,12 +308,12 @@ export function PriorityMatrix({
           {/* Grid */}
           <div className="mx-20 grid grid-cols-2 gap-4">
             {/* Top Row: High Impact */}
-            {renderQuadrant('low', 'high')}
-            {renderQuadrant('high', 'high')}
-            
+            {renderQuadrant("low", "high")}
+            {renderQuadrant("high", "high")}
+
             {/* Bottom Row: Low Impact */}
-            {renderQuadrant('low', 'low')}
-            {renderQuadrant('high', 'low')}
+            {renderQuadrant("low", "low")}
+            {renderQuadrant("high", "low")}
           </div>
         </div>
 
@@ -328,17 +328,16 @@ export function PriorityMatrix({
       {/* Instructions */}
       {!disabled && hasUnplacedItems && (
         <div className="rounded-lg bg-light-gray p-3 text-sm text-warm-gray">
-          <strong>Tip:</strong> Drag and drop items from above into the appropriate quadrant based on their effort requirement and expected impact.
+          <strong>Tip:</strong> Drag and drop items from above into the appropriate quadrant based
+          on their effort requirement and expected impact.
         </div>
       )}
 
       {/* Progress Indicator */}
       {requireAllItems && (
         <div className="text-sm text-warm-gray">
-          Progress: {value.length} of {items.filter(item => !item.disabled).length} items placed
-          {allItemsPlaced && (
-            <span className="ml-2 font-medium text-primary">Complete</span>
-          )}
+          Progress: {value.length} of {items.filter((item) => !item.disabled).length} items placed
+          {allItemsPlaced && <span className="ml-2 font-medium text-primary">Complete</span>}
         </div>
       )}
 
@@ -350,26 +349,20 @@ export function PriorityMatrix({
       )}
 
       {/* Validation Error */}
-      {error && (
-        <ValidationMessage type="error" message={error} />
-      )}
+      {error && <ValidationMessage type="error" message={error} />}
 
       {/* Required items warning */}
       {requireAllItems && hasUnplacedItems && (
-        <ValidationMessage 
-          type="warning" 
-          message="Please place all items in the matrix to continue." 
+        <ValidationMessage
+          type="warning"
+          message="Please place all items in the matrix to continue."
         />
       )}
 
       {/* Skip Option */}
       {allowSkip && onSkip && (
         <div className="flex justify-center">
-          <SkipControl
-            variant="subtle"
-            onClick={onSkip}
-            disabled={disabled}
-          >
+          <SkipControl variant="subtle" onClick={onSkip} disabled={disabled}>
             Skip this question
           </SkipControl>
         </div>

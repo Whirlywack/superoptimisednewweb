@@ -7,7 +7,7 @@ import { LucideIcon } from "@/components/ui/Icon";
 import { Mail, Check } from "lucide-react";
 import { api } from "@/lib/trpc/react";
 
-interface NewsletterSignupProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onSubmit'> {
+interface NewsletterSignupProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onSubmit"> {
   variant?: "card" | "inline" | "banner";
   title?: string;
   description?: string;
@@ -52,7 +52,7 @@ export function NewsletterSignup({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email.trim()) {
       setError("Email is required");
       return;
@@ -112,23 +112,14 @@ export function NewsletterSignup({
 
   if (isSuccess) {
     return (
-      <div
-        className={cn(variantStyles[variant], className)}
-        {...props}
-      >
+      <div className={cn(variantStyles[variant], className)} {...props}>
         <div className="space-y-2 text-center">
           <div className="inline-flex size-12 items-center justify-center rounded-full bg-primary/10">
-            <LucideIcon 
-              icon={Check} 
-              size="lg" 
-              className="text-primary" 
-            />
+            <LucideIcon icon={Check} size="lg" className="text-primary" />
           </div>
-          <H3 className="text-off-black dark:text-off-white">
-            Check Your Email!
-          </H3>
+          <H3 className="text-off-black dark:text-off-white">Check Your Email!</H3>
           <Paragraph variant="muted" className="text-center">
-            We've sent you a confirmation link. Click it to complete your subscription.
+            We&apos;ve sent you a confirmation link. Click it to complete your subscription.
           </Paragraph>
         </div>
       </div>
@@ -136,36 +127,23 @@ export function NewsletterSignup({
   }
 
   return (
-    <div
-      className={cn(variantStyles[variant], className)}
-      {...props}
-    >
+    <div className={cn(variantStyles[variant], className)} {...props}>
       <div className="space-y-2">
         <div className="flex items-center gap-2">
-          {showIcon && (
-            <LucideIcon 
-              icon={Mail} 
-              size="md" 
-              className="text-primary" 
-            />
-          )}
-          <H3 className="text-off-black dark:text-off-white">
-            {title}
-          </H3>
+          {showIcon && <LucideIcon icon={Mail} size="md" className="text-primary" />}
+          <H3 className="text-off-black dark:text-off-white">{title}</H3>
         </div>
-        
-        {description && (
-          <Paragraph variant="muted">
-            {description}
-          </Paragraph>
-        )}
+
+        {description && <Paragraph variant="muted">{description}</Paragraph>}
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-3">
-        <div className={cn(
-          variant === "inline" ? "flex gap-2" : "space-y-3",
-          variant === "banner" && "flex gap-2"
-        )}>
+        <div
+          className={cn(
+            variant === "inline" ? "flex gap-2" : "space-y-3",
+            variant === "banner" && "flex gap-2"
+          )}
+        >
           <div className="flex-1">
             <TextField
               type="email"
@@ -177,15 +155,12 @@ export function NewsletterSignup({
               aria-label="Email address"
             />
           </div>
-          
+
           <Button
             type="submit"
             loading={isSubmitting}
             disabled={!email.trim() || isSubmitting}
-            className={cn(
-              variant === "inline" && "mt-0",
-              variant === "banner" && "mt-0"
-            )}
+            className={cn(variant === "inline" && "mt-0", variant === "banner" && "mt-0")}
           >
             {buttonText}
           </Button>

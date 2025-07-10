@@ -62,18 +62,20 @@ jest.mock("crypto", () => ({
 }));
 
 import { prisma } from "../../../db";
-import { 
-  getOrCreateVoterToken, 
-  hasVoterVoted, 
-  getVoterRateLimit, 
-  incrementRateLimit 
+import {
+  getOrCreateVoterToken,
+  hasVoterVoted,
+  getVoterRateLimit,
+  incrementRateLimit,
 } from "../voterToken";
 import { sendXpClaimEmail } from "../../email/sendEmail";
 import { onXpClaimed } from "../../progress-automation";
 import { randomUUID } from "crypto";
 
 const mockPrisma = prisma as jest.Mocked<typeof prisma>;
-const mockGetOrCreateVoterToken = getOrCreateVoterToken as jest.MockedFunction<typeof getOrCreateVoterToken>;
+const mockGetOrCreateVoterToken = getOrCreateVoterToken as jest.MockedFunction<
+  typeof getOrCreateVoterToken
+>;
 const mockHasVoterVoted = hasVoterVoted as jest.MockedFunction<typeof hasVoterVoted>;
 const mockGetVoterRateLimit = getVoterRateLimit as jest.MockedFunction<typeof getVoterRateLimit>;
 const mockIncrementRateLimit = incrementRateLimit as jest.MockedFunction<typeof incrementRateLimit>;
@@ -84,7 +86,7 @@ const mockRandomUUID = randomUUID as jest.MockedFunction<typeof randomUUID>;
 describe("voteRouter", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Setup dynamic import mock
     jest.doMock("../../background-jobs", () => ({
       queueVoteEnhancement: jest.fn(),
@@ -95,7 +97,7 @@ describe("voteRouter", () => {
       remaining: 10,
       resetTime: new Date(Date.now() + 60000),
     });
-    
+
     mockGetOrCreateVoterToken.mockResolvedValue({
       token: "test-token",
       voterTokenRecord: {
@@ -104,7 +106,7 @@ describe("voteRouter", () => {
         createdAt: new Date(),
       },
     });
-    
+
     mockHasVoterVoted.mockResolvedValue(false);
     mockIncrementRateLimit.mockResolvedValue(undefined);
     mockRandomUUID.mockReturnValue("test-uuid");
@@ -212,7 +214,7 @@ describe("voteRouter", () => {
 
     it("should submit a ranking vote successfully", async () => {
       const rankingResponse = ["Performance", "Security", "User Experience", "Maintainability"];
-      
+
       mockPrisma.question.findFirst.mockResolvedValue(mockActiveQuestion);
       mockPrisma.questionResponse.create.mockResolvedValue({
         ...mockVoteResponse,
@@ -238,7 +240,7 @@ describe("voteRouter", () => {
 
     it("should submit a text response successfully", async () => {
       const textResponse = "I would like to see better mobile support";
-      
+
       mockPrisma.question.findFirst.mockResolvedValue(mockActiveQuestion);
       mockPrisma.questionResponse.create.mockResolvedValue({
         ...mockVoteResponse,
@@ -292,7 +294,7 @@ describe("voteRouter", () => {
         confidence: 0.8,
         feedback: "This is helpful",
       };
-      
+
       mockPrisma.question.findFirst.mockResolvedValue(mockActiveQuestion);
       mockPrisma.questionResponse.create.mockResolvedValue({
         ...mockVoteResponse,
@@ -324,10 +326,12 @@ describe("voteRouter", () => {
 
       const caller = voteRouter.createCaller(mockCtx);
 
-      await expect(caller.submitVote({
-        questionId: "question-1",
-        response: "Yes",
-      })).rejects.toThrow("Rate limit exceeded");
+      await expect(
+        caller.submitVote({
+          questionId: "question-1",
+          response: "Yes",
+        })
+      ).rejects.toThrow("Rate limit exceeded");
     });
 
     it("should throw QuestionNotFoundError when question does not exist", async () => {
@@ -335,10 +339,12 @@ describe("voteRouter", () => {
 
       const caller = voteRouter.createCaller(mockCtx);
 
-      await expect(caller.submitVote({
-        questionId: "non-existent",
-        response: "Yes",
-      })).rejects.toThrow("Question with ID non-existent not found or is not active");
+      await expect(
+        caller.submitVote({
+          questionId: "non-existent",
+          response: "Yes",
+        })
+      ).rejects.toThrow("Question with ID non-existent not found or is not active");
     });
 
     it("should throw DuplicateVoteError when user has already voted", async () => {
@@ -347,10 +353,12 @@ describe("voteRouter", () => {
 
       const caller = voteRouter.createCaller(mockCtx);
 
-      await expect(caller.submitVote({
-        questionId: "question-1",
-        response: "Yes",
-      })).rejects.toThrow("You have already voted on this question");
+      await expect(
+        caller.submitVote({
+          questionId: "question-1",
+          response: "Yes",
+        })
+      ).rejects.toThrow("You have already voted on this question");
     });
 
     it("should handle voter token creation for new users", async () => {
@@ -387,7 +395,7 @@ describe("voteRouter", () => {
 
     it("should queue background job for vote enhancement", async () => {
       const { queueVoteEnhancement } = await import("../../background-jobs");
-      
+
       mockPrisma.question.findFirst.mockResolvedValue(mockActiveQuestion);
       mockPrisma.questionResponse.create.mockResolvedValue(mockVoteResponse);
 
@@ -756,11 +764,7 @@ describe("voteRouter", () => {
     it("should create XP claim and send verification email", async () => {
       const mockVoterToken = {
         id: "voter-1",
-        xpLedger: [
-          { xpAmount: 50 },
-          { xpAmount: 100 },
-          { xpAmount: 25 },
-        ],
+        xpLedger: [{ xpAmount: 50 }, { xpAmount: 100 }, { xpAmount: 25 }],
       };
 
       mockPrisma.voterToken.findFirst.mockResolvedValue(mockVoterToken);
@@ -803,11 +807,7 @@ describe("voteRouter", () => {
         },
       });
 
-      expect(mockSendXpClaimEmail).toHaveBeenCalledWith(
-        "test@example.com",
-        175,
-        "test-uuid"
-      );
+      expect(mockSendXpClaimEmail).toHaveBeenCalledWith("test@example.com", 175, "test-uuid");
     });
 
     it("should throw error for invalid voter token", async () => {
@@ -820,10 +820,12 @@ describe("voteRouter", () => {
 
       const caller = voteRouter.createCaller(ctx);
 
-      await expect(caller.claimXP({
-        email: "test@example.com",
-        voterTokenHash: "invalid-hash",
-      })).rejects.toThrow("Invalid voter token");
+      await expect(
+        caller.claimXP({
+          email: "test@example.com",
+          voterTokenHash: "invalid-hash",
+        })
+      ).rejects.toThrow("Invalid voter token");
     });
 
     it("should throw error for zero XP", async () => {
@@ -841,10 +843,12 @@ describe("voteRouter", () => {
 
       const caller = voteRouter.createCaller(ctx);
 
-      await expect(caller.claimXP({
-        email: "test@example.com",
-        voterTokenHash: "test-hash",
-      })).rejects.toThrow("No XP to claim");
+      await expect(
+        caller.claimXP({
+          email: "test@example.com",
+          voterTokenHash: "test-hash",
+        })
+      ).rejects.toThrow("No XP to claim");
     });
 
     it("should throw error for already claimed XP", async () => {
@@ -869,10 +873,12 @@ describe("voteRouter", () => {
 
       const caller = voteRouter.createCaller(ctx);
 
-      await expect(caller.claimXP({
-        email: "test@example.com",
-        voterTokenHash: "test-hash",
-      })).rejects.toThrow("XP has already been claimed for this account");
+      await expect(
+        caller.claimXP({
+          email: "test@example.com",
+          voterTokenHash: "test-hash",
+        })
+      ).rejects.toThrow("XP has already been claimed for this account");
     });
 
     it("should continue even if email sending fails", async () => {
@@ -1034,8 +1040,8 @@ describe("voteRouter", () => {
         headers: new Headers(),
       };
 
-      const caller = voteRouter.createCaller(ctx);
-      
+      const _caller = voteRouter.createCaller(ctx);
+
       // The streak calculation logic would be tested here
       // This is a placeholder for the actual implementation
       expect(true).toBe(true);
