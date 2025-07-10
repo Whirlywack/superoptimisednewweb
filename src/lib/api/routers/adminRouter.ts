@@ -2,6 +2,7 @@ import { createTRPCRouter, adminProcedure } from "../trpc";
 import { deleteQuestionSchema, getQuestionByIdSchema } from "../schemas";
 import { safeExecute, QuestionNotFoundError } from "../errors";
 import { prisma } from "../../db";
+import { generateChatCompletion, parseJsonResponse } from "../../aiClient";
 import { z } from "zod";
 
 /**
@@ -393,5 +394,254 @@ export const adminRouter = createTRPCRouter({
 
         return { success: true };
       }, "reorderQuestions");
+    }),
+
+  // AI-powered question generation
+  generateQuestionSuggestions: adminProcedure
+    .input(
+      z.object({
+        questionnaireTitle: z.string().optional(),
+        questionnaireDescription: z.string().optional(),
+        category: z.string().optional(),
+        existingQuestions: z.array(z.string()).optional(),
+        questionType: z
+          .enum(["binary", "multi-choice", "rating-scale", "text-response", "ranking", "ab-test"])
+          .optional(),
+        count: z.number().min(1).max(10).default(5),
+        context: z.string().optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      return safeExecute(async () => {
+        const {
+          questionnaireTitle,
+          questionnaireDescription,
+          category,
+          existingQuestions = [],
+          questionType,
+          count,
+          context,
+        } = input;
+
+        const prompt = `You are an expert questionnaire designer. Generate ${count} high-quality question suggestions based on the following context:
+
+Questionnaire Title: ${questionnaireTitle || "Not specified"}
+Description: ${questionnaireDescription || "Not specified"}
+Category: ${category || "general"}
+${questionType ? `Question Type: ${questionType}` : "Question Type: Any"}
+${context ? `Additional Context: ${context}` : ""}
+
+${
+  existingQuestions.length > 0
+    ? `Existing Questions in this questionnaire:
+${existingQuestions.map((q, i) => `${i + 1}. ${q}`).join("\n")}
+
+Please avoid duplicating these topics and create complementary questions that add value.`
+    : ""
+}
+
+Generate questions that are:
+1. Clear and unambiguous
+2. Relevant to the questionnaire's purpose
+3. Engaging and well-structured
+4. Appropriate for the specified category
+5. Complementary to existing questions (if any)
+
+Return your response as a JSON array with this exact structure:
+[
+  {
+    "title": "The question text",
+    "description": "Brief explanation of why this question is valuable (optional)",
+    "type": "${questionType || "auto-suggested type"}",
+    "reasoning": "Why this question fits well with the questionnaire",
+    "config": {
+      // Appropriate configuration for the question type
+      // For multi-choice: {"options": [{"id": "1", "text": "Option 1"}, ...]}
+      // For rating-scale: {"min": 1, "max": 10, "labels": {"min": "Poor", "max": "Excellent"}}
+      // For ranking: {"items": [{"id": "1", "text": "Item 1"}, ...]}
+      // For ab-test: {"optionA": {...}, "optionB": {...}}
+      // For binary: {}
+      // For text-response: {"maxLength": 500, "placeholder": "..."}
+    }
+  }
+]`;
+
+        const response = await generateChatCompletion(
+          [{ role: "user", content: prompt }],
+          "GPT_4O",
+          { temperature: 0.7 }
+        );
+
+        try {
+          const suggestions = parseJsonResponse(response);
+
+          // Validate the response structure
+          if (!Array.isArray(suggestions)) {
+            throw new Error("Response is not an array");
+          }
+
+          const validatedSuggestions = suggestions.map((suggestion, index) => {
+            if (!suggestion.title || typeof suggestion.title !== "string") {
+              throw new Error(`Suggestion ${index + 1} missing valid title`);
+            }
+            if (!suggestion.type || typeof suggestion.type !== "string") {
+              throw new Error(`Suggestion ${index + 1} missing valid type`);
+            }
+            if (!suggestion.config || typeof suggestion.config !== "object") {
+              suggestion.config = {};
+            }
+
+            return {
+              title: suggestion.title.trim(),
+              description: suggestion.description || "",
+              type: suggestion.type,
+              reasoning: suggestion.reasoning || "",
+              config: suggestion.config,
+            };
+          });
+
+          return {
+            suggestions: validatedSuggestions,
+            context: {
+              questionnaireTitle,
+              category,
+              existingQuestionsCount: existingQuestions.length,
+              requestedType: questionType,
+            },
+          };
+        } catch (parseError) {
+          console.error("Failed to parse AI response:", parseError);
+          throw new Error("Failed to generate valid question suggestions. Please try again.");
+        }
+      }, "generateQuestionSuggestions");
+    }),
+
+  // AI-powered question improvement
+  improveQuestion: adminProcedure
+    .input(
+      z.object({
+        questionTitle: z.string().min(1),
+        questionDescription: z.string().optional(),
+        questionType: z.enum([
+          "binary",
+          "multi-choice",
+          "rating-scale",
+          "text-response",
+          "ranking",
+          "ab-test",
+        ]),
+        questionConfig: z.record(z.unknown()).optional(),
+        category: z.string().optional(),
+        improvementAreas: z
+          .array(
+            z.enum(["clarity", "bias-reduction", "engagement", "specificity", "response-quality"])
+          )
+          .optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      return safeExecute(async () => {
+        const {
+          questionTitle,
+          questionDescription,
+          questionType,
+          questionConfig,
+          category,
+          improvementAreas = ["clarity", "engagement"],
+        } = input;
+
+        const prompt = `You are an expert questionnaire designer and researcher. Analyze and improve the following question:
+
+Original Question:
+Title: "${questionTitle}"
+Description: ${questionDescription || "None provided"}
+Type: ${questionType}
+Category: ${category || "general"}
+Current Config: ${JSON.stringify(questionConfig || {}, null, 2)}
+
+Improvement Areas Requested: ${improvementAreas.join(", ")}
+
+Please provide specific, actionable improvements focusing on:
+${improvementAreas
+  .map((area) => {
+    switch (area) {
+      case "clarity":
+        return "- Making the question clearer and easier to understand";
+      case "bias-reduction":
+        return "- Reducing potential bias and leading language";
+      case "engagement":
+        return "- Making the question more engaging and motivating";
+      case "specificity":
+        return "- Adding appropriate specificity without being too narrow";
+      case "response-quality":
+        return "- Improving the likelihood of getting quality responses";
+      default:
+        return `- Improving ${area}`;
+    }
+  })
+  .join("\n")}
+
+Return your response as JSON with this structure:
+{
+  "improvedTitle": "Enhanced question text",
+  "improvedDescription": "Enhanced description (if needed)",
+  "improvementSummary": "Brief summary of key changes made",
+  "improvements": [
+    {
+      "area": "clarity|bias-reduction|engagement|specificity|response-quality",
+      "before": "What was problematic",
+      "after": "How it was improved",
+      "reasoning": "Why this change helps"
+    }
+  ],
+  "configSuggestions": {
+    // Enhanced configuration for the question type
+  },
+  "alternativeVersions": [
+    // 2-3 alternative phrasings if significantly different approaches are possible
+    {
+      "title": "Alternative question text",
+      "reasoning": "Why this alternative might work better in certain contexts"
+    }
+  ]
+}`;
+
+        const response = await generateChatCompletion(
+          [{ role: "user", content: prompt }],
+          "GPT_4O",
+          { temperature: 0.5 }
+        );
+
+        try {
+          const improvement = parseJsonResponse(response);
+
+          // Validate the response structure
+          if (!improvement.improvedTitle || typeof improvement.improvedTitle !== "string") {
+            throw new Error("Missing improved title");
+          }
+
+          return {
+            original: {
+              title: questionTitle,
+              description: questionDescription,
+              type: questionType,
+              config: questionConfig,
+            },
+            improved: {
+              title: improvement.improvedTitle.trim(),
+              description: improvement.improvedDescription || questionDescription,
+              config: improvement.configSuggestions || questionConfig,
+            },
+            analysis: {
+              summary: improvement.improvementSummary || "Question has been enhanced",
+              improvements: improvement.improvements || [],
+              alternatives: improvement.alternativeVersions || [],
+            },
+          };
+        } catch (parseError) {
+          console.error("Failed to parse AI improvement response:", parseError);
+          throw new Error("Failed to generate question improvements. Please try again.");
+        }
+      }, "improveQuestion");
     }),
 });

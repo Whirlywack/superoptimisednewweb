@@ -22,6 +22,10 @@ import {
   Filter,
   SortAsc,
   SortDesc,
+  Sparkles,
+  Wand2,
+  Lightbulb,
+  RefreshCw,
 } from "lucide-react";
 import type { QuestionnaireTemplate } from "@/lib/questionnaire-templates-detailed";
 
@@ -730,11 +734,44 @@ export default function NewQuestionnairePage() {
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [showFilters, setShowFilters] = useState(false);
 
+  // AI features state
+  const [showAISuggestions, setShowAISuggestions] = useState(false);
+  const [isGeneratingAI, setIsGeneratingAI] = useState(false);
+  const [aiSuggestions, setAISuggestions] = useState<
+    Array<{
+      title: string;
+      description?: string;
+      type: string;
+      reasoning?: string;
+      config: Record<string, unknown>;
+    }>
+  >([]);
+  const [showQuestionImprovement, setShowQuestionImprovement] = useState(false);
+  const [improvingQuestionId, setImprovingQuestionId] = useState<string | null>(null);
+  const [questionImprovement, setQuestionImprovement] = useState<{
+    original: {
+      title: string;
+      description?: string;
+      type: string;
+      config?: Record<string, unknown>;
+    };
+    improved: { title: string; description?: string; config?: Record<string, unknown> };
+    analysis: {
+      summary: string;
+      improvements: Array<{ area: string; before: string; after: string; reasoning: string }>;
+      alternatives: Array<{ title: string; reasoning: string }>;
+    };
+  } | null>(null);
+
   // tRPC mutations
   const createQuestionnaireMutation = trpc.questionnaire.create.useMutation();
   const createQuestionMutation = trpc.admin.createQuestion.useMutation();
   const addQuestionToQuestionnaireMutation = trpc.questionnaire.addQuestion.useMutation();
   const updateQuestionnaireMutation = trpc.questionnaire.update.useMutation();
+
+  // AI tRPC mutations
+  const generateQuestionSuggestionsMutation = trpc.admin.generateQuestionSuggestions.useMutation();
+  const improveQuestionMutation = trpc.admin.improveQuestion.useMutation();
 
   // Save/Publish functions
   const saveQuestionnaire = async (status: "draft" | "active") => {
@@ -1134,6 +1171,117 @@ export default function NewQuestionnairePage() {
       sortBy !== "order" ||
       sortDirection !== "asc"
     );
+  };
+
+  // AI-powered functions
+  const generateAIQuestionSuggestions = async (questionType?: string) => {
+    if (!questionnaire.title.trim()) {
+      alert("Please enter a questionnaire title first to get better AI suggestions");
+      return;
+    }
+
+    setIsGeneratingAI(true);
+    try {
+      const result = await generateQuestionSuggestionsMutation.mutateAsync({
+        questionnaireTitle: questionnaire.title,
+        questionnaireDescription: questionnaire.description,
+        category: questionnaire.category,
+        existingQuestions: questionnaire.questions.map((q) => q.title),
+        questionType: questionType as
+          | "binary"
+          | "multi-choice"
+          | "rating-scale"
+          | "text-response"
+          | "ranking"
+          | "ab-test"
+          | undefined,
+        count: 5,
+      });
+
+      setAISuggestions(result.suggestions);
+      setShowAISuggestions(true);
+    } catch (error) {
+      console.error("Failed to generate AI suggestions:", error);
+      alert("Failed to generate AI suggestions. Please try again.");
+    } finally {
+      setIsGeneratingAI(false);
+    }
+  };
+
+  const addAISuggestionToQuestionnaire = (suggestion: {
+    title: string;
+    description?: string;
+    type: string;
+    config: Record<string, unknown>;
+  }) => {
+    const newQuestion: Question = {
+      id: `ai_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      type: suggestion.type,
+      title: suggestion.title,
+      description: suggestion.description,
+      required: false,
+      config: suggestion.config || {},
+    };
+
+    setQuestionnaire((prev) => ({
+      ...prev,
+      questions: [...prev.questions, newQuestion],
+    }));
+  };
+
+  const improveQuestionWithAI = async (questionId: string) => {
+    const question = questionnaire.questions.find((q) => q.id === questionId);
+    if (!question) return;
+
+    setImprovingQuestionId(questionId);
+    setIsGeneratingAI(true);
+    try {
+      const result = await improveQuestionMutation.mutateAsync({
+        questionTitle: question.title,
+        questionDescription: question.description,
+        questionType: question.type as
+          | "binary"
+          | "multi-choice"
+          | "rating-scale"
+          | "text-response"
+          | "ranking"
+          | "ab-test",
+        questionConfig: question.config,
+        category: questionnaire.category,
+        improvementAreas: ["clarity", "engagement", "bias-reduction"],
+      });
+
+      setQuestionImprovement(result);
+      setShowQuestionImprovement(true);
+    } catch (error) {
+      console.error("Failed to improve question:", error);
+      alert("Failed to improve question. Please try again.");
+    } finally {
+      setIsGeneratingAI(false);
+      setImprovingQuestionId(null);
+    }
+  };
+
+  const applyQuestionImprovement = () => {
+    if (!questionImprovement || !improvingQuestionId) return;
+
+    setQuestionnaire((prev) => ({
+      ...prev,
+      questions: prev.questions.map((q) =>
+        q.id === improvingQuestionId
+          ? {
+              ...q,
+              title: questionImprovement.improved.title,
+              description: questionImprovement.improved.description || q.description,
+              config: questionImprovement.improved.config || q.config,
+            }
+          : q
+      ),
+    }));
+
+    setShowQuestionImprovement(false);
+    setQuestionImprovement(null);
+    setImprovingQuestionId(null);
   };
 
   // Load template data from URL parameter
@@ -1806,6 +1954,28 @@ export default function NewQuestionnairePage() {
                     >
                       Add Question
                     </button>
+                    <button
+                      type="button"
+                      onClick={() => generateAIQuestionSuggestions()}
+                      disabled={isGeneratingAI}
+                      className="flex items-center space-x-2 px-4 py-2 font-mono text-sm font-medium transition-colors hover:opacity-90 disabled:opacity-50"
+                      style={{
+                        backgroundColor: "var(--primary)",
+                        color: "var(--off-white)",
+                      }}
+                    >
+                      {isGeneratingAI ? (
+                        <>
+                          <RefreshCw size={16} className="animate-spin" />
+                          <span>Generating...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles size={16} />
+                          <span>AI Suggestions</span>
+                        </>
+                      )}
+                    </button>
                   </div>
                 </div>
               </div>
@@ -2185,6 +2355,23 @@ export default function NewQuestionnairePage() {
                                 title="Edit question"
                               >
                                 Edit
+                              </button>
+                              <button
+                                onClick={() => improveQuestionWithAI(question.id)}
+                                disabled={isGeneratingAI || improvingQuestionId === question.id}
+                                className="flex items-center space-x-1 px-3 py-1 text-xs font-medium transition-colors hover:opacity-90 disabled:opacity-50"
+                                style={{
+                                  backgroundColor: "var(--primary)",
+                                  color: "var(--off-white)",
+                                }}
+                                title="Improve question with AI"
+                              >
+                                {improvingQuestionId === question.id ? (
+                                  <RefreshCw size={14} className="animate-spin" />
+                                ) : (
+                                  <Wand2 size={14} />
+                                )}
+                                <span>AI</span>
                               </button>
                               <button
                                 onClick={() => removeQuestion(question.id)}
@@ -2732,6 +2919,289 @@ export default function NewQuestionnairePage() {
                   </p>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* AI Question Suggestions Modal */}
+      {showAISuggestions && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div
+            className="max-h-[80vh] w-full max-w-4xl overflow-y-auto border-2 shadow-lg"
+            style={{
+              backgroundColor: "var(--off-white)",
+              borderColor: "var(--off-black)",
+            }}
+          >
+            {/* Modal Header */}
+            <div
+              className="flex items-center justify-between border-b-2 px-6 py-4"
+              style={{ borderColor: "var(--light-gray)" }}
+            >
+              <div className="flex items-center space-x-3">
+                <Sparkles size={24} style={{ color: "var(--primary)" }} />
+                <h2 className="font-mono text-xl font-bold" style={{ color: "var(--off-black)" }}>
+                  AI Question Suggestions
+                </h2>
+              </div>
+              <button
+                onClick={() => setShowAISuggestions(false)}
+                className="transition-colors hover:opacity-75"
+                style={{ color: "var(--warm-gray)" }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Suggestions List */}
+            <div className="p-6">
+              <div className="mb-4">
+                <p className="text-sm" style={{ color: "var(--warm-gray)" }}>
+                  AI-generated question suggestions based on your questionnaire context. Click
+                  &quot;Add&quot; to include a suggestion.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                {aiSuggestions.map((suggestion, index) => (
+                  <div
+                    key={index}
+                    className="border-2 p-4"
+                    style={{
+                      backgroundColor: "var(--off-white)",
+                      borderColor: "var(--light-gray)",
+                    }}
+                  >
+                    <div className="mb-3 flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="mb-2 flex items-center space-x-2">
+                          <span
+                            className="px-2 py-1 font-mono text-xs"
+                            style={{
+                              backgroundColor: "var(--primary)",
+                              color: "var(--off-white)",
+                            }}
+                          >
+                            {suggestion.type}
+                          </span>
+                          <span
+                            className="px-2 py-1 font-mono text-xs"
+                            style={{
+                              backgroundColor: "var(--light-gray)",
+                              color: "var(--off-black)",
+                            }}
+                          >
+                            AI Generated
+                          </span>
+                        </div>
+                        <h4 className="mb-2 font-medium" style={{ color: "var(--off-black)" }}>
+                          {suggestion.title}
+                        </h4>
+                        {suggestion.description && (
+                          <p className="mb-2 text-sm" style={{ color: "var(--warm-gray)" }}>
+                            {suggestion.description}
+                          </p>
+                        )}
+                        {suggestion.reasoning && (
+                          <p className="text-xs" style={{ color: "var(--warm-gray)" }}>
+                            <strong>AI Reasoning:</strong> {suggestion.reasoning}
+                          </p>
+                        )}
+                      </div>
+                      <button
+                        onClick={() => {
+                          addAISuggestionToQuestionnaire(suggestion);
+                          setShowAISuggestions(false);
+                        }}
+                        className="ml-4 px-4 py-2 font-mono text-sm font-medium transition-colors hover:opacity-90"
+                        style={{
+                          backgroundColor: "var(--off-black)",
+                          color: "var(--off-white)",
+                        }}
+                      >
+                        Add Question
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {aiSuggestions.length === 0 && (
+                <div className="py-8 text-center">
+                  <p className="text-sm" style={{ color: "var(--warm-gray)" }}>
+                    No suggestions generated. Try adding a questionnaire title and description
+                    first.
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Question Improvement Modal */}
+      {showQuestionImprovement && questionImprovement && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div
+            className="max-h-[80vh] w-full max-w-4xl overflow-y-auto border-2 shadow-lg"
+            style={{
+              backgroundColor: "var(--off-white)",
+              borderColor: "var(--off-black)",
+            }}
+          >
+            {/* Modal Header */}
+            <div
+              className="flex items-center justify-between border-b-2 px-6 py-4"
+              style={{ borderColor: "var(--light-gray)" }}
+            >
+              <div className="flex items-center space-x-3">
+                <Lightbulb size={24} style={{ color: "var(--primary)" }} />
+                <h2 className="font-mono text-xl font-bold" style={{ color: "var(--off-black)" }}>
+                  AI Question Improvement
+                </h2>
+              </div>
+              <button
+                onClick={() => setShowQuestionImprovement(false)}
+                className="transition-colors hover:opacity-75"
+                style={{ color: "var(--warm-gray)" }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Improvement Content */}
+            <div className="p-6">
+              <div className="mb-6">
+                <h3
+                  className="mb-3 font-mono text-lg font-bold"
+                  style={{ color: "var(--off-black)" }}
+                >
+                  Original Question
+                </h3>
+                <div
+                  className="border-2 p-4"
+                  style={{
+                    backgroundColor: "var(--light-gray)",
+                    borderColor: "var(--warm-gray)",
+                  }}
+                >
+                  <p className="font-medium" style={{ color: "var(--off-black)" }}>
+                    {questionImprovement.original.title}
+                  </p>
+                  {questionImprovement.original.description && (
+                    <p className="mt-2 text-sm" style={{ color: "var(--warm-gray)" }}>
+                      {questionImprovement.original.description}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <h3
+                  className="mb-3 font-mono text-lg font-bold"
+                  style={{ color: "var(--off-black)" }}
+                >
+                  AI-Improved Question
+                </h3>
+                <div
+                  className="border-2 p-4"
+                  style={{
+                    backgroundColor: "var(--off-white)",
+                    borderColor: "var(--primary)",
+                  }}
+                >
+                  <p className="font-medium" style={{ color: "var(--off-black)" }}>
+                    {questionImprovement.improved.title}
+                  </p>
+                  {questionImprovement.improved.description && (
+                    <p className="mt-2 text-sm" style={{ color: "var(--warm-gray)" }}>
+                      {questionImprovement.improved.description}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {questionImprovement.analysis.summary && (
+                <div className="mb-6">
+                  <h4
+                    className="mb-2 font-mono text-sm font-bold"
+                    style={{ color: "var(--off-black)" }}
+                  >
+                    Improvement Summary
+                  </h4>
+                  <p className="text-sm" style={{ color: "var(--warm-gray)" }}>
+                    {questionImprovement.analysis.summary}
+                  </p>
+                </div>
+              )}
+
+              {questionImprovement.analysis.improvements.length > 0 && (
+                <div className="mb-6">
+                  <h4
+                    className="mb-3 font-mono text-sm font-bold"
+                    style={{ color: "var(--off-black)" }}
+                  >
+                    Specific Improvements
+                  </h4>
+                  <div className="space-y-3">
+                    {questionImprovement.analysis.improvements.map((improvement, index: number) => (
+                      <div
+                        key={index}
+                        className="border-2 p-3"
+                        style={{
+                          backgroundColor: "var(--off-white)",
+                          borderColor: "var(--light-gray)",
+                        }}
+                      >
+                        <div className="mb-2">
+                          <span
+                            className="px-2 py-1 font-mono text-xs font-medium"
+                            style={{
+                              backgroundColor: "var(--primary)",
+                              color: "var(--off-white)",
+                            }}
+                          >
+                            {improvement.area}
+                          </span>
+                        </div>
+                        <p className="text-sm" style={{ color: "var(--off-black)" }}>
+                          <strong>Before:</strong> {improvement.before}
+                        </p>
+                        <p className="text-sm" style={{ color: "var(--off-black)" }}>
+                          <strong>After:</strong> {improvement.after}
+                        </p>
+                        <p className="text-xs" style={{ color: "var(--warm-gray)" }}>
+                          <strong>Why:</strong> {improvement.reasoning}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="flex space-x-4">
+                <button
+                  onClick={() => setShowQuestionImprovement(false)}
+                  className="flex-1 px-6 py-3 font-mono text-sm transition-colors hover:opacity-90"
+                  style={{
+                    backgroundColor: "var(--warm-gray)",
+                    color: "var(--off-white)",
+                  }}
+                >
+                  Keep Original
+                </button>
+                <button
+                  onClick={applyQuestionImprovement}
+                  className="flex-1 px-6 py-3 font-mono text-sm transition-colors hover:opacity-90"
+                  style={{
+                    backgroundColor: "var(--primary)",
+                    color: "var(--off-white)",
+                  }}
+                >
+                  Apply Improvement
+                </button>
+              </div>
             </div>
           </div>
         </div>
