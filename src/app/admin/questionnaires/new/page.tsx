@@ -26,8 +26,11 @@ import {
   Wand2,
   Lightbulb,
   RefreshCw,
+  Shield,
+  Brain, // eslint-disable-line @typescript-eslint/no-unused-vars
 } from "lucide-react";
 import type { QuestionnaireTemplate } from "@/lib/questionnaire-templates-detailed";
+import { ContentAnalysisPanel } from "@/components/admin/ContentAnalysisPanel";
 
 interface Question {
   id: string;
@@ -1207,6 +1210,13 @@ export default function NewQuestionnairePage() {
     }>
   >([]);
   const [isGeneratingOptions, setIsGeneratingOptions] = useState(false); // eslint-disable-line @typescript-eslint/no-unused-vars
+
+  // Content analysis state
+  const [showContentAnalysis, setShowContentAnalysis] = useState(false);
+  const [analyzingQuestionId, setAnalyzingQuestionId] = useState<string | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [contentAnalysisResult, setContentAnalysisResult] = useState<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
+
   const [showTemplateGenerator, setShowTemplateGenerator] = useState(false);
   const [isGeneratingTemplate, setIsGeneratingTemplate] = useState(false);
   const [generatedTemplate, setGeneratedTemplate] = useState<{
@@ -1282,6 +1292,7 @@ export default function NewQuestionnairePage() {
   const generateQuestionOptionsMutation = trpc.admin.generateQuestionOptions.useMutation();
   const generateSmartTemplateMutation = trpc.admin.generateSmartTemplate.useMutation();
   const optimizeQuestionFlowMutation = trpc.admin.optimizeQuestionFlow.useMutation();
+  const analyzeQuestionContentMutation = trpc.admin.analyzeQuestionContent.useMutation();
 
   // Save/Publish functions
   const saveQuestionnaire = async (status: "draft" | "active") => {
@@ -2077,6 +2088,45 @@ export default function NewQuestionnairePage() {
 
     setFlowOptimizationResult(null);
     setShowFlowOptimization(false);
+  };
+
+  // AI-powered content analysis for question quality and bias detection
+  const analyzeQuestionContent = async (questionId: string) => {
+    const question = questionnaire.questions.find((q) => q.id === questionId);
+    if (!question) {
+      alert("Question not found");
+      return;
+    }
+
+    setAnalyzingQuestionId(questionId);
+    setIsAnalyzing(true);
+    try {
+      const result = await analyzeQuestionContentMutation.mutateAsync({
+        questionTitle: question.title,
+        questionDescription: question.description,
+        questionType: question.type as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+        questionConfig: question.config,
+        category: questionnaire.category,
+        targetAudience: "general audience", // Could be made dynamic
+        analysisDepth: "comprehensive",
+        focusAreas: [
+          "bias-detection",
+          "clarity-assessment",
+          "leading-questions",
+          "double-barreled",
+          "response-quality",
+        ],
+      });
+
+      setContentAnalysisResult(result);
+      setShowContentAnalysis(true);
+    } catch (error) {
+      console.error("Failed to analyze question content:", error);
+      alert("Failed to analyze question content. Please try again.");
+    } finally {
+      setIsAnalyzing(false);
+      setAnalyzingQuestionId(null);
+    }
   };
 
   // Load template data from URL parameter
@@ -3226,6 +3276,23 @@ export default function NewQuestionnairePage() {
                                   <Wand2 size={14} />
                                 )}
                                 <span>AI</span>
+                              </button>
+                              <button
+                                onClick={() => analyzeQuestionContent(question.id)}
+                                disabled={isAnalyzing || analyzingQuestionId === question.id}
+                                className="flex items-center space-x-1 px-3 py-1 text-xs font-medium transition-colors hover:opacity-90 disabled:opacity-50"
+                                style={{
+                                  backgroundColor: "var(--off-black)",
+                                  color: "var(--off-white)",
+                                }}
+                                title="Analyze question quality and bias"
+                              >
+                                {analyzingQuestionId === question.id ? (
+                                  <RefreshCw size={14} className="animate-spin" />
+                                ) : (
+                                  <Shield size={14} />
+                                )}
+                                <span>Analyze</span>
                               </button>
                               <button
                                 onClick={() => getSmartRecommendations(originalIndex)}
@@ -4814,6 +4881,21 @@ export default function NewQuestionnairePage() {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Content Analysis Modal */}
+      {showContentAnalysis && contentAnalysisResult && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="max-h-[90vh] w-full max-w-6xl overflow-hidden">
+            <ContentAnalysisPanel
+              analysis={contentAnalysisResult}
+              onClose={() => {
+                setShowContentAnalysis(false);
+                setContentAnalysisResult(null);
+              }}
+            />
           </div>
         </div>
       )}

@@ -1308,4 +1308,426 @@ Provide comprehensive analysis with specific, actionable recommendations based o
         }
       }, "optimizeQuestionFlow");
     }),
+
+  // AI-powered content analysis for question quality and bias detection
+  analyzeQuestionContent: adminProcedure
+    .input(
+      z.object({
+        questionTitle: z.string().min(1),
+        questionDescription: z.string().optional(),
+        questionType: z.enum([
+          "binary",
+          "multi-choice",
+          "rating-scale",
+          "text-response",
+          "ranking",
+          "ab-test",
+        ]),
+        questionConfig: z.record(z.unknown()).optional(),
+        category: z.string().optional(),
+        targetAudience: z.string().optional(),
+        analysisDepth: z.enum(["basic", "comprehensive"]).default("comprehensive"),
+        focusAreas: z
+          .array(
+            z.enum([
+              "bias-detection",
+              "clarity-assessment",
+              "engagement-potential",
+              "response-quality",
+              "cultural-sensitivity",
+              "accessibility",
+              "leading-questions",
+              "double-barreled",
+              "answer-format",
+            ])
+          )
+          .default([
+            "bias-detection",
+            "clarity-assessment",
+            "leading-questions",
+            "double-barreled",
+            "response-quality",
+          ]),
+      })
+    )
+    .mutation(async ({ input }) => {
+      return safeExecute(async () => {
+        const {
+          questionTitle,
+          questionDescription,
+          questionType,
+          questionConfig,
+          category,
+          targetAudience,
+          analysisDepth,
+          focusAreas,
+        } = input;
+
+        // Map focus areas to analysis criteria
+        const analysisGuidelines = {
+          "bias-detection":
+            "Identify potential bias, leading language, or assumptions that might influence responses",
+          "clarity-assessment": "Evaluate question clarity, ambiguity, and ease of understanding",
+          "engagement-potential":
+            "Assess how engaging and motivating the question is for respondents",
+          "response-quality":
+            "Analyze the likelihood of obtaining meaningful, actionable responses",
+          "cultural-sensitivity":
+            "Check for cultural assumptions or language that might not translate well",
+          accessibility: "Evaluate accessibility for respondents with different abilities",
+          "leading-questions": "Detect questions that lead respondents toward specific answers",
+          "double-barreled": "Identify questions that ask about multiple things at once",
+          "answer-format": "Assess whether the answer format matches the question appropriately",
+        };
+
+        const selectedCriteria = focusAreas
+          .map((area) => `- ${analysisGuidelines[area]}`)
+          .join("\n");
+
+        const configContext = questionConfig
+          ? `Question Configuration: ${JSON.stringify(questionConfig, null, 2)}`
+          : "No configuration provided";
+
+        const prompt = `You are an expert survey methodologist and questionnaire design specialist with expertise in cognitive psychology, bias detection, and survey research best practices. Analyze the following question for quality, potential issues, and improvements.
+
+**Question to Analyze:**
+Title: "${questionTitle}"
+Description: ${questionDescription || "No description provided"}
+Type: ${questionType}
+Category: ${category || "general"}
+Target Audience: ${targetAudience || "general audience"}
+${configContext}
+
+**Analysis Focus Areas:**
+${selectedCriteria}
+
+**Analysis Instructions:**
+Provide ${analysisDepth} analysis covering cognitive psychology principles, survey design best practices, and potential bias detection. Consider:
+
+1. **Question Construction Analysis:**
+   - Clarity and comprehensibility at different reading levels
+   - Logical structure and flow
+   - Appropriate question type for the intended measurement
+
+2. **Bias and Leading Language Detection:**
+   - Implicit assumptions or loaded language
+   - Leading or suggestive phrasing
+   - Cultural or demographic bias
+   - Priming effects
+
+3. **Response Quality Assessment:**
+   - Likelihood of obtaining reliable data
+   - Potential for misinterpretation
+   - Response burden and cognitive load
+
+4. **Technical Assessment:**
+   - Appropriateness of answer format
+   - Completeness of response options (for multiple choice)
+   - Scale appropriateness (for rating questions)
+
+5. **Accessibility and Inclusivity:**
+   - Language complexity and readability
+   - Cultural sensitivity
+   - Accessibility for different populations
+
+**Output Format:**
+Return a comprehensive JSON analysis with this structure:
+
+{
+  "overallAssessment": {
+    "qualityScore": 8.5,
+    "scoreExplanation": "Overall quality assessment explanation",
+    "primaryStrengths": ["Strength 1", "Strength 2"],
+    "criticalIssues": ["Issue 1", "Issue 2"],
+    "recommendationPriority": "high|medium|low"
+  },
+  "detailedAnalysis": {
+    "biasDetection": {
+      "score": 7.0,
+      "issues": [
+        {
+          "type": "leading-language",
+          "severity": "high|medium|low",
+          "description": "Specific bias issue description",
+          "location": "question title|description|options",
+          "example": "Specific problematic phrase",
+          "impact": "How this affects responses"
+        }
+      ],
+      "recommendations": ["Specific improvement suggestion"]
+    },
+    "clarityAssessment": {
+      "score": 8.5,
+      "readabilityLevel": "Grade 8 reading level",
+      "ambiguities": [
+        {
+          "phrase": "Ambiguous phrase",
+          "issue": "Why it's unclear",
+          "suggestion": "Clearer alternative"
+        }
+      ],
+      "recommendations": ["Clarity improvement suggestions"]
+    },
+    "responseQuality": {
+      "score": 7.5,
+      "reliabilityFactors": [
+        "Factor affecting response reliability"
+      ],
+      "cognitiveLoad": "low|medium|high",
+      "completionLikelihood": "high|medium|low",
+      "dataActionability": "high|medium|low",
+      "recommendations": ["Suggestions for better response quality"]
+    },
+    "technicalAssessment": {
+      "answerFormatAppropriate": true,
+      "scaleAppropriate": true,
+      "optionCompleteness": "complete|incomplete|needs-review",
+      "questionTypeMatch": true,
+      "configurationIssues": ["Any config-related problems"],
+      "recommendations": ["Technical improvements"]
+    },
+    "accessibilityReview": {
+      "score": 8.0,
+      "readingComplexity": "appropriate|too-complex|too-simple",
+      "culturalSensitivity": "high|medium|low",
+      "inclusivityIssues": ["Potential exclusions or assumptions"],
+      "languageBarriers": ["Potential language issues"],
+      "recommendations": ["Accessibility improvements"]
+    }
+  },
+  "improvementSuggestions": {
+    "immediate": [
+      {
+        "issue": "Critical issue to fix",
+        "suggestion": "Specific improvement",
+        "reasoning": "Why this change helps",
+        "priority": "critical|high|medium|low"
+      }
+    ],
+    "consideredAlternatives": [
+      {
+        "alternative": "Alternative question phrasing",
+        "pros": ["Advantages of this approach"],
+        "cons": ["Potential drawbacks"],
+        "whenToUse": "Context where this alternative is better"
+      }
+    ],
+    "enhancementOpportunities": [
+      "Ways to make the question even better"
+    ]
+  },
+  "bestPracticesApplied": [
+    "Survey design principle followed correctly"
+  ],
+  "warningFlags": [
+    {
+      "flag": "Warning type",
+      "description": "What to watch out for",
+      "severity": "critical|high|medium|low"
+    }
+  ],
+  "metadata": {
+    "analysisDepth": "${analysisDepth}",
+    "focusAreas": ${JSON.stringify(focusAreas)},
+    "questionComplexity": "simple|moderate|complex",
+    "recommendedTesting": "A/B test|cognitive interview|pilot survey|none",
+    "confidenceLevel": "high|medium|low",
+    "processingTime": "estimate in seconds"
+  }
+}
+
+Provide thorough, evidence-based analysis with specific, actionable recommendations based on survey methodology research and cognitive psychology principles.`;
+
+        const response = await generateChatCompletion(
+          [{ role: "user", content: prompt }],
+          "GPT_4O",
+          { temperature: 0.2 }
+        );
+
+        try {
+          const analysis = parseJsonResponse(response);
+
+          // Validate the response structure
+          if (!analysis.overallAssessment || typeof analysis.overallAssessment !== "object") {
+            throw new Error("Missing valid overall assessment");
+          }
+
+          if (!analysis.detailedAnalysis || typeof analysis.detailedAnalysis !== "object") {
+            throw new Error("Missing valid detailed analysis");
+          }
+
+          if (
+            !analysis.improvementSuggestions ||
+            typeof analysis.improvementSuggestions !== "object"
+          ) {
+            throw new Error("Missing valid improvement suggestions");
+          }
+
+          // Ensure scores are valid numbers
+          const validateScore = (score: any, fieldName: string) => {
+            if (typeof score !== "number" || score < 0 || score > 10) {
+              console.warn(`Invalid score for ${fieldName}, defaulting to 5`);
+              return 5;
+            }
+            return score;
+          };
+
+          const validatedAnalysis = {
+            questionContext: {
+              title: questionTitle,
+              description: questionDescription,
+              type: questionType,
+              category: category || "general",
+              targetAudience: targetAudience || "general audience",
+              config: questionConfig || {},
+            },
+            overallAssessment: {
+              qualityScore: validateScore(analysis.overallAssessment.qualityScore, "qualityScore"),
+              scoreExplanation:
+                analysis.overallAssessment.scoreExplanation || "No explanation provided",
+              primaryStrengths: Array.isArray(analysis.overallAssessment.primaryStrengths)
+                ? analysis.overallAssessment.primaryStrengths
+                : [],
+              criticalIssues: Array.isArray(analysis.overallAssessment.criticalIssues)
+                ? analysis.overallAssessment.criticalIssues
+                : [],
+              recommendationPriority: analysis.overallAssessment.recommendationPriority || "medium",
+            },
+            detailedAnalysis: {
+              biasDetection: {
+                score: validateScore(
+                  analysis.detailedAnalysis.biasDetection?.score,
+                  "biasDetection.score"
+                ),
+                issues: Array.isArray(analysis.detailedAnalysis.biasDetection?.issues)
+                  ? analysis.detailedAnalysis.biasDetection.issues
+                  : [],
+                recommendations: Array.isArray(
+                  analysis.detailedAnalysis.biasDetection?.recommendations
+                )
+                  ? analysis.detailedAnalysis.biasDetection.recommendations
+                  : [],
+              },
+              clarityAssessment: {
+                score: validateScore(
+                  analysis.detailedAnalysis.clarityAssessment?.score,
+                  "clarityAssessment.score"
+                ),
+                readabilityLevel:
+                  analysis.detailedAnalysis.clarityAssessment?.readabilityLevel ||
+                  "Reading level not assessed",
+                ambiguities: Array.isArray(analysis.detailedAnalysis.clarityAssessment?.ambiguities)
+                  ? analysis.detailedAnalysis.clarityAssessment.ambiguities
+                  : [],
+                recommendations: Array.isArray(
+                  analysis.detailedAnalysis.clarityAssessment?.recommendations
+                )
+                  ? analysis.detailedAnalysis.clarityAssessment.recommendations
+                  : [],
+              },
+              responseQuality: {
+                score: validateScore(
+                  analysis.detailedAnalysis.responseQuality?.score,
+                  "responseQuality.score"
+                ),
+                reliabilityFactors: Array.isArray(
+                  analysis.detailedAnalysis.responseQuality?.reliabilityFactors
+                )
+                  ? analysis.detailedAnalysis.responseQuality.reliabilityFactors
+                  : [],
+                cognitiveLoad: analysis.detailedAnalysis.responseQuality?.cognitiveLoad || "medium",
+                completionLikelihood:
+                  analysis.detailedAnalysis.responseQuality?.completionLikelihood || "medium",
+                dataActionability:
+                  analysis.detailedAnalysis.responseQuality?.dataActionability || "medium",
+                recommendations: Array.isArray(
+                  analysis.detailedAnalysis.responseQuality?.recommendations
+                )
+                  ? analysis.detailedAnalysis.responseQuality.recommendations
+                  : [],
+              },
+              technicalAssessment: {
+                answerFormatAppropriate:
+                  analysis.detailedAnalysis.technicalAssessment?.answerFormatAppropriate !== false,
+                scaleAppropriate:
+                  analysis.detailedAnalysis.technicalAssessment?.scaleAppropriate !== false,
+                optionCompleteness:
+                  analysis.detailedAnalysis.technicalAssessment?.optionCompleteness ||
+                  "needs-review",
+                questionTypeMatch:
+                  analysis.detailedAnalysis.technicalAssessment?.questionTypeMatch !== false,
+                configurationIssues: Array.isArray(
+                  analysis.detailedAnalysis.technicalAssessment?.configurationIssues
+                )
+                  ? analysis.detailedAnalysis.technicalAssessment.configurationIssues
+                  : [],
+                recommendations: Array.isArray(
+                  analysis.detailedAnalysis.technicalAssessment?.recommendations
+                )
+                  ? analysis.detailedAnalysis.technicalAssessment.recommendations
+                  : [],
+              },
+              accessibilityReview: {
+                score: validateScore(
+                  analysis.detailedAnalysis.accessibilityReview?.score,
+                  "accessibilityReview.score"
+                ),
+                readingComplexity:
+                  analysis.detailedAnalysis.accessibilityReview?.readingComplexity || "appropriate",
+                culturalSensitivity:
+                  analysis.detailedAnalysis.accessibilityReview?.culturalSensitivity || "medium",
+                inclusivityIssues: Array.isArray(
+                  analysis.detailedAnalysis.accessibilityReview?.inclusivityIssues
+                )
+                  ? analysis.detailedAnalysis.accessibilityReview.inclusivityIssues
+                  : [],
+                languageBarriers: Array.isArray(
+                  analysis.detailedAnalysis.accessibilityReview?.languageBarriers
+                )
+                  ? analysis.detailedAnalysis.accessibilityReview.languageBarriers
+                  : [],
+                recommendations: Array.isArray(
+                  analysis.detailedAnalysis.accessibilityReview?.recommendations
+                )
+                  ? analysis.detailedAnalysis.accessibilityReview.recommendations
+                  : [],
+              },
+            },
+            improvementSuggestions: {
+              immediate: Array.isArray(analysis.improvementSuggestions.immediate)
+                ? analysis.improvementSuggestions.immediate
+                : [],
+              consideredAlternatives: Array.isArray(
+                analysis.improvementSuggestions.consideredAlternatives
+              )
+                ? analysis.improvementSuggestions.consideredAlternatives
+                : [],
+              enhancementOpportunities: Array.isArray(
+                analysis.improvementSuggestions.enhancementOpportunities
+              )
+                ? analysis.improvementSuggestions.enhancementOpportunities
+                : [],
+            },
+            bestPracticesApplied: Array.isArray(analysis.bestPracticesApplied)
+              ? analysis.bestPracticesApplied
+              : [],
+            warningFlags: Array.isArray(analysis.warningFlags) ? analysis.warningFlags : [],
+            metadata: {
+              analysisDepth,
+              focusAreas,
+              questionComplexity: analysis.metadata?.questionComplexity || "moderate",
+              recommendedTesting: analysis.metadata?.recommendedTesting || "pilot survey",
+              confidenceLevel: analysis.metadata?.confidenceLevel || "medium",
+              processedAt: new Date().toISOString(),
+              version: "1.0",
+            },
+          };
+
+          return validatedAnalysis;
+        } catch (parseError) {
+          console.error("Failed to parse AI content analysis response:", parseError);
+          throw new Error("Failed to generate valid content analysis. Please try again.");
+        }
+      }, "analyzeQuestionContent");
+    }),
 });
