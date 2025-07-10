@@ -958,6 +958,172 @@ function TemplateGeneratorForm({
   );
 }
 
+// Flow Optimization Form Component
+function FlowOptimizationForm({
+  onOptimize,
+  onCancel,
+  isOptimizing,
+}: {
+  onOptimize: (optimizationGoals: string[], context?: string) => void;
+  onCancel: () => void;
+  isOptimizing: boolean;
+}) {
+  const [optimizationGoals, setOptimizationGoals] = useState<string[]>([
+    "enhance-flow",
+    "improve-completion",
+  ]);
+  const [context, setContext] = useState("");
+
+  const availableGoals = [
+    {
+      id: "reduce-fatigue",
+      label: "Reduce Fatigue",
+      description: "Minimize cognitive load and prevent respondent fatigue",
+    },
+    {
+      id: "improve-completion",
+      label: "Improve Completion",
+      description: "Reduce drop-off rates and increase completion",
+    },
+    {
+      id: "enhance-flow",
+      label: "Enhance Flow",
+      description: "Create natural, intuitive question progression",
+    },
+    {
+      id: "minimize-bias",
+      label: "Minimize Bias",
+      description: "Prevent response bias and priming effects",
+    },
+    {
+      id: "increase-engagement",
+      label: "Increase Engagement",
+      description: "Maintain interest and motivation throughout",
+    },
+    {
+      id: "optimize-time",
+      label: "Optimize Time",
+      description: "Minimize completion time while maintaining quality",
+    },
+  ];
+
+  const handleGoalToggle = (goalId: string) => {
+    setOptimizationGoals((prev) =>
+      prev.includes(goalId) ? prev.filter((id) => id !== goalId) : [...prev, goalId]
+    );
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (optimizationGoals.length > 0) {
+      onOptimize(optimizationGoals, context || undefined);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div>
+        <h3 className="mb-4 text-lg font-semibold" style={{ color: "var(--off-black)" }}>
+          Optimization Goals
+        </h3>
+        <p className="mb-4 text-sm" style={{ color: "var(--warm-gray)" }}>
+          Select the goals you want to optimize for. Our AI will analyze your question flow and
+          provide recommendations.
+        </p>
+
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+          {availableGoals.map((goal) => (
+            <div
+              key={goal.id}
+              className={`cursor-pointer rounded-lg border p-4 transition-all ${
+                optimizationGoals.includes(goal.id)
+                  ? "border-blue-500 bg-blue-50"
+                  : "border-gray-200 hover:border-gray-300"
+              }`}
+              onClick={() => handleGoalToggle(goal.id)}
+            >
+              <div className="flex items-start space-x-3">
+                <div className="shrink-0">
+                  <div
+                    className={`size-4 rounded border-2 ${
+                      optimizationGoals.includes(goal.id)
+                        ? "border-blue-500 bg-blue-500"
+                        : "border-gray-300"
+                    }`}
+                  >
+                    {optimizationGoals.includes(goal.id) && (
+                      <div className="flex size-full items-center justify-center">
+                        <div className="size-2 rounded-full bg-white"></div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-medium" style={{ color: "var(--off-black)" }}>
+                    {goal.label}
+                  </h4>
+                  <p className="text-sm" style={{ color: "var(--warm-gray)" }}>
+                    {goal.description}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <label className="mb-2 block text-sm font-medium" style={{ color: "var(--off-black)" }}>
+          Additional Context (Optional)
+        </label>
+        <textarea
+          value={context}
+          onChange={(e) => setContext(e.target.value)}
+          placeholder="Provide any additional context about your questionnaire goals, target audience, or specific requirements..."
+          className="w-full rounded-md border border-gray-300 p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+          rows={3}
+        />
+      </div>
+
+      <div className="flex justify-end space-x-3">
+        <button
+          type="button"
+          onClick={onCancel}
+          className="px-4 py-2 font-mono text-sm transition-colors"
+          style={{
+            backgroundColor: "var(--warm-gray)",
+            color: "var(--off-white)",
+          }}
+          disabled={isOptimizing}
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          className="px-4 py-2 font-mono text-sm transition-colors"
+          style={{
+            backgroundColor: "var(--primary)",
+            color: "var(--off-white)",
+          }}
+          disabled={isOptimizing || optimizationGoals.length === 0}
+        >
+          {isOptimizing ? (
+            <>
+              <RefreshCw className="mr-2 inline size-4 animate-spin" />
+              Analyzing...
+            </>
+          ) : (
+            <>
+              <ArrowUpDown className="mr-2 inline size-4" />
+              Optimize Flow
+            </>
+          )}
+        </button>
+      </div>
+    </form>
+  );
+}
+
 export default function NewQuestionnairePage() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -1066,6 +1232,42 @@ export default function NewQuestionnairePage() {
     bestPractices: string[];
     metadata: Record<string, unknown>;
   } | null>(null);
+  const [showFlowOptimization, setShowFlowOptimization] = useState(false);
+  const [isOptimizingFlow, setIsOptimizingFlow] = useState(false);
+  const [flowOptimizationResult, setFlowOptimizationResult] = useState<{
+    analysis: {
+      currentFlowIssues: string[];
+      strengths: string[];
+      overallScore: number;
+      scoreExplanation: string;
+    };
+    recommendations: {
+      optimizedOrder: Array<{
+        questionId: string;
+        newPosition: number;
+        reasoning: string;
+      }>;
+      groupingStrategy: {
+        groups: Array<{
+          name: string;
+          questions: string[];
+          reasoning: string;
+        }>;
+      };
+      keyChanges: string[];
+    };
+    bestPractices: {
+      appliedPrinciples: string[];
+      alternativeApproaches: string[];
+    };
+    metadata: {
+      optimizationGoals: string[];
+      questionCount: number;
+      estimatedImpact: string;
+      confidenceLevel: string;
+      processedAt: string;
+    };
+  } | null>(null);
 
   // tRPC mutations
   const createQuestionnaireMutation = trpc.questionnaire.create.useMutation();
@@ -1079,6 +1281,7 @@ export default function NewQuestionnairePage() {
   const getSmartRecommendationsMutation = trpc.admin.getSmartRecommendations.useMutation();
   const generateQuestionOptionsMutation = trpc.admin.generateQuestionOptions.useMutation();
   const generateSmartTemplateMutation = trpc.admin.generateSmartTemplate.useMutation();
+  const optimizeQuestionFlowMutation = trpc.admin.optimizeQuestionFlow.useMutation();
 
   // Save/Publish functions
   const saveQuestionnaire = async (status: "draft" | "active") => {
@@ -1788,6 +1991,92 @@ export default function NewQuestionnairePage() {
     });
 
     setGeneratedTemplate(null);
+  };
+
+  // Flow optimization function
+  const optimizeQuestionFlow = async (optimizationGoals: string[], context?: string) => {
+    if (questionnaire.questions.length === 0) {
+      alert("Please add some questions first before optimizing the flow.");
+      return;
+    }
+
+    setIsOptimizingFlow(true);
+    setFlowOptimizationResult(null);
+
+    try {
+      const questionsForOptimization = questionnaire.questions.map((q, index) => ({
+        id: q.id,
+        title: q.title,
+        description: q.description || "",
+        questionType: q.type as
+          | "binary"
+          | "multi-choice"
+          | "rating-scale"
+          | "text-response"
+          | "ranking"
+          | "ab-test",
+        category: "general",
+        tags: [],
+        displayOrder: index + 1,
+      }));
+
+      const questionnaireMeta = {
+        title: questionnaire.title,
+        description: questionnaire.description,
+        category: questionnaire.category,
+        targetAudience: "general audience",
+        estimatedTime: `${Math.ceil(questionnaire.questions.length * 1.5)} minutes`,
+      };
+
+      const result = await optimizeQuestionFlowMutation.mutateAsync({
+        questions: questionsForOptimization,
+        questionnaireMeta,
+        optimizationGoals: optimizationGoals as Array<
+          | "reduce-fatigue"
+          | "improve-completion"
+          | "enhance-flow"
+          | "minimize-bias"
+          | "increase-engagement"
+          | "optimize-time"
+        >,
+        context,
+      });
+
+      setFlowOptimizationResult(result);
+    } catch (error) {
+      console.error("Flow optimization failed:", error);
+      alert("Failed to optimize question flow. Please try again.");
+    } finally {
+      setIsOptimizingFlow(false);
+    }
+  };
+
+  // Apply flow optimization recommendations
+  const applyFlowOptimization = () => {
+    if (!flowOptimizationResult) return;
+
+    const { optimizedOrder } = flowOptimizationResult.recommendations;
+    const currentQuestions = [...questionnaire.questions];
+
+    // Create new order based on recommendations
+    const reorderedQuestions = optimizedOrder
+      .map((item) => {
+        const question = currentQuestions.find((q) => q.id === item.questionId);
+        if (!question) {
+          console.warn(`Question with ID ${item.questionId} not found`);
+          return null;
+        }
+        return question;
+      })
+      .filter(Boolean) as Question[];
+
+    setQuestionnaire({
+      ...questionnaire,
+      questions: reorderedQuestions,
+    });
+
+    setFlowOptimizationResult(null);
+    setShowFlowOptimization(false);
   };
 
   // Load template data from URL parameter
@@ -2514,6 +2803,30 @@ export default function NewQuestionnairePage() {
                         <>
                           <Wand2 size={16} />
                           <span>AI Template</span>
+                        </>
+                      )}
+                    </button>
+
+                    {/* Flow Optimization Button */}
+                    <button
+                      onClick={() => setShowFlowOptimization(true)}
+                      className="flex items-center space-x-2 rounded-md border-2 px-4 py-2 text-sm font-medium transition-all duration-200 hover:shadow-md"
+                      style={{
+                        borderColor: "var(--primary)",
+                        backgroundColor: "var(--off-white)",
+                        color: "var(--primary)",
+                      }}
+                      disabled={questionnaire.questions.length === 0}
+                    >
+                      {isOptimizingFlow ? (
+                        <>
+                          <RefreshCw size={16} className="animate-spin" />
+                          <span>Optimizing...</span>
+                        </>
+                      ) : (
+                        <>
+                          <ArrowUpDown size={16} />
+                          <span>Optimize Flow</span>
                         </>
                       )}
                     </button>
@@ -4280,6 +4593,227 @@ export default function NewQuestionnairePage() {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Flow Optimization Modal */}
+      {showFlowOptimization && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-lg bg-white p-6 shadow-xl">
+            <div className="mb-6 flex items-center justify-between">
+              <h2 className="text-xl font-bold" style={{ color: "var(--off-black)" }}>
+                Question Flow Optimization
+              </h2>
+              <button
+                onClick={() => {
+                  setShowFlowOptimization(false);
+                  setFlowOptimizationResult(null);
+                }}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            {!flowOptimizationResult ? (
+              <FlowOptimizationForm
+                onOptimize={optimizeQuestionFlow}
+                onCancel={() => setShowFlowOptimization(false)}
+                isOptimizing={isOptimizingFlow}
+              />
+            ) : (
+              <div className="space-y-6">
+                {/* Analysis Results */}
+                <div className="rounded-lg border p-4" style={{ borderColor: "var(--light-gray)" }}>
+                  <h3 className="mb-4 font-semibold" style={{ color: "var(--off-black)" }}>
+                    Flow Analysis Results
+                  </h3>
+
+                  <div className="mb-4 flex items-center space-x-4">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-sm font-medium" style={{ color: "var(--warm-gray)" }}>
+                        Overall Score:
+                      </span>
+                      <span
+                        className="text-lg font-bold"
+                        style={{
+                          color:
+                            flowOptimizationResult.analysis.overallScore >= 7
+                              ? "var(--primary)"
+                              : flowOptimizationResult.analysis.overallScore >= 5
+                                ? "var(--accent)"
+                                : "var(--warning)",
+                        }}
+                      >
+                        {flowOptimizationResult.analysis.overallScore}/10
+                      </span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-sm font-medium" style={{ color: "var(--warm-gray)" }}>
+                        Impact:
+                      </span>
+                      <span
+                        className="text-sm font-medium"
+                        style={{
+                          color:
+                            flowOptimizationResult.metadata.estimatedImpact === "high"
+                              ? "var(--primary)"
+                              : flowOptimizationResult.metadata.estimatedImpact === "medium"
+                                ? "var(--accent)"
+                                : "var(--warm-gray)",
+                        }}
+                      >
+                        {flowOptimizationResult.metadata.estimatedImpact}
+                      </span>
+                    </div>
+                  </div>
+
+                  <p className="text-sm" style={{ color: "var(--warm-gray)" }}>
+                    {flowOptimizationResult.analysis.scoreExplanation}
+                  </p>
+
+                  {flowOptimizationResult.analysis.currentFlowIssues.length > 0 && (
+                    <div className="mt-4">
+                      <h4 className="mb-2 font-medium" style={{ color: "var(--off-black)" }}>
+                        Issues Identified:
+                      </h4>
+                      <ul className="space-y-1">
+                        {flowOptimizationResult.analysis.currentFlowIssues.map((issue, index) => (
+                          <li key={index} className="flex items-start space-x-2 text-sm">
+                            <span style={{ color: "var(--warning)" }}>⚠</span>
+                            <span style={{ color: "var(--warm-gray)" }}>{issue}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {flowOptimizationResult.analysis.strengths.length > 0 && (
+                    <div className="mt-4">
+                      <h4 className="mb-2 font-medium" style={{ color: "var(--off-black)" }}>
+                        Current Strengths:
+                      </h4>
+                      <ul className="space-y-1">
+                        {flowOptimizationResult.analysis.strengths.map((strength, index) => (
+                          <li key={index} className="flex items-start space-x-2 text-sm">
+                            <span style={{ color: "var(--primary)" }}>✓</span>
+                            <span style={{ color: "var(--warm-gray)" }}>{strength}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+
+                {/* Optimization Recommendations */}
+                <div className="rounded-lg border p-4" style={{ borderColor: "var(--light-gray)" }}>
+                  <h3 className="mb-4 font-semibold" style={{ color: "var(--off-black)" }}>
+                    Recommended Question Order
+                  </h3>
+
+                  <div className="space-y-3">
+                    {flowOptimizationResult.recommendations.optimizedOrder.map((item, _index) => {
+                      const originalQuestion = questionnaire.questions.find(
+                        (q) => q.id === item.questionId
+                      );
+                      const originalPosition =
+                        questionnaire.questions.findIndex((q) => q.id === item.questionId) + 1;
+                      const positionChanged = originalPosition !== item.newPosition;
+
+                      return (
+                        <div
+                          key={item.questionId}
+                          className="flex items-start space-x-3 rounded-md border p-3"
+                          style={{
+                            borderColor: positionChanged ? "var(--primary)" : "var(--light-gray)",
+                            backgroundColor: positionChanged
+                              ? "rgba(99, 102, 241, 0.05)"
+                              : "var(--off-white)",
+                          }}
+                        >
+                          <div className="shrink-0">
+                            <span
+                              className="flex size-6 items-center justify-center rounded-full text-xs font-medium"
+                              style={{
+                                backgroundColor: positionChanged
+                                  ? "var(--primary)"
+                                  : "var(--warm-gray)",
+                                color: "var(--off-white)",
+                              }}
+                            >
+                              {item.newPosition}
+                            </span>
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-2">
+                              <span className="font-medium" style={{ color: "var(--off-black)" }}>
+                                {originalQuestion?.title || `Question ${item.questionId}`}
+                              </span>
+                              {positionChanged && (
+                                <span className="text-xs" style={{ color: "var(--accent)" }}>
+                                  (moved from position {originalPosition})
+                                </span>
+                              )}
+                            </div>
+                            <p className="mt-1 text-sm" style={{ color: "var(--warm-gray)" }}>
+                              {item.reasoning}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Key Changes */}
+                {flowOptimizationResult.recommendations.keyChanges.length > 0 && (
+                  <div
+                    className="rounded-lg border p-4"
+                    style={{ borderColor: "var(--light-gray)" }}
+                  >
+                    <h3 className="mb-4 font-semibold" style={{ color: "var(--off-black)" }}>
+                      Key Changes
+                    </h3>
+                    <ul className="space-y-2">
+                      {flowOptimizationResult.recommendations.keyChanges.map((change, index) => (
+                        <li key={index} className="flex items-start space-x-2 text-sm">
+                          <span style={{ color: "var(--primary)" }}>•</span>
+                          <span style={{ color: "var(--warm-gray)" }}>{change}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Action Buttons */}
+                <div className="flex justify-end space-x-3">
+                  <button
+                    onClick={() => {
+                      setShowFlowOptimization(false);
+                      setFlowOptimizationResult(null);
+                    }}
+                    className="px-4 py-2 font-mono text-sm transition-colors"
+                    style={{
+                      backgroundColor: "var(--warm-gray)",
+                      color: "var(--off-white)",
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={applyFlowOptimization}
+                    className="px-4 py-2 font-mono text-sm transition-colors"
+                    style={{
+                      backgroundColor: "var(--primary)",
+                      color: "var(--off-white)",
+                    }}
+                  >
+                    Apply Optimization
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

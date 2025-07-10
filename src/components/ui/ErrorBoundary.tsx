@@ -1,6 +1,7 @@
 "use client";
 
-import { Component, ErrorInfo, ReactNode } from "react";
+import type { ErrorInfo, ReactNode } from "react";
+import { Component } from "react";
 import { AlertTriangle, RefreshCw } from "lucide-react";
 
 interface ErrorBoundaryProps {
@@ -83,12 +84,9 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             }}
           >
             <div className="mb-6 flex justify-center">
-              <AlertTriangle
-                size={48}
-                style={{ color: "var(--primary)" }}
-              />
+              <AlertTriangle size={48} style={{ color: "var(--primary)" }} />
             </div>
-            
+
             <h2
               className="mb-4 font-bold uppercase tracking-tight"
               style={{
@@ -98,7 +96,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             >
               Something went wrong
             </h2>
-            
+
             <p
               className="mb-6"
               style={{
@@ -107,7 +105,8 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                 lineHeight: "1.5",
               }}
             >
-              We encountered an unexpected error. Please try refreshing the page or contact support if the problem persists.
+              We encountered an unexpected error. Please try refreshing the page or contact support
+              if the problem persists.
             </p>
 
             <button
@@ -173,11 +172,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
  * Hook-based error boundary component for functional components
  * Use this when you need to wrap specific sections with error handling
  */
-export function ErrorBoundaryWrapper({
-  children,
-  fallback,
-  onError,
-}: ErrorBoundaryProps) {
+export function ErrorBoundaryWrapper({ children, fallback, onError }: ErrorBoundaryProps) {
   return (
     <ErrorBoundary fallback={fallback} onError={onError}>
       {children}

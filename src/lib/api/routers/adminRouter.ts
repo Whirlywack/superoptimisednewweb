@@ -1073,4 +1073,239 @@ Ensure all questions are relevant, well-structured, and follow survey design bes
         }
       }, "generateSmartTemplate");
     }),
+
+  // AI-powered question flow optimization
+  optimizeQuestionFlow: adminProcedure
+    .input(
+      z.object({
+        questions: z.array(
+          z.object({
+            id: z.string(),
+            title: z.string(),
+            description: z.string().optional(),
+            questionType: z.enum([
+              "binary",
+              "multi-choice",
+              "rating-scale",
+              "text-response",
+              "ranking",
+              "ab-test",
+            ]),
+            category: z.string().optional(),
+            tags: z.array(z.string()).optional(),
+            displayOrder: z.number(),
+          })
+        ),
+        questionnaireMeta: z.object({
+          title: z.string().optional(),
+          description: z.string().optional(),
+          category: z.string().optional(),
+          targetAudience: z.string().optional(),
+          estimatedTime: z.string().optional(),
+        }),
+        optimizationGoals: z
+          .array(
+            z.enum([
+              "reduce-fatigue",
+              "improve-completion",
+              "enhance-flow",
+              "minimize-bias",
+              "increase-engagement",
+              "optimize-time",
+            ])
+          )
+          .default(["enhance-flow", "improve-completion"]),
+        context: z.string().optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      return safeExecute(async () => {
+        const { questions, questionnaireMeta, optimizationGoals, context } = input;
+
+        // Map optimization goals to guidance
+        const optimizationGuidance = {
+          "reduce-fatigue":
+            "Minimize cognitive load by grouping similar questions and avoiding repetition",
+          "improve-completion": "Order questions to maintain engagement and reduce drop-off rates",
+          "enhance-flow": "Create logical progression that feels natural and intuitive",
+          "minimize-bias":
+            "Prevent response bias by carefully ordering questions to avoid priming effects",
+          "increase-engagement": "Start with engaging questions and maintain interest throughout",
+          "optimize-time":
+            "Arrange questions to minimize completion time while maintaining quality",
+        };
+
+        const selectedGuidance = optimizationGoals
+          .map((goal) => `- ${optimizationGuidance[goal]}`)
+          .join("\n");
+
+        const prompt = `You are an expert survey methodologist and UX researcher. Analyze the following questionnaire and provide recommendations for optimal question ordering.
+
+**Questionnaire Context:**
+Title: ${questionnaireMeta.title || "Untitled Questionnaire"}
+Description: ${questionnaireMeta.description || "No description provided"}
+Category: ${questionnaireMeta.category || "general"}
+Target Audience: ${questionnaireMeta.targetAudience || "general audience"}
+Estimated Time: ${questionnaireMeta.estimatedTime || "not specified"}
+${context ? `Additional Context: ${context}` : ""}
+
+**Optimization Goals:**
+${selectedGuidance}
+
+**Current Question List:**
+${questions.map((q, i) => `${i + 1}. [${q.questionType}] ${q.title}${q.description ? ` - ${q.description}` : ""}`).join("\n")}
+
+**Analysis Requirements:**
+1. Evaluate current question order for logical flow and potential issues
+2. Identify questions that may cause fatigue, bias, or drop-off
+3. Suggest optimal ordering based on survey design best practices
+4. Consider question types, complexity, and psychological factors
+5. Recommend grouping strategies for related questions
+
+**Survey Design Principles to Consider:**
+- Start with easy, engaging questions to build momentum
+- Group related questions together for cognitive efficiency
+- Place sensitive or personal questions later in the survey
+- Use filter questions early to route respondents appropriately
+- End with open-ended questions when respondents are most invested
+- Consider the "primacy effect" and "recency effect" in question ordering
+- Balance question types to maintain engagement
+
+**Output Format:**
+Return a JSON object with this structure:
+
+{
+  "analysis": {
+    "currentFlowIssues": [
+      "Issue 1: Description of problem with current ordering",
+      "Issue 2: Another identified problem"
+    ],
+    "strengths": [
+      "Strength 1: What's working well in current order",
+      "Strength 2: Another positive aspect"
+    ],
+    "overallScore": 7.5,
+    "scoreExplanation": "Explanation of the 1-10 score"
+  },
+  "recommendations": {
+    "optimizedOrder": [
+      {
+        "questionId": "original-question-id",
+        "newPosition": 1,
+        "reasoning": "Why this question should be first"
+      }
+    ],
+    "groupingStrategy": {
+      "groups": [
+        {
+          "name": "Introduction & Screening",
+          "questions": ["id1", "id2"],
+          "reasoning": "Why these questions are grouped together"
+        }
+      ]
+    },
+    "keyChanges": [
+      "Major change 1: Description of significant reordering",
+      "Major change 2: Another important modification"
+    ]
+  },
+  "bestPractices": {
+    "appliedPrinciples": [
+      "Survey design principle that was applied",
+      "Another principle used in optimization"
+    ],
+    "alternativeApproaches": [
+      "Alternative 1: Different ordering strategy for different goals",
+      "Alternative 2: Another approach to consider"
+    ]
+  },
+  "metadata": {
+    "optimizationGoals": ${JSON.stringify(optimizationGoals)},
+    "questionCount": ${questions.length},
+    "estimatedImpact": "high|medium|low",
+    "confidenceLevel": "high|medium|low"
+  }
+}
+
+Provide comprehensive analysis with specific, actionable recommendations based on established survey methodology principles.`;
+
+        const response = await generateChatCompletion(
+          [{ role: "user", content: prompt }],
+          "GPT_4O",
+          { temperature: 0.3 }
+        );
+
+        try {
+          const optimization = parseJsonResponse(response);
+
+          // Validate the response structure
+          if (!optimization.analysis || !optimization.recommendations) {
+            throw new Error("Missing required analysis or recommendations");
+          }
+
+          if (
+            !optimization.recommendations.optimizedOrder ||
+            !Array.isArray(optimization.recommendations.optimizedOrder)
+          ) {
+            throw new Error("Missing valid optimized order");
+          }
+
+          // Validate optimized order contains all questions
+          const originalQuestionIds = questions.map((q) => q.id);
+          const optimizedQuestionIds = optimization.recommendations.optimizedOrder.map(
+            (item: { questionId: string }) => item.questionId
+          );
+
+          if (originalQuestionIds.length !== optimizedQuestionIds.length) {
+            throw new Error("Optimized order doesn't contain all original questions");
+          }
+
+          // Ensure all original questions are included
+          const missingQuestions = originalQuestionIds.filter(
+            (id) => !optimizedQuestionIds.includes(id)
+          );
+          if (missingQuestions.length > 0) {
+            throw new Error(`Missing questions in optimized order: ${missingQuestions.join(", ")}`);
+          }
+
+          return {
+            analysis: {
+              currentFlowIssues: optimization.analysis.currentFlowIssues || [],
+              strengths: optimization.analysis.strengths || [],
+              overallScore: optimization.analysis.overallScore || 5,
+              scoreExplanation: optimization.analysis.scoreExplanation || "No explanation provided",
+            },
+            recommendations: {
+              optimizedOrder: optimization.recommendations.optimizedOrder.map(
+                (item: { questionId: string; reasoning?: string }, index: number) => ({
+                  questionId: item.questionId,
+                  newPosition: index + 1,
+                  reasoning: item.reasoning || "No reasoning provided",
+                })
+              ),
+              groupingStrategy: optimization.recommendations.groupingStrategy || {
+                groups: [],
+              },
+              keyChanges: optimization.recommendations.keyChanges || [],
+            },
+            bestPractices: {
+              appliedPrinciples: optimization.bestPractices?.appliedPrinciples || [],
+              alternativeApproaches: optimization.bestPractices?.alternativeApproaches || [],
+            },
+            metadata: {
+              optimizationGoals,
+              questionCount: questions.length,
+              estimatedImpact: optimization.metadata?.estimatedImpact || "medium",
+              confidenceLevel: optimization.metadata?.confidenceLevel || "medium",
+              processedAt: new Date().toISOString(),
+            },
+            originalQuestions: questions,
+            questionnaireMeta,
+          };
+        } catch (parseError) {
+          console.error("Failed to parse AI flow optimization response:", parseError);
+          throw new Error("Failed to generate valid question flow optimization. Please try again.");
+        }
+      }, "optimizeQuestionFlow");
+    }),
 });

@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { Copy, Check } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import React, { useState } from "react";
+import { Copy, Check } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export interface TypographySpecification {
   name: string;
@@ -30,40 +30,36 @@ export function TypographyScale({
   showExamples = true,
   className,
 }: TypographyScaleProps) {
-  const [copied, setCopied] = useState('');
+  const [copied, setCopied] = useState("");
 
   const copyToClipboard = async (text: string, id: string) => {
     try {
       await navigator.clipboard.writeText(text);
       setCopied(id);
-      setTimeout(() => setCopied(''), 2000);
+      setTimeout(() => setCopied(""), 2000);
     } catch (err) {
-      console.error('Failed to copy:', err);
+      console.error("Failed to copy:", err);
     }
   };
 
   return (
-    <div className={cn('space-y-8', className)}>
+    <div className={cn("space-y-8", className)}>
       {typography.map((type) => (
         <div key={type.name} className="space-y-4">
           {/* Typography Example */}
           <div className="space-y-2">
-            <div className={cn(type.className)}>
-              {showExamples ? type.example : type.name}
-            </div>
-            
+            <div className={cn(type.className)}>{showExamples ? type.example : type.name}</div>
+
             {/* Typography Info */}
             <div className="flex items-start justify-between">
               <div>
                 <h4 className="font-semibold text-off-black">{type.name}</h4>
                 <p className="text-small text-warm-gray">{type.description}</p>
-                
+
                 {type.usage.length > 0 && (
                   <div className="mt-2">
                     <span className="text-xs font-medium text-warm-gray">Used for: </span>
-                    <span className="text-xs text-warm-gray">
-                      {type.usage.join(', ')}
-                    </span>
+                    <span className="text-xs text-warm-gray">{type.usage.join(", ")}</span>
                   </div>
                 )}
               </div>
@@ -71,13 +67,13 @@ export function TypographyScale({
               {/* Copy Button */}
               <button
                 onClick={() => copyToClipboard(type.className, type.name)}
-                className="p-2 hover:bg-light-gray rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                className="rounded-lg p-2 transition-colors hover:bg-light-gray focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                 title="Copy CSS class"
               >
                 {copied === type.name ? (
-                  <Check className="h-4 w-4 text-green-600" />
+                  <Check className="size-4 text-green-600" />
                 ) : (
-                  <Copy className="h-4 w-4 text-warm-gray" />
+                  <Copy className="size-4 text-warm-gray" />
                 )}
               </button>
             </div>
@@ -85,8 +81,8 @@ export function TypographyScale({
 
           {/* Specifications */}
           {showSpecs && (
-            <div className="bg-light-gray rounded-lg p-4">
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 text-small">
+            <div className="rounded-lg bg-light-gray p-4">
+              <div className="grid grid-cols-2 gap-4 text-small md:grid-cols-4 lg:grid-cols-6">
                 <div>
                   <span className="font-medium text-warm-gray">Size</span>
                   <div className="font-mono">{type.fontSize}</div>
@@ -142,25 +138,22 @@ export function FontSpecimen({
   fontName,
   description,
   weights = [],
-  example = 'The quick brown fox jumps over the lazy dog',
+  example = "The quick brown fox jumps over the lazy dog",
   className,
 }: FontSpecimenProps) {
   return (
-    <div className={cn('space-y-6', className)}>
+    <div className={cn("space-y-6", className)}>
       <div>
-        <h3 className="text-h3 font-semibold text-off-black mb-2">{fontName}</h3>
-        <p className="text-warm-gray mb-4">{description}</p>
-        
-        <div className="p-4 bg-light-gray rounded-lg">
-          <code className="text-small font-mono">font-family: {fontFamily}</code>
+        <h3 className="mb-2 text-h3 font-semibold text-off-black">{fontName}</h3>
+        <p className="mb-4 text-warm-gray">{description}</p>
+
+        <div className="rounded-lg bg-light-gray p-4">
+          <code className="font-mono text-small">font-family: {fontFamily}</code>
         </div>
       </div>
 
       {/* Example Text */}
-      <div 
-        className="text-h2"
-        style={{ fontFamily }}
-      >
+      <div className="text-h2" style={{ fontFamily }}>
         {example}
       </div>
 
@@ -169,15 +162,15 @@ export function FontSpecimen({
         <div className="space-y-3">
           <h4 className="font-semibold text-off-black">Available Weights</h4>
           {weights.map((weight) => (
-            <div key={weight.weight} className="flex items-center justify-between p-3 bg-white rounded border border-light-gray">
+            <div
+              key={weight.weight}
+              className="flex items-center justify-between rounded border border-light-gray bg-white p-3"
+            >
               <div>
                 <span className="font-medium text-off-black">{weight.name}</span>
                 <span className="ml-2 text-small text-warm-gray">({weight.weight})</span>
               </div>
-              <div 
-                className={cn("text-lg", weight.className)}
-                style={{ fontFamily }}
-              >
+              <div className={cn("text-lg", weight.className)} style={{ fontFamily }}>
                 {example.slice(0, 20)}...
               </div>
             </div>
@@ -202,17 +195,13 @@ export function TypographyShowcase({
   className,
 }: TypographyShowcaseProps) {
   return (
-    <div className={cn('max-w-4xl mx-auto space-y-8', className)}>
-      <div className="text-center space-y-4">
+    <div className={cn("mx-auto max-w-4xl space-y-8", className)}>
+      <div className="space-y-4 text-center">
         <h1 className="text-h1 font-bold text-off-black">{title}</h1>
-        {description && (
-          <p className="text-lg text-warm-gray max-w-2xl mx-auto">{description}</p>
-        )}
+        {description && <p className="mx-auto max-w-2xl text-lg text-warm-gray">{description}</p>}
       </div>
-      
-      <div className="space-y-12">
-        {children}
-      </div>
+
+      <div className="space-y-12">{children}</div>
     </div>
   );
 }
@@ -223,15 +212,11 @@ export interface ReadingExampleProps {
   className?: string;
 }
 
-export function ReadingExample({
-  title,
-  content,
-  className,
-}: ReadingExampleProps) {
+export function ReadingExample({ title, content, className }: ReadingExampleProps) {
   return (
-    <article className={cn('max-w-2xl space-y-6', className)}>
+    <article className={cn("max-w-2xl space-y-6", className)}>
       <header>
-        <h1 className="text-h1 font-bold text-off-black mb-4">{title}</h1>
+        <h1 className="mb-4 text-h1 font-bold text-off-black">{title}</h1>
         <div className="flex items-center gap-4 text-small text-warm-gray">
           <span>Reading Time: 3 min</span>
           <span>•</span>
@@ -240,16 +225,16 @@ export function ReadingExample({
       </header>
 
       <div className="prose max-w-none">
-        {content.split('\n\n').map((paragraph, index) => (
-          <p key={index} className="text-body text-off-black mb-4 leading-relaxed">
+        {content.split("\n\n").map((paragraph, index) => (
+          <p key={index} className="mb-4 text-body leading-relaxed text-off-black">
             {paragraph}
           </p>
         ))}
       </div>
 
-      <aside className="p-4 bg-light-gray rounded-lg">
-        <h3 className="text-h4 font-semibold text-off-black mb-2">Typography Features</h3>
-        <ul className="text-small text-warm-gray space-y-1">
+      <aside className="rounded-lg bg-light-gray p-4">
+        <h3 className="mb-2 text-h4 font-semibold text-off-black">Typography Features</h3>
+        <ul className="space-y-1 text-small text-warm-gray">
           <li>• Optimized line height (1.6) for sustained reading</li>
           <li>• Maximum 65-character line length for readability</li>
           <li>• High contrast ratio (AAA compliant)</li>
@@ -266,37 +251,37 @@ export interface TypographyGuidelinesProps {
 
 export function TypographyGuidelines({ className }: TypographyGuidelinesProps) {
   return (
-    <div className={cn('space-y-8', className)}>
+    <div className={cn("space-y-8", className)}>
       <div>
-        <h2 className="text-h2 font-semibold text-off-black mb-4">Typography Guidelines</h2>
+        <h2 className="mb-4 text-h2 font-semibold text-off-black">Typography Guidelines</h2>
         <p className="text-warm-gray">
           Best practices for implementing and using our typography system effectively.
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-8">
+      <div className="grid gap-8 md:grid-cols-2">
         <div className="space-y-6">
-          <div className="p-6 bg-white border border-light-gray rounded-lg">
-            <h3 className="text-h3 font-semibold text-off-black mb-3">✓ Do</h3>
+          <div className="rounded-lg border border-light-gray bg-white p-6">
+            <h3 className="mb-3 text-h3 font-semibold text-off-black">✓ Do</h3>
             <ul className="space-y-3 text-warm-gray">
               <li className="flex gap-3">
-                <span className="text-green-600 font-bold">•</span>
+                <span className="font-bold text-green-600">•</span>
                 <span>Use semantic HTML headings (h1, h2, h3) for proper hierarchy</span>
               </li>
               <li className="flex gap-3">
-                <span className="text-green-600 font-bold">•</span>
+                <span className="font-bold text-green-600">•</span>
                 <span>Maintain consistent line heights for rhythm</span>
               </li>
               <li className="flex gap-3">
-                <span className="text-green-600 font-bold">•</span>
+                <span className="font-bold text-green-600">•</span>
                 <span>Limit line length to 65 characters for optimal readability</span>
               </li>
               <li className="flex gap-3">
-                <span className="text-green-600 font-bold">•</span>
+                <span className="font-bold text-green-600">•</span>
                 <span>Use sufficient contrast (4.5:1 minimum) for body text</span>
               </li>
               <li className="flex gap-3">
-                <span className="text-green-600 font-bold">•</span>
+                <span className="font-bold text-green-600">•</span>
                 <span>Test typography with real content, not Lorem Ipsum</span>
               </li>
             </ul>
@@ -304,27 +289,27 @@ export function TypographyGuidelines({ className }: TypographyGuidelinesProps) {
         </div>
 
         <div className="space-y-6">
-          <div className="p-6 bg-white border border-light-gray rounded-lg">
-            <h3 className="text-h3 font-semibold text-off-black mb-3">✗ Don't</h3>
+          <div className="rounded-lg border border-light-gray bg-white p-6">
+            <h3 className="mb-3 text-h3 font-semibold text-off-black">✗ Don&apos;t</h3>
             <ul className="space-y-3 text-warm-gray">
               <li className="flex gap-3">
-                <span className="text-red-600 font-bold">•</span>
+                <span className="font-bold text-red-600">•</span>
                 <span>Skip heading levels (h1 → h3 without h2)</span>
               </li>
               <li className="flex gap-3">
-                <span className="text-red-600 font-bold">•</span>
+                <span className="font-bold text-red-600">•</span>
                 <span>Use too many different font sizes in one design</span>
               </li>
               <li className="flex gap-3">
-                <span className="text-red-600 font-bold">•</span>
+                <span className="font-bold text-red-600">•</span>
                 <span>Set line heights too tight (below 1.4) for body text</span>
               </li>
               <li className="flex gap-3">
-                <span className="text-red-600 font-bold">•</span>
+                <span className="font-bold text-red-600">•</span>
                 <span>Use light gray text on white backgrounds</span>
               </li>
               <li className="flex gap-3">
-                <span className="text-red-600 font-bold">•</span>
+                <span className="font-bold text-red-600">•</span>
                 <span>Center-align large blocks of text</span>
               </li>
             </ul>
@@ -332,15 +317,17 @@ export function TypographyGuidelines({ className }: TypographyGuidelinesProps) {
         </div>
       </div>
 
-      <div className="bg-primary/10 border border-primary/20 rounded-lg p-6">
-        <h3 className="text-h3 font-semibold text-off-black mb-3">Responsive Typography</h3>
-        <p className="text-warm-gray mb-4">
+      <div className="rounded-lg border border-primary/20 bg-primary/10 p-6">
+        <h3 className="mb-3 text-h3 font-semibold text-off-black">Responsive Typography</h3>
+        <p className="mb-4 text-warm-gray">
           Our typography scales automatically across devices while maintaining optimal readability.
         </p>
-        <div className="grid sm:grid-cols-3 gap-4 text-small">
+        <div className="grid gap-4 text-small sm:grid-cols-3">
           <div>
             <span className="font-medium text-off-black">Mobile (&lt; 768px)</span>
-            <div className="text-warm-gray">Optimized for thumb navigation and single-column reading</div>
+            <div className="text-warm-gray">
+              Optimized for thumb navigation and single-column reading
+            </div>
           </div>
           <div>
             <span className="font-medium text-off-black">Tablet (768px+)</span>
