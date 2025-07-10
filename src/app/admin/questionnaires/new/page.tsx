@@ -762,6 +762,202 @@ function QuestionTypeSelector({
   );
 }
 
+// Template Generator Form Component
+function TemplateGeneratorForm({
+  onGenerate,
+  onCancel,
+  isGenerating,
+}: {
+  onGenerate: (params: {
+    researchGoal: string;
+    researchType: string;
+    targetAudience: string;
+    industry?: string;
+    timeConstraint: string;
+    questionCount: number;
+    complexity: string;
+    context?: string;
+  }) => void;
+  onCancel: () => void;
+  isGenerating: boolean;
+}) {
+  const [researchGoal, setResearchGoal] = useState("");
+  const [researchType, setResearchType] = useState("user-satisfaction");
+  const [targetAudience, setTargetAudience] = useState("");
+  const [industry, setIndustry] = useState("");
+  const [timeConstraint, setTimeConstraint] = useState("medium");
+  const [questionCount, setQuestionCount] = useState(10);
+  const [complexity, setComplexity] = useState("intermediate");
+  const [context, setContext] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (researchGoal.trim() && targetAudience.trim()) {
+      onGenerate({
+        researchGoal,
+        researchType,
+        targetAudience,
+        industry: industry || undefined,
+        timeConstraint,
+        questionCount,
+        complexity,
+        context: context || undefined,
+      });
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Research Goal */}
+      <div>
+        <label className="mb-2 block text-sm font-medium">Research Goal *</label>
+        <textarea
+          value={researchGoal}
+          onChange={(e) => setResearchGoal(e.target.value)}
+          placeholder="Describe what you want to learn or measure with this questionnaire..."
+          className="w-full rounded-md border border-gray-300 p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+          rows={3}
+          required
+        />
+      </div>
+
+      {/* Research Type */}
+      <div>
+        <label className="mb-2 block text-sm font-medium">Research Type *</label>
+        <select
+          value={researchType}
+          onChange={(e) => setResearchType(e.target.value)}
+          className="w-full rounded-md border border-gray-300 p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="user-satisfaction">User Satisfaction</option>
+          <option value="product-feedback">Product Feedback</option>
+          <option value="market-research">Market Research</option>
+          <option value="ux-validation">UX Validation</option>
+          <option value="feature-prioritization">Feature Prioritization</option>
+          <option value="demographic-analysis">Demographic Analysis</option>
+          <option value="brand-perception">Brand Perception</option>
+          <option value="competitive-analysis">Competitive Analysis</option>
+          <option value="customer-journey">Customer Journey</option>
+          <option value="pain-point-discovery">Pain Point Discovery</option>
+        </select>
+      </div>
+
+      {/* Target Audience */}
+      <div>
+        <label className="mb-2 block text-sm font-medium">Target Audience *</label>
+        <input
+          type="text"
+          value={targetAudience}
+          onChange={(e) => setTargetAudience(e.target.value)}
+          placeholder="Who will be answering this questionnaire?"
+          className="w-full rounded-md border border-gray-300 p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+          required
+        />
+      </div>
+
+      {/* Industry (Optional) */}
+      <div>
+        <label className="mb-2 block text-sm font-medium">Industry</label>
+        <input
+          type="text"
+          value={industry}
+          onChange={(e) => setIndustry(e.target.value)}
+          placeholder="e.g., Technology, Healthcare, Retail..."
+          className="w-full rounded-md border border-gray-300 p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      {/* Time Constraint and Question Count */}
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="mb-2 block text-sm font-medium">Time Constraint</label>
+          <select
+            value={timeConstraint}
+            onChange={(e) => setTimeConstraint(e.target.value)}
+            className="w-full rounded-md border border-gray-300 p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="short">Short (3-5 minutes)</option>
+            <option value="medium">Medium (8-12 minutes)</option>
+            <option value="long">Long (15-20 minutes)</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="mb-2 block text-sm font-medium">Question Count</label>
+          <select
+            value={questionCount}
+            onChange={(e) => setQuestionCount(parseInt(e.target.value))}
+            className="w-full rounded-md border border-gray-300 p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+          >
+            {[5, 8, 10, 12, 15, 20, 25].map((count) => (
+              <option key={count} value={count}>
+                {count} questions
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Complexity */}
+      <div>
+        <label className="mb-2 block text-sm font-medium">Complexity Level</label>
+        <select
+          value={complexity}
+          onChange={(e) => setComplexity(e.target.value)}
+          className="w-full rounded-md border border-gray-300 p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="basic">Basic - Simple, straightforward questions</option>
+          <option value="intermediate">Intermediate - Mix of basic and nuanced questions</option>
+          <option value="advanced">
+            Advanced - Sophisticated questions with complex branching
+          </option>
+        </select>
+      </div>
+
+      {/* Additional Context */}
+      <div>
+        <label className="mb-2 block text-sm font-medium">Additional Context</label>
+        <textarea
+          value={context}
+          onChange={(e) => setContext(e.target.value)}
+          placeholder="Any specific requirements, constraints, or additional information..."
+          className="w-full rounded-md border border-gray-300 p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+          rows={2}
+        />
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex gap-3 pt-4">
+        <button
+          type="button"
+          onClick={onCancel}
+          className="flex-1 rounded-md border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+          disabled={isGenerating}
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          className="flex-1 rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+          disabled={isGenerating || !researchGoal.trim() || !targetAudience.trim()}
+        >
+          {isGenerating ? (
+            <>
+              <RefreshCw className="mr-2 inline size-4 animate-spin" />
+              Generating...
+            </>
+          ) : (
+            <>
+              <Sparkles className="mr-2 inline size-4" />
+              Generate Template
+            </>
+          )}
+        </button>
+      </div>
+    </form>
+  );
+}
+
 export default function NewQuestionnairePage() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -845,6 +1041,31 @@ export default function NewQuestionnairePage() {
     }>
   >([]);
   const [isGeneratingOptions, setIsGeneratingOptions] = useState(false); // eslint-disable-line @typescript-eslint/no-unused-vars
+  const [showTemplateGenerator, setShowTemplateGenerator] = useState(false);
+  const [isGeneratingTemplate, setIsGeneratingTemplate] = useState(false);
+  const [generatedTemplate, setGeneratedTemplate] = useState<{
+    id: string;
+    title: string;
+    description: string;
+    category: string;
+    estimatedTime: string;
+    targetAudience: string;
+    questions: Array<{
+      id: string;
+      title: string;
+      description?: string;
+      questionType: string;
+      category: string;
+      questionData: Record<string, unknown>;
+      isRequired: boolean;
+      displayOrder: number;
+      tags: string[];
+      bestPracticeNote?: string;
+    }>;
+    tags: string[];
+    bestPractices: string[];
+    metadata: Record<string, unknown>;
+  } | null>(null);
 
   // tRPC mutations
   const createQuestionnaireMutation = trpc.questionnaire.create.useMutation();
@@ -857,6 +1078,7 @@ export default function NewQuestionnairePage() {
   const improveQuestionMutation = trpc.admin.improveQuestion.useMutation();
   const getSmartRecommendationsMutation = trpc.admin.getSmartRecommendations.useMutation();
   const generateQuestionOptionsMutation = trpc.admin.generateQuestionOptions.useMutation();
+  const generateSmartTemplateMutation = trpc.admin.generateSmartTemplate.useMutation();
 
   // Save/Publish functions
   const saveQuestionnaire = async (status: "draft" | "active") => {
@@ -1516,6 +1738,56 @@ export default function NewQuestionnairePage() {
     setShowOptionGeneration(false);
     setOptionGenerationQuestionId(null);
     setGeneratedOptions([]);
+  };
+
+  // AI-powered smart template generation
+  const generateSmartTemplate = async (templateRequest: {
+    researchGoal: string;
+    researchType: string;
+    targetAudience: string;
+    industry?: string;
+    timeConstraint: "short" | "medium" | "long";
+    questionCount: number;
+    complexity: "basic" | "intermediate" | "advanced";
+    context?: string;
+  }) => {
+    setIsGeneratingTemplate(true);
+    try {
+      const result = await generateSmartTemplateMutation.mutateAsync(templateRequest);
+      setGeneratedTemplate(result);
+      setShowTemplateGenerator(false);
+
+      // Show a success message or automatically apply the template
+      alert("AI template generated successfully! You can now review and apply it.");
+    } catch (error) {
+      console.error("Failed to generate smart template:", error);
+      alert("Failed to generate template. Please try again.");
+    } finally {
+      setIsGeneratingTemplate(false);
+    }
+  };
+
+  const applyGeneratedTemplate = () => {
+    if (!generatedTemplate) return;
+
+    // Convert generated template questions to questionnaire format
+    const convertedQuestions: Question[] = generatedTemplate.questions.map((q) => ({
+      id: q.id,
+      type: q.questionType,
+      title: q.title,
+      description: q.description || "",
+      config: q.questionData,
+      required: q.isRequired,
+    }));
+
+    setQuestionnaire({
+      title: generatedTemplate.title,
+      description: generatedTemplate.description,
+      category: generatedTemplate.category === "customer-satisfaction" ? "feedback" : "research",
+      questions: convertedQuestions,
+    });
+
+    setGeneratedTemplate(null);
   };
 
   // Load template data from URL parameter
@@ -2222,6 +2494,28 @@ export default function NewQuestionnairePage() {
                     >
                       <Lightbulb size={16} />
                       <span>Smart Recommendations</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowTemplateGenerator(true)}
+                      disabled={isGeneratingTemplate}
+                      className="flex items-center space-x-2 px-4 py-2 font-mono text-sm font-medium transition-colors hover:opacity-90 disabled:opacity-50"
+                      style={{
+                        backgroundColor: "var(--accent)",
+                        color: "var(--off-white)",
+                      }}
+                    >
+                      {isGeneratingTemplate ? (
+                        <>
+                          <RefreshCw size={16} className="animate-spin" />
+                          <span>Generating...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Wand2 size={16} />
+                          <span>AI Template</span>
+                        </>
+                      )}
                     </button>
                   </div>
                 </div>
@@ -3733,6 +4027,256 @@ export default function NewQuestionnairePage() {
                   }}
                 >
                   Apply All Options
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* AI Template Generator Modal */}
+      {showTemplateGenerator && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div
+            className="max-h-[80vh] w-full max-w-4xl overflow-y-auto border-2 shadow-lg"
+            style={{
+              backgroundColor: "var(--off-white)",
+              borderColor: "var(--off-black)",
+            }}
+          >
+            {/* Modal Header */}
+            <div
+              className="flex items-center justify-between border-b-2 px-6 py-4"
+              style={{ borderColor: "var(--light-gray)" }}
+            >
+              <div className="flex items-center space-x-3">
+                <Wand2 size={24} style={{ color: "var(--primary)" }} />
+                <h2 className="font-mono text-xl font-bold" style={{ color: "var(--off-black)" }}>
+                  AI Template Generator
+                </h2>
+              </div>
+              <button
+                onClick={() => setShowTemplateGenerator(false)}
+                className="transition-colors hover:opacity-75"
+                style={{ color: "var(--warm-gray)" }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Template Generator Form */}
+            <div className="p-6">
+              <div className="mb-4">
+                <p className="text-sm" style={{ color: "var(--warm-gray)" }}>
+                  Generate a complete questionnaire template tailored to your research goals using
+                  AI.
+                </p>
+              </div>
+
+              <TemplateGeneratorForm
+                onGenerate={generateSmartTemplate}
+                isGenerating={isGeneratingTemplate}
+                onCancel={() => setShowTemplateGenerator(false)}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Generated Template Preview Modal */}
+      {generatedTemplate && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div
+            className="max-h-[80vh] w-full max-w-5xl overflow-y-auto border-2 shadow-lg"
+            style={{
+              backgroundColor: "var(--off-white)",
+              borderColor: "var(--off-black)",
+            }}
+          >
+            {/* Modal Header */}
+            <div
+              className="flex items-center justify-between border-b-2 px-6 py-4"
+              style={{ borderColor: "var(--light-gray)" }}
+            >
+              <div className="flex items-center space-x-3">
+                <Wand2 size={24} style={{ color: "var(--primary)" }} />
+                <div>
+                  <h2 className="font-mono text-xl font-bold" style={{ color: "var(--off-black)" }}>
+                    Generated Template Preview
+                  </h2>
+                  <p className="text-sm" style={{ color: "var(--warm-gray)" }}>
+                    {generatedTemplate.title}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setGeneratedTemplate(null)}
+                className="transition-colors hover:opacity-75"
+                style={{ color: "var(--warm-gray)" }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Template Preview */}
+            <div className="p-6">
+              <div className="mb-6">
+                <div className="mb-4">
+                  <h3 className="font-mono text-lg font-bold" style={{ color: "var(--off-black)" }}>
+                    Template Details
+                  </h3>
+                  <p className="mt-2 text-sm" style={{ color: "var(--warm-gray)" }}>
+                    {generatedTemplate.description}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <strong style={{ color: "var(--off-black)" }}>Target Audience:</strong>
+                    <span style={{ color: "var(--warm-gray)" }}>
+                      {" "}
+                      {generatedTemplate.targetAudience}
+                    </span>
+                  </div>
+                  <div>
+                    <strong style={{ color: "var(--off-black)" }}>Estimated Time:</strong>
+                    <span style={{ color: "var(--warm-gray)" }}>
+                      {" "}
+                      {generatedTemplate.estimatedTime}
+                    </span>
+                  </div>
+                  <div>
+                    <strong style={{ color: "var(--off-black)" }}>Question Count:</strong>
+                    <span style={{ color: "var(--warm-gray)" }}>
+                      {" "}
+                      {generatedTemplate.questions.length}
+                    </span>
+                  </div>
+                  <div>
+                    <strong style={{ color: "var(--off-black)" }}>Category:</strong>
+                    <span style={{ color: "var(--warm-gray)" }}> {generatedTemplate.category}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Questions Preview */}
+              <div className="mb-6">
+                <h3
+                  className="mb-4 font-mono text-lg font-bold"
+                  style={{ color: "var(--off-black)" }}
+                >
+                  Questions ({generatedTemplate.questions.length})
+                </h3>
+                <div className="space-y-4">
+                  {generatedTemplate.questions.map((question, index) => (
+                    <div
+                      key={question.id}
+                      className="border-2 p-4"
+                      style={{
+                        backgroundColor: "var(--off-white)",
+                        borderColor: "var(--light-gray)",
+                      }}
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="mb-2 flex items-center space-x-2">
+                            <span
+                              className="font-mono text-xs"
+                              style={{
+                                backgroundColor: "var(--primary)",
+                                color: "var(--off-white)",
+                                padding: "0.25rem 0.5rem",
+                              }}
+                            >
+                              {index + 1}
+                            </span>
+                            <span
+                              className="font-mono text-xs"
+                              style={{
+                                backgroundColor: "var(--warm-gray)",
+                                color: "var(--off-white)",
+                                padding: "0.25rem 0.5rem",
+                              }}
+                            >
+                              {question.questionType}
+                            </span>
+                            {question.isRequired && (
+                              <span
+                                className="font-mono text-xs"
+                                style={{
+                                  backgroundColor: "var(--accent)",
+                                  color: "var(--off-white)",
+                                  padding: "0.25rem 0.5rem",
+                                }}
+                              >
+                                Required
+                              </span>
+                            )}
+                          </div>
+                          <h4
+                            className="mb-2 font-mono text-sm font-medium"
+                            style={{ color: "var(--off-black)" }}
+                          >
+                            {question.title}
+                          </h4>
+                          {question.description && (
+                            <p className="mb-2 text-xs" style={{ color: "var(--warm-gray)" }}>
+                              {question.description}
+                            </p>
+                          )}
+                          {question.bestPracticeNote && (
+                            <p className="text-xs italic" style={{ color: "var(--primary)" }}>
+                              💡 {question.bestPracticeNote}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Best Practices */}
+              {generatedTemplate.bestPractices.length > 0 && (
+                <div className="mb-6">
+                  <h3
+                    className="mb-4 font-mono text-lg font-bold"
+                    style={{ color: "var(--off-black)" }}
+                  >
+                    Best Practices
+                  </h3>
+                  <ul className="space-y-2">
+                    {generatedTemplate.bestPractices.map((practice, index) => (
+                      <li key={index} className="flex items-start space-x-2 text-sm">
+                        <span style={{ color: "var(--primary)" }}>•</span>
+                        <span style={{ color: "var(--warm-gray)" }}>{practice}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Actions */}
+              <div className="flex justify-end space-x-3">
+                <button
+                  onClick={() => setGeneratedTemplate(null)}
+                  className="px-4 py-2 font-mono text-sm transition-colors"
+                  style={{
+                    backgroundColor: "var(--warm-gray)",
+                    color: "var(--off-white)",
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={applyGeneratedTemplate}
+                  className="px-4 py-2 font-mono text-sm transition-colors"
+                  style={{
+                    backgroundColor: "var(--primary)",
+                    color: "var(--off-white)",
+                  }}
+                >
+                  Apply Template
                 </button>
               </div>
             </div>

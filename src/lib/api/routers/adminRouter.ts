@@ -865,4 +865,212 @@ Return your response as JSON with this structure:
         }
       }, "generateQuestionOptions");
     }),
+
+  // AI-powered smart template generation based on research goals
+  generateSmartTemplate: adminProcedure
+    .input(
+      z.object({
+        researchGoal: z.string().min(1).max(1000),
+        researchType: z.enum([
+          "user-satisfaction",
+          "product-feedback",
+          "market-research",
+          "ux-validation",
+          "feature-prioritization",
+          "demographic-analysis",
+          "brand-perception",
+          "competitive-analysis",
+          "customer-journey",
+          "pain-point-discovery",
+        ]),
+        targetAudience: z.string().min(1).max(500),
+        industry: z.string().optional(),
+        timeConstraint: z.enum(["short", "medium", "long"]).default("medium"),
+        questionCount: z.number().min(5).max(25).default(10),
+        complexity: z.enum(["basic", "intermediate", "advanced"]).default("intermediate"),
+        context: z.string().optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      return safeExecute(async () => {
+        const {
+          researchGoal,
+          researchType,
+          targetAudience,
+          industry,
+          timeConstraint,
+          questionCount,
+          complexity,
+          context,
+        } = input;
+
+        // Map time constraints to estimated duration
+        const timeMapping = {
+          short: "3-5 minutes",
+          medium: "8-12 minutes",
+          long: "15-20 minutes",
+        };
+
+        // Map complexity to question sophistication
+        const complexityGuidance = {
+          basic: "Use simple, straightforward questions that are easy to understand",
+          intermediate:
+            "Include a mix of basic and more nuanced questions with some conditional logic",
+          advanced:
+            "Create sophisticated questions with complex branching and detailed analysis options",
+        };
+
+        const prompt = `You are an expert survey designer and market research specialist. Generate a comprehensive questionnaire template based on these specifications:
+
+**Research Specifications:**
+- Primary Goal: ${researchGoal}
+- Research Type: ${researchType}
+- Target Audience: ${targetAudience}
+- Industry: ${industry || "General"}
+- Time Constraint: ${timeConstraint} (${timeMapping[timeConstraint]})
+- Question Count: ${questionCount} questions
+- Complexity Level: ${complexity}
+- ${context ? `Additional Context: ${context}` : ""}
+
+**Design Guidelines:**
+- ${complexityGuidance[complexity]}
+- Ensure logical flow from broad to specific questions
+- Include appropriate question types for the research goals
+- Follow survey design best practices (avoid leading questions, ensure clarity)
+- Include demographic questions only if relevant to research goals
+- Optimize for the specified time constraint
+
+**Question Type Guidelines:**
+- binary: For yes/no or clear preference questions
+- multi-choice: For categorical selections (2-6 options)
+- rating-scale: For satisfaction, importance, or likelihood ratings (1-10 scale)
+- text-response: For open feedback or explanations (use sparingly)
+- ranking: For priority or preference ordering (3-7 items)
+- ab-test: For comparing two specific options or concepts
+
+**Output Requirements:**
+Return a JSON object with this exact structure:
+
+{
+  "title": "Generated Template Title",
+  "description": "Clear description of what this questionnaire measures and its purpose",
+  "category": "${
+    researchType === "user-satisfaction"
+      ? "customer-satisfaction"
+      : researchType === "product-feedback"
+        ? "product-research"
+        : researchType === "market-research"
+          ? "market-research"
+          : researchType === "ux-validation"
+            ? "ux-research"
+            : "product-research"
+  }",
+  "estimatedTime": "${timeMapping[timeConstraint]}",
+  "targetAudience": "${targetAudience}",
+  "questions": [
+    {
+      "title": "Question text here",
+      "description": "Optional clarification or context",
+      "questionType": "question-type",
+      "category": "general|technical|design|business|research",
+      "questionData": {
+        // Configuration specific to question type:
+        // For multi-choice: {"options": [{"id": "1", "text": "Option 1"}, ...], "maxSelections": 1}
+        // For rating-scale: {"scale": 10, "labels": {"min": "Poor", "max": "Excellent"}}
+        // For ranking: {"items": [{"id": "1", "text": "Item 1"}, ...]}
+        // For binary: {"optionA": {"id": "a", "text": "Yes"}, "optionB": {"id": "b", "text": "No"}}
+        // For text-response: {"maxLength": 500, "placeholder": "Please explain..."}
+        // For ab-test: {"optionA": {...}, "optionB": {...}}
+      },
+      "isRequired": true|false,
+      "displayOrder": 1,
+      "tags": ["relevant", "tags"],
+      "bestPracticeNote": "Optional note about why this question is important"
+    }
+  ],
+  "tags": ["research-type", "industry", "complexity-level"],
+  "bestPractices": [
+    "Key survey design principles applied in this template",
+    "Tips for using this questionnaire effectively"
+  ],
+  "metadata": {
+    "generatedFor": "${researchGoal}",
+    "optimizedFor": "${timeConstraint}-duration",
+    "complexityLevel": "${complexity}",
+    "questionTypes": ["list of question types used"]
+  }
+}
+
+Ensure all questions are relevant, well-structured, and follow survey design best practices.`;
+
+        const response = await generateChatCompletion(
+          [{ role: "user", content: prompt }],
+          "GPT_4O",
+          { temperature: 0.7 }
+        );
+
+        try {
+          const template = parseJsonResponse(response);
+
+          // Validate the response structure
+          if (!template.title || typeof template.title !== "string") {
+            throw new Error("Missing valid template title");
+          }
+          if (!template.questions || !Array.isArray(template.questions)) {
+            throw new Error("Missing valid questions array");
+          }
+
+          // Validate each question
+          const validatedQuestions = template.questions.map((question, index) => {
+            if (!question.title || typeof question.title !== "string") {
+              throw new Error(`Question ${index + 1} missing valid title`);
+            }
+            if (!question.questionType || typeof question.questionType !== "string") {
+              throw new Error(`Question ${index + 1} missing valid questionType`);
+            }
+            if (!question.questionData || typeof question.questionData !== "object") {
+              question.questionData = {};
+            }
+
+            return {
+              id: `template_q_${Date.now()}_${index}`,
+              title: question.title.trim(),
+              description: question.description || "",
+              questionType: question.questionType,
+              category: question.category || "general",
+              questionData: question.questionData,
+              isRequired: question.isRequired !== false, // Default to true
+              displayOrder: question.displayOrder || index + 1,
+              tags: Array.isArray(question.tags) ? question.tags : [],
+              bestPracticeNote: question.bestPracticeNote || "",
+            };
+          });
+
+          const validatedTemplate = {
+            id: `ai_template_${Date.now()}`,
+            title: template.title.trim(),
+            description: template.description || "",
+            category: template.category || "product-research",
+            estimatedTime: template.estimatedTime || timeMapping[timeConstraint],
+            targetAudience: template.targetAudience || targetAudience,
+            questions: validatedQuestions,
+            tags: Array.isArray(template.tags) ? template.tags : [researchType, complexity],
+            bestPractices: Array.isArray(template.bestPractices) ? template.bestPractices : [],
+            metadata: {
+              generatedFor: researchGoal,
+              optimizedFor: `${timeConstraint}-duration`,
+              complexityLevel: complexity,
+              questionTypes: [...new Set(validatedQuestions.map((q) => q.questionType))],
+              industry: industry || "general",
+              createdAt: new Date().toISOString(),
+            },
+          };
+
+          return validatedTemplate;
+        } catch (parseError) {
+          console.error("Failed to parse AI template response:", parseError);
+          throw new Error("Failed to generate valid questionnaire template. Please try again.");
+        }
+      }, "generateSmartTemplate");
+    }),
 });
